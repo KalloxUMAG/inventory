@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <h1>Equipamiento</h1>
-    <RenderTable :columns="columns" :rows="this.equipments" title="Equipamiento" />
+    <RenderTable :columns="columns" :rows="rows" title="Equipamiento" />
     <pre>{{ this.equipments }}</pre>
   </q-page>
 </template>
@@ -90,6 +90,18 @@ const columns = [
   },
 ];
 
+  const rows = [
+    {
+      id: 0,
+      name: "Gran equipo 1",
+      stage: "Proyecto Terra, Junio",
+      serial_number: "7748823DA",
+      location: "UMAG - Ingenieria - Magister",
+      invoice_number: "878477",
+      umag_inventory_code: 8837875,
+    },
+  ]
+
 export default {
   components: { RenderTable },
   data(){
@@ -112,6 +124,7 @@ export default {
   setup() {
     return {
       columns,
+      rows
     };
   },
 };

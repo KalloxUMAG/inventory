@@ -21,6 +21,24 @@
           icon="science"
           active-class="my-menu-link"
         />
+        <q-route-tab
+          to="/suppliers"
+          label="Proveedores"
+          icon="store"
+          active-class="my-menu-link"
+        />
+        <q-route-tab
+          to="/buildings"
+          label="Ubicaciones"
+          icon="location_on"
+          active-class="my-menu-link"
+        />
+        <q-route-tab
+          to="/projects"
+          label="Proyectos"
+          icon="schema"
+          active-class="my-menu-link"
+        />
       </q-tabs>
     </q-header>
 
@@ -32,7 +50,7 @@
 
 <style lang="scss">
 .my-menu-link {
-  color: rgb(247, 227, 227);
-  background: #077a41;
+  color: #dcd3e7;
+  background: #428f7d;
 }
 </style>
