@@ -11,3 +11,12 @@ class MaintenanceSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+class MaintenanceFromEquipment(BaseModel):
+    id: int
+    date: date
+    observations: Optional[str]
+    maintenance_type: int
+
+    class Config:
+        orm_mode = True

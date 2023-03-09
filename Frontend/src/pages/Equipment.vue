@@ -1,131 +1,100 @@
 <template>
-  <q-page padding>
-    <h1>Equipamiento</h1>
-    <RenderTable :columns="columns" :rows="rows" title="Equipamiento" />
-    <pre>{{ this.equipments }}</pre>
+    <q-page padding>
+      <div v-if="this.equipment != null" class="row justify-center bg-secondary">
+        <q-card class="my-card" flat bordered>
+          <q-item>
+           <div class="text-h5">{{ this.equipment.name }} - {{ this.equipment.serial_number }}</div>
+          </q-item>
+          <q-separator/>
+          <q-card-section>
+            <div class="col-4">
+              <div class="row">Nombre: {{ this.equipment.name }}</div>
+              <div class="row">Codigo producto: {{ this.equipment.serial_number }}</div>
+              <div class="row">Inventario UMAG: {{ this.equipment.umag_inventory_code }}</div>
+              <div class="row">Proveedor: {{ this.equipment.supplier_name }}</div>
+              <div class="row">Modelo: {{ this.equipment.model_model }}</div>
+              <div class="row">Factura: {{ this.equipment.invoice_number }}</div>
+            </div>
+          </q-card-section>
+          <q-card-section>
+            <div class="text-h6">Codigo</div>
+          </q-card-section>
+        </q-card>
+
+        <div class="col-4">
+          <div class="row">Ubicacion: {{ this.equipment.building_name }}/{{ this.equipment.unit_name }}/{{ this.equipment.room_name }}</div>
+          <div class="row">Descripcion</div>
+          <div class="row">{{ this.equipment.observation }}</div>
+        </div>
+      </div>
+      <h3>Equipamiento</h3>
+      <pre>{{ this.equipment }}</pre>
+      <pre>{{ this.maintenances }}</pre>
+      <pre>{{ this.projects }}</pre>
   </q-page>
 </template>
 
 <script>
-import RenderTable from "src/components/RenderTable.vue";
+import { useRoute, useRouter } from 'vue-router';
+import {computed} from 'vue'
 import axios from 'axios'
 
-const columns = [
-  {
-    name: "id",
-    label: "Numero",
-    align: "left",
-    field: "id",
-    sortable: true,
-  },
-  {
-    name: "name",
-    align: "left",
-    label: "Nombre",
-    field: "name",
-    sortable: false,
-  },
-  {
-    name: "stage",
-    align: "left",
-    label: "Etapa",
-    field: "stage",
-    sortable: false,
-  },
-  {
-    name: "serial_number",
-    align: "left",
-    label: "Nro. serie",
-    field: "serial_number",
-    sortable: false,
-  },
-  {
-    name: "location",
-    align: "left",
-    label: "Ubicacion",
-    field: "location",
-    sortable: true,
-  },
-  {
-    name: "invoice_number",
-    align: "left",
-    label: "Factura",
-    field: "invoice_number",
-    sortable: false,
-  },
-  {
-    name: "supplier_name",
-    align: "left",
-    label: "Proveedor",
-    field: "supplier_name",
-    sortable: true,
-  },
-  {
-    name: "umag_inventory_code",
-    align: "left",
-    label: "Inventariado",
-    field: "umag_inventory_code",
-    sortable: true,
-  },
-  {
-    name: "maintenance",
-    align: "left",
-    label: "Mantencion",
-    field: "maintenance",
-    sortable: true,
-  },
-  {
-    name: "reception_date",
-    align: "left",
-    label: "Fecha",
-    field: "reception_date",
-    sortable: false,
-  },
-  {
-    name: "date2",
-    align: "left",
-    label: "Fecha",
-    field: "date2",
-    sortable: false,
-  },
-];
-
-  const rows = [
-    {
-      id: 0,
-      name: "Gran equipo 1",
-      stage: "Proyecto Terra, Junio",
-      serial_number: "7748823DA",
-      location: "UMAG - Ingenieria - Magister",
-      invoice_number: "878477",
-      umag_inventory_code: 8837875,
-    },
-  ]
-
 export default {
-  components: { RenderTable },
   data(){
     return{
-      equipments: []
+      equipment: null,
+      maintenances: null,
+      projects: null
     }
   },
   methods:{
-    getEquipments(){
-      axios.get("http://localhost:8000/api/equipments").then(
+    getEquipment(){
+      axios.get(this.query_equipment).then(
         response => (
-          this.equipments = response.data
+          this.equipment = response.data
         )
       )
-    }
+    },
+    getMaintenances(){
+      axios.get(this.query_maintenances).then(
+        response => (
+          this.maintenances = response.data
+        )
+      )
+    },
+    getProjects(){
+      axios.get(this.query_projects).then(
+        response => (
+          this.projects = response.data
+        )
+      )
+    },
   },
   mounted(){
-    this.getEquipments();
+    this.getEquipment();
+    this.getMaintenances();
+    this.getProjects();
   },
   setup() {
-    return {
-      columns,
-      rows
-    };
+    const route = useRoute()
+    const id = computed( () => route.params.id)
+    const query_equipment = "http://localhost:8000/api/equipments/"+id.value
+    const query_maintenances = "http://localhost:8000/api/maintenances/"+id.value
+    const query_projects = "http://localhost:8000/api/equipment_projects/"+id.value
+
+    return{
+      id,
+      query_equipment,
+      query_maintenances,
+      query_projects
+    }
   },
 };
 </script>
+
+
+<style scoped>
+  .my-card{
+    width: 100%;
+  }
+</style>

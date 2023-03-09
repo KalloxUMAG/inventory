@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from config.database import get_session
 from models.models import Maintenances
-from schemas.maintenance_schema import MaintenanceSchema
+from schemas.maintenance_schema import MaintenanceSchema, MaintenanceFromEquipment
 from typing import List
 
 from routes.equipments import get_equipment_exist
@@ -25,9 +25,13 @@ def add_maintenances(maintenance: MaintenanceSchema):
     session.commit()
     return Response(status_code=HTTP_201_CREATED)
 
-@maintenances.get("/api/maintenances/{maintenance_id}", response_model=MaintenanceSchema)
+@maintenances.get("/api/maintenance/{maintenance_id}", response_model=MaintenanceSchema)
 def get_maintenance(maintenance_id: int):
     return get_session().query(Maintenances).filter(Maintenances.id == maintenance_id).first()
+
+@maintenances.get("/api/maintenances/{equipment_id}", response_model=List[MaintenanceFromEquipment])
+def get_maintenances_equipment(equipment_id: int):
+    return get_session().query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations).filter(Maintenances.equiptment_id == equipment_id).all()
 
 @maintenances.put("/api/maintenances/{maintenance_id}", response_model=MaintenanceSchema)
 def update_maintenance(data_update: MaintenanceSchema, maintenance_id: int):

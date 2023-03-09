@@ -10,7 +10,7 @@
           exact
         />
         <q-route-tab
-          to="/equipment"
+          to="/equipments"
           label="Equipamiento"
           icon="biotech"
           active-class="my-menu-link"
@@ -19,24 +19,6 @@
           to="/supplies"
           label="Insumos"
           icon="science"
-          active-class="my-menu-link"
-        />
-        <q-route-tab
-          to="/suppliers"
-          label="Proveedores"
-          icon="store"
-          active-class="my-menu-link"
-        />
-        <q-route-tab
-          to="/buildings"
-          label="Ubicaciones"
-          icon="location_on"
-          active-class="my-menu-link"
-        />
-        <q-route-tab
-          to="/projects"
-          label="Proyectos"
-          icon="schema"
           active-class="my-menu-link"
         />
       </q-tabs>

@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.0.1",
   "description": "A Quasar Project",
-  "productName": "inventory-front",
+  "productName": "Sistema de inventario",
   "author": "Kallox",
   "private": true,
   "scripts": {

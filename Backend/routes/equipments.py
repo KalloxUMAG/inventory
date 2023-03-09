@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Response
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from config.database import get_session
-from models.models import Equipments, Suppliers, Invoices, Models, Rooms
-from schemas.equipment_schema import EquipmentSchema, EquipmentFullSchema
+from models.models import Equipments, Suppliers, Invoices, Models, Rooms, Units, Buildings, Maintenances
+from schemas.equipment_schema import EquipmentSchema, EquipmentFullSchema, EquipmentListSchema
 from typing import List
 
 from routes.suppliers import get_supplier
@@ -12,7 +12,7 @@ from routes.rooms import get_room
 
 equipments = APIRouter()
 
-@equipments.get("/api/equipments", response_model=List[EquipmentFullSchema])
+@equipments.get("/api/equipments", response_model=List[EquipmentListSchema])
 def get_equipments():
     #result = get_session().query(Equipments).all()
     result = get_session().query(
@@ -56,9 +56,11 @@ def get_equipment(equipment_id: int):
    result = get_session().query(
       Equipments.id, Equipments.name, Equipments.serial_number, Equipments.umag_inventory_code, Equipments.reception_date, Equipments.maintenance_period, Equipments.observation,
       Equipments.room_id, Rooms.name.label("room_name"), Equipments.supplier_id, Suppliers.name.label("supplier_name"), Equipments.invoice_id, Invoices.number.label("invoice_number"),
-      Equipments.model_id, Models.model.label("model_model")).outerjoin(
+      Equipments.model_id, Models.model.label("model_model"), Units.id.label("unit_id"), Units.name.label("unit_name"), Buildings.id.label("building_id"), Buildings.name.label("building_name")
+      ).outerjoin(
       Rooms, Rooms.id == Equipments.room_id).outerjoin(Suppliers, Suppliers.id == Equipments.supplier_id).outerjoin(Invoices, Invoices.id == Equipments.invoice_id).outerjoin(
-      Models, Models.id == Equipments.model_id).filter(Equipments.id == equipment_id).first()
+      Models, Models.id == Equipments.model_id).outerjoin(Units, Units.id == Rooms.unit_id).outerjoin(Buildings, Buildings.id == Units.building_id).filter(Equipments.id == equipment_id).first()
+   print(result)
    return result
 
 @equipments.get("/api/equipment/{equipment_id}", response_model=EquipmentSchema)
