@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from config.database import get_session
-from models.models import Equipments_has_Projects
+from models.models import Equipments_has_Projects, Projects, Stages, Equipments
 from schemas.equipment_has_project_schema import EquipmentHasProjectSchema, EquipmentHasProjectsSchema, ProjectHasEquipmentsSchema
 from typing import List
 
@@ -36,8 +36,12 @@ def add_equipment_has_project(equipment_has_project: EquipmentHasProjectSchema):
 
 @equipments_projects.get("/api/equipments_project/{project_id}", response_model=List[ProjectHasEquipmentsSchema])
 def get_project_equipments(project_id: int):
-    return get_session().query(Equipments_has_Projects).filter(Equipments_has_Projects.project_id == project_id).all()
+    return get_session().query(Equipments_has_Projects, Equipments.name.label('equipment_name'), Stages.name.label('stage_name')).outerjoin(
+        Equipments, Equipments.id == Equipments_has_Projects.equipment_id).outerjoin(Stages, Stages.id == Equipments_has_Projects.stage_id
+        ).filter(Equipments_has_Projects.project_id == project_id).all()
 
 @equipments_projects.get("/api/equipment_projects/{equipment_id}", response_model=List[EquipmentHasProjectsSchema])
 def get_equipment_projects(equipment_id: int):
-    return get_session().query(Equipments_has_Projects).filter(Equipments_has_Projects.equipment_id == equipment_id).all()
+    return get_session().query(Equipments_has_Projects.project_id.label('id'), Equipments_has_Projects.stage_id, Projects.name.label('project_name'), Stages.name.label('stage_name')).outerjoin(
+        Stages, Stages.id == Equipments_has_Projects.stage_id).outerjoin(Projects, Projects.id == Equipments_has_Projects.project_id
+        ).filter(Equipments_has_Projects.equipment_id == equipment_id).all()

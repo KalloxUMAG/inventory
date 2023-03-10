@@ -1,9 +1,10 @@
 <template>
-  <q-table class="q-mt-md" :title="title" row-key="id" :columns="columns" :rows="rows" no-data-label="No hay registros para mostrar">
+  <q-table :title="title" :row-key="row_key" :columns="columns" :rows="rows" no-data-label="No hay registros para mostrar" :filter="filter">
     <template v-slot:top>
-      <q-btn color="positive" label="Agregar" />
-      <q-space />
-      <q-input outlined dense debounce="300" placeholder="Buscar" color="primary">
+      <h1 class="text-h5">{{ title }}</h1>
+      <q-space/>
+      <q-btn color="positive" label="Agregar" class="q-mr-sm"/>
+      <q-input outlined dense debounce="300" placeholder="Buscar" color="primary" v-model="filter">
         <template v-slot:append>
           <q-icon name="search" />
         </template>
@@ -11,7 +12,7 @@
     </template>
     <template #body-cell-details="props">
       <q-td :props="props">
-        <q-btn dense flat label="ver detalles" color="blue" field="details" icon="info" @click.prevent="load_details(props.row)" />
+        <q-btn dense flat label="ver detalles" class="bg-blue" color="white" field="details" icon="info" @click.prevent="load_details(props.row)" />
       </q-td>
     </template>
   </q-table>
@@ -25,16 +26,20 @@ export default {
     columns: Array,
     title: String,
     rows: Array,
+    detail_query: String,
+    row_key: String
   },
   methods: {
     load_details(item){
-      this.$router.push('/equipments/'+item.id)
+      this.$router.push(this.detail_query+item.id)
     }
   },
   setup() {
+    const filter = ref('')
     return {
       addlabel,
       selected: ref([]),
+      filter,
     };
   },
 };

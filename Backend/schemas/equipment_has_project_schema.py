@@ -10,15 +10,19 @@ class EquipmentHasProjectSchema(BaseModel):
         orm_mode = True
 
 class EquipmentHasProjectsSchema(BaseModel):
-    project_id: int
+    id: int
+    project_name: str
     stage_id: Optional[int]
+    stage_name: Optional[str]
 
     class Config:
         orm_mode = True
 
 class ProjectHasEquipmentsSchema(BaseModel):
     equipment_id: int
+    equipment_name: str
     stage_id: Optional[int]
+    stage_name: Optional[str]
 
     class Config:
         orm_mode = True

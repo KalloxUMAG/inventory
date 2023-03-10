@@ -1,8 +1,6 @@
 <template>
   <q-page padding>
-    <h3>Equipamiento</h3>
-    <RenderTable :columns="columns" :rows="this.equipments" title="Equipamiento" />
-    <pre>{{ this.equipments }}</pre>
+    <RenderTable :columns="columns" :rows="this.equipments" title="Equipamiento" detail_query="/equipments/" row_key="name"/>
   </q-page>
 </template>
 
@@ -26,13 +24,6 @@ const columns = [
     sortable: false,
   },
   {
-    name: "location",
-    align: "left",
-    label: "Ubicacion",
-    field: "location",
-    sortable: true,
-  },
-  {
     name: "invoice_number",
     align: "left",
     label: "Factura",
@@ -54,17 +45,10 @@ const columns = [
     sortable: true,
   },
   {
-    name: "stage",
+    name: "last_preventive_maintenance",
     align: "left",
-    label: "Proyecto",
-    field: "stage",
-    sortable: false,
-  },
-  {
-    name: "maintenance",
-    align: "left",
-    label: "Mantencion",
-    field: "maintenance",
+    label: "Mantención",
+    field: "last_preventive_maintenance",
     sortable: true,
   },
   {
