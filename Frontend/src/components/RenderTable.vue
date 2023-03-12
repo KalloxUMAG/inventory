@@ -1,5 +1,5 @@
 <template>
-  <q-table :title="title" :row-key="row_key" :columns="columns" :rows="rows" no-data-label="No hay registros para mostrar" :filter="filter">
+  <q-table :title="title" :row-key="row_key" :columns="columns" :rows="rows" no-data-label="No hay registros para mostrar" :filter="filter" v-model:pagination="pagination">
     <template v-slot:top>
       <h1 class="text-h5">{{ title }}</h1>
       <q-space/>
@@ -36,10 +36,14 @@ export default {
   },
   setup() {
     const filter = ref('')
+    const pagination = ref({
+      rowsPerPage: 10
+    })
     return {
       addlabel,
       selected: ref([]),
       filter,
+      pagination
     };
   },
 };

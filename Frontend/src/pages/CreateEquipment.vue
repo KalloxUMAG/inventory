@@ -7,13 +7,14 @@
           val => val && val.length > 0 || 'Este campo es obligatorio',
           val => val && val.length < 50 || 'El nombre debe contener menos de 50 caracteres'
         ]"/>
-        <q-input filled v-model="reception_date" type="date" label="Fecha de recepción" stack-label lazy-rules :rules="[val => val && val != null || 'Este campo es obligatorio']"/>
+        <q-input filled v-model="reception_date" type="date" label="Fecha de recepción"  stack-label lazy-rules
+          :rules="[val => val && val != null || 'Este campo es obligatorio']"/>
         <q-input filled v-model="serial" maxlength="30" label="Código serial" lazy-rules
           :rules="[
             val => val && val.length > 0 || 'Este campo es obligatorio',
             val => val && val.length < 31 || 'Máximo 30 caracteres'
           ]"/>
-        <q-input filled v-model="inventory" maxlength="9" type="number" label="Inventario UMAG" lazy-rules :rules="[val => val < 999999999 || 'El número máximo es 999999999']"/>
+        <q-input filled v-model="inventory" maxlength="9" type="number" label="Inventario UMAG" lazy-rules :rules="[val => val < 999999999 && val >0 || 'El valor debe estar entre 1 y 999999999']"/>
         <q-select filled v-model="model" :options="modelOptions" option-value="id" option-label="name" emit-value map-options label="Modelo">
           <template v-slot:no-option>
             <q-item>
@@ -57,22 +58,9 @@
   import axios from 'axios'
 
   export default{
-    data(){
-      return{
-        models: []
-      }
-    },
     methods: {
-      getModels(){
-        axios.get("http://localhost:8000/api/models").then(
-          response => {
-            this.models = response.data
-            this.modelOptions = this.models.map(x => {
-              return {id: x.id, name: x.brand+" "+x.model+" "+x.product_number}
-            })
-            console.log(this.modelOptions)
-          }
-        )
+      testFunction(){
+        console.log("works")
       }
     },
     setup(){
@@ -81,15 +69,27 @@
       const serial = ref(null)
       const inventory = ref(null)
       const model = ref(null)
+      const models = ref([])
       const maintenance = ref(null)
       const observation = ref(null)
       const modelOptions = ref([])
-      const newmodelstate = ref(false)
+      const newmodelstate = ref(null)
       const newmodel = ref(null)
       const newbrand = ref(null)
       const newnumber = ref(null)
       const reception_date = ref(null)
       const $q = useQuasar()
+
+      const getModels = () => {
+        axios.get("http://localhost:8000/api/models").then(
+          response => {
+            models.value = response.data
+            modelOptions.value = models.value.map(x => {
+              return {id: x.id, name: x.brand+" "+x.model+" "+x.product_number}
+            })
+          }
+        )
+      }
 
       const onReset = () => {
         name.value = null
@@ -127,7 +127,6 @@
             console.log(error);
           }
         )
-        console.log(reception_date.value)
         onReset()
       };
 
@@ -147,13 +146,14 @@
                 icon: 'check',
                 message: 'Equipo creado con éxito'
               })
+              getModels()
+              resetModel()
             }
           }, (error) => {
             console.log(error)
           }
         )
-        resetModel()
-        this.getModels().then();
+
       }
 
       const resetModel = () => {
@@ -177,6 +177,7 @@
         newbrand,
         newnumber,
         reception_date,
+        getModels,
         onReset,
         onSubmit,
         submitModel,
@@ -184,11 +185,22 @@
       }
     },
 
-  mounted(){
-  this.getModels();
-},
+    mounted(){
+      this.getModels();
+    },
 
   }
 
 
 </script>
+
+<style>
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+</style>
