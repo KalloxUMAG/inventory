@@ -78,10 +78,6 @@
         </q-card-section>
         </q-card>
       </div>
-      <h3>Equipamiento</h3>
-      <pre>{{ this.equipment }}</pre>
-      <pre>{{ this.maintenances }}</pre>
-      <pre>{{ this.projects }}</pre>
   </q-page>
 </template>
 

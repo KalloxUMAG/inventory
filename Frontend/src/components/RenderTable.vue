@@ -3,7 +3,7 @@
     <template v-slot:top>
       <h1 class="text-h5">{{ title }}</h1>
       <q-space/>
-      <q-btn color="positive" label="Agregar" class="q-mr-sm"/>
+      <q-btn color="positive" label="Agregar" class="q-mr-sm" to="/equipments/new_equipment"/>
       <q-input outlined dense debounce="300" placeholder="Buscar" color="primary" v-model="filter">
         <template v-slot:append>
           <q-icon name="search" />
@@ -27,7 +27,7 @@ export default {
     title: String,
     rows: Array,
     detail_query: String,
-    row_key: String
+    row_key: String,
   },
   methods: {
     load_details(item){
