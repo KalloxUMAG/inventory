@@ -18,7 +18,9 @@ def add_supplier(supplier: SupplierSchema):
     session = get_session()
     session.add(new_supplier)
     session.commit()
-    return Response(status_code=HTTP_201_CREATED)
+    content = str({"message": new_supplier.id})
+    print(content)
+    return Response(status_code=HTTP_201_CREATED, content=content)
 
 @suppliers.get("/api/suppliers/{supplier_id}", response_model=SupplierSchema)
 def get_supplier(supplier_id: int):

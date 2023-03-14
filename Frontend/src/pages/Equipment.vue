@@ -2,7 +2,7 @@
     <q-page padding>
       <div v-if="this.equipment != null" class="row justify-center bg-secondary">
         <q-card class="my-card" flat bordered>
-          <q-item>
+          <q-item class="row justify-center">
            <div class="text-h5">{{ this.equipment.name }} - {{ this.equipment.serial_number }}</div>
           </q-item>
           <q-separator/>
