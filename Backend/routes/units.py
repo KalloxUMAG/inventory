@@ -23,11 +23,16 @@ def add_unit(unit: UnitSchema):
     session = get_session()
     session.add(new_unit)
     session.commit()
-    return Response(status_code=HTTP_201_CREATED)
+    content = str(new_unit.id)
+    return Response(status_code=HTTP_201_CREATED, content=content)
 
-@units.get("/api/units/{unit_id}", response_model=UnitSchema)
+@units.get("/api/unit/{unit_id}", response_model=UnitSchema)
 def get_unit(unit_id: int):
     return get_session().query(Units).filter(Units.id == unit_id).first()
+
+@units.get("/api/units/{building_id}", response_model=List[UnitSchema])
+def get_units_building(building_id: int):
+    return get_session().query(Units).filter(Units.building_id == building_id).all()
 
 @units.put("/api/units/{unit_id}", response_model=UnitSchema)
 def update_unit(data_update: UnitSchema, unit_id: int):

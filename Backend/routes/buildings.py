@@ -18,7 +18,8 @@ def add_building(building: BuildingSchema):
     session = get_session()
     session.add(new_building)
     session.commit()
-    return Response(status_code=HTTP_201_CREATED)
+    content = str(new_building.id)
+    return Response(status_code=HTTP_201_CREATED, content=content)
 
 @buildings.get("/api/buildings/{building_id}", response_model=BuildingSchema)
 def get_building(building_id: int):

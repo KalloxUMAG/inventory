@@ -23,11 +23,16 @@ def add_room(room: RoomSchema):
     session = get_session()
     session.add(new_room)
     session.commit()
-    return Response(status_code=HTTP_201_CREATED)
+    content = str(new_room.id)
+    return Response(status_code=HTTP_201_CREATED, content=content)
 
-@rooms.get("/api/rooms/{room_id}", response_model=RoomSchema)
+@rooms.get("/api/room/{room_id}", response_model=RoomSchema)
 def get_room(room_id: int):
     return get_session().query(Rooms).filter(Rooms.id == room_id).first()
+
+@rooms.get("/api/rooms/{unit_id}", response_model=List[RoomSchema])
+def get_rooms_unit(unit_id: int):
+    return get_session().query(Rooms).filter(Rooms.unit_id == unit_id).all()
 
 @rooms.put("/api/rooms/{room_id}", response_model=RoomSchema)
 def update_room(data_update: RoomSchema, room_id: int):

@@ -47,7 +47,7 @@ class Suppliers(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String)
-    rut: Mapped[int] = mapped_column(Integer)
+    rut: Mapped[str] = mapped_column(String)
     supplier_contacts: Mapped[List['Supplier_contact']] = relationship("Supplier_contact", backref="Suppliers", cascade="delete,merge")
     city_address = mapped_column(String)
     equipments: Mapped[List['Equipments']] = relationship("Equipments", backref="Suppliers")

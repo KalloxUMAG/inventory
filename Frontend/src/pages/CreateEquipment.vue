@@ -15,7 +15,7 @@
             val => val && val.length > 0 || 'Este campo es obligatorio',
             val => val && val.length < 31 || 'Máximo 30 caracteres'
           ]"/>
-        <q-input filled v-model="inventory" maxlength="9" type="number" label="Inventario UMAG" lazy-rules :rules="[val => val < 999999999 && val >0 || 'El valor debe estar entre 1 y 999999999']"/>
+        <q-input filled v-model="inventory" maxlength="11" type="number" label="Inventario UMAG" lazy-rules :rules="[val => val < 99999999999 && val >0 || 'El valor debe estar entre 1 y 99999999999']"/>
         <!--Modelo-->
         <q-select v-if="!this.newmodelstate" filled v-model="model" :options="modelOptions" option-value="id" option-label="name" emit-value map-options label="Modelo">
           <template v-slot:no-option>
@@ -60,7 +60,7 @@
         <div v-else>
           <div class="row">
             <q-input v-model="newsuppliername" label="Nombre proveedor" class="col"/>
-            <q-input v-model="newsupplierrut" label="Rut" type="number" class="col q-ml-md"/>
+            <q-input v-model="newsupplierrut" label="Rut" class="col q-ml-md"/>
             <q-input v-model="newsupplieraddress" label="Dirección" class="col q-ml-md"/>
           </div>
           <div class="row justify-end q-mt-sm">
@@ -147,7 +147,74 @@
 
 
         <!--Location-->
-
+        <div class="row justify-center">
+          <div v-if="!this.newbuildingstate" class="col q-mr-md">
+            <q-select class="row q-mr-md" filled v-model="building" :options="buildingOptions" option-value="id" option-label="name" emit-value map-options @update:model-value="getUnits" label="Edificios">
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-italic text-grey">
+                    No hay edificios disponibles
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <div class="row justify-end q-pt-md">
+              <q-btn label="Añadir Edificio" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newbuildingstate = !this.newbuildingstate"/>
+            </div>
+          </div>
+          <div v-else class="col">
+            <div class="row">
+              <q-input v-model="newbuildingname" label="Nombre edificio" class="col"/>
+            </div>
+            <div class="row justify-end q-mt-sm">
+              <q-btn label="Cancelar" color="negative" @click="this.newbuildingstate = !this.newbuildingstate"/>
+            </div>
+          </div>
+          <div v-if="!this.newbuildingstate && !this.newunitstate" class="col q-mr-md">
+            <q-select class="row q-mr-md" filled v-model="unit" :options="unitOptions" option-value="id" option-label="name" emit-value map-options @update:model-value="getRooms" label="Unidades">
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-italic text-grey">
+                    No hay unidades disponibles
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <div class="row justify-end q-pt-md">
+              <q-btn label="Añadir unidad" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newunitstate = !this.newunitstate"/>
+            </div>
+          </div>
+          <div v-else class="col q-pl-md">
+            <div class="row">
+              <q-input v-model="newunitname" label="Nombre unidad" class="col"/>
+            </div>
+            <div v-if="!this.newbuildingstate && this.newunitstate" class="row justify-end q-mt-sm">
+              <q-btn label="Cancelar" color="negative" @click="this.newunitstate = !this.newunitstate"/>
+            </div>
+          </div>
+          <div v-if="!this.newbuildingstate && !this.newunitstate && !this.newroomstate" class="col q-mr-md">
+            <q-select class="row q-mr-md" filled v-model="room" :options="roomOptions" option-value="id" option-label="name" emit-value map-options label="Salas">
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-italic text-grey">
+                    No hay salas disponibles
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <div class="row justify-end q-pt-md">
+              <q-btn label="Añadir sala" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newroomstate = !this.newroomstate"/>
+            </div>
+          </div>
+          <div v-else class="col q-pl-md">
+            <div class="row">
+              <q-input v-model="newroomname" label="Nombre sala" class="col"/>
+            </div>
+            <div v-if="!this.newbuildingstate && !this.newunitstate && this.newroomstate" class="row justify-end q-mt-sm">
+              <q-btn label="Cancelar" color="negative" @click="this.newroomstate = !this.newroomstate"/>
+            </div>
+          </div>
+        </div>
 
 
       <div class="row justify-end">
@@ -166,6 +233,9 @@
 
   export default{
     setup(){
+      const building = ref(null)
+      const buildingOptions = ref(null)
+      const buildings = ref([])
       const createEquipmentForm = ref(null)
       const name = ref(null)
       const serial = ref(null)
@@ -178,6 +248,8 @@
       const modelOptions = ref([])
       const maintenance = ref(null)
       const observation = ref(null)
+      const newbuildingname = ref(null)
+      const newbuildingstate = ref(false)
       const newinvoicestate = ref(false)
       const newmodelstate = ref(null)
       const newmodel = ref(null)
@@ -188,12 +260,16 @@
       const newprojectstate = ref(null)
       const newprojectname = ref(null)
       const newprojectdate = ref(null)
+      const newroomname = ref(null)
+      const newroomstate = ref(null)
       const newstagestate = ref(null)
       const newstagename = ref(null)
       const newsupplierstate = ref(false)
       const newsuppliername = ref(null)
       const newsupplierrut = ref(null)
       const newsupplieraddress = ref(null)
+      const newunitname = ref(null)
+      const newunitstate = ref(false)
       const project = ref(null)
       const projects = ref([])
       const projectOptions = ref([])
@@ -201,10 +277,27 @@
       const stage = ref(null)
       const stages = ref([])
       const stagesOptions = ref([])
+      const room = ref(null)
+      const rooms = ref([])
+      const roomOptions = ref([])
       const supplier = ref(null)
       const suppliers = ref([])
       const suppliersOptions = ref([])
+      const unit = ref(null)
+      const unitOptions = ref([])
+      const units = ref([])
       const $q = useQuasar()
+
+      const getBuildings = () => {
+        axios.get("http://localhost:8000/api/buildings").then(
+          response => {
+            buildings.value = response.data
+            buildingOptions.value = buildings.value.map(x => {
+              return {id: x.id, name: x.name}
+            })
+          }
+        )
+      }
 
       const getInvoices = () => {
         axios.get("http://localhost:8000/api/invoices").then(
@@ -239,6 +332,19 @@
         )
       }
 
+      const getRooms = () => {
+        const api_url = "http://localhost:8000/api/rooms/"+unit.value
+        axios.get(api_url).then(
+          response => {
+            room.value = null
+            rooms.value = response.data
+            roomOptions.value = rooms.value.map(x => {
+              return {id: x.id, name: x.name}
+            })
+          }
+        )
+      }
+
       const getStages = () => {
         const api_url = "http://localhost:8000/api/stages/"+project.value
         axios.get(api_url).then(
@@ -263,6 +369,19 @@
         )
       };
 
+      const getUnits = () => {
+        const api_url = "http://localhost:8000/api/units/"+building.value
+        axios.get(api_url).then(
+          response => {
+            unit.value = null
+            units.value = response.data
+            unitOptions.value = units.value.map(x => {
+              return {id: x.id, name: x.name}
+            })
+          }
+        )
+      }
+
       const onReset = () => {
         name.value = null
         serial.value = null
@@ -273,10 +392,33 @@
         reception_date.value = null
       };
 
+      async function createNewBuilding(){
+        if (!newbuildingstate.value){
+          return building.value
+        }
+
+        const buildingdata = {
+          'name': newbuildingname.value
+        }
+
+        try{
+          const response = await axios.post("http://localhost:8000/api/buildings", buildingdata)
+          return response.data
+        }catch(error){
+          $q.notify({
+            color: 'red-3',
+            textColor: 'white',
+            icon: 'error',
+            message: 'No se pudo crear el edificio: ' + error
+          })
+        }
+      }
+
       async function createNewInvoice(equipmentdata){
         if (!newinvoicestate.value){
           return equipmentdata;
         }
+
         const invoicedata = {
           'number': newinvoicenumber.value,
           'date': newinvoicedate.value
@@ -284,7 +426,6 @@
 
         try{
           const response = await axios.post("http://localhost:8000/api/invoices", invoicedata)
-          console.log(response.data)
           equipmentdata['invoice_id'] = response.data
           return equipmentdata
         }catch(error){
@@ -349,6 +490,51 @@
             icon: 'error',
             message: 'No se pudo crear el proyecto: ' + error
           })
+        }
+      }
+
+      async function createNewUnit(building_id){
+        if (!newbuildingstate.value && !newunitstate.value){
+          return unit.value
+        }
+
+        const unitdata = {
+          'name': newunitname.value,
+          'building_id': building_id
+        }
+
+        try{
+          const response = await axios.post("http://localhost:8000/api/units", unitdata)
+          return response.data
+        }catch(error){
+          $q.notify({
+              color: 'red-3',
+              textColor: 'white',
+              icon: 'error',
+              message: 'No se pudo crear la unidad: ' + error
+            })
+        }
+      }
+
+      async function createNewRoom(unit_id){
+        if (!newbuildingstate.value && !newunitstate.value && !newroomstate.value){
+          return room.value
+        }
+        const roomdata = {
+          'name': newroomname.value,
+          'unit_id': unit_id
+        }
+
+        try{
+          const response = await axios.post("http://localhost:8000/api/rooms", roomdata)
+          return response.data
+        }catch(error){
+          $q.notify({
+              color: 'red-3',
+              textColor: 'white',
+              icon: 'error',
+              message: 'No se pudo crear la sala: ' + error
+            })
         }
       }
 
@@ -433,11 +619,9 @@
           'project_id': project.value,
           'stage_id': stage.value
         }
-        console.log(relationdata)
+
         relationdata = await createNewProject(relationdata)
-        console.log(relationdata)
         relationdata = await createNewStage(relationdata)
-        console.log(relationdata)
 
         try{
           const response = await axios.post("http://localhost:8000/api/equipments_projects", relationdata)
@@ -474,19 +658,29 @@
           'model_id': model.value,
           'supplier_id': supplier.value,
           'invoice_id': invoice.value,
+          'room_id': room.value
         }
+
+        const building_id = await createNewBuilding()
+        const unit_id = await createNewUnit(building_id)
+        const room_id = await createNewRoom(unit_id)
+
+        equipmentdata['room_id'] = room_id
 
         equipmentdata = await createNewModel(equipmentdata)
         equipmentdata = await createNewSupplier(equipmentdata)
         equipmentdata = await createNewInvoice(equipmentdata)
+
         const equipment_id = await createNewEquipment(equipmentdata)
-        console.log(equipment_id)
         await createNewProjectEquipment(equipment_id)
         onReset()
 
       }
 
       return{
+        building,
+        buildingOptions,
+        buildings,
         createEquipmentForm,
         name,
         serial,
@@ -498,6 +692,8 @@
         maintenance,
         observation,
         modelOptions,
+        newbuildingname,
+        newbuildingstate,
         newinvoicestate,
         newmodelstate,
         newinvoicedate,
@@ -508,12 +704,19 @@
         newprojectstate,
         newprojectname,
         newprojectdate,
+        newroomname,
+        newroomstate,
         newstagestate,
         newstagename,
         newsupplierstate,
         newsuppliername,
         newsupplierrut,
         newsupplieraddress,
+        newunitname,
+        newunitstate,
+        room,
+        rooms,
+        roomOptions,
         project,
         projects,
         projectOptions,
@@ -524,11 +727,17 @@
         supplier,
         suppliers,
         suppliersOptions,
+        unit,
+        units,
+        unitOptions,
+        getBuildings,
         getInvoices,
         getModels,
         getProjects,
+        getRooms,
         getStages,
         getSuppliers,
+        getUnits,
         onReset,
         onSubmit,
       }
@@ -539,6 +748,7 @@
       this.getModels();
       this.getProjects();
       this.getSuppliers();
+      this.getBuildings();
     },
   }
 
