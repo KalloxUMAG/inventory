@@ -21,7 +21,8 @@ async def add_invoice(invoice: InvoiceSchema):
     session = get_session()
     session.add(new_invoice)
     session.commit()
-    return Response(status_code=HTTP_201_CREATED)
+    content = str(new_invoice.id)
+    return Response(status_code=HTTP_201_CREATED, content=content)
 
 @invoices.get("/api/invoices/{invoice_id}", response_model=InvoiceSchema)
 def get_invoice(invoice_id: int):

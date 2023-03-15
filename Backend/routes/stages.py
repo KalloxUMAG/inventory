@@ -23,11 +23,16 @@ def add_stage(stage: StageSchema):
     session = get_session()
     session.add(new_stage)
     session.commit()
-    return Response(status_code=HTTP_201_CREATED)
+    content = str(new_stage.id)
+    return Response(status_code=HTTP_201_CREATED, content=content)
 
-@stages.get("/api/stages/{stage_id}", response_model=StageSchema)
+@stages.get("/api/stage/{stage_id}", response_model=StageSchema)
 def get_stage(stage_id: int):
     return get_session().query(Stages).filter(Stages.id == stage_id).first()
+
+@stages.get("/api/stages/{project_id}", response_model=List[StageSchema])
+def get_stages_project(project_id: int):
+    return get_session().query(Stages).filter(Stages.project_id == project_id).all()
 
 @stages.put("/api/stages/{stage_id}", response_model=StageSchema)
 def update_stage(data_update: StageSchema, stage_id: int):

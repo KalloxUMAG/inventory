@@ -18,7 +18,8 @@ def add_model(model: ModelSchema):
     session = get_session()
     session.add(new_model)
     session.commit()
-    return Response(status_code=HTTP_201_CREATED)
+    content = str(new_model.id)
+    return Response(status_code=HTTP_201_CREATED, content=content)
 
 @models.get("/api/models/{model_id}", response_model=ModelSchema)
 def get_model(model_id: int):

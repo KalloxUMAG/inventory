@@ -30,17 +30,14 @@
           <q-btn label="Añadir modelo" icon="add" class="bg-green-3 text-caption" @click="this.newmodelstate = !this.newmodelstate"/>
         </div>
         <div v-else>
-          <q-form @submit="submitModel" @reset="resetModel">
-            <div class="row q-col-gutter-md">
-              <q-input class="col" label="Marca" v-model="newbrand" lazy-rules/>
-              <q-input class="col" label="Modelo" v-model="newmodel" lazy-rules/>
-              <q-input class="col" label="Número de Producto" type="number" v-model="newnumber" lazy-rules/>
-            </div>
-            <div class="row justify-end q-pt-sm q-pb-md">
-              <q-btn label="Crear" type="submit" color="primary"/>
-              <q-btn label="Cancelar" type="reset" color="negative" class="q-ml-sm" @click="this.newmodelstate = !this.newmodelstate"/>
-            </div>
-          </q-form>
+          <div class="row q-col-gutter-md">
+            <q-input class="col" label="Marca" v-model="newbrand" lazy-rules/>
+            <q-input class="col" label="Modelo" v-model="newmodel" lazy-rules/>
+            <q-input class="col" label="Número de Producto" type="number" v-model="newnumber" lazy-rules/>
+          </div>
+          <div class="row justify-end q-pt-sm q-pb-md">
+            <q-btn label="Cancelar" color="negative" class="q-ml-sm" @click="this.newmodelstate = !this.newmodelstate"/>
+          </div>
         </div>
 
         <q-input filled v-model="maintenance" type="number" label="Periodo de mantención (días)" lazy-rules/>
@@ -48,7 +45,6 @@
 
         <!--Datos de compra-->
 
-        <!--Suppliers-->
         <q-select v-if="!this.newsupplierstate" filled v-model="supplier" :options="suppliersOptions" option-value="id" option-label="name" emit-value map-options label="Proveedor">
           <template v-slot:no-option>
             <q-item>
@@ -64,22 +60,91 @@
         <div v-else>
           <div class="row">
             <q-input v-model="newsuppliername" label="Nombre proveedor" class="col"/>
-            <q-input v-model="newsupplierrut" label="Rut" class="col q-ml-md"/>
+            <q-input v-model="newsupplierrut" label="Rut" type="number" class="col q-ml-md"/>
             <q-input v-model="newsupplieraddress" label="Dirección" class="col q-ml-md"/>
           </div>
           <div class="row justify-end q-mt-sm">
-            <q-btn label="Cancelar" @click="this.newsupplierstate = !this.newsupplierstate"/>
+            <q-btn label="Cancelar" color="negative" @click="this.newsupplierstate = !this.newsupplierstate"/>
           </div>
         </div>
-
-
 
         <q-input filled v-model="reception_date" type="date" label="Fecha de recepción"  stack-label lazy-rules
           :rules="[val => val && val != null || 'Este campo es obligatorio']"/>
 
         <!--Invoices-->
+        <q-select v-if="!this.newinvoicestate" filled v-model="invoice" :options="invoicesOptions" option-value="id" option-label="number" emit-value map-options label="Facturas">
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-italic text-grey">
+                No hay facturas disponibles
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+        <div v-if="!this.newinvoicestate" class="row justify-end">
+          <q-btn label="Añadir factura" icon="add" class="bg-green-3 text-caption" @click="this.newinvoicestate = !this.newinvoicestate"/>
+        </div>
+        <div v-else>
+          <div class="row">
+            <q-input v-model="newinvoicenumber" label="Numero" type="number" class="col"/>
+            <q-input v-model="newinvoicedate" label="Fecha" type="date" stack-label class="col q-ml-md"/>
+          </div>
+          <div class="row justify-end q-mt-sm">
+            <q-btn label="Cancelar" color="negative" @click="this.newinvoicestate = !this.newinvoicestate"/>
+          </div>
+        </div>
 
         <!--Projects and stages-->
+
+        <div class="row justify-center">
+          <div v-if="!this.newprojectstate" class="col q-mr-md">
+            <q-select class="row q-mr-md" filled v-model="project" :options="projectOptions" option-value="id" option-label="name" emit-value map-options @update:model-value="getStages" label="Proyectos">
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-italic text-grey">
+                    No hay proyectos disponibles
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <div class="row justify-end q-pt-md">
+              <q-btn label="Añadir Proyecto" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newprojectstate = !this.newprojectstate"/>
+            </div>
+          </div>
+          <div v-else class="col-8 q-mr-lg">
+            <div class="row">
+              <q-input v-model="newprojectname" label="Nombre proyeto" class="col"/>
+              <q-input v-model="newprojectdate" label="Fecha" type="date" stack-label class="col-3 q-ml-md"/>
+            </div>
+            <div class="row justify-end q-mt-sm">
+              <q-btn label="Cancelar" color="negative" @click="this.newprojectstate = !this.newprojectstate"/>
+            </div>
+          </div>
+
+          <div v-if="!this.newstagestate && !this.newprojectstate" class="col q-ml-md">
+            <q-select class="row " filled v-model="stage" :options="stagesOptions" option-value="id" option-label="name" emit-value map-options label="Etapas">
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-italic text-grey">
+                    No hay etapas disponibles
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+            <div class="row justify-end q-pt-md">
+              <q-btn label="Añadir Etapa" icon="add" class="bg-green-3 text-caption q-ml-md" @click="this.newstagestate = !this.newstagestate"/>
+            </div>
+          </div>
+          <div v-else class="col">
+            <div class="row">
+              <q-input v-model="newstagename" label="Nombre etapa" class="col"/>
+            </div>
+            <div v-if="this.newstagestate && !this.newprojectstate" class="row justify-end q-mt-sm">
+              <q-btn label="Cancelar" color="negative" @click="this.newstagestate = !this.newstagestate"/>
+            </div>
+          </div>
+        </div>
+
 
         <!--Location-->
 
@@ -105,24 +170,52 @@
       const name = ref(null)
       const serial = ref(null)
       const inventory = ref(null)
+      const invoice = ref(null)
+      const invoices = ref([])
+      const invoicesOptions = ref([])
       const model = ref(null)
       const models = ref([])
+      const modelOptions = ref([])
       const maintenance = ref(null)
       const observation = ref(null)
-      const modelOptions = ref([])
+      const newinvoicestate = ref(false)
       const newmodelstate = ref(null)
       const newmodel = ref(null)
       const newbrand = ref(null)
+      const newinvoicenumber = ref(null)
+      const newinvoicedate = ref(null)
       const newnumber = ref(null)
+      const newprojectstate = ref(null)
+      const newprojectname = ref(null)
+      const newprojectdate = ref(null)
+      const newstagestate = ref(null)
+      const newstagename = ref(null)
       const newsupplierstate = ref(false)
       const newsuppliername = ref(null)
       const newsupplierrut = ref(null)
       const newsupplieraddress = ref(null)
+      const project = ref(null)
+      const projects = ref([])
+      const projectOptions = ref([])
       const reception_date = ref(null)
+      const stage = ref(null)
+      const stages = ref([])
+      const stagesOptions = ref([])
       const supplier = ref(null)
       const suppliers = ref([])
       const suppliersOptions = ref([])
       const $q = useQuasar()
+
+      const getInvoices = () => {
+        axios.get("http://localhost:8000/api/invoices").then(
+          response => {
+            invoices.value = response.data
+            invoicesOptions.value = invoices.value.map(x => {
+              return {id: x.id, number: x.number}
+            })
+          }
+        )
+      }
 
       const getModels = () => {
         axios.get("http://localhost:8000/api/models").then(
@@ -130,6 +223,30 @@
             models.value = response.data
             modelOptions.value = models.value.map(x => {
               return {id: x.id, name: x.brand+" "+x.model+" "+x.product_number}
+            })
+          }
+        )
+      }
+
+      const getProjects = () => {
+        axios.get("http://localhost:8000/api/projects").then(
+          response => {
+            projects.value = response.data
+            projectOptions.value = projects.value.map(x => {
+              return {id: x.id, name: x.name}
+            })
+          }
+        )
+      }
+
+      const getStages = () => {
+        const api_url = "http://localhost:8000/api/stages/"+project.value
+        axios.get(api_url).then(
+          response => {
+            stage.value = null
+            stages.value = response.data
+            stagesOptions.value = stages.value.map(x => {
+              return {id: x.id, name: x.name}
             })
           }
         )
@@ -144,7 +261,7 @@
             })
           }
         )
-      }
+      };
 
       const onReset = () => {
         name.value = null
@@ -156,99 +273,217 @@
         reception_date.value = null
       };
 
-      const onSubmit = () => {
+      async function createNewInvoice(equipmentdata){
+        if (!newinvoicestate.value){
+          return equipmentdata;
+        }
+        const invoicedata = {
+          'number': newinvoicenumber.value,
+          'date': newinvoicedate.value
+        }
+
+        try{
+          const response = await axios.post("http://localhost:8000/api/invoices", invoicedata)
+          console.log(response.data)
+          equipmentdata['invoice_id'] = response.data
+          return equipmentdata
+        }catch(error){
+          $q.notify({
+            color: 'red-3',
+            textColor: 'white',
+            icon: 'error',
+            message: 'No se pudo crear la factura: ' + error
+          })
+        }
+      }
+
+      async function createNewModel(equipmentdata){
+        if (!newmodelstate.value){
+          return equipmentdata;
+        }
+
+        const newmodeldata = {
+        'model': newmodel.value,
+        'brand': newbrand.value,
+        'product_number': newnumber.value
+        }
+
+        try{
+          const response = await axios.post("http://localhost:8000/api/models", newmodeldata)
+          equipmentdata['model_id'] = response.data
+          return equipmentdata
+        }catch(error){
+          $q.notify({
+            color: 'red-3',
+            textColor: 'white',
+            icon: 'error',
+            message: 'No se pudo crear el modelo: ' + error
+          })
+        }
+      }
+
+      async function createNewProject(relationdata) {
+        if (!newprojectstate.value){
+          return relationdata;
+        }
+
+        const projectname = newprojectname.value
+
+        if(projectname.trim().length == 0){
+          return relationdata;
+        }
+
+        const projectdata = {
+          'name': newprojectname.value,
+          'start_date': newprojectdate.value
+        }
+
+        try{
+          const response = await axios.post("http://localhost:8000/api/projects", projectdata)
+          relationdata['project_id'] = response.data
+          return relationdata
+        }catch(error){
+          $q.notify({
+            color: 'red-3',
+            textColor: 'white',
+            icon: 'error',
+            message: 'No se pudo crear el proyecto: ' + error
+          })
+        }
+      }
+
+      async function createNewSupplier(equipmentdata) {
+        if (!newsupplierstate.value){
+          return equipmentdata;
+        }
+        const supplierdata = {
+          'name': newsuppliername.value,
+          'rut': newsupplierrut.value,
+          'city_address': newsupplieraddress.value
+        }
+        try{
+          const response = await axios.post("http://localhost:8000/api/suppliers", supplierdata)
+          equipmentdata['supplier_id'] = response.data
+          return equipmentdata
+        }catch(error){
+          $q.notify({
+              color: 'red-3',
+              textColor: 'white',
+              icon: 'error',
+              message: 'No se pudo crear el proveedor: ' + error
+            })
+        }
+      }
+
+      async function createNewStage(relationdata){
+        if(!newstagestate.value && !newprojectstate.value){
+          return relationdata;
+        }
+
+        const stagename = newstagename.value
+
+        if(stagename.trim().length == 0){
+          return relationdata;
+        }
+
+        const stagedata = {
+          'name': newstagename.value,
+          'project_id': relationdata.project_id
+        }
+
+        try{
+          const response = await axios.post("http://localhost:8000/api/stages", stagedata)
+          relationdata['stage_id'] = response.data
+          return relationdata
+        }catch(error){
+          $q.notify({
+            color: 'red-3',
+            textColor: 'white',
+            icon: 'error',
+            message: 'No se pudo crear la etapa: ' + error
+          })
+        }
+      }
+
+      async function createNewEquipment (equipmentdata) {
+        try{
+          const response = await axios.post("http://localhost:8000/api/equipments", equipmentdata)
+          if(response.status == 201){
+            $q.notify({
+              color: 'green-4',
+              textColor: 'white',
+              icon: 'check',
+              message: 'Equipo creado con éxito'
+            })
+          }
+          return response.data
+        }catch(error){
+          $q.notify({
+            color: 'red-3',
+            textColor: 'white',
+            icon: 'error',
+            message: 'No se pudo crear el equipo: ' + error
+          })
+        }
+      }
+
+      async function createNewProjectEquipment (equipment_id) {
+        let relationdata = {
+          'equipment_id': equipment_id,
+          'project_id': project.value,
+          'stage_id': stage.value
+        }
+        console.log(relationdata)
+        relationdata = await createNewProject(relationdata)
+        console.log(relationdata)
+        relationdata = await createNewStage(relationdata)
+        console.log(relationdata)
+
+        try{
+          const response = await axios.post("http://localhost:8000/api/equipments_projects", relationdata)
+
+          if(response.status == 201){
+              $q.notify({
+                color: 'green-4',
+                textColor: 'white',
+                icon: 'check',
+                message: 'Relación creada con éxito'
+              })
+            }
+        }catch(error){
+          $q.notify({
+              color: 'red-3',
+              textColor: 'white',
+              icon: 'error',
+              message: 'No se pudo crear la relacion: ' + error
+            })
+
+        }
+
+      }
+
+      async function onSubmit() {
         createEquipmentForm.value.resetValidation()
-        const equipmentdata = {
+        let equipmentdata = {
           'name': name.value,
           'serial_number': serial.value,
           'umag_inventory_code': inventory.value,
           'reception_date': reception_date.value,
           'maintenance_period': maintenance.value,
           'observation': observation.value,
-          'model_id': model.value
+          'model_id': model.value,
+          'supplier_id': supplier.value,
+          'invoice_id': invoice.value,
         }
 
-        if (newsupplierstate.value){
-          console.log("Deberia agregar al proveedor")
-          //Verificar si existe proveedor
-          const supplierdata = {
-            'name': newsuppliername.value,
-            'rut': newsupplierrut.value,
-            'city_address': newsupplieraddress.value
-          }
-          axios.post("http://localhost:8000/api/suppliers", supplierdata).then(
-          response => {
-            if(response.status == 201){
-              $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'check',
-                message: 'Proveedor creado con éxito'
-              })
-              console.log(response.data)
-            }
-          }, (error) => {
-
-            console.log(error);
-          }
-        )
-        }
-
-        if (newmodelstate.value){
-          console.log("Deberia agregar el modelo")
-        }
-
-        /*
-        axios.post("http://localhost:8000/api/equipments", equipmentdata).then(
-          response => {
-            if(response.status == 201){
-              $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'check',
-                message: 'Equipo creado con éxito'
-              })
-            }
-          }, (error) => {
-
-            console.log(error);
-          }
-        )
-        */
+        equipmentdata = await createNewModel(equipmentdata)
+        equipmentdata = await createNewSupplier(equipmentdata)
+        equipmentdata = await createNewInvoice(equipmentdata)
+        const equipment_id = await createNewEquipment(equipmentdata)
+        console.log(equipment_id)
+        await createNewProjectEquipment(equipment_id)
         onReset()
-      };
 
-      const submitModel = () => {
-        const newmodeldata = {
-          'model': newmodel.value,
-          'brand': newbrand.value,
-          'product_number': newnumber.value
-        }
-
-        axios.post("http://localhost:8000/api/models", newmodeldata).then(
-          response => {
-            if (response.status == 201){
-              $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'check',
-                message: 'Equipo creado con éxito'
-              })
-              getModels()
-              resetModel()
-            }
-          }, (error) => {
-            console.log(error)
-          }
-        )
-
-      }
-
-      const resetModel = () => {
-        newmodel.value = null
-        newbrand.value = null
-        newnumber.value = null
-        newmodelstate.value = false
       }
 
       return{
@@ -256,36 +491,55 @@
         name,
         serial,
         inventory,
+        invoice,
+        invoices,
+        invoicesOptions,
         model,
         maintenance,
         observation,
         modelOptions,
+        newinvoicestate,
         newmodelstate,
+        newinvoicedate,
+        newinvoicenumber,
         newmodel,
         newbrand,
         newnumber,
+        newprojectstate,
+        newprojectname,
+        newprojectdate,
+        newstagestate,
+        newstagename,
         newsupplierstate,
         newsuppliername,
         newsupplierrut,
         newsupplieraddress,
+        project,
+        projects,
+        projectOptions,
         reception_date,
+        stage,
+        stages,
+        stagesOptions,
         supplier,
         suppliers,
         suppliersOptions,
+        getInvoices,
         getModels,
+        getProjects,
+        getStages,
         getSuppliers,
         onReset,
         onSubmit,
-        submitModel,
-        resetModel
       }
     },
 
     mounted(){
+      this.getInvoices();
       this.getModels();
+      this.getProjects();
       this.getSuppliers();
     },
-
   }
 
 

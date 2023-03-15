@@ -18,7 +18,8 @@ def add_project(project: ProjectSchema):
     session = get_session()
     session.add(new_project)
     session.commit()
-    return Response(status_code=HTTP_201_CREATED)
+    content = str(new_project.id)
+    return Response(status_code=HTTP_201_CREATED, content=content)
 
 @projects.get("/api/projects/{project_id}", response_model=ProjectSchema)
 def get_project(project_id: int):

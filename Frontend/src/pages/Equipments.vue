@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <RenderTable :columns="columns" :rows="this.equipments" title="Equipamiento" detail_query="/equipments/" row_key="name"/>
+    <RenderTable :columns="columns" :rows="this.equipments" title="Equipamiento" detail_query="/equipments/" row_key="id"/>
   </q-page>
 </template>
 

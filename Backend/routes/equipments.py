@@ -49,7 +49,8 @@ def add_equipment(equipment: EquipmentSchema):
    session = get_session()
    session.add(new_equipment)
    session.commit()
-   return Response(status_code=HTTP_201_CREATED)
+   content = str(new_equipment.id)
+   return Response(status_code=HTTP_201_CREATED, content=content)
 
 @equipments.get("/api/equipments/{equipment_id}", response_model=EquipmentFullSchema)
 def get_equipment(equipment_id: int):
