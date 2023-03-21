@@ -17,18 +17,13 @@
           ]"/>
         <q-input filled v-model="inventory" maxlength="11" type="number" label="Inventario UMAG" lazy-rules :rules="[val => val < 99999999999 && val >0 || 'El valor debe estar entre 1 y 99999999999']"/>
         <!--Modelo-->
-        <q-select v-if="!this.newmodelstate" filled v-model="model" :options="modelOptions" option-value="id" option-label="name" emit-value map-options label="Modelo">
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-italic text-grey">
-                No hay modelos disponibles
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-        <div v-if="!this.newmodelstate" class="row justify-end">
-          <q-btn label="Añadir modelo" icon="add" class="bg-green-3 text-caption" @click="this.newmodelstate = !this.newmodelstate"/>
+        <div v-if="!this.newmodelstate">
+          <SelectForm :options="modelOptions" option_value="id" option_label="name" label="Modelo" not_found_label="No hay modelos disponibles" @updateModel="(value) => model = value"/>
+          <div class="row justify-end q-mt-md">
+            <q-btn label="Añadir modelo" icon="add" class="bg-green-3 text-caption" @click="this.newmodelstate = !this.newmodelstate"/>
+          </div>
         </div>
+
         <div v-else>
           <div class="row q-col-gutter-md">
             <q-input class="col" label="Marca" v-model="newbrand" lazy-rules/>
@@ -44,19 +39,13 @@
         <q-input filled v-model="observation" type="textarea" label="Observación" lazy-rules/>
 
         <!--Datos de compra-->
-
-        <q-select v-if="!this.newsupplierstate" filled v-model="supplier" :options="suppliersOptions" option-value="id" option-label="name" emit-value map-options label="Proveedor">
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-italic text-grey">
-                No hay proveedores disponibles
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-        <div v-if="!this.newsupplierstate" class="row justify-end">
-          <q-btn v-if="!this.newsupplierstate" label="Añadir proveedor" icon="add" class="bg-green-3 text-caption" @click="this.newsupplierstate = !this.newsupplierstate"/>
+        <div v-if="!this.newsupplierstate">
+          <SelectForm :options="suppliersOptions" option_value="id" option_label="name" label="Proveedor" not_found_label="No hay proveedores disponibles" @updateModel="(value) => supplier = value"/>
+          <div class="row justify-end q-mt-md">
+            <q-btn label="Añadir proveedor" icon="add" class="bg-green-3 text-caption" @click="this.newsupplierstate = !this.newsupplierstate"/>
+          </div>
         </div>
+
         <div v-else>
           <div class="row">
             <q-input v-model="newsuppliername" label="Nombre proveedor" class="col"/>
@@ -72,18 +61,13 @@
           :rules="[val => val && val != null || 'Este campo es obligatorio']"/>
 
         <!--Invoices-->
-        <q-select v-if="!this.newinvoicestate" filled v-model="invoice" :options="invoicesOptions" option-value="id" option-label="number" emit-value map-options label="Facturas">
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-italic text-grey">
-                No hay facturas disponibles
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
-        <div v-if="!this.newinvoicestate" class="row justify-end">
-          <q-btn label="Añadir factura" icon="add" class="bg-green-3 text-caption" @click="this.newinvoicestate = !this.newinvoicestate"/>
+        <div v-if="!this.newinvoicestate">
+          <SelectForm :options="invoicesOptions" option_value="id" option_label="number" label="Facturas" not_found_label="No hay facturas disponibles" @updateModel="(value) => invoice = value"/>
+          <div class="row justify-end q-mt-md">
+            <q-btn label="Añadir factura" icon="add" class="bg-green-3 text-caption" @click="this.newinvoicestate = !this.newinvoicestate"/>
+          </div>
         </div>
+
         <div v-else>
           <div class="row">
             <q-input v-model="newinvoicenumber" label="Numero" type="number" class="col"/>
@@ -98,15 +82,7 @@
 
         <div class="row justify-center">
           <div v-if="!this.newprojectstate" class="col q-mr-md">
-            <q-select class="row q-mr-md" filled v-model="project" :options="projectOptions" option-value="id" option-label="name" emit-value map-options @update:model-value="getStages" label="Proyectos">
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-italic text-grey">
-                    No hay proyectos disponibles
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+            <SelectForm class="row q-mr-md" :options="projectOptions" option_value="id" option_label="name" label="Proyectos" not_found_label="No hay proyectos disponibles" @updateModel="(value) => {project = value; getStages()}"/>
             <div class="row justify-end q-pt-md">
               <q-btn label="Añadir Proyecto" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newprojectstate = !this.newprojectstate"/>
             </div>
@@ -122,15 +98,7 @@
           </div>
 
           <div v-if="!this.newstagestate && !this.newprojectstate" class="col q-ml-md">
-            <q-select class="row " filled v-model="stage" :options="stagesOptions" option-value="id" option-label="name" emit-value map-options label="Etapas">
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-italic text-grey">
-                    No hay etapas disponibles
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+            <SelectForm class="row" :options="stagesOptions" option_value="id" option_label="name" label="Etapas" not_found_label="No hay etapas disponibles" @updateModel="(value) => stage = value"/>
             <div class="row justify-end q-pt-md">
               <q-btn label="Añadir Etapa" icon="add" class="bg-green-3 text-caption q-ml-md" @click="this.newstagestate = !this.newstagestate"/>
             </div>
@@ -149,15 +117,7 @@
         <!--Location-->
         <div class="row justify-center">
           <div v-if="!this.newbuildingstate" class="col q-mr-md">
-            <q-select class="row q-mr-md" filled v-model="building" :options="buildingOptions" option-value="id" option-label="name" emit-value map-options @update:model-value="getUnits" label="Edificios">
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-italic text-grey">
-                    No hay edificios disponibles
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+            <SelectForm class="row q-mr-md" :options="buildingOptions" option_value="id" option_label="name" label="Edificio" not_found_label="No hay edificios disponibles" @updateModel="(value) => {building = value; getUnits()}"/>
             <div class="row justify-end q-pt-md">
               <q-btn label="Añadir Edificio" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newbuildingstate = !this.newbuildingstate"/>
             </div>
@@ -171,15 +131,7 @@
             </div>
           </div>
           <div v-if="!this.newbuildingstate && !this.newunitstate" class="col q-mr-md">
-            <q-select class="row q-mr-md" filled v-model="unit" :options="unitOptions" option-value="id" option-label="name" emit-value map-options @update:model-value="getRooms" label="Unidades">
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-italic text-grey">
-                    No hay unidades disponibles
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+            <SelectForm class="row q-mr-md" :options="unitOptions" option_value="id" option_label="name" label="Unidad" not_found_label="No hay una unidad disponible" @updateModel="(value) => {unit = value; getRooms()}"/>
             <div class="row justify-end q-pt-md">
               <q-btn label="Añadir unidad" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newunitstate = !this.newunitstate"/>
             </div>
@@ -193,15 +145,7 @@
             </div>
           </div>
           <div v-if="!this.newbuildingstate && !this.newunitstate && !this.newroomstate" class="col q-mr-md">
-            <q-select class="row q-mr-md" filled v-model="room" :options="roomOptions" option-value="id" option-label="name" emit-value map-options label="Salas">
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-italic text-grey">
-                    No hay salas disponibles
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
+            <SelectForm class="row q-mr-md" :options="roomOptions" option_value="id" option_label="name" label="Sala" not_found_label="No hay salas disponibles" @updateModel="(value) => {room = value}"/>
             <div class="row justify-end q-pt-md">
               <q-btn label="Añadir sala" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newroomstate = !this.newroomstate"/>
             </div>
@@ -230,11 +174,16 @@
   import {useQuasar} from 'quasar';
   import {ref} from 'vue';
   import axios from 'axios'
+  import SelectForm from 'src/components/SelectForm.vue'
 
   export default{
+    components: {
+      SelectForm
+    },
+
     setup(){
       const building = ref(null)
-      const buildingOptions = ref(null)
+      const buildingOptions = ref([])
       const buildings = ref([])
       const createEquipmentForm = ref(null)
       const name = ref(null)
@@ -374,6 +323,8 @@
         axios.get(api_url).then(
           response => {
             unit.value = null
+            room.value = null
+            roomOptions.value = []
             units.value = response.data
             unitOptions.value = units.value.map(x => {
               return {id: x.id, name: x.name}
@@ -518,6 +469,7 @@
 
       async function createNewRoom(unit_id){
         if (!newbuildingstate.value && !newunitstate.value && !newroomstate.value){
+
           return room.value
         }
         const roomdata = {
@@ -673,7 +625,7 @@
 
         const equipment_id = await createNewEquipment(equipmentdata)
         await createNewProjectEquipment(equipment_id)
-        onReset()
+        //onReset()
 
       }
 
