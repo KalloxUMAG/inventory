@@ -1,5 +1,5 @@
 <template>
-  <q-select filled v-model="model" :options="options" :option-value="option_value" :option-label="option_label" emit-value map-options :label="label" @update:model-value="updateModel(model)">
+  <q-select filled v-model="model" :options="stringOptions" :option-value="option_value" :option-label="option_label" emit-value map-options :label="label" @update:model-value="updateModel(model)" use-input input-debounce="0" behavior="dialog" @filter="filterFn">
     <template v-slot:no-option>
       <q-item>
         <q-item-section class="text-italic text-grey">
@@ -19,7 +19,6 @@
       updateModel: function(model) {
         this.$emit('updateModel', model)
       },
-
     },
 
     props:{
@@ -45,11 +44,25 @@
       },
     },
 
-    setup(){
+    setup(props){
       const model = ref(null)
-
+      const stringOptions = ref(props.options)
+      const filterFn = (val, update) => {
+        if (val === ''){
+          update(() => {
+            stringOptions.value = props.options
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          stringOptions.value = props.options.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+        })
+      }
       return {
-        model
+        stringOptions,
+        model,
+        filterFn
       }
     },
 
