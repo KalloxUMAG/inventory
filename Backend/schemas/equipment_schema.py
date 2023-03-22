@@ -6,7 +6,7 @@ class EquipmentSchema(BaseModel):
     id: Optional[int]
     name: str
     serial_number: Optional[str]
-    umag_inventory_code: Optional[int]
+    umag_inventory_code: Optional[str]
     reception_date: date
     maintenance_period: Optional[int]
     last_preventive_mainteinance: Optional[date]
@@ -24,7 +24,7 @@ class EquipmentListSchema(BaseModel):
     id: Optional[int]
     name: str
     serial_number: Optional[str]
-    umag_inventory_code: Optional[int]
+    umag_inventory_code: Optional[str]
     reception_date: date
     maintenance_period: Optional[int]
     last_preventive_mainteinance: Optional[date]
@@ -45,7 +45,7 @@ class EquipmentFullSchema(BaseModel):
     id: Optional[int]
     name: str
     serial_number: Optional[str]
-    umag_inventory_code: Optional[int]
+    umag_inventory_code: Optional[str]
     reception_date: date
     maintenance_period: Optional[int]
     observation: Optional[str]

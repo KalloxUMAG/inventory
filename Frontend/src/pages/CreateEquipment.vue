@@ -13,9 +13,9 @@
         <q-input filled v-model="serial" maxlength="30" label="Código serial" lazy-rules
           :rules="[
             val => val && val.length > 0 || 'Este campo es obligatorio',
-            val => val && val.length < 31 || 'Máximo 30 caracteres'
+            val => val && val.length < 256 || 'Máximo 255 caracteres'
           ]"/>
-        <q-input filled v-model="inventory" maxlength="11" type="number" label="Inventario UMAG" lazy-rules :rules="[val => val < 99999999999 && val >0 || 'El valor debe estar entre 1 y 99999999999']"/>
+        <q-input filled v-model="inventory" maxlength="11" type="number" label="Inventario UMAG" lazy-rules :rules="[val => val.length < 26 && val >0 || 'El valor debe ser mayor que 0 y tener un maximo de 25 dígitos']"/>
         <!--Modelo-->
         <div v-if="!this.newmodelstate">
           <SelectForm :options="modelOptions" option_value="id" option_label="name" label="Modelo" not_found_label="No hay modelos disponibles" @updateModel="(value) => model = value"/>
