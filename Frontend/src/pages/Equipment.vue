@@ -53,7 +53,7 @@
             <q-card-section class="col-4">
               <div class="text-h5 q-mb-md text-center">Datos Ubicación</div>
               <div class="row q-mb-xs">
-                <div class="col-5 field-label text-right q-mr-md">Habitación:</div>
+                <div class="col-5 field-label text-right q-mr-md">Sala:</div>
                 <div class="col field-content q-ml-xs">{{ this.equipment.room_name }}</div>
               </div>
               <div class="row q-mb-xs">
