@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-ma-sm">
     <div class="row justify-center">
-      <q-form @submit.prevent="onSubmit" @reset="onReset" class="q-gutter-md col-xs-12 col-sm-12 col-md-6 q-pt-xl" ref="createEquipmentForm">
+      <q-form @submit.prevent="onSubmit" @reset="onReset" class="q-gutter-md col-xs-12 col-sm-12 col-md-6 q-pt-xl relative-position" ref="createEquipmentForm">
 
         <!--Datos Producto-->
 
@@ -161,10 +161,11 @@
         </div>
 
 
-      <div class="row justify-end">
-        <q-btn label="Submit" type="submit" color="primary"/>
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-      </div>
+        <div class="row justify-end">
+          <q-btn label="Submit" type="submit" color="primary"/>
+          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+        </div>
+        <q-inner-loading :showing="loading" label="Creando equipamiento" label-class="text-deep-orange" label-style="font-size: 1.6em"/>
       </q-form>
     </div>
   </q-page>
@@ -192,6 +193,7 @@
       const invoice = ref(null)
       const invoices = ref([])
       const invoicesOptions = ref([])
+      const loading = ref(false)
       const model = ref(null)
       const models = ref([])
       const modelOptions = ref([])
@@ -612,7 +614,7 @@
           'invoice_id': invoice.value,
           'room_id': room.value
         }
-
+        loading.value = true
         const building_id = await createNewBuilding()
         const unit_id = await createNewUnit(building_id)
         const room_id = await createNewRoom(unit_id)
@@ -625,6 +627,7 @@
 
         const equipment_id = await createNewEquipment(equipmentdata)
         await createNewProjectEquipment(equipment_id)
+        loading.value = false
         //onReset()
 
       }
@@ -640,6 +643,7 @@
         invoice,
         invoices,
         invoicesOptions,
+        loading,
         model,
         maintenance,
         observation,
