@@ -34,8 +34,9 @@
             <q-btn label="Cancelar" color="negative" class="q-ml-sm" @click="this.newmodelstate = !this.newmodelstate"/>
           </div>
         </div>
-
-        <q-input filled v-model="maintenance" type="number" label="Periodo de mantención (días)" lazy-rules/>
+        <!--Mantenimiento-->
+        <SelectForm :options="maintenanceOptions" option_value="value" option_label="name" label="Periodo de mantención" not_found_label="No hay periodos disponibles" @updateModel="(value) => maintenance = value"/>
+        <!--Observacion-->
         <q-input filled v-model="observation" type="textarea" label="Observación" lazy-rules/>
 
         <!--Datos de compra-->
@@ -177,9 +178,33 @@
   import axios from 'axios'
   import SelectForm from 'src/components/SelectForm.vue'
 
+  const MaintenanceOptions = [{
+    value: 1,
+    name: 'Mensual'
+  },
+  {
+    value: 3,
+    name: 'Trimestral'
+  },
+  {
+    value: 6,
+    name: 'Semestral'
+  },
+  {
+    value: 12,
+    name: 'Anual'
+  }
+]
+
   export default{
     components: {
       SelectForm
+    },
+
+    data(){
+      return{
+        maintenanceOptions: MaintenanceOptions
+      }
     },
 
     setup(){

@@ -27,7 +27,7 @@
               </div>
               <div class="row q-mb-xs">
                 <div class="col-5 field-label text-right q-mr-md">Periodo de mantención:</div>
-                <div class="col field-content q-ml-xs">Cada {{ this.equipment.maintenance_period }} días</div>
+                <div class="col field-content q-ml-xs">Cada {{ this.equipment.maintenance_period }} meses</div>
               </div>
               <div class="row q-mb-xs">
                 <div class="col-5 field-label text-right q-mr-md">Observación:</div>
