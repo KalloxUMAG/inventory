@@ -35,7 +35,8 @@
           </div>
         </div>
         <!--Mantenimiento-->
-        <SelectForm :options="maintenanceOptions" option_value="value" option_label="name" label="Periodo de mantención" not_found_label="No hay periodos disponibles" @updateModel="(value) => maintenance = value"/>
+        <q-checkbox v-model="maintenanceApply" val="lg" label="Aplica para mantención"/>
+        <SelectForm v-if="maintenanceApply" :options="maintenanceOptions" option_value="value" option_label="name" label="Periodo de mantención" not_found_label="No hay periodos disponibles" @updateModel="(value) => maintenance = value"/>
         <!--Observacion-->
         <q-input filled v-model="observation" type="textarea" label="Observación" lazy-rules/>
 
@@ -256,6 +257,7 @@
       const room = ref(null)
       const rooms = ref([])
       const roomOptions = ref([])
+      const maintenanceApply = ref(false)
       const supplier = ref(null)
       const suppliers = ref([])
       const suppliersOptions = ref([])
@@ -632,7 +634,6 @@
           'serial_number': serial.value,
           'umag_inventory_code': inventory.value,
           'reception_date': reception_date.value,
-          'maintenance_period': maintenance.value,
           'observation': observation.value,
           'model_id': model.value,
           'supplier_id': supplier.value,
@@ -640,6 +641,9 @@
           'room_id': room.value
         }
         loading.value = true
+        if (maintenanceApply.value){
+          equipmentdata['maintenance_period'] = maintenance.value
+        }
         const building_id = await createNewBuilding()
         const unit_id = await createNewUnit(building_id)
         const room_id = await createNewRoom(unit_id)
@@ -671,6 +675,7 @@
         loading,
         model,
         maintenance,
+        maintenanceApply,
         observation,
         modelOptions,
         newbuildingname,

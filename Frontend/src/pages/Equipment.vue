@@ -27,7 +27,8 @@
               </div>
               <div class="row q-mb-xs">
                 <div class="col-5 field-label text-right q-mr-md">Periodo de mantención:</div>
-                <div class="col field-content q-ml-xs">Cada {{ this.equipment.maintenance_period }} meses</div>
+                <div v-if="this.equipment.maintenance_period == null" class="col field-content q-ml-xs">No aplica</div>
+                <div v-else class="col field-content q-ml-xs">Cada {{ this.equipment.maintenance_period }} meses</div>
               </div>
               <div class="row q-mb-xs">
                 <div class="col-5 field-label text-right q-mr-md">Observación:</div>
@@ -68,11 +69,11 @@
         </q-card-section>
         <q-separator/>
         <q-card-section horizontal>
-          <q-card-section class="col-7">
+          <q-card-section v-if="this.equipment.maintenance_period != null" class="col">
             <NoRedirectTable v-if="this.maintenances != null" title="Mantenciones" :columns="this.columns_maintenances" :rows="this.maintenances" />
           </q-card-section>
           <q-separator vertical/>
-          <q-card-section class="col-5">
+          <q-card-section class="col">
             <RenderTable v-if="this.projects != null" title="Proyectos" :columns="this.columns_projects" :rows="this.projects" detail_query="/projects/"/>
           </q-card-section>
         </q-card-section>
