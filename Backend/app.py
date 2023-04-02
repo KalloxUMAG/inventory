@@ -9,7 +9,9 @@ from routes.units import units
 from routes.rooms import rooms
 from routes.suppliers import suppliers
 from routes.supplier_contact import suppliers_contacts
+from routes.brands import brands
 from routes.models import models
+from routes.model_numbers import model_numbers
 from routes.maintenances import maintenances
 from routes.invoices import invoices
 from routes.projects import projects
@@ -23,7 +25,7 @@ app = FastAPI()
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
-routes = [buildings, equipments, equipments_projects, invoices, maintenances, models, units, projects, rooms, stages, suppliers, suppliers_contacts]
+routes = [buildings, brands, equipments, equipments_projects, invoices, maintenances, models, model_numbers, units, projects, rooms, stages, suppliers, suppliers_contacts]
 
 for route in routes:
         app.include_router(route)
