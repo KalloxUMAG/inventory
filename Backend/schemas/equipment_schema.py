@@ -13,7 +13,7 @@ class EquipmentSchema(BaseModel):
     observation: Optional[str]
     supplier_id: Optional[int]
     invoice_id: Optional[int]
-    model_id: Optional[int]
+    model_number_id: Optional[int]
     room_id: Optional[int]
 
 
@@ -35,8 +35,8 @@ class EquipmentListSchema(BaseModel):
     supplier_name: Optional[str]
     invoice_id: Optional[int]
     invoice_number: Optional[int]
-    model_id: Optional[int]
-    model_model: Optional[str]
+    model_number_id: Optional[int]
+    model_number: Optional[str]
 
     class Config:
         orm_mode = True
@@ -60,8 +60,12 @@ class EquipmentFullSchema(BaseModel):
     supplier_name: Optional[str]
     invoice_id: Optional[int]
     invoice_number: Optional[int]
+    brand_id: Optional[int]
+    brand_name: Optional[str]
     model_id: Optional[int]
-    model_model: Optional[str]
+    model_name: Optional[str]
+    model_number_id: Optional[int]
+    model_number: Optional[str]
 
     class Config:
         orm_mode = True

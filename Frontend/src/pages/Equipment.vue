@@ -22,8 +22,16 @@
                 <div class="col field-content q-ml-xs">{{ this.equipment.umag_inventory_code }}</div>
               </div>
               <div class="row q-mb-xs">
+                <div class="col-5 field-label text-right q-mr-md">Marca:</div>
+                <div class="col field-content q-ml-xs">{{ this.equipment.brand_name }}</div>
+              </div>
+              <div class="row q-mb-xs">
                 <div class="col-5 field-label text-right q-mr-md">Modelo:</div>
-                <div class="col field-content q-ml-xs">{{ this.equipment.model_model }}</div>
+                <div class="col field-content q-ml-xs">{{ this.equipment.model_name }}</div>
+              </div>
+              <div class="row q-mb-xs">
+                <div class="col-5 field-label text-right q-mr-md">Número de modelo:</div>
+                <div class="col field-content q-ml-xs">{{ this.equipment.model_number }}</div>
               </div>
               <div class="row q-mb-xs">
                 <div class="col-5 field-label text-right q-mr-md">Periodo de mantención:</div>

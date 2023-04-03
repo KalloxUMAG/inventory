@@ -22,7 +22,7 @@ def add_brand(brand: BrandSchema, db:Session = Depends(get_db)):
     db.add(new_brand)
     db.commit()
     db.refresh(new_brand)
-    content = str(brand.id)
+    content = str(new_brand.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 @brands.get("/api/brands/{brand_id}", response_model=BrandSchema)

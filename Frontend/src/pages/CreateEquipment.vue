@@ -16,24 +16,54 @@
             val => val && val.length < 256 || 'Máximo 255 caracteres'
           ]"/>
         <q-input filled v-model="inventory" maxlength="11" type="number" label="Inventario UMAG" lazy-rules :rules="[val => val.length < 26 && val >0 || 'El valor debe ser mayor que 0 y tener un maximo de 25 dígitos']"/>
-        <!--Modelo-->
-        <div v-if="!this.newmodelstate">
-          <SelectForm :options="modelOptions" option_value="id" option_label="name" label="Modelo" not_found_label="No hay modelos disponibles" @updateModel="(value) => model = value"/>
-          <div class="row justify-end q-mt-md">
-            <q-btn label="Añadir modelo" icon="add" class="bg-green-3 text-caption" @click="this.newmodelstate = !this.newmodelstate"/>
+
+        <!--Brand Model Number-->
+
+        <div class="row justify-center">
+          <div v-if="!this.newbrandstate" class="col q-mr-md">
+            <SelectForm class="row q-mr-md" :options="brandOptions" option_value="id" option_label="name" label="Marca" not_found_label="No hay marcas disponibles" @updateModel="(value) => {brand = value; getModels()}"/>
+            <div class="row justify-end q-pt-md">
+              <q-btn label="Añadir marca" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newbrandstate = !this.newbrandstate"/>
+            </div>
+          </div>
+          <div v-else class="col">
+            <div class="row">
+              <q-input v-model="newbrand" label="Nombre marca" class="col"/>
+            </div>
+            <div class="row justify-end q-mt-sm">
+              <q-btn label="Cancelar" color="negative" @click="this.newbrandstate = !this.newbrandstate"/>
+            </div>
+          </div>
+          <div v-if="!this.newbrandstate && !this.newmodelstate" class="col q-mr-md">
+            <SelectForm class="row q-mr-md" :options="modelOptions" option_value="id" option_label="name" label="Modelo" not_found_label="No hay modelos disponibles" @updateModel="(value) => {model = value; getModelNumbers()}"/>
+            <div class="row justify-end q-pt-md">
+              <q-btn label="Añadir modelo" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newmodelstate = !this.newmodelstate"/>
+            </div>
+          </div>
+          <div v-else class="col q-pl-md">
+            <div class="row">
+              <q-input v-model="newmodel" label="Nombre modelo" class="col"/>
+            </div>
+            <div v-if="!this.newbrandstate && this.newmodelstate" class="row justify-end q-mt-sm">
+              <q-btn label="Cancelar" color="negative" @click="this.newmodelstate = !this.newmodelstate"/>
+            </div>
+          </div>
+          <div v-if="!this.newbrandstate && !this.newmodelstate && !this.newmodelnumberstate" class="col q-mr-md">
+            <SelectForm class="row q-mr-md" :options="modelNumberOptions" option_value="id" option_label="name" label="Número modelo" not_found_label="No hay número de modelo disponibles" @updateModel="(value) => {modelNumber = value}"/>
+            <div class="row justify-end q-pt-md">
+              <q-btn label="Añadir sala" icon="add" class="bg-green-3 text-caption q-mr-md" @click="this.newmodelnumberstate = !this.newmodelnumberstate"/>
+            </div>
+          </div>
+          <div v-else class="col q-pl-md">
+            <div class="row">
+              <q-input v-model="newmodelnumber" label="Número modelo" class="col"/>
+            </div>
+            <div v-if="!this.newbrandstate && !this.newmodelstate && this.newmodelnumberstate" class="row justify-end q-mt-sm">
+              <q-btn label="Cancelar" color="negative" @click="this.newmodelnumberstate = !this.newmodelnumberstate"/>
+            </div>
           </div>
         </div>
 
-        <div v-else>
-          <div class="row q-col-gutter-md">
-            <q-input class="col" label="Marca" v-model="newbrand" lazy-rules/>
-            <q-input class="col" label="Modelo" v-model="newmodel" lazy-rules/>
-            <q-input class="col" label="Número de Producto" type="number" v-model="newnumber" lazy-rules/>
-          </div>
-          <div class="row justify-end q-pt-sm q-pb-md">
-            <q-btn label="Cancelar" color="negative" class="q-ml-sm" @click="this.newmodelstate = !this.newmodelstate"/>
-          </div>
-        </div>
         <!--Mantenimiento-->
         <q-checkbox v-model="maintenanceApply" val="lg" label="Aplica para mantención"/>
         <SelectForm v-if="maintenanceApply" :options="maintenanceOptions" option_value="value" option_label="name" label="Periodo de mantención" not_found_label="No hay periodos disponibles" @updateModel="(value) => maintenance = value"/>
@@ -162,19 +192,22 @@
           </div>
         </div>
 
-
+        <!--Form button-->
         <div class="row justify-end">
-          <q-btn label="Submit" type="submit" color="primary"/>
-          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          <q-btn label="Crear" type="submit" color="primary"/>
+          <q-btn label="Limpiar campos" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
         <q-inner-loading :showing="loading" label="Creando equipamiento" label-class="text-deep-orange" label-style="font-size: 1.6em"/>
       </q-form>
     </div>
+
+    <div>{{ brandOptions }}</div>
+
   </q-page>
 </template>
 
 <script>
-  import {useQuasar} from 'quasar';
+  import {TouchSwipe, useQuasar} from 'quasar';
   import {ref} from 'vue';
   import axios from 'axios'
   import SelectForm from 'src/components/SelectForm.vue'
@@ -209,27 +242,31 @@
     },
 
     setup(){
+      const brand = ref(null)
+      const brandOptions = ref([])
       const building = ref(null)
       const buildingOptions = ref([])
-      const buildings = ref([])
       const createEquipmentForm = ref(null)
       const name = ref(null)
       const serial = ref(null)
       const inventory = ref(null)
       const invoice = ref(null)
-      const invoices = ref([])
       const invoicesOptions = ref([])
       const loading = ref(false)
       const model = ref(null)
-      const models = ref([])
       const modelOptions = ref([])
+      const modelNumber = ref(null)
+      const modelNumberOptions = ref([])
       const maintenance = ref(null)
       const observation = ref(null)
+      const newbrandstate = ref(false)
       const newbuildingname = ref(null)
       const newbuildingstate = ref(false)
       const newinvoicestate = ref(false)
       const newmodelstate = ref(null)
+      const newmodelnumberstate = ref(false)
       const newmodel = ref(null)
+      const newmodelnumber = ref(null)
       const newbrand = ref(null)
       const newinvoicenumber = ref(null)
       const newinvoicedate = ref(null)
@@ -248,29 +285,35 @@
       const newunitname = ref(null)
       const newunitstate = ref(false)
       const project = ref(null)
-      const projects = ref([])
       const projectOptions = ref([])
       const reception_date = ref(null)
       const stage = ref(null)
-      const stages = ref([])
       const stagesOptions = ref([])
       const room = ref(null)
-      const rooms = ref([])
       const roomOptions = ref([])
       const maintenanceApply = ref(false)
       const supplier = ref(null)
-      const suppliers = ref([])
       const suppliersOptions = ref([])
       const unit = ref(null)
       const unitOptions = ref([])
-      const units = ref([])
       const $q = useQuasar()
+
+      const getBrands = () => {
+        axios.get("http://localhost:8000/api/brands").then(
+          response => {
+            const brands = response.data
+            brandOptions.value = brands.map(x => {
+              return {id: x.id, name: x.name}
+            })
+          }
+        )
+      }
 
       const getBuildings = () => {
         axios.get("http://localhost:8000/api/buildings").then(
           response => {
-            buildings.value = response.data
-            buildingOptions.value = buildings.value.map(x => {
+            const buildings = response.data
+            buildingOptions.value = buildings.map(x => {
               return {id: x.id, name: x.name}
             })
           }
@@ -280,8 +323,8 @@
       const getInvoices = () => {
         axios.get("http://localhost:8000/api/invoices").then(
           response => {
-            invoices.value = response.data
-            invoicesOptions.value = invoices.value.map(x => {
+            const invoices = response.data
+            invoicesOptions.value = invoices.map(x => {
               return {id: x.id, number: x.number}
             })
           }
@@ -289,11 +332,22 @@
       }
 
       const getModels = () => {
-        axios.get("http://localhost:8000/api/models").then(
+        axios.get("http://localhost:8000/api/models/"+brand.value).then(
           response => {
-            models.value = response.data
-            modelOptions.value = models.value.map(x => {
-              return {id: x.id, name: x.brand+" "+x.model+" "+x.product_number}
+            const models = response.data
+            modelOptions.value = models.map(x => {
+              return {id: x.id, name: x.name}
+            })
+          }
+        )
+      }
+
+      const getModelNumbers = () => {
+        axios.get("http://localhost:8000/api/model_numbers/"+model.value).then(
+          response => {
+            const modelnumbers = response.data
+            modelNumberOptions.value = modelnumbers.map(x => {
+              return {id: x.id, name: x.number}
             })
           }
         )
@@ -302,8 +356,8 @@
       const getProjects = () => {
         axios.get("http://localhost:8000/api/projects").then(
           response => {
-            projects.value = response.data
-            projectOptions.value = projects.value.map(x => {
+            const projects = response.data
+            projectOptions.value = projects.map(x => {
               return {id: x.id, name: x.name}
             })
           }
@@ -315,8 +369,8 @@
         axios.get(api_url).then(
           response => {
             room.value = null
-            rooms.value = response.data
-            roomOptions.value = rooms.value.map(x => {
+            const rooms = response.data
+            roomOptions.value = rooms.map(x => {
               return {id: x.id, name: x.name}
             })
           }
@@ -328,8 +382,8 @@
         axios.get(api_url).then(
           response => {
             stage.value = null
-            stages.value = response.data
-            stagesOptions.value = stages.value.map(x => {
+            const stages = response.data
+            stagesOptions.value = stages.map(x => {
               return {id: x.id, name: x.name}
             })
           }
@@ -339,8 +393,8 @@
       const getSuppliers = () => {
         axios.get("http://localhost:8000/api/suppliers").then(
           response => {
-            suppliers.value = response.data
-            suppliersOptions.value = suppliers.value.map(x => {
+            const suppliers = response.data
+            suppliersOptions.value = suppliers.map(x => {
               return {id: x.id, name: x.name}
             })
           }
@@ -354,8 +408,8 @@
             unit.value = null
             room.value = null
             roomOptions.value = []
-            units.value = response.data
-            unitOptions.value = units.value.map(x => {
+            const units = response.data
+            unitOptions.value = units.map(x => {
               return {id: x.id, name: x.name}
             })
           }
@@ -371,6 +425,28 @@
         observation.value = null
         reception_date.value = null
       };
+
+      async function createNewBrand(){
+        if (!newbrandstate.value){
+          return brand.value
+        }
+
+        const branddata = {
+          'name': newbrand.value
+        }
+
+        try{
+          const response = await axios.post("http://localhost:8000/api/brands", branddata)
+          return response.data
+        }catch(error){
+          $q.notify({
+            color: 'red-3',
+            textColor: 'white',
+            icon: 'error',
+            message: 'No se pudo crear la marca: ' + error
+          })
+        }
+      }
 
       async function createNewBuilding(){
         if (!newbuildingstate.value){
@@ -394,9 +470,9 @@
         }
       }
 
-      async function createNewInvoice(equipmentdata){
+      async function createNewInvoice(){
         if (!newinvoicestate.value){
-          return equipmentdata;
+          return invoice.value;
         }
 
         const invoicedata = {
@@ -406,8 +482,7 @@
 
         try{
           const response = await axios.post("http://localhost:8000/api/invoices", invoicedata)
-          equipmentdata['invoice_id'] = response.data
-          return equipmentdata
+          return response.data
         }catch(error){
           $q.notify({
             color: 'red-3',
@@ -418,27 +493,49 @@
         }
       }
 
-      async function createNewModel(equipmentdata){
-        if (!newmodelstate.value){
-          return equipmentdata;
+      async function createNewModel(brand_id){
+        if (!newbrandstate.value && !newmodelstate.value){
+          return model.value;
         }
 
         const newmodeldata = {
-        'model': newmodel.value,
-        'brand': newbrand.value,
-        'product_number': newnumber.value
+        'name': newmodel.value,
+        'brand_id': brand_id
         }
 
         try{
           const response = await axios.post("http://localhost:8000/api/models", newmodeldata)
-          equipmentdata['model_id'] = response.data
-          return equipmentdata
+          return response.data
         }catch(error){
           $q.notify({
             color: 'red-3',
             textColor: 'white',
             icon: 'error',
             message: 'No se pudo crear el modelo: ' + error
+          })
+          return -1
+        }
+      }
+
+      async function createNewModelnumber(model_id){
+        if (!newbrandstate.value && !newmodelstate.value && !newmodelnumber.value){
+          return modelNumber.value;
+        }
+
+        const newmodelnumberdata = {
+        'number': newmodelnumber.value,
+        'model_id': model_id
+        }
+
+        try{
+          const response = await axios.post("http://localhost:8000/api/model_numbers", newmodelnumberdata)
+          return response.data
+        }catch(error){
+          $q.notify({
+            color: 'red-3',
+            textColor: 'white',
+            icon: 'error',
+            message: 'No se pudo crear el número de modelo: ' + error
           })
         }
       }
@@ -519,9 +616,9 @@
         }
       }
 
-      async function createNewSupplier(equipmentdata) {
+      async function createNewSupplier() {
         if (!newsupplierstate.value){
-          return equipmentdata;
+          return supplier.value;
         }
         const supplierdata = {
           'name': newsuppliername.value,
@@ -530,8 +627,7 @@
         }
         try{
           const response = await axios.post("http://localhost:8000/api/suppliers", supplierdata)
-          equipmentdata['supplier_id'] = response.data
-          return equipmentdata
+           return response.data
         }catch(error){
           $q.notify({
               color: 'red-3',
@@ -600,7 +696,9 @@
           'project_id': project.value,
           'stage_id': stage.value
         }
-
+        if (stage.value == null){
+          return
+        }
         relationdata = await createNewProject(relationdata)
         relationdata = await createNewStage(relationdata)
 
@@ -635,7 +733,7 @@
           'umag_inventory_code': inventory.value,
           'reception_date': reception_date.value,
           'observation': observation.value,
-          'model_id': model.value,
+          'model_number_id': modelNumber.value,
           'supplier_id': supplier.value,
           'invoice_id': invoice.value,
           'room_id': room.value
@@ -645,14 +743,60 @@
           equipmentdata['maintenance_period'] = maintenance.value
         }
         const building_id = await createNewBuilding()
+        if (building_id == -1){
+          console.log("1")
+          loading.value = false
+          return
+        }
         const unit_id = await createNewUnit(building_id)
+        if (unit_id == -1){
+          console.log("2")
+          loading.value = false
+          return
+        }
         const room_id = await createNewRoom(unit_id)
-
+        if (room_id == -1){
+          console.log("3")
+          loading.value = false
+          return
+        }
         equipmentdata['room_id'] = room_id
 
-        equipmentdata = await createNewModel(equipmentdata)
-        equipmentdata = await createNewSupplier(equipmentdata)
-        equipmentdata = await createNewInvoice(equipmentdata)
+        const brand_id = await createNewBrand()
+        if (brand_id == -1){
+          console.log("4")
+          loading.value = false
+          return
+        }
+        const model_id = await createNewModel(brand_id)
+        if (model_id == -1){
+          console.log("5")
+          loading.value = false
+          return
+        }
+        const model_number_id = await createNewModelnumber(model_id)
+        if (model_number_id == -1){
+          console.log("6")
+          loading.value = false
+          return
+        }
+
+        equipmentdata['model_number_id'] = model_number_id
+
+        const supplier_id = await createNewSupplier()
+        if (supplier_id == -1){
+          console.log("7")
+          loading.value = false
+          return
+        }
+        equipmentdata['supplier_id'] = supplier_id
+        const invoice_id = await createNewInvoice()
+        if (invoice_id == -1){
+          console.log("8")
+          loading.value = false
+          return
+        }
+        equipmentdata['invoice_id'] = invoice_id
 
         const equipment_id = await createNewEquipment(equipmentdata)
         await createNewProjectEquipment(equipment_id)
@@ -662,15 +806,15 @@
       }
 
       return{
+        brand,
+        brandOptions,
         building,
         buildingOptions,
-        buildings,
         createEquipmentForm,
         name,
         serial,
         inventory,
         invoice,
-        invoices,
         invoicesOptions,
         loading,
         model,
@@ -678,6 +822,8 @@
         maintenanceApply,
         observation,
         modelOptions,
+        modelNumber,
+        modelNumberOptions,
         newbuildingname,
         newbuildingstate,
         newinvoicestate,
@@ -685,7 +831,10 @@
         newinvoicedate,
         newinvoicenumber,
         newmodel,
+        newmodelnumber,
+        newmodelnumberstate,
         newbrand,
+        newbrandstate,
         newnumber,
         newprojectstate,
         newprojectname,
@@ -701,24 +850,21 @@
         newunitname,
         newunitstate,
         room,
-        rooms,
         roomOptions,
         project,
-        projects,
         projectOptions,
         reception_date,
         stage,
-        stages,
         stagesOptions,
         supplier,
-        suppliers,
         suppliersOptions,
         unit,
-        units,
         unitOptions,
+        getBrands,
         getBuildings,
         getInvoices,
         getModels,
+        getModelNumbers,
         getProjects,
         getRooms,
         getStages,
@@ -730,8 +876,8 @@
     },
 
     mounted(){
+      this.getBrands();
       this.getInvoices();
-      this.getModels();
       this.getProjects();
       this.getSuppliers();
       this.getBuildings();
