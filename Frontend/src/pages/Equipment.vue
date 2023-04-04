@@ -87,6 +87,7 @@
         </q-card-section>
         </q-card>
       </div>
+      <Carousel api="http://localhost:8000/api/equipments/image/2"/>
   </q-page>
 </template>
 
@@ -96,6 +97,7 @@ import { computed } from 'vue';
 import axios from 'axios';
 import NoRedirectTable from "src/components/NoRedirectTable.vue"
 import RenderTable from "src/components/RenderTable.vue"
+import Carousel from "src/components/Carousel.vue"
 
 const columns_maintenances = [
   {
@@ -149,6 +151,7 @@ const content_loaded = false
 
 export default {
   components: {
+    Carousel,
     NoRedirectTable,
     RenderTable,
   },

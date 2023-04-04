@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from config.database import Base, engine
 from routes.equipments import equipments
@@ -22,7 +23,7 @@ def create_tables():
         Base.metadata.create_all(bind=engine)
 #create_tables()
 app = FastAPI()
-
+app.mount("/images", StaticFiles(directory="images"), name="images")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 routes = [buildings, brands, equipments, equipments_projects, invoices, maintenances, models, model_numbers, units, projects, rooms, stages, suppliers, suppliers_contacts]

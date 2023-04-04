@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Response, Depends
+from fastapi import APIRouter, Response, Depends, UploadFile
+from fastapi.responses import FileResponse
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from models.models import Equipments, Suppliers, Invoices, Model_numbers, Rooms, Units, Buildings, Maintenances, Brands, Models
 from schemas.equipment_schema import EquipmentSchema, EquipmentFullSchema, EquipmentListSchema
 from typing import List
 from config.database import get_db
 from sqlalchemy.orm import Session
+import os
+import shutil
 
 from routes.suppliers import get_supplier
 from routes.invoices import get_invoice
@@ -50,6 +53,28 @@ def add_equipment(equipment: EquipmentSchema, db:Session = Depends(get_db)):
    db.refresh(new_equipment)
    content = str(new_equipment.id)
    return Response(status_code=HTTP_201_CREATED, content=content)
+
+#Upload image to equipments folder using invoice id
+@equipments.post("/api/equipments/{equipment_id}", status_code=HTTP_201_CREATED)
+async def add_image(equipment_id: int, file: UploadFile):
+    if not os.path.exists(f'./images/equipments/{equipment_id}'):
+        os.makedirs(f'./images/equipments/{equipment_id}')
+    with open(f'./images/equipments/{equipment_id}/{file.filename}', "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    return Response(status_code=HTTP_201_CREATED)
+
+#Get images from equipments folder
+@equipments.get("/api/equipments/image/{equipment_id}")
+async def get_images(equipment_id: int):
+    respuestas = []
+    files = os.listdir(f"./images/equipments/{equipment_id}")
+    for imagen in files:
+        respuesta = {
+           'name': imagen,
+           'path': f"localhost:8000/images/equipments/{equipment_id}/{imagen}"
+           }
+        respuestas.append(respuesta)
+    return respuestas
 
 @equipments.get("/api/equipments/{equipment_id}", response_model=EquipmentFullSchema)
 def get_equipment(equipment_id: int, db:Session = Depends(get_db)):

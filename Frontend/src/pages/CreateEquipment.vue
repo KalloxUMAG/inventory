@@ -70,6 +70,17 @@
         <!--Observacion-->
         <q-input filled v-model="observation" type="textarea" label="Observación" lazy-rules/>
 
+        <!--Imagenes equipamiento equipmentImages-->
+        <div class="row">
+          <div class="col">
+            <q-file v-model="equipmentimages" label="Selecciona imagenes para el equipo" filled counter max-files="5" multiple accept=".jpg, image/*" clearable>
+              <template v-slot:prepend>
+                <q-icon name="cloud_upload" />
+              </template>
+            </q-file>
+          </div>
+        </div>
+
         <!--Datos de compra-->
         <div v-if="!this.newsupplierstate">
           <SelectForm :options="suppliersOptions" option_value="id" option_label="name" label="Proveedor" not_found_label="No hay proveedores disponibles" @updateModel="(value) => supplier = value"/>
@@ -104,6 +115,13 @@
           <div class="row">
             <q-input v-model="newinvoicenumber" label="Numero" type="number" class="col"/>
             <q-input v-model="newinvoicedate" label="Fecha" type="date" stack-label class="col q-ml-md"/>
+          </div>
+          <div class="row q-mt-sm">
+            <q-file class="col" v-model="invoiceimage" filled label="Foto de factura" accept=".jpg, image/*" clearable>
+              <template v-slot:prepend>
+                <q-icon name="cloud_upload" />
+              </template>
+            </q-file>
           </div>
           <div class="row justify-end q-mt-sm">
             <q-btn label="Cancelar" color="negative" @click="this.newinvoicestate = !this.newinvoicestate"/>
@@ -201,8 +219,6 @@
       </q-form>
     </div>
 
-    <div>{{ brandOptions }}</div>
-
   </q-page>
 </template>
 
@@ -247,6 +263,8 @@
       const building = ref(null)
       const buildingOptions = ref([])
       const createEquipmentForm = ref(null)
+      const equipmentimages = ref(null)
+      const invoiceimage = ref(null)
       const name = ref(null)
       const serial = ref(null)
       const inventory = ref(null)
@@ -720,9 +738,49 @@
               icon: 'error',
               message: 'No se pudo crear la relacion: ' + error
             })
-
         }
+      }
 
+      async function uploadInvoiceImage(equipment_id){
+        if (!newinvoicestate.value || invoiceimage.value == null){
+          return
+        }
+        const formData = new FormData()
+        formData.append('file', invoiceimage.value)
+        try{
+          const response = await axios.post("http://localhost:8000/api/invoices/"+equipment_id, formData)
+        }catch(error){
+          $q.notify({
+              color: 'red-3',
+              textColor: 'white',
+              icon: 'error',
+              message: 'No se pudo guardar la imagen de factura: ' + error
+            })
+        }
+      }
+
+      async function uploadEquipmentImage(equipment_id){
+        if (equipmentimages.value == null){
+          return
+        }
+        equipmentimages.value.forEach(image => {
+          const formData = new FormData()
+          formData.append('file', image)
+          uploadEquipmentImage2(equipment_id, formData)
+        });
+      }
+
+      async function uploadEquipmentImage2(equipment_id, formData){
+        try{
+          const response = await axios.post("http://localhost:8000/api/equipments/"+equipment_id, formData)
+        }catch(error){
+          $q.notify({
+              color: 'red-3',
+              textColor: 'white',
+              icon: 'error',
+              message: 'No se pudo guardar la imagen del equipo: ' + error
+            })
+        }
       }
 
       async function onSubmit() {
@@ -738,6 +796,7 @@
           'invoice_id': invoice.value,
           'room_id': room.value
         }
+
         loading.value = true
         if (maintenanceApply.value){
           equipmentdata['maintenance_period'] = maintenance.value
@@ -800,6 +859,8 @@
 
         const equipment_id = await createNewEquipment(equipmentdata)
         await createNewProjectEquipment(equipment_id)
+        uploadEquipmentImage(equipment_id);
+        uploadInvoiceImage(equipment_id);
         loading.value = false
         //onReset()
 
@@ -811,10 +872,12 @@
         building,
         buildingOptions,
         createEquipmentForm,
+        equipmentimages,
         name,
         serial,
         inventory,
         invoice,
+        invoiceimage,
         invoicesOptions,
         loading,
         model,
@@ -872,6 +935,8 @@
         getUnits,
         onReset,
         onSubmit,
+        uploadInvoiceImage,
+        uploadEquipmentImage
       }
     },
 
