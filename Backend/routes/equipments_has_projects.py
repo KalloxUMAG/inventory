@@ -41,8 +41,12 @@ def get_project_equipments(project_id: int, db:Session = Depends(get_db)):
         Equipments, Equipments.id == Equipments_has_Projects.equipment_id).outerjoin(Stages, Stages.id == Equipments_has_Projects.stage_id
         ).filter(Equipments_has_Projects.project_id == project_id).all()
 
-@equipments_projects.get("/api/equipment_projects/{equipment_id}", response_model=List[EquipmentHasProjectsSchema])
+@equipments_projects.get("/api/equipment_projects/{equipment_id}", response_model=EquipmentHasProjectsSchema)
 def get_equipment_projects(equipment_id: int, db:Session = Depends(get_db)):
-    return db.query(Equipments_has_Projects.project_id.label('id'), Equipments_has_Projects.stage_id, Projects.name.label('project_name'), Stages.name.label('stage_name')).outerjoin(
+    result = db.query(Equipments_has_Projects.project_id.label('id'), Equipments_has_Projects.stage_id, Projects.name.label('project_name'), Stages.name.label('stage_name')).outerjoin(
         Stages, Stages.id == Equipments_has_Projects.stage_id).outerjoin(Projects, Projects.id == Equipments_has_Projects.project_id
-        ).filter(Equipments_has_Projects.equipment_id == equipment_id).all()
+        ).filter(Equipments_has_Projects.equipment_id == equipment_id).first()
+    
+    if not result:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    return result

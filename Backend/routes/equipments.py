@@ -66,15 +66,21 @@ async def add_image(equipment_id: int, file: UploadFile):
 #Get images from equipments folder
 @equipments.get("/api/equipments/image/{equipment_id}")
 async def get_images(equipment_id: int):
-    respuestas = []
-    files = os.listdir(f"./images/equipments/{equipment_id}")
-    for imagen in files:
-        respuesta = {
-           'name': imagen,
-           'path': f"localhost:8000/images/equipments/{equipment_id}/{imagen}"
-           }
-        respuestas.append(respuesta)
-    return respuestas
+   image_dir = f"/images/equipments/{equipment_id}"
+   if not os.path.exists("."+image_dir):
+      return Response(status_code=HTTP_404_NOT_FOUND)
+   response = []
+   files = os.listdir("."+image_dir)
+   count = 1
+   for file in files:
+      image = {
+         'id': count,
+         'name': file,
+         'path': f"http://localhost:8000{image_dir}/{file}"
+         }
+      count = count+1
+      response.append(image)
+   return response
 
 @equipments.get("/api/equipments/{equipment_id}", response_model=EquipmentFullSchema)
 def get_equipment(equipment_id: int, db:Session = Depends(get_db)):

@@ -5,17 +5,17 @@
 
         <!--Datos Producto-->
 
-        <q-input filled v-model="name" maxlength="49" label="Nombre del equipo" lazy-rules
+        <q-input filled v-model="name" maxlength="49" label="Nombre del equipo*" lazy-rules
         :rules="[
           val => val && val.length > 0 || 'Este campo es obligatorio',
           val => val && val.length < 50 || 'El nombre debe contener menos de 50 caracteres'
         ]"/>
-        <q-input filled v-model="serial" maxlength="30" label="Código serial" lazy-rules
+        <q-input filled v-model="serial" maxlength="30" label="Código serial*" lazy-rules
           :rules="[
             val => val && val.length > 0 || 'Este campo es obligatorio',
             val => val && val.length < 256 || 'Máximo 255 caracteres'
           ]"/>
-        <q-input filled v-model="inventory" maxlength="11" type="number" label="Inventario UMAG" lazy-rules :rules="[val => val.length < 26 && val >0 || 'El valor debe ser mayor que 0 y tener un maximo de 25 dígitos']"/>
+        <q-input filled v-model="inventory" maxlength="11" type="number" label="Inventario UMAG*" lazy-rules :rules="[val => val.length < 26 && val >0 || 'El valor debe ser mayor que 0 y tener un maximo de 25 dígitos']"/>
 
         <!--Brand Model Number-->
 
@@ -31,7 +31,7 @@
               <q-input v-model="newbrand" label="Nombre marca" class="col"/>
             </div>
             <div class="row justify-end q-mt-sm">
-              <q-btn label="Cancelar" color="negative" @click="this.newbrandstate = !this.newbrandstate"/>
+              <q-btn label="Usar existente" color="amber" @click="this.newbrandstate = !this.newbrandstate"/>
             </div>
           </div>
           <div v-if="!this.newbrandstate && !this.newmodelstate" class="col q-mr-md">
@@ -45,7 +45,7 @@
               <q-input v-model="newmodel" label="Nombre modelo" class="col"/>
             </div>
             <div v-if="!this.newbrandstate && this.newmodelstate" class="row justify-end q-mt-sm">
-              <q-btn label="Cancelar" color="negative" @click="this.newmodelstate = !this.newmodelstate"/>
+              <q-btn label="Usar existente" color="amber" @click="this.newmodelstate = !this.newmodelstate"/>
             </div>
           </div>
           <div v-if="!this.newbrandstate && !this.newmodelstate && !this.newmodelnumberstate" class="col q-mr-md">
@@ -59,7 +59,7 @@
               <q-input v-model="newmodelnumber" label="Número modelo" class="col"/>
             </div>
             <div v-if="!this.newbrandstate && !this.newmodelstate && this.newmodelnumberstate" class="row justify-end q-mt-sm">
-              <q-btn label="Cancelar" color="negative" @click="this.newmodelnumberstate = !this.newmodelnumberstate"/>
+              <q-btn label="Usar existente" color="amber" @click="this.newmodelnumberstate = !this.newmodelnumberstate"/>
             </div>
           </div>
         </div>
@@ -82,6 +82,7 @@
         </div>
 
         <!--Datos de compra-->
+        <!--Datos de proveedor-->
         <div v-if="!this.newsupplierstate">
           <SelectForm :options="suppliersOptions" option_value="id" option_label="name" label="Proveedor" not_found_label="No hay proveedores disponibles" @updateModel="(value) => supplier = value"/>
           <div class="row justify-end q-mt-md">
@@ -95,12 +96,24 @@
             <q-input v-model="newsupplierrut" label="Rut" class="col q-ml-md"/>
             <q-input v-model="newsupplieraddress" label="Dirección" class="col q-ml-md"/>
           </div>
+          <div class="row q-mt-sm">
+            <q-input v-model="workername1" label="Nombre trabajador" class="col"/>
+            <SelectForm :options="rolOptions" option_value="value" option_label="name" label="Roles" not_found_label="No hay roles disponibles" @updateModel="(value) => workerrol1 = value" class="col q-ml-md"/>
+            <q-input v-model="workermail1" label="Correo trabajador" class="col q-ml-md"/>
+            <q-input v-model="workerphone1" label="Telefono trabajador" class="col q-ml-md"/>
+          </div>
+          <div class="row q-mt-sm">
+            <q-input v-model="workername2" label="Nombre trabajador" class="col"/>
+            <SelectForm :options="rolOptions" option_value="value" option_label="name" label="Roles" not_found_label="No hay roles disponibles" @updateModel="(value) => workerrol2 = value" class="col q-ml-md"/>
+            <q-input v-model="workermail2" label="Correo trabajador" class="col q-ml-md"/>
+            <q-input v-model="workerphone2" label="Telefono trabajador" class="col q-ml-md"/>
+          </div>
           <div class="row justify-end q-mt-sm">
-            <q-btn label="Cancelar" color="negative" @click="this.newsupplierstate = !this.newsupplierstate"/>
+            <q-btn label="Usar existente" color="amber" @click="this.newsupplierstate = !this.newsupplierstate"/>
           </div>
         </div>
 
-        <q-input filled v-model="reception_date" type="date" label="Fecha de recepción"  stack-label lazy-rules
+        <q-input filled v-model="reception_date" type="date" label="Fecha de recepción*"  stack-label lazy-rules
           :rules="[val => val && val != null || 'Este campo es obligatorio']"/>
 
         <!--Invoices-->
@@ -124,7 +137,7 @@
             </q-file>
           </div>
           <div class="row justify-end q-mt-sm">
-            <q-btn label="Cancelar" color="negative" @click="this.newinvoicestate = !this.newinvoicestate"/>
+            <q-btn label="Usar existente" color="amber" @click="this.newinvoicestate = !this.newinvoicestate"/>
           </div>
         </div>
 
@@ -143,7 +156,7 @@
               <q-input v-model="newprojectdate" label="Fecha" type="date" stack-label class="col-3 q-ml-md"/>
             </div>
             <div class="row justify-end q-mt-sm">
-              <q-btn label="Cancelar" color="negative" @click="this.newprojectstate = !this.newprojectstate"/>
+              <q-btn label="Usar existente" color="amber" @click="this.newprojectstate = !this.newprojectstate"/>
             </div>
           </div>
 
@@ -158,11 +171,10 @@
               <q-input v-model="newstagename" label="Nombre etapa" class="col"/>
             </div>
             <div v-if="this.newstagestate && !this.newprojectstate" class="row justify-end q-mt-sm">
-              <q-btn label="Cancelar" color="negative" @click="this.newstagestate = !this.newstagestate"/>
+              <q-btn label="Usar existente" color="amber" @click="this.newstagestate = !this.newstagestate"/>
             </div>
           </div>
         </div>
-
 
         <!--Location-->
         <div class="row justify-center">
@@ -177,7 +189,7 @@
               <q-input v-model="newbuildingname" label="Nombre edificio" class="col"/>
             </div>
             <div class="row justify-end q-mt-sm">
-              <q-btn label="Cancelar" color="negative" @click="this.newbuildingstate = !this.newbuildingstate"/>
+              <q-btn label="Usar existente" color="amber" @click="this.newbuildingstate = !this.newbuildingstate"/>
             </div>
           </div>
           <div v-if="!this.newbuildingstate && !this.newunitstate" class="col q-mr-md">
@@ -191,7 +203,7 @@
               <q-input v-model="newunitname" label="Nombre unidad" class="col"/>
             </div>
             <div v-if="!this.newbuildingstate && this.newunitstate" class="row justify-end q-mt-sm">
-              <q-btn label="Cancelar" color="negative" @click="this.newunitstate = !this.newunitstate"/>
+              <q-btn label="Usar existente" color="amber" @click="this.newunitstate = !this.newunitstate"/>
             </div>
           </div>
           <div v-if="!this.newbuildingstate && !this.newunitstate && !this.newroomstate" class="col q-mr-md">
@@ -205,7 +217,7 @@
               <q-input v-model="newroomname" label="Nombre sala" class="col"/>
             </div>
             <div v-if="!this.newbuildingstate && !this.newunitstate && this.newroomstate" class="row justify-end q-mt-sm">
-              <q-btn label="Cancelar" color="negative" @click="this.newroomstate = !this.newroomstate"/>
+              <q-btn label="Usar existente" color="amber" @click="this.newroomstate = !this.newroomstate"/>
             </div>
           </div>
         </div>
@@ -246,6 +258,16 @@
   }
 ]
 
+  const RolOptions = [{
+    value: 'Vendedor',
+    name: 'Vendedor'
+  },
+  {
+    value: 'Tecnico',
+    name: 'Tecnico'
+  }
+  ]
+
   export default{
     components: {
       SelectForm
@@ -253,7 +275,8 @@
 
     data(){
       return{
-        maintenanceOptions: MaintenanceOptions
+        maintenanceOptions: MaintenanceOptions,
+        rolOptions: RolOptions,
       }
     },
 
@@ -314,6 +337,14 @@
       const suppliersOptions = ref([])
       const unit = ref(null)
       const unitOptions = ref([])
+      const workername1 = ref(null)
+      const workerrol1 = ref(null)
+      const workermail1 = ref(null)
+      const workerphone1 = ref(null)
+      const workername2 = ref(null)
+      const workerrol2 = ref(null)
+      const workermail2 = ref(null)
+      const workerphone2 = ref(null)
       const $q = useQuasar()
 
       const getBrands = () => {
@@ -656,6 +687,52 @@
         }
       }
 
+      async function createNewWorker(supplier_id) {
+        if (!newsupplierstate.value){
+          return;
+        }
+        if (workername1.value != null){
+
+          const workerdata1 = {
+            'name': workername1.value,
+            'position': workerrol1.value,
+            'phone': workerphone1.value,
+            'email': workermail1.value,
+            'supplier_id': supplier_id
+          }
+          try{
+            const response = await axios.post("http://localhost:8000/api/suppliers_contacts", workerdata1)
+          }catch(error){
+            $q.notify({
+              color: 'red-3',
+              textColor: 'white',
+              icon: 'error',
+              message: 'No se pudo crear el contacto 1: ' + error
+            })
+          }
+        }
+        if (workername2.value != null){
+
+          const workerdata2 = {
+            'name': workername2.value,
+            'position': workerrol2.value,
+            'phone': workerphone2.value,
+            'email': workermail2.value,
+            'supplier_id': supplier_id
+          }
+          try{
+            const response = await axios.post("http://localhost:8000/api/suppliers_contacts", workerdata2)
+          }catch(error){
+            $q.notify({
+              color: 'red-3',
+              textColor: 'white',
+              icon: 'error',
+              message: 'No se pudo crear el contacto 2: ' + error
+            })
+          }
+        }
+      }
+
       async function createNewStage(relationdata){
         if(!newstagestate.value && !newprojectstate.value){
           return relationdata;
@@ -849,6 +926,7 @@
           return
         }
         equipmentdata['supplier_id'] = supplier_id
+        await createNewWorker(supplier_id)
         const invoice_id = await createNewInvoice()
         if (invoice_id == -1){
           console.log("8")
@@ -856,6 +934,7 @@
           return
         }
         equipmentdata['invoice_id'] = invoice_id
+
 
         const equipment_id = await createNewEquipment(equipmentdata)
         await createNewProjectEquipment(equipment_id)
@@ -923,6 +1002,14 @@
         suppliersOptions,
         unit,
         unitOptions,
+        workername1,
+        workermail1,
+        workerphone1,
+        workerrol1,
+        workername2,
+        workermail2,
+        workerphone2,
+        workerrol2,
         getBrands,
         getBuildings,
         getInvoices,
