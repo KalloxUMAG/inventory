@@ -51,8 +51,6 @@ class Projects(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String)
-    start_date = mapped_column(Date)
-    end_date = mapped_column(Date)
     stages: Mapped[List['Stages']] = relationship("Stages", backref="Projects", cascade="delete,merge")
     equipments: Mapped[List['Stages']] = relationship("Equipments", secondary="Equipments_has_Projects", back_populates="projects")
 
