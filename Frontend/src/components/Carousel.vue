@@ -44,9 +44,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.q-carousel{
-  border-color: rgb(2, 2, 2);
-  border-style: solid;
-  border-width: 0px;
-}
+
 </style>

@@ -153,7 +153,6 @@
           <div v-else class="col-8 q-mr-lg">
             <div class="row">
               <q-input v-model="newprojectname" label="Nombre proyeto" class="col"/>
-              <q-input v-model="newprojectdate" label="Fecha" type="date" stack-label class="col-3 q-ml-md"/>
             </div>
             <div class="row justify-end q-mt-sm">
               <q-btn label="Usar existente" color="amber" @click="this.newprojectstate = !this.newprojectstate"/>
@@ -314,7 +313,6 @@
       const newnumber = ref(null)
       const newprojectstate = ref(null)
       const newprojectname = ref(null)
-      const newprojectdate = ref(null)
       const newroomname = ref(null)
       const newroomstate = ref(null)
       const newstagestate = ref(null)
@@ -601,8 +599,7 @@
         }
 
         const projectdata = {
-          'name': newprojectname.value,
-          'start_date': newprojectdate.value
+          'name': newprojectname.value
         }
 
         try{
@@ -980,7 +977,6 @@
         newnumber,
         newprojectstate,
         newprojectname,
-        newprojectdate,
         newroomname,
         newroomstate,
         newstagestate,
