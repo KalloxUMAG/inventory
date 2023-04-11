@@ -47,6 +47,6 @@ export default {
 .q-carousel{
   border-color: rgb(2, 2, 2);
   border-style: solid;
-  border-width: 7px;
+  border-width: 0px;
 }
 </style>
