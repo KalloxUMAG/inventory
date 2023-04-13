@@ -118,7 +118,7 @@
 
         <!--Invoices-->
         <div v-if="!this.newinvoicestate">
-          <SelectForm :options="invoicesOptions" option_value="id" option_label="number" label="Facturas" not_found_label="No hay facturas disponibles" @updateModel="(value) => invoice = value"/>
+          <SelectForm :options="invoicesOptions" option_value="id" option_label="name" label="Facturas" not_found_label="No hay facturas disponibles" @updateModel="(value) => invoice = value"/>
           <div class="row justify-end q-mt-md">
             <q-btn label="Añadir factura" icon="add" class="bg-green-3 text-caption" @click="this.newinvoicestate = !this.newinvoicestate"/>
           </div>
@@ -372,7 +372,7 @@
           response => {
             const invoices = response.data
             invoicesOptions.value = invoices.map(x => {
-              return {id: x.id, number: x.number}
+              return {id: x.id, name: x.number.toString()}
             })
           }
         )
@@ -587,25 +587,24 @@
         }
       }
 
-      async function createNewProject(relationdata) {
+      async function createNewProject() {
         if (!newprojectstate.value){
-          return relationdata;
+          return project.value;
         }
 
         const projectname = newprojectname.value
 
         if(projectname.trim().length == 0){
-          return relationdata;
+          return -1;
         }
 
         const projectdata = {
-          'name': newprojectname.value
+          'name': projectname
         }
 
         try{
           const response = await axios.post("http://localhost:8000/api/projects", projectdata)
-          relationdata['project_id'] = response.data
-          return relationdata
+          return response.data
         }catch(error){
           $q.notify({
             color: 'red-3',
@@ -730,26 +729,25 @@
         }
       }
 
-      async function createNewStage(relationdata){
+      async function createNewStage(project_id){
         if(!newstagestate.value && !newprojectstate.value){
-          return relationdata;
+          return stage.value;
         }
 
         const stagename = newstagename.value
 
         if(stagename.trim().length == 0){
-          return relationdata;
+          return -1;
         }
 
         const stagedata = {
           'name': newstagename.value,
-          'project_id': relationdata.project_id
+          'project_id': project_id
         }
 
         try{
           const response = await axios.post("http://localhost:8000/api/stages", stagedata)
-          relationdata['stage_id'] = response.data
-          return relationdata
+          return response.data
         }catch(error){
           $q.notify({
             color: 'red-3',
@@ -782,17 +780,15 @@
         }
       }
 
-      async function createNewProjectEquipment (equipment_id) {
+      async function createNewProjectEquipment(equipment_id, project_id, stage_id){
         let relationdata = {
           'equipment_id': equipment_id,
-          'project_id': project.value,
-          'stage_id': stage.value
+          'project_id': project_id,
+          'stage_id': stage_id
         }
-        if (stage.value == null){
+        if (project_id == -1 || project_id == null || stage_id == -1 || stage_id == null){
           return
         }
-        relationdata = await createNewProject(relationdata)
-        relationdata = await createNewStage(relationdata)
 
         try{
           const response = await axios.post("http://localhost:8000/api/equipments_projects", relationdata)
@@ -934,12 +930,14 @@
 
 
         const equipment_id = await createNewEquipment(equipmentdata)
-        await createNewProjectEquipment(equipment_id)
-        uploadEquipmentImage(equipment_id);
-        uploadInvoiceImage(equipment_id);
+        const project_id = await createNewProject()
+        const stage_id = await createNewStage(project_id)
+        await createNewProjectEquipment(equipment_id, project_id, stage_id)
+        await uploadEquipmentImage(equipment_id);
+        await uploadInvoiceImage(equipment_id);
         loading.value = false
         //onReset()
-
+        this.$router.push("http://localhost:9000/#/equipments/"+equipment_id)
       }
 
       return{

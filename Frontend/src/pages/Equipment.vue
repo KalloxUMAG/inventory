@@ -100,8 +100,6 @@
 
         </div>
       </div>
-
-      {{ this.project }}
   </q-page>
 </template>
 
