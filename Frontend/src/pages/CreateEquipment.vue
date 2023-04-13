@@ -235,6 +235,7 @@
 
 <script>
   import {TouchSwipe, useQuasar} from 'quasar';
+  import { useRoute, useRouter } from 'vue-router';
   import {ref} from 'vue';
   import axios from 'axios'
   import SelectForm from 'src/components/SelectForm.vue'
@@ -344,6 +345,8 @@
       const workermail2 = ref(null)
       const workerphone2 = ref(null)
       const $q = useQuasar()
+      const router = useRouter()
+      const route = useRoute()
 
       const getBrands = () => {
         axios.get("http://localhost:8000/api/brands").then(
@@ -937,7 +940,12 @@
         await uploadInvoiceImage(equipment_id);
         loading.value = false
         //onReset()
-        this.$router.push("http://localhost:9000/#/equipments/"+equipment_id)
+
+        redirectToEquipment(equipment_id.toString())
+      }
+
+      function redirectToEquipment (equipment_id) {
+        router.push({path: equipment_id})
       }
 
       return{
