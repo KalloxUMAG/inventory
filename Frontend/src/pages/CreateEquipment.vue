@@ -4,7 +4,7 @@
       <q-form
         @submit.prevent="onSubmit"
         @reset="onReset"
-        class="q-gutter-md col-xs-12 col-sm-12 col-md-6 q-pt-xl relative-position"
+        class="q-gutter-md col-xs-12 col-sm-12 col-md-6 q-pa-md relative-position bg-grey-4"
         ref="createEquipmentForm"
       >
         <!--Datos Producto-->
@@ -53,6 +53,7 @@
           <div v-if="!newbrandstate" class="col q-mr-md">
             <SelectForm
               class="row q-mr-md"
+              :disable="disableBrand"
               :options="brandOptions"
               option_value="id"
               option_label="name"
@@ -76,19 +77,13 @@
           </div>
           <div v-else class="col">
             <div class="row">
-              <q-input v-model="newbrand" label="Nombre marca" class="col" />
-            </div>
-            <div class="row justify-end q-mt-sm">
-              <q-btn
-                label="Usar existente"
-                color="amber"
-                @click="newbrandstate = !newbrandstate"
-              />
+              <q-input v-model="newbrand" label="Nombre marca" class="col" :disable="disableBrand"/>
             </div>
           </div>
           <div v-if="!newbrandstate && !newmodelstate" class="col q-mr-md">
             <SelectForm
               class="row q-mr-md"
+              :disable="disableBrand"
               :options="modelOptions"
               option_value="id"
               option_label="name"
@@ -112,25 +107,16 @@
           </div>
           <div v-else class="col q-pl-md">
             <div class="row">
-              <q-input v-model="newmodel" label="Nombre modelo" class="col" />
-            </div>
-            <div
-              v-if="!newbrandstate && newmodelstate"
-              class="row justify-end q-mt-sm"
-            >
-              <q-btn
-                label="Usar existente"
-                color="amber"
-                @click="newmodelstate = !newmodelstate"
-              />
+              <q-input v-model="newmodel" label="Nombre modelo" class="col" :disable="disableBrand"/>
             </div>
           </div>
           <div
             v-if="!newbrandstate && !newmodelstate && !newmodelnumberstate"
-            class="col q-mr-md"
+            class="col"
           >
             <SelectForm
-              class="row q-mr-md"
+              class="row"
+              :disable="disableBrand"
               :options="modelNumberOptions"
               option_value="id"
               option_label="name"
@@ -144,9 +130,9 @@
             />
             <div class="row justify-end q-pt-md">
               <q-btn
-                label="Añadir sala"
+                label="Añadir número modelo"
                 icon="add"
-                class="bg-green-3 text-caption q-mr-md"
+                class="bg-green-3 text-caption"
                 @click="newmodelnumberstate = !newmodelnumberstate"
               />
             </div>
@@ -157,19 +143,30 @@
                 v-model="newmodelnumber"
                 label="Número modelo"
                 class="col"
-              />
-            </div>
-            <div
-              v-if="!newbrandstate && !newmodelstate && newmodelnumberstate"
-              class="row justify-end q-mt-sm"
-            >
-              <q-btn
-                label="Usar existente"
-                color="amber"
-                @click="newmodelnumberstate = !newmodelnumberstate"
+                :disable="disableBrand"
               />
             </div>
           </div>
+        </div>
+        <div v-if="newmodelstate || newmodelnumberstate || newbrandstate" class="row justify-end q-pt-md">
+
+          <q-btn v-if="disableBrand"
+            label="Editar"
+            color="amber"
+            @click="disableBrand = false"
+            class="q-mr-sm"
+          />
+          <q-btn v-else
+            label="Guardar"
+            color="amber"
+            @click="disableBrand = true"
+            class="q-mr-sm"
+          />
+          <q-btn
+            label="Ver lista"
+            color="amber"
+            @click="newmodelnumberstate = false, newmodelstate = false, newbrandstate = false, disableBrand = false"
+          />
         </div>
 
         <!--Mantenimiento-->
@@ -243,12 +240,14 @@
               v-model="newsuppliername"
               label="Nombre proveedor"
               class="col"
+              :disable="disableSupplier"
             />
-            <q-input v-model="newsupplierrut" label="Rut" class="col q-ml-md" />
+            <q-input v-model="newsupplierrut" label="Rut" class="col q-ml-md" :disable="disableSupplier"/>
             <q-input
               v-model="newsupplieraddress"
               label="Dirección"
               class="col q-ml-md"
+              :disable="disableSupplier"
             />
           </div>
           <div class="row q-mt-sm">
@@ -256,8 +255,10 @@
               v-model="workername1"
               label="Nombre trabajador"
               class="col"
+              :disable="disableSupplier"
             />
             <SelectForm
+              :disable="disableSupplier"
               :options="rolOptions"
               option_value="value"
               option_label="name"
@@ -270,11 +271,13 @@
               v-model="workermail1"
               label="Correo trabajador"
               class="col q-ml-md"
+              :disable="disableSupplier"
             />
             <q-input
               v-model="workerphone1"
               label="Telefono trabajador"
               class="col q-ml-md"
+              :disable="disableSupplier"
             />
           </div>
           <div class="row q-mt-sm">
@@ -282,8 +285,10 @@
               v-model="workername2"
               label="Nombre trabajador"
               class="col"
+              :disable="disableSupplier"
             />
             <SelectForm
+              :disable="disableSupplier"
               :options="rolOptions"
               option_value="value"
               option_label="name"
@@ -296,18 +301,32 @@
               v-model="workermail2"
               label="Correo trabajador"
               class="col q-ml-md"
+              :disable="disableSupplier"
             />
             <q-input
               v-model="workerphone2"
               label="Telefono trabajador"
               class="col q-ml-md"
+              :disable="disableSupplier"
             />
           </div>
           <div class="row justify-end q-mt-sm">
-            <q-btn
-              label="Usar existente"
+            <q-btn v-if="disableSupplier"
+              label="Editar"
               color="amber"
-              @click="newsupplierstate = !newsupplierstate"
+              @click="disableSupplier = false"
+              class="q-mr-sm"
+            />
+            <q-btn v-else
+              label="Guardar"
+              color="amber"
+              @click="disableSupplier = true"
+              class="q-mr-sm"
+            />
+            <q-btn
+              label="Ver lista"
+              color="amber"
+              @click="newsupplierstate = !newsupplierstate, disableSupplier = false"
             />
           </div>
         </div>
@@ -351,6 +370,7 @@
               label="Numero"
               type="number"
               class="col"
+              :disable="disableInvoice"
             />
             <q-input
               v-model="newinvoicedate"
@@ -358,6 +378,7 @@
               type="date"
               stack-label
               class="col q-ml-md"
+              :disable="disableInvoice"
             />
           </div>
           <div class="row q-mt-sm">
@@ -367,6 +388,7 @@
               filled
               label="Foto de factura"
               accept=".jpg, image/*"
+              :disable="disableInvoice"
               clearable
             >
               <template v-slot:prepend>
@@ -375,10 +397,22 @@
             </q-file>
           </div>
           <div class="row justify-end q-mt-sm">
-            <q-btn
-              label="Usar existente"
+            <q-btn v-if="disableInvoice"
+              label="Editar"
               color="amber"
-              @click="newinvoicestate = !newinvoicestate"
+              @click="disableInvoice = false"
+              class="q-mr-sm"
+            />
+            <q-btn v-else
+              label="Guardar"
+              color="amber"
+              @click="disableInvoice = true"
+              class="q-mr-sm"
+            />
+            <q-btn
+              label="Ver lista"
+              color="amber"
+              @click="newinvoicestate = !newinvoicestate, disableInvoice = false"
             />
           </div>
         </div>
@@ -389,6 +423,7 @@
           <div v-if="!newprojectstate" class="col q-mr-md">
             <SelectForm
               class="row q-mr-md"
+              :disable="disableProject"
               :options="projectOptions"
               option_value="id"
               option_label="name"
@@ -410,19 +445,13 @@
               />
             </div>
           </div>
-          <div v-else class="col-8 q-mr-lg">
+          <div v-else class="col q-mr-lg">
             <div class="row">
               <q-input
                 v-model="newprojectname"
                 label="Nombre proyeto"
                 class="col"
-              />
-            </div>
-            <div class="row justify-end q-mt-sm">
-              <q-btn
-                label="Usar existente"
-                color="amber"
-                @click="newprojectstate = !newprojectstate"
+                :disable="disableProject"
               />
             </div>
           </div>
@@ -430,6 +459,7 @@
           <div v-if="!newstagestate && !newprojectstate" class="col q-ml-md">
             <SelectForm
               class="row"
+              :disable="disableProject"
               :options="stagesOptions"
               option_value="id"
               option_label="name"
@@ -452,19 +482,29 @@
                 v-model="newstagename"
                 label="Nombre etapa"
                 class="col"
-              />
-            </div>
-            <div
-              v-if="newstagestate && !newprojectstate"
-              class="row justify-end q-mt-sm"
-            >
-              <q-btn
-                label="Usar existente"
-                color="amber"
-                @click="newstagestate = !newstagestate"
+                :disable="disableProject"
               />
             </div>
           </div>
+        </div>
+        <div v-if="newstagestate || newprojectstate" class="row justify-end">
+          <q-btn v-if="disableProject"
+            label="Editar"
+            color="amber"
+            @click="disableProject = false"
+            class="q-mr-sm"
+          />
+          <q-btn v-else
+            label="Guardar"
+            color="amber"
+            @click="disableProject = true"
+            class="q-mr-sm"
+          />
+          <q-btn
+            label="Ver lista"
+            color="amber"
+            @click="newstagestate = false, newprojectstate = false, disableProject = false"
+            />
         </div>
 
         <!--Location-->
@@ -472,6 +512,7 @@
           <div v-if="!newbuildingstate" class="col q-mr-md">
             <SelectForm
               class="row q-mr-md"
+              :disable="disableLocation"
               :options="buildingOptions"
               option_value="id"
               option_label="name"
@@ -499,19 +540,14 @@
                 v-model="newbuildingname"
                 label="Nombre edificio"
                 class="col"
-              />
-            </div>
-            <div class="row justify-end q-mt-sm">
-              <q-btn
-                label="Usar existente"
-                color="amber"
-                @click="newbuildingstate = !newbuildingstate"
+                :disable="disableLocation"
               />
             </div>
           </div>
           <div v-if="!newbuildingstate && !newunitstate" class="col q-mr-md">
             <SelectForm
               class="row q-mr-md"
+              :disable="disableLocation"
               :options="unitOptions"
               option_value="id"
               option_label="name"
@@ -539,25 +575,17 @@
                 v-model="newunitname"
                 label="Nombre unidad"
                 class="col"
-              />
-            </div>
-            <div
-              v-if="!newbuildingstate && newunitstate"
-              class="row justify-end q-mt-sm"
-            >
-              <q-btn
-                label="Usar existente"
-                color="amber"
-                @click="newunitstate = !newunitstate"
+                :disable="disableLocation"
               />
             </div>
           </div>
           <div
             v-if="!newbuildingstate && !newunitstate && !newroomstate"
-            class="col q-mr-md"
+            class="col"
           >
             <SelectForm
-              class="row q-mr-md"
+              class="row"
+              :disable="disableLocation"
               :options="roomOptions"
               option_value="id"
               option_label="name"
@@ -573,26 +601,35 @@
               <q-btn
                 label="Añadir sala"
                 icon="add"
-                class="bg-green-3 text-caption q-mr-md"
+                class="bg-green-3 text-caption"
                 @click="newroomstate = !newroomstate"
               />
             </div>
           </div>
           <div v-else class="col q-pl-md">
             <div class="row">
-              <q-input v-model="newroomname" label="Nombre sala" class="col" />
-            </div>
-            <div
-              v-if="!newbuildingstate && !newunitstate && newroomstate"
-              class="row justify-end q-mt-sm"
-            >
-              <q-btn
-                label="Usar existente"
-                color="amber"
-                @click="newroomstate = !newroomstate"
-              />
+              <q-input v-model="newroomname" label="Nombre sala" class="col" :disable="disableLocation"/>
             </div>
           </div>
+        </div>
+        <div v-if="newbuildingstate || newunitstate || newroomstate" class="row justify-end">
+          <q-btn v-if="disableLocation"
+            label="Editar"
+            color="amber"
+            @click="disableLocation = false"
+            class="q-mr-sm"
+          />
+          <q-btn v-else
+            label="Guardar"
+            color="amber"
+            @click="disableLocation = true"
+            class="q-mr-sm"
+          />
+          <q-btn
+            label="Ver lista"
+            color="amber"
+            @click="newbuildingstate = false, newunitstate = false, newroomstate = false,  disableLocation = false"
+          />
         </div>
 
         <!--Form button-->
@@ -659,6 +696,11 @@ const brandOptions = ref([]);
 const building = ref(null);
 const buildingOptions = ref([]);
 const createEquipmentForm = ref(null);
+const disableBrand = ref(false)
+const disableInvoice = ref(false)
+const disableLocation = ref(false)
+const disableProject = ref(false)
+const disableSupplier = ref(false)
 const equipmentimages = ref(null);
 const invoiceimage = ref(null);
 const name = ref(null);

@@ -9,7 +9,7 @@
           <q-card-section horizontal>
             <!--Datos carrucel-->
             <q-card-section class="col-4">
-              <Carousel v-if="this.equipment != null" :api="img_api"/>
+              <Carousel v-if="this.equipment != null" :api_endpoint="img_api"/>
             </q-card-section>
             <q-separator vertical/>
             <!--Datos producto-->

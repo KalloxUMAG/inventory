@@ -51,8 +51,16 @@ class Projects(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String)
+    owner_id: Mapped[int] = mapped_column(Integer, ForeignKey("Project_owners.id", ondelete="CASCADE"))
     stages: Mapped[List['Stages']] = relationship("Stages", backref="Projects", cascade="delete,merge")
     equipments: Mapped[List['Stages']] = relationship("Equipments", secondary="Equipments_has_Projects", back_populates="projects")
+
+class Project_owners(Base):
+    __tablename__ = "Project_owners"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String)
+    projects: Mapped[List['Projects']] = relationship("Projects", backref="Project_owners", cascade="delete,merge")
 
 class Suppliers(Base):
     __tablename__ = "Suppliers"

@@ -4,13 +4,13 @@
       <q-carousel-slide v-if="this.images == null" :name="1" img-src="https://cdn.quasar.dev/img/mountains.jpg" />
       <q-carousel-slide v-for="image in images" :key="image.id" :name="image.id" :img-src="image.path"/>
 
+
   </q-carousel>
 </template>
 
 <script>
 import {ref} from 'vue'
 import axios from 'axios';
-
 
 export default {
   data(){
@@ -20,7 +20,7 @@ export default {
   },
   methods:{
     getContent(){
-      axios.get(this.api).then(
+      axios.get(this.api_endpoint).then(
         response => {
           this.images = response.data
         }
@@ -31,7 +31,7 @@ export default {
     this.getContent()
   },
   props:{
-    api: {
+    api_endpoint: {
       type: String,
       required: true
     }

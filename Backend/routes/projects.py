@@ -15,7 +15,7 @@ def get_projects(db:Session = Depends(get_db)):
 
 @projects.post("/api/projects", status_code=HTTP_201_CREATED)
 def add_project(project: ProjectSchema, db:Session = Depends(get_db)):
-    new_project = Projects(name = project.name)
+    new_project = Projects(name = project.name, owner_id=project.owner_id)
     db.add(new_project)
     db.commit()
     db.refresh(new_project)
