@@ -90,6 +90,11 @@
                 <div class="col-5 field-label text-right q-mr-md">Etapa:</div>
                 <div class="col field-content q-ml-xs" v-if="this.project != null">{{ this.project.stage_name }}</div>
               </div>
+              <div class="row q-mb-xs">
+                <div class="col-5 field-label text-right q-mr-md">Patrocinador:</div>
+                <div class="col field-content q-ml-xs" v-if="this.project != null && this.project.project_owner != null">{{ this.project.project_owner }}</div>
+                <div class="col field-content q-ml-xs" v-else>{{ Ninguno }}</div>
+              </div>
             </q-card-section>
         </q-card-section>
         </q-card>
