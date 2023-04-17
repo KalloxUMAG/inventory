@@ -417,7 +417,7 @@
           </div>
         </div>
 
-        <!--Projects and stages-->
+        <!--Projects stages and owner-->
 
         <div class="row justify-center">
           <div v-if="!newprojectstate" class="col q-mr-md">
@@ -505,6 +505,58 @@
             color="amber"
             @click="newstagestate = false, newprojectstate = false, disableProject = false"
             />
+        </div>
+        <div v-if="newprojectstate" class="row">
+          <div v-if="!newProjectOwnerState" class="col">
+            <SelectForm
+              class="row"
+              :disable="disableProjectOwner"
+              :options="projectOwnersOptions"
+              option_value="id"
+              option_label="name"
+              label="Patrocinador"
+              not_found_label="No hay patrocinadores disponibles"
+              @updateModel="
+                (value) => {
+                  projectowner = value;
+                }
+              "
+            />
+            <div class="row justify-end q-mt-md">
+              <q-btn
+                label="Añadir patrocinador"
+                color="amber"
+                @click="newProjectOwnerState = true"
+              />
+            </div>
+          </div>
+          <div v-else class="col">
+            <q-input
+              class="row"
+              v-model="newprojectownername"
+              label="Nombre patrocinador"
+              :disable="disableProjectOwner"
+            />
+            <div class="row justify-end q-mt-md">
+              <q-btn v-if="disableProjectOwner"
+                label="Editar"
+                color="amber"
+                @click="disableProjectOwner = false"
+                class="q-mr-sm"
+              />
+              <q-btn v-else
+                label="Guardar"
+                color="amber"
+                @click="disableProjectOwner = true"
+                class="q-mr-sm"
+              />
+              <q-btn
+                label="Ver lista"
+                color="amber"
+                @click="disableProjectOwner = false, newProjectOwnerState = false"
+              />
+            </div>
+          </div>
         </div>
 
         <!--Location-->
@@ -700,6 +752,7 @@ const disableBrand = ref(false)
 const disableInvoice = ref(false)
 const disableLocation = ref(false)
 const disableProject = ref(false)
+const disableProjectOwner = ref(false)
 const disableSupplier = ref(false)
 const equipmentimages = ref(null);
 const invoiceimage = ref(null);
@@ -728,6 +781,8 @@ const newinvoicenumber = ref(null);
 const newinvoicedate = ref(null);
 const newprojectstate = ref(null);
 const newprojectname = ref(null);
+const newProjectOwnerState = ref(false)
+const newprojectownername = ref(null)
 const newroomname = ref(null);
 const newroomstate = ref(null);
 const newstagestate = ref(null);
@@ -739,7 +794,9 @@ const newsupplieraddress = ref(null);
 const newunitname = ref(null);
 const newunitstate = ref(false);
 const project = ref(null);
+const projectowner = ref(null)
 const projectOptions = ref([]);
+const projectOwnersOptions = ref([])
 const reception_date = ref(null);
 const stage = ref(null);
 const stagesOptions = ref([]);
@@ -814,6 +871,15 @@ const getProjects = () => {
   axios.get("http://localhost:8000/api/projects").then((response) => {
     const projects = response.data;
     projectOptions.value = projects.map((x) => {
+      return { id: x.id, name: x.name };
+    });
+  });
+};
+
+const getProjectOwners = () => {
+  axios.get("http://localhost:8000/api/project_owners").then((response) => {
+    const projectsowners = response.data;
+    projectOwnersOptions.value = projectsowners.map((x) => {
       return { id: x.id, name: x.name };
     });
   });
@@ -1002,7 +1068,7 @@ async function createNewModelnumber(model_id) {
   }
 }
 
-async function createNewProject() {
+async function createNewProject(project_owner_id) {
   if (!newprojectstate.value) {
     return project.value;
   }
@@ -1013,8 +1079,13 @@ async function createNewProject() {
     return -1;
   }
 
+  if (project_owner_id == -1){
+    project_owner_id = null
+  }
+
   const projectdata = {
     name: projectname,
+    owner_id: project_owner_id
   };
 
   try {
@@ -1029,6 +1100,37 @@ async function createNewProject() {
       textColor: "white",
       icon: "error",
       message: "No se pudo crear el proyecto: " + error,
+    });
+  }
+}
+
+async function createNewProjectOwner() {
+  if (!newProjectOwnerState.value) {
+    return projectowner.value;
+  }
+
+  const projectownername = newprojectownername.value;
+
+  if (projectownername.trim().length == 0) {
+    return -1;
+  }
+
+  const projectownerdata = {
+    name: projectownername,
+  };
+
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/api/project_owners",
+      projectownerdata
+    );
+    return response.data;
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo crear el patrocinador: " + error,
     });
   }
 }
@@ -1379,7 +1481,8 @@ async function onSubmit() {
   equipmentdata["invoice_id"] = invoice_id;
 
   const equipment_id = await createNewEquipment(equipmentdata);
-  const project_id = await createNewProject();
+  const project_owner_id = await createNewProjectOwner();
+  const project_id = await createNewProject(project_owner_id);
   const stage_id = await createNewStage(project_id);
   await createNewProjectEquipment(equipment_id, project_id, stage_id);
   await uploadEquipmentImage(equipment_id);
@@ -1398,6 +1501,7 @@ onMounted(() => {
   getBrands();
   getInvoices();
   getProjects();
+  getProjectOwners();
   getSuppliers();
   getBuildings();
 });
