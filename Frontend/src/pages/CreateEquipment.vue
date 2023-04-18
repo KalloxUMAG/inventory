@@ -222,7 +222,7 @@
             option_label="name"
             label="Proveedor"
             not_found_label="No hay proveedores disponibles"
-            @updateModel="(value) => (supplier = value)"
+            @updateModel="(value) => {supplier = value, getInvoicesSupplier(value)}"
           />
           <div class="row justify-end q-mt-md">
             <q-btn
@@ -838,6 +838,15 @@ const getBuildings = () => {
 
 const getInvoices = () => {
   axios.get("http://localhost:8000/api/invoices").then((response) => {
+    const invoices = response.data;
+    invoicesOptions.value = invoices.map((x) => {
+      return { id: x.id, name: x.number.toString() };
+    });
+  });
+};
+
+const getInvoicesSupplier = (supplier_id) => {
+  axios.get("http://localhost:8000/api/invoices/supplier/"+supplier_id).then((response) => {
     const invoices = response.data;
     invoicesOptions.value = invoices.map((x) => {
       return { id: x.id, name: x.number.toString() };

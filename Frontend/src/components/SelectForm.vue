@@ -1,5 +1,5 @@
 <template>
-  <q-select v-model="model" :options="stringOptions" :option-value="option_value" :option-label="option_label" emit-value map-options :label="label" @update:model-value="updateModel(model)" use-input input-debounce="0" @filter="filterFn">
+  <q-select v-model="model" :options="stringOptions" :option-value="option_value" :option-label="option_label" emit-value map-options :label="label" @update:model-value="updateModel(model)" use-input input-debounce="0" @filter="filterFn" clearable>
     <template v-slot:no-option>
       <q-item>
         <q-item-section class="text-italic text-grey">
