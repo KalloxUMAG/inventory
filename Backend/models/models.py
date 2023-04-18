@@ -19,7 +19,7 @@ class Invoices(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     number: Mapped[int] = mapped_column(Integer)
-    image = mapped_column(LargeBinary)
+    supplier_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("Suppliers.id", ondelete="CASCADE"))
     equipments: Mapped[List['Equipments']] = relationship("Equipments", backref="Invoices")
     date = mapped_column(Date)
 
@@ -70,6 +70,7 @@ class Suppliers(Base):
     rut: Mapped[str] = mapped_column(String)
     supplier_contacts: Mapped[List['Supplier_contact']] = relationship("Supplier_contact", backref="Suppliers", cascade="delete,merge")
     city_address = mapped_column(String)
+    invoices: Mapped[List['Invoices']] = relationship("Invoices", backref="Suppliers", cascade="delete,merge")
     equipments: Mapped[List['Equipments']] = relationship("Equipments", backref="Suppliers")
 
 
