@@ -3,7 +3,7 @@
     <template v-slot:top>
       <h1 class="text-h5">{{ title }}</h1>
       <q-space/>
-      <q-btn color="positive" label="Agregar" class="q-mr-sm" />
+      <q-btn color="positive" label="Agregar" class="q-mr-sm" @click="addFunction"/>
       <q-input outlined dense debounce="300" placeholder="Buscar por fecha" color="primary" v-model="filter">
         <template v-slot:append>
           <q-icon name="search" />
@@ -21,6 +21,7 @@ export default {
     columns: Array,
     title: String,
     rows: Array,
+    addFunction: Function
   },
   methods: {
     load_details(item){

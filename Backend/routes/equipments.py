@@ -35,6 +35,7 @@ def add_equipment(equipment: EquipmentSchema, db:Session = Depends(get_db)):
    if equipment.invoice_id != None:
       db_invoice = get_invoice(equipment.invoice_id, db=db)
       if not db_invoice:
+         print("No se encontro el invoice", equipment.invoice_id)
          return Response(status_code=HTTP_404_NOT_FOUND)
    if equipment.model_number_id != None:
       db_model_number = get_model_number(equipment.model_number_id, db=db)

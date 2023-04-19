@@ -102,7 +102,7 @@ class Maintenances(Base):
     date = mapped_column(Date)
     observations: Mapped[str] = mapped_column(String)
     equiptment_id: Mapped[int] = mapped_column(Integer, ForeignKey("Equipments.id", ondelete="CASCADE"))
-    maintenance_type: Mapped[int] = mapped_column(Integer)
+    maintenance_type: Mapped[str] = mapped_column(String)
 
 class Rooms(Base):
     __tablename__ = "Rooms"

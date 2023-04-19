@@ -41,7 +41,7 @@ def get_invoice(invoice_id: int, db:Session = Depends(get_db)):
 
 #Get invoice by supplier_id
 @invoices.get("/api/invoices/supplier/{supplier_id}", response_model=List[InvoiceSchema])
-def get_invoice(supplier_id: int, db:Session = Depends(get_db)):
+def get_invoice_supplier(supplier_id: int, db:Session = Depends(get_db)):
     return db.query(Invoices).filter(Invoices.supplier_id == supplier_id).all()
 
 @invoices.delete("/api/invoices/{invoice_id}", status_code=HTTP_204_NO_CONTENT)
