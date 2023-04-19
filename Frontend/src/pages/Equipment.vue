@@ -241,7 +241,7 @@ function addFunction(){
       title: 'Agregar mantenimiento',
       fields: [
         {label: 'Fecha', type: 'date', defaultvalue: null, rules: [(val) => (val && val != null) || 'Este campo es obligatorio']},
-        {label: 'Tipo de mantenimiento', type: 'select', defaultvalue: null, options: [{id: 'Programada', name: 'Programada'}, {id: 'Correctiva', name: 'Correctiva'}], option_value: 'id', option_label: 'name', not_found_label: 'No hay tipos de mantenimiento'},
+        {label: 'Tipo de mantenimiento', type: 'select', defaultvalue: null, options: [{id: 'Programada', name: 'Programada'}, {id: 'Correctiva', name: 'Correctiva'}], option_value: 'id', option_label: 'name', not_found_label: 'No hay tipos de mantenimiento', rules: [(val) => (val && val != null) || 'Este campo es obligatorio']},
         {label: 'Observaciones', type: 'text', defaultvalue: null, autogrow: true, rules: []},
       ]
     }
@@ -257,7 +257,6 @@ function addFunction(){
       'Content-Type': 'application/json'
     }}).then((response) => getMaintenances());
     }).onCancel(() => {
-      console.log("Cancel")
     })
 }
 
