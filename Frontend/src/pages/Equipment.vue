@@ -144,7 +144,7 @@
             </div>
             <div class="row q-mb-xs">
               <div class="col-5 field-label text-right q-mr-md">
-                Patrocinador:
+                Dueño proyecto:
               </div>
               <div
                 class="col field-content q-ml-xs"
@@ -284,7 +284,6 @@ onMounted(() => {
 }
 
 .q-page {
-  background-color: #ffe6e9;
   color: #262626;
 }
 </style>

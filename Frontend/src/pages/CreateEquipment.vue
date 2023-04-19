@@ -4,13 +4,14 @@
       <q-form
         @submit.prevent="onSubmit"
         @reset="onReset"
-        class="q-gutter-md col-xs-12 col-sm-12 col-md-6 q-pa-md relative-position bg-grey-4"
+        class="q-gutter-md col-xs-12 col-sm-12 col-md-6 q-pa-md relative-position"
         ref="createEquipmentForm"
       >
         <!--Datos Producto-->
-
+        <h5>Agregar equipos</h5>
+        <div class="section-title">Datos equipo<hr/></div>
         <q-input
-          filled
+          outlined
           v-model="name"
           maxlength="49"
           label="Nombre del equipo*"
@@ -23,7 +24,7 @@
           ]"
         />
         <q-input
-          filled
+          outlined
           v-model="serial"
           maxlength="30"
           label="Código serial*"
@@ -34,7 +35,7 @@
           ]"
         />
         <q-input
-          filled
+          outlined
           v-model="inventory"
           maxlength="11"
           type="number"
@@ -52,6 +53,7 @@
         <div class="row justify-center">
           <div v-if="!newbrandstate" class="col q-mr-md">
             <SelectForm
+              outlined
               class="row q-mr-md"
               :disable="disableBrand"
               :options="brandOptions"
@@ -70,18 +72,19 @@
               <q-btn
                 label="Añadir marca"
                 icon="add"
-                class="bg-green-3 text-caption q-mr-md"
+                class="add-btn text-caption q-mr-md"
                 @click="newbrandstate = !newbrandstate"
               />
             </div>
           </div>
           <div v-else class="col">
             <div class="row">
-              <q-input v-model="newbrand" label="Nombre marca" class="col" :disable="disableBrand"/>
+              <q-input outlined v-model="newbrand" label="Nombre marca" class="col" :disable="disableBrand"/>
             </div>
           </div>
           <div v-if="!newbrandstate && !newmodelstate" class="col q-mr-md">
             <SelectForm
+              outlined
               class="row q-mr-md"
               :disable="disableBrand"
               :options="modelOptions"
@@ -100,14 +103,14 @@
               <q-btn
                 label="Añadir modelo"
                 icon="add"
-                class="bg-green-3 text-caption q-mr-md"
+                class="add-btn text-caption q-mr-md"
                 @click="newmodelstate = !newmodelstate"
               />
             </div>
           </div>
           <div v-else class="col q-pl-md">
             <div class="row">
-              <q-input v-model="newmodel" label="Nombre modelo" class="col" :disable="disableBrand"/>
+              <q-input outlined v-model="newmodel" label="Nombre modelo" class="col" :disable="disableBrand"/>
             </div>
           </div>
           <div
@@ -115,6 +118,7 @@
             class="col"
           >
             <SelectForm
+              outlined
               class="row"
               :disable="disableBrand"
               :options="modelNumberOptions"
@@ -132,7 +136,7 @@
               <q-btn
                 label="Añadir número modelo"
                 icon="add"
-                class="bg-green-3 text-caption"
+                class="add-btn text-caption"
                 @click="newmodelnumberstate = !newmodelnumberstate"
               />
             </div>
@@ -140,6 +144,7 @@
           <div v-else class="col q-pl-md">
             <div class="row">
               <q-input
+                outlined
                 v-model="newmodelnumber"
                 label="Número modelo"
                 class="col"
@@ -176,6 +181,7 @@
           label="Aplica para mantención"
         />
         <SelectForm
+          outlined
           v-if="maintenanceApply"
           :options="maintenanceOptions"
           option_value="value"
@@ -186,7 +192,7 @@
         />
         <!--Observacion-->
         <q-input
-          filled
+          outlined
           v-model="observation"
           type="textarea"
           label="Observación"
@@ -197,9 +203,9 @@
         <div class="row">
           <div class="col">
             <q-file
+              outlined
               v-model="equipmentimages"
               label="Selecciona imagenes para el equipo"
-              filled
               counter
               max-files="5"
               multiple
@@ -214,9 +220,11 @@
         </div>
 
         <!--Datos de compra-->
+        <div class="section-title q-mt-xl">Datos compra<hr/></div>
         <!--Datos de proveedor-->
         <div v-if="!newsupplierstate">
           <SelectForm
+            outlined
             :options="suppliersOptions"
             option_value="id"
             option_label="name"
@@ -228,7 +236,7 @@
             <q-btn
               label="Añadir proveedor"
               icon="add"
-              class="bg-green-3 text-caption"
+              class="add-btn text-caption"
               @click="newsupplierstate = !newsupplierstate"
             />
           </div>
@@ -237,13 +245,15 @@
         <div v-else>
           <div class="row">
             <q-input
+              outlined
               v-model="newsuppliername"
               label="Nombre proveedor"
               class="col"
               :disable="disableSupplier"
             />
-            <q-input v-model="newsupplierrut" label="Rut" class="col q-ml-md" :disable="disableSupplier"/>
+            <q-input outlined v-model="newsupplierrut" label="Rut" class="col q-ml-md" :disable="disableSupplier"/>
             <q-input
+              outlined
               v-model="newsupplieraddress"
               label="Dirección"
               class="col q-ml-md"
@@ -252,12 +262,14 @@
           </div>
           <div class="row q-mt-sm">
             <q-input
+              outlined
               v-model="workername1"
               label="Nombre trabajador"
               class="col"
               :disable="disableSupplier"
             />
             <SelectForm
+              outlined
               :disable="disableSupplier"
               :options="rolOptions"
               option_value="value"
@@ -268,12 +280,14 @@
               class="col q-ml-md"
             />
             <q-input
+              outlined
               v-model="workermail1"
               label="Correo trabajador"
               class="col q-ml-md"
               :disable="disableSupplier"
             />
             <q-input
+              outlined
               v-model="workerphone1"
               label="Telefono trabajador"
               class="col q-ml-md"
@@ -282,12 +296,14 @@
           </div>
           <div class="row q-mt-sm">
             <q-input
+              outlined
               v-model="workername2"
               label="Nombre trabajador"
               class="col"
               :disable="disableSupplier"
             />
             <SelectForm
+              outlined
               :disable="disableSupplier"
               :options="rolOptions"
               option_value="value"
@@ -298,12 +314,14 @@
               class="col q-ml-md"
             />
             <q-input
+              outlined
               v-model="workermail2"
               label="Correo trabajador"
               class="col q-ml-md"
               :disable="disableSupplier"
             />
             <q-input
+              outlined
               v-model="workerphone2"
               label="Telefono trabajador"
               class="col q-ml-md"
@@ -332,7 +350,7 @@
         </div>
 
         <q-input
-          filled
+          outlined
           v-model="reception_date"
           type="date"
           label="Fecha de recepción*"
@@ -346,6 +364,7 @@
         <!--Invoices-->
         <div v-if="!newinvoicestate">
           <SelectForm
+            outlined
             :options="invoicesOptions"
             option_value="id"
             option_label="name"
@@ -357,7 +376,7 @@
             <q-btn
               label="Añadir factura"
               icon="add"
-              class="bg-green-3 text-caption"
+              class="add-btn text-caption"
               @click="newinvoicestate = !newinvoicestate"
             />
           </div>
@@ -366,6 +385,7 @@
         <div v-else>
           <div class="row">
             <q-input
+              outlined
               v-model="newinvoicenumber"
               label="Numero"
               type="number"
@@ -373,6 +393,7 @@
               :disable="disableInvoice"
             />
             <q-input
+              outlined
               v-model="newinvoicedate"
               label="Fecha"
               type="date"
@@ -383,9 +404,9 @@
           </div>
           <div class="row q-mt-sm">
             <q-file
+              outlined
               class="col"
               v-model="invoiceimage"
-              filled
               label="Foto de factura"
               accept=".jpg, image/*"
               :disable="disableInvoice"
@@ -422,6 +443,7 @@
         <div class="row justify-center">
           <div v-if="!newprojectstate" class="col q-mr-md">
             <SelectForm
+              outlined
               class="row q-mr-md"
               :disable="disableProject"
               :options="projectOptions"
@@ -440,7 +462,7 @@
               <q-btn
                 label="Añadir Proyecto"
                 icon="add"
-                class="bg-green-3 text-caption q-mr-md"
+                class="add-btn text-caption q-mr-md"
                 @click="newprojectstate = !newprojectstate"
               />
             </div>
@@ -448,6 +470,7 @@
           <div v-else class="col q-mr-lg">
             <div class="row">
               <q-input
+                outlined
                 v-model="newprojectname"
                 label="Nombre proyeto"
                 class="col"
@@ -458,6 +481,7 @@
 
           <div v-if="!newstagestate && !newprojectstate" class="col q-ml-md">
             <SelectForm
+              outlined
               class="row"
               :disable="disableProject"
               :options="stagesOptions"
@@ -471,7 +495,7 @@
               <q-btn
                 label="Añadir Etapa"
                 icon="add"
-                class="bg-green-3 text-caption q-ml-md"
+                class="add-btn text-caption q-ml-md"
                 @click="newstagestate = !newstagestate"
               />
             </div>
@@ -479,6 +503,7 @@
           <div v-else class="col">
             <div class="row">
               <q-input
+                outlined
                 v-model="newstagename"
                 label="Nombre etapa"
                 class="col"
@@ -509,13 +534,14 @@
         <div v-if="newprojectstate" class="row">
           <div v-if="!newProjectOwnerState" class="col">
             <SelectForm
+              outlined
               class="row"
               :disable="disableProjectOwner"
               :options="projectOwnersOptions"
               option_value="id"
               option_label="name"
-              label="Patrocinador"
-              not_found_label="No hay patrocinadores disponibles"
+              label="Dueño proyecto"
+              not_found_label="No hay dueños disponibles"
               @updateModel="
                 (value) => {
                   projectowner = value;
@@ -524,17 +550,19 @@
             />
             <div class="row justify-end q-mt-md">
               <q-btn
-                label="Añadir patrocinador"
+                label="Añadir dueño"
                 color="amber"
+                class="add-btn"
                 @click="newProjectOwnerState = true"
               />
             </div>
           </div>
           <div v-else class="col">
             <q-input
+              outlined
               class="row"
               v-model="newprojectownername"
-              label="Nombre patrocinador"
+              label="Nombre dueño"
               :disable="disableProjectOwner"
             />
             <div class="row justify-end q-mt-md">
@@ -560,9 +588,11 @@
         </div>
 
         <!--Location-->
+        <div class="section-title q-mt-xl">Datos Ubicacion<hr/></div>
         <div class="row justify-center">
           <div v-if="!newbuildingstate" class="col q-mr-md">
             <SelectForm
+              outlined
               class="row q-mr-md"
               :disable="disableLocation"
               :options="buildingOptions"
@@ -581,7 +611,7 @@
               <q-btn
                 label="Añadir Edificio"
                 icon="add"
-                class="bg-green-3 text-caption q-mr-md"
+                class="add-btn text-caption q-mr-md"
                 @click="newbuildingstate = !newbuildingstate"
               />
             </div>
@@ -589,6 +619,7 @@
           <div v-else class="col">
             <div class="row">
               <q-input
+                outlined
                 v-model="newbuildingname"
                 label="Nombre edificio"
                 class="col"
@@ -598,6 +629,7 @@
           </div>
           <div v-if="!newbuildingstate && !newunitstate" class="col q-mr-md">
             <SelectForm
+              outlined
               class="row q-mr-md"
               :disable="disableLocation"
               :options="unitOptions"
@@ -614,9 +646,10 @@
             />
             <div class="row justify-end q-pt-md">
               <q-btn
+                outlined
                 label="Añadir unidad"
                 icon="add"
-                class="bg-green-3 text-caption q-mr-md"
+                class="add-btn text-caption q-mr-md"
                 @click="newunitstate = !newunitstate"
               />
             </div>
@@ -624,6 +657,7 @@
           <div v-else class="col q-pl-md">
             <div class="row">
               <q-input
+                outlined
                 v-model="newunitname"
                 label="Nombre unidad"
                 class="col"
@@ -636,6 +670,7 @@
             class="col"
           >
             <SelectForm
+              outlined
               class="row"
               :disable="disableLocation"
               :options="roomOptions"
@@ -653,14 +688,14 @@
               <q-btn
                 label="Añadir sala"
                 icon="add"
-                class="bg-green-3 text-caption"
+                class="add-btn text-caption"
                 @click="newroomstate = !newroomstate"
               />
             </div>
           </div>
           <div v-else class="col q-pl-md">
             <div class="row">
-              <q-input v-model="newroomname" label="Nombre sala" class="col" :disable="disableLocation"/>
+              <q-input outlined v-model="newroomname" label="Nombre sala" class="col" :disable="disableLocation"/>
             </div>
           </div>
         </div>
@@ -685,15 +720,8 @@
         </div>
 
         <!--Form button-->
-        <div class="row justify-end">
+        <div class="row justify-end q-mt-mx">
           <q-btn label="Crear" type="submit" color="primary" />
-          <q-btn
-            label="Limpiar campos"
-            type="reset"
-            color="primary"
-            flat
-            class="q-ml-sm"
-          />
         </div>
         <q-inner-loading
           :showing="loading"
@@ -1139,7 +1167,7 @@ async function createNewProjectOwner() {
       color: "red-3",
       textColor: "white",
       icon: "error",
-      message: "No se pudo crear el patrocinador: " + error,
+      message: "No se pudo crear el dueño: " + error,
     });
   }
 }
@@ -1516,13 +1544,45 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
+body{
+  background-image: url(./../assets/background.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
+.add-btn{
+  background-color: #7b7bd2 !important;
+  color: #fff;
+  border: 2px solid #7777cf;
+}
+
+.q-form{
+  margin-top: 10px;
+  background-color: #fffffe;
+  border-radius: 1%;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.section-title{
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+hr{
+  width: 20%;
+  height: 2px;
+  background-color: black;
+}
 input[type="number"] {
   -moz-appearance: textfield;
 }
