@@ -721,7 +721,7 @@
 
         <!--Form button-->
         <div class="row justify-end q-mt-mx">
-          <q-btn label="Crear" type="submit" color="primary" />
+          <q-btn label="Crear" type="submit" color="positive" />
         </div>
         <q-inner-loading
           :showing="loading"
