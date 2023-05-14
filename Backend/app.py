@@ -25,7 +25,7 @@ def create_tables():
 #create_tables()
 app = FastAPI()
 app.mount("/images", StaticFiles(directory="images"), name="images")
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["GET", "PUT", "POST", "DELETE"], allow_headers=["*"])
 
 routes = [buildings, brands, equipments, equipments_projects, invoices, maintenances, models, model_numbers, units, projects, project_owners, rooms, stages, suppliers, suppliers_contacts]
 

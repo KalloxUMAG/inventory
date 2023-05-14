@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response, Depends, UploadFile
 from fastapi.responses import FileResponse
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from models.models import Equipments, Suppliers, Invoices, Model_numbers, Rooms, Units, Buildings, Maintenances, Brands, Models
-from schemas.equipment_schema import EquipmentSchema, EquipmentFullSchema, EquipmentListSchema
+from schemas.equipment_schema import EquipmentSchema, EquipmentFullSchema, EquipmentListSchema, UpdateEquipmentSchema
 from typing import List
 from config.database import get_db
 from sqlalchemy.orm import Session
@@ -108,3 +108,15 @@ def delete_equipment(equipment_id: int, db:Session = Depends(get_db)):
     db.delete(db_equipment)
     db.commit()
     return Response(status_code=HTTP_204_NO_CONTENT)
+
+@equipments.put("/api/equipments/{equipment_id}", response_model=UpdateEquipmentSchema)
+def update_equipment(data_update: UpdateEquipmentSchema, equipment_id: int, db:Session = Depends(get_db)):
+    db_equipment = db.query(Equipments).filter(Equipments.id == equipment_id).first()
+    if not db_equipment:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    for key, value in data_update.dict(exclude_unset=True).items():
+        setattr(db_equipment, key, value)
+    db.add(db_equipment)
+    db.commit()
+    db.refresh(db_equipment)
+    return db_equipment

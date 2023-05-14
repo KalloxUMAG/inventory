@@ -4,7 +4,7 @@
       <q-form @submit="onOKClick" ref="createModalForm">
         <div class="text-bold text-subtitle1">{{ title }}</div>
         <div v-for="(field, index) in fields" v-bind:key="index">
-          <q-input v-if="field.type == 'text' || field.type == 'date'" :type="field.type" stack-label :label="field.label" v-model="models[index]" :autogrow="field.autogrow" :rules="field.rules" lazy-rules/>
+          <q-input v-if="field.type == 'text' || field.type == 'date' || field.type == 'number'" :type="field.type" stack-label :label="field.label" v-model="models[index]" :autogrow="field.autogrow" :rules="field.rules" lazy-rules/>
           <SelectForm v-if="field.type == 'select'" stack-label :options="field.options" :option_value="field.option_value" :option_label="field.option_label" :label="field.label" :not_found_label="field.not_found_label" @updateModel="(value) => (models[index] = value)" :rules="field.rules" lazy-rules/>
         </div>
         <div class="q-mt-sm row justify-end">

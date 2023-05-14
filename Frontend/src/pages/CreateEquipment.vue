@@ -1026,7 +1026,7 @@ async function createNewBuilding() {
   }
 }
 
-async function createNewInvoice() {
+async function createNewInvoice(supplier_id) {
   if (!newinvoicestate.value) {
     return invoice.value;
   }
@@ -1034,6 +1034,7 @@ async function createNewInvoice() {
   const invoicedata = {
     number: newinvoicenumber.value,
     date: newinvoicedate.value,
+    supplier_id: supplier_id
   };
 
   try {
@@ -1509,7 +1510,7 @@ async function onSubmit() {
   }
   equipmentdata["supplier_id"] = supplier_id;
   await createNewWorker(supplier_id);
-  const invoice_id = await createNewInvoice();
+  const invoice_id = await createNewInvoice(supplier_id);
   if (invoice_id == -1) {
     console.log("8");
     loading.value = false;

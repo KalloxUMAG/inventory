@@ -69,3 +69,20 @@ class EquipmentFullSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+class UpdateEquipmentSchema(BaseModel):
+    id: Optional[int]
+    name: Optional[str]
+    serial_number: Optional[str]
+    umag_inventory_code: Optional[str]
+    reception_date: Optional[date]
+    maintenance_period: Optional[int]
+    last_preventive_mainteinance: Optional[date]
+    observation: Optional[str]
+    supplier_id: Optional[int]
+    invoice_id: Optional[int]
+    model_number_id: Optional[int]
+    room_id: Optional[int]
+
+    class Config:
+        orm_mode = True
