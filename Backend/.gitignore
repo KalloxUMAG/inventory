@@ -4,4 +4,7 @@ __pycache__
 /images/equipments/
 /images/invoices/
 
+#Environments files
+.env
+
 !.gitkeep
