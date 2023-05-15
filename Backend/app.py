@@ -22,7 +22,7 @@ from routes.stages import stages
 def create_tables():
         Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
-#create_tables()
+create_tables()
 app = FastAPI()
 app.mount("/images", StaticFiles(directory="images"), name="images")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["GET", "PUT", "POST", "DELETE"], allow_headers=["*"])
