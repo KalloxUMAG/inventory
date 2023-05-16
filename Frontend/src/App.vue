@@ -12,8 +12,5 @@ export default defineComponent({
 
 <style>
 body{
-  background-image: url(./assets/background.jpg);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 </style>

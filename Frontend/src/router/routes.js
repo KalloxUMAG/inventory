@@ -7,6 +7,7 @@ const routes = [
       { path: "/equipments/:id", component: () => import("src/pages/Equipment.vue")},
       { path: "/equipments/new_equipment", component: () => import("src/pages/CreateEquipment.vue")},
       { path: "/equipments", component: () => import("src/pages/Equipments.vue")},
+      { path: "/supplies", component: () => import("src/pages/Supplies.vue")},
     ],
   },
   //Not found
