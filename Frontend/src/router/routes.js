@@ -7,6 +7,8 @@ const routes = [
       { path: "/equipments/:id", component: () => import("src/pages/Equipment.vue")},
       { path: "/equipments/new_equipment", component: () => import("src/pages/CreateEquipment.vue")},
       { path: "/equipments", component: () => import("src/pages/Equipments.vue")},
+      { path: "/supplies/new_supply", component: () => import("src/pages/CreateSupply.vue")},
+      { path: "/supplies/new_lot", component: () => import("src/pages/CreateLot.vue")},
       { path: "/supplies", component: () => import("src/pages/Supplies.vue")},
     ],
   },

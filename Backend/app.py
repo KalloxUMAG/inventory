@@ -19,6 +19,9 @@ from routes.projects import projects
 from routes.project_owners import project_owners
 from routes.stages import stages
 from routes.lots import lots
+from routes.supplies import supplies
+from routes.supplies_types import supplies_types
+from routes.supplies_brands import supplies_brands
 
 
 def create_tables():
@@ -52,6 +55,9 @@ routes = [
     project_owners,
     rooms,
     stages,
+    supplies,
+    supplies_brands,
+    supplies_types,
     suppliers,
     suppliers_contacts,
 ]
