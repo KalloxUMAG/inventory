@@ -420,12 +420,14 @@ async function createNewLocation(){
     return location.value;
   }
 
-  if (location.value.trim().length == 0) {
+  const locationName = newLocation.value;
+
+  if (locationName.trim().length == 0) {
     return -1;
   }
 
   const locationData = {
-    'name': location.value
+    'name': locationName
   }
 
   try {
@@ -466,12 +468,14 @@ async function createNewSublocation(location_id){
     return sublocation.value;
   }
 
-  if (sublocation.value.trim().length == 0) {
+  const sublocationName = newSublocation.value;
+
+  if (sublocationName.trim().length == 0) {
     return -1;
   }
 
   const sublocationData = {
-    name: sublocation.value,
+    name: sublocationName,
     location_id: location_id
   }
 
@@ -568,7 +572,7 @@ async function onSubmit() {
     stock: stock.value,
     samples: samples.value,
     observations: observation.value,
-    supplies_id: supply.value,
+    supply_id: supply.value,
     sub_location_id: sublocation.value,
     project_id: project.value,
   };
@@ -586,8 +590,9 @@ async function onSubmit() {
     loading.value = false;
     return;
   }
+  lot['sub_location_id'] = sub_location_id;
   const lot_id = await createNewLot(lot);
-
+  console.log(lot_id);
   loading.value = false;
 }
 
