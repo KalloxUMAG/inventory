@@ -22,6 +22,8 @@ from routes.lots import lots
 from routes.supplies import supplies
 from routes.supplies_types import supplies_types
 from routes.supplies_brands import supplies_brands
+from routes.locations import locations
+from routes.sub_locations import sub_locations
 
 
 def create_tables():
@@ -46,6 +48,7 @@ routes = [
     equipments,
     equipments_projects,
     invoices,
+    locations,
     lots,
     maintenances,
     models,
@@ -55,6 +58,7 @@ routes = [
     project_owners,
     rooms,
     stages,
+    sub_locations,
     supplies,
     supplies_brands,
     supplies_types,

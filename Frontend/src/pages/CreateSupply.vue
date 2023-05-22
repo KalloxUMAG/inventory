@@ -7,7 +7,7 @@
         ref="createSupplyForm"
       >
         <!--Datos Producto-->
-        <h5>Agregar insumos/lotes</h5>
+        <h5>Agregar insumos</h5>
         <div class="section-title">
           Datos Insumo
           <hr />
@@ -274,7 +274,7 @@
         </div>
         <q-inner-loading
           :showing="loading"
-          label="Creando equipamiento"
+          label="Creando insumo"
           label-class="text-deep-orange"
           label-style="font-size: 1.6em"
         />
@@ -292,7 +292,6 @@ import SelectForm from "src/components/SelectForm.vue";
 
 //Options Selects
 const brandOptions = ref([]);
-const suppliesOptions = ref([]);
 const suppliersOptions = ref([])
 const typeOptions = ref([])
 const rolOptions = [
@@ -339,16 +338,6 @@ const loading = ref(false);
 //Form
 const createSupplyForm = ref(null);
 const $q = useQuasar();
-
-const getSupplies = () => {
-  axios.get("http://localhost:8000/api/supplies").then((response) => {
-    const supplies = response.data;
-    suppliesOptions.value = supplies.map((x) => {
-      const name = `${x.name} | ${x.supplies_brand_name} | ${x.code} | ${x.supplier_name}`;
-      return { id: x.id, name: name };
-    });
-  });
-};
 
 const getSuppliesBrands = () => {
   axios.get("http://localhost:8000/api/supplies_brands").then((response) => {
