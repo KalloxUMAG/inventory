@@ -91,14 +91,7 @@ const lotsColumns = [
     label: "Observacion",
     field: "observations",
     sortable: false,
-  },
-  {
-    name: "details",
-    align: "center",
-    label: "Detalles",
-    field: "details",
-    sortable: false,
-  },
+  }
 ];
 
 const suppliesColumns = [
@@ -143,13 +136,6 @@ const suppliesColumns = [
     label: "Proveedor",
     field: "supplier_name",
     sortable: true,
-  },
-  {
-    name: "details",
-    align: "center",
-    label: "Detalles",
-    field: "details",
-    sortable: false,
   },
 ];
 

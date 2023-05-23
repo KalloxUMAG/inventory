@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpr lfr">
-    <q-header bordered class="bg-primary text-white" height-hint="98">
+    <q-header bordered class="bg-primary text-grey" height-hint="98">
       <q-tabs align="center" inline-label>
         <q-route-tab
           to="/"
@@ -32,7 +32,7 @@
 
 <style lang="scss">
 .my-menu-link {
-  color: #dcd3e7;
-  background: #428f7d;
+  color: #fff;
+  background: rgba(132, 139, 200, 0.18);
 }
 </style>

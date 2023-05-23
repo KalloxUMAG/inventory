@@ -10,10 +10,9 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style lang="scss">
+@import './css/quasar.variables.scss';
 body{
-  background-image: url(./assets/background.jpg);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-color: $light-page;
 }
 </style>

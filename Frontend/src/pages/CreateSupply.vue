@@ -555,7 +555,6 @@ async function onSubmit() {
 }
 
 onMounted(() => {
-  getSupplies();
   getSuppliesBrands();
   getSuppliesTypes();
   getSuppliers();

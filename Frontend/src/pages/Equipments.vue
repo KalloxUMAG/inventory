@@ -57,14 +57,7 @@ const columns = [
     label: "Fecha",
     field: "reception_date",
     sortable: false,
-  },
-  {
-    name: "details",
-    align: "center",
-    label: "Detalles",
-    field: "details",
-    sortable: false,
-  },
+  }
 ];
 
 export default {

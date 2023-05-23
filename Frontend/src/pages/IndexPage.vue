@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center bg-white">
+  <q-page class="flex flex-center">
     <img
       alt="placeholder"
       src="~assets/placeholder.png"
