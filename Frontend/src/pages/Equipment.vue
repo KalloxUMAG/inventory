@@ -295,6 +295,12 @@ function editLocation(){
 }
 
 function editPurchase(){
+  const projectData = {
+    project_id: project.value ? project.value.id : null,
+    project_name: project.value ? project.value.project_name : null,
+    stage_id: project.value ? project.value.stage_id : null,
+    stage_name: project.value ? project.value.stage_name : null
+  }
   $q.dialog({
     component: EditEquipmentPurchase,
     componentProps: {
@@ -302,8 +308,8 @@ function editPurchase(){
       supplier_value: {'id': equipment.value.supplier_id, 'name': equipment.value.supplier_name},
       reception_date_value: equipment.value.reception_date,
       invoice_value: {'id': equipment.value.invoice_id, 'name': equipment.value.invoice_number},
-      project_value: {'id': project.value.id, 'name': project.value.project_name},
-      stage_value: {'id': project.value.stage_id, 'name': project.value.stage_name}
+      project_value: {'id': projectData['project_id'], 'name': projectData['project_name']},
+      stage_value: {'id': projectData['stage_id'], 'name': projectData['stage_name']}
     }
   }).onOk((data) => {
     })
