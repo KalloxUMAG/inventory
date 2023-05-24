@@ -15,7 +15,7 @@
         :columns="lotsColumns"
         :rows="lots"
         title="Lotes"
-        detail_query="/supplies/"
+        detail_query="/supplies/lot/"
         row_key="id"
         addTo="/supplies/new_lot"
       />
@@ -32,7 +32,7 @@ const lotsColumns = [
   {
     name: "supply_name",
     align: "left",
-    label: "Nombre",
+    label: "Insumo",
     field: "supply_name",
     sortable: false,
   },
