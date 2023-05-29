@@ -157,6 +157,7 @@ class Maintenances(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     date = mapped_column(Date)
     observations: Mapped[str] = mapped_column(String)
+    state: Mapped[bool] = mapped_column(Boolean)
     equiptment_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Equipments.id", ondelete="CASCADE")
     )
@@ -238,6 +239,9 @@ class Supplies(Base):
     name: Mapped[str] = mapped_column(String)
     code: Mapped[str] = mapped_column(String)
     cost: Mapped[str] = mapped_column(Integer)
+    stock: Mapped[int] = mapped_column(Integer)
+    critical_stock: Mapped[str] = mapped_column(Integer)
+    samples: Mapped[int] = mapped_column(Integer)
 
     supplies_brand_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Supplies_brands.id", ondelete="CASCADE")
@@ -303,9 +307,7 @@ class Lots(Base):
         String
     )  # Numero unico por cada lote (puede tener letras)
     due_date = mapped_column(Date)
-    full_stock: Mapped[int] = mapped_column(Integer)
     stock: Mapped[int] = mapped_column(Integer)
-    samples: Mapped[int] = mapped_column(Integer)
     observations: Mapped[str] = mapped_column(String)
     supplies_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Supplies.id", ondelete="CASCADE")

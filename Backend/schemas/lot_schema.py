@@ -7,7 +7,6 @@ class LotListSchema(BaseModel):
     id: int
     number: str
     due_date: Optional[date]
-    full_stock: int
     stock: int
     samples: Optional[int]
     observations: Optional[str]
@@ -26,9 +25,7 @@ class LotListSchema(BaseModel):
 class CreateLotSchema(BaseModel):
     number: str
     due_date: Optional[date]
-    full_stock: int
     stock: int
-    samples: Optional[int]
     observations: Optional[str]
     supply_id: int
     sub_location_id: Optional[int]

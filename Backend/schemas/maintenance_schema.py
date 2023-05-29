@@ -6,6 +6,7 @@ class MaintenanceSchema(BaseModel):
     id: Optional[int]
     date: date
     observations: Optional[str]
+    state: Optional[bool]
     maintenance_type: str
     equiptment_id: int
 
@@ -16,6 +17,7 @@ class MaintenanceFromEquipment(BaseModel):
     id: int
     date: date
     observations: Optional[str]
+    state: Optional[bool]
     maintenance_type: str
 
     class Config:

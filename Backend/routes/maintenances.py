@@ -20,7 +20,7 @@ def add_maintenances(maintenance: MaintenanceSchema, db:Session = Depends(get_db
     db_equipment = get_equipment_exist(maintenance.equiptment_id, db=db)
     if not db_equipment:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    new_maintenance = Maintenances(date=maintenance.date, observations=maintenance.observations, maintenance_type=maintenance.maintenance_type, equiptment_id = maintenance.equiptment_id)
+    new_maintenance = Maintenances(date=maintenance.date, observations=maintenance.observations, state=maintenance.state, maintenance_type=maintenance.maintenance_type, equiptment_id = maintenance.equiptment_id)
     db.add(new_maintenance)
     db.commit()
     db.refresh(new_maintenance)
@@ -32,7 +32,7 @@ def get_maintenance(maintenance_id: int, db:Session = Depends(get_db)):
 
 @maintenances.get("/api/maintenances/{equipment_id}", response_model=List[MaintenanceFromEquipment])
 def get_maintenances_equipment(equipment_id: int, db:Session = Depends(get_db)):
-    return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations).filter(Maintenances.equiptment_id == equipment_id).all()
+    return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations, Maintenances.state).filter(Maintenances.equiptment_id == equipment_id).all()
 
 @maintenances.put("/api/maintenances/{maintenance_id}", response_model=MaintenanceSchema)
 def update_maintenance(data_update: MaintenanceSchema, maintenance_id: int, db:Session = Depends(get_db)):

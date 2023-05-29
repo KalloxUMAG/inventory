@@ -16,7 +16,6 @@ def get_lots(db: Session = Depends(get_db)):
             Lots.id,
             Lots.number,
             Lots.due_date,
-            Lots.full_stock,
             Lots.stock,
             Lots.samples,
             Lots.observations,
@@ -43,7 +42,6 @@ def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
     new_lot = Lots(
         number=lot.number,
         due_date=lot.due_date,
-        full_stock=lot.full_stock,
         stock=lot.stock,
         samples=lot.samples,
         observations=lot.observations,
@@ -65,7 +63,6 @@ def get_lot(lot_id: int, db: Session = Depends(get_db)):
             Lots.id,
             Lots.number,
             Lots.due_date,
-            Lots.full_stock,
             Lots.stock,
             Lots.samples,
             Lots.observations,
