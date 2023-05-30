@@ -342,8 +342,8 @@ const api_prefix = process.env.API;
 
 const getSuppliesBrands = () => {
   axios.get(api_prefix + "/supplies_brands").then((response) => {
-    const supplies_brands = response.data;
-    brandOptions.value = supplies_brands.map((x) => {
+    const result = response.data;
+    brandOptions.value = result.map((x) => {
       return { id: x.id, name: x.name };
     });
   });
@@ -351,8 +351,8 @@ const getSuppliesBrands = () => {
 
 const getSuppliesTypes = () => {
   axios.get(api_prefix + "/supplies_types").then((response) => {
-    const supplies_types = response.data;
-    typeOptions.value = supplies_types.map((x) => {
+    const result = response.data;
+    typeOptions.value = result.map((x) => {
       return { id: x.id, name: x.name };
     });
   });
@@ -360,8 +360,8 @@ const getSuppliesTypes = () => {
 
 const getSuppliers = () => {
   axios.get(api_prefix + "/suppliers").then((response) => {
-    const suppliers = response.data;
-    suppliersOptions.value = suppliers.map((x) => {
+    const result = response.data;
+    suppliersOptions.value = result.map((x) => {
       return { id: x.id, name: x.name };
     });
   });

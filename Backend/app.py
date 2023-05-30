@@ -4,7 +4,6 @@ from fastapi.staticfiles import StaticFiles
 
 from config.database import Base, engine
 from routes.equipments import equipments
-from routes.equipments_has_projects import equipments_projects
 from routes.buildings import buildings
 from routes.units import units
 from routes.rooms import rooms
@@ -31,7 +30,7 @@ def create_tables():
     Base.metadata.create_all(bind=engine)
 
 
-# create_tables()
+create_tables()
 app = FastAPI()
 app.mount("/images", StaticFiles(directory="images"), name="images")
 app.add_middleware(
@@ -46,7 +45,6 @@ routes = [
     buildings,
     brands,
     equipments,
-    equipments_projects,
     invoices,
     locations,
     lots,
