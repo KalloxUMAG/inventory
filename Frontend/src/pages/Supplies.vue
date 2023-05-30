@@ -91,7 +91,7 @@ const lotsColumns = [
     label: "Observacion",
     field: "observations",
     sortable: false,
-  }
+  },
 ];
 
 const suppliesColumns = [
@@ -141,16 +141,17 @@ const suppliesColumns = [
 
 const lots = ref([]);
 const supplies = ref([]);
+const api_prefix = process.env.API;
 
 const getLots = () => {
   axios
-    .get("http://localhost:8000/api/lots")
+    .get(api_prefix + "/lots")
     .then((response) => (lots.value = response.data));
 };
 
 const getSupplies = () => {
   axios
-    .get("http://localhost:8000/api/supplies")
+    .get(api_prefix + "/supplies")
     .then((response) => (supplies.value = response.data));
 };
 

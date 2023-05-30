@@ -292,8 +292,8 @@ import SelectForm from "src/components/SelectForm.vue";
 
 //Options Selects
 const brandOptions = ref([]);
-const suppliersOptions = ref([])
-const typeOptions = ref([])
+const suppliersOptions = ref([]);
+const typeOptions = ref([]);
 const rolOptions = [
   {
     value: "Vendedor",
@@ -313,34 +313,35 @@ const code = ref(null);
 const cost = ref(null);
 const newBrand = ref(null);
 const newType = ref(null);
-const supplier = ref(null)
-const newSupplierName = ref(null)
-const newSupplierRut = ref(null)
-const newSupplierAddress = ref(null)
-const workerName1 = ref(null)
-const workerRol1 = ref(null)
-const workerMail1 = ref(null)
-const workerPhone1 = ref(null)
-const workerName2 = ref(null)
-const workerRol2 = ref(null)
-const workerMail2 = ref(null)
-const workerPhone2 = ref(null)
+const supplier = ref(null);
+const newSupplierName = ref(null);
+const newSupplierRut = ref(null);
+const newSupplierAddress = ref(null);
+const workerName1 = ref(null);
+const workerRol1 = ref(null);
+const workerMail1 = ref(null);
+const workerPhone1 = ref(null);
+const workerName2 = ref(null);
+const workerRol2 = ref(null);
+const workerMail2 = ref(null);
+const workerPhone2 = ref(null);
 
 //Flags
 const disableBrand = ref(false);
 const newBrandState = ref(false);
 const disableType = ref(false);
 const newTypeState = ref(false);
-const newSupplierState = ref(false)
-const disableSupplier = ref(false)
+const newSupplierState = ref(false);
+const disableSupplier = ref(false);
 const loading = ref(false);
 
 //Form
 const createSupplyForm = ref(null);
 const $q = useQuasar();
+const api_prefix = process.env.API;
 
 const getSuppliesBrands = () => {
-  axios.get("http://localhost:8000/api/supplies_brands").then((response) => {
+  axios.get(api_prefix + "/supplies_brands").then((response) => {
     const supplies_brands = response.data;
     brandOptions.value = supplies_brands.map((x) => {
       return { id: x.id, name: x.name };
@@ -349,7 +350,7 @@ const getSuppliesBrands = () => {
 };
 
 const getSuppliesTypes = () => {
-  axios.get("http://localhost:8000/api/supplies_types").then((response) => {
+  axios.get(api_prefix + "/supplies_types").then((response) => {
     const supplies_types = response.data;
     typeOptions.value = supplies_types.map((x) => {
       return { id: x.id, name: x.name };
@@ -358,7 +359,7 @@ const getSuppliesTypes = () => {
 };
 
 const getSuppliers = () => {
-  axios.get("http://localhost:8000/api/suppliers").then((response) => {
+  axios.get(api_prefix + "/suppliers").then((response) => {
     const suppliers = response.data;
     suppliersOptions.value = suppliers.map((x) => {
       return { id: x.id, name: x.name };
@@ -368,17 +369,17 @@ const getSuppliers = () => {
 
 //Create functions
 
-async function createNewBrand(){
-  if(!newBrandState.value){
+async function createNewBrand() {
+  if (!newBrandState.value) {
     return brand.value;
   }
   const brandData = {
-    name: newBrand.value
-  }
+    name: newBrand.value,
+  };
 
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/supplies_brands",
+      api_prefix + "/supplies_brands",
       brandData
     );
     return response.data;
@@ -392,19 +393,16 @@ async function createNewBrand(){
   }
 }
 
-async function createNewType(){
-  if(!newTypeState.value){
+async function createNewType() {
+  if (!newTypeState.value) {
     return type.value;
   }
   const typeData = {
-    name: newType.value
-  }
+    name: newType.value,
+  };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/supplies_types",
-      typeData
-    );
+    const response = await axios.post(api_prefix + "/supplies_types", typeData);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -426,10 +424,7 @@ async function createNewSupplier() {
     city_address: newSupplierAddress.value,
   };
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/suppliers",
-      supplierData
-    );
+    const response = await axios.post(api_prefix + "/suppliers", supplierData);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -455,7 +450,7 @@ async function createNewWorker(supplier_id) {
     };
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/suppliers_contacts",
+        api_prefix + "/suppliers_contacts",
         workerData1
       );
     } catch (error) {
@@ -477,7 +472,7 @@ async function createNewWorker(supplier_id) {
     };
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/suppliers_contacts",
+        api_prefix + "/suppliers_contacts",
         workerData2
       );
     } catch (error) {
@@ -491,13 +486,9 @@ async function createNewWorker(supplier_id) {
   }
 }
 
-
-async function createNewSupply(supplyData){
+async function createNewSupply(supplyData) {
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/supplies",
-      supplyData
-    );
+    const response = await axios.post(api_prefix + "/supplies", supplyData);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -517,8 +508,8 @@ async function onSubmit() {
     cost: cost.value,
     supplies_brand_id: brand.value,
     supplier_id: supplier.value,
-    supplies_type_id: type.value
-  }
+    supplies_type_id: type.value,
+  };
 
   loading.value = true;
 
@@ -527,14 +518,14 @@ async function onSubmit() {
     loading.value = false;
     return;
   }
-  supplyData['supplies_brand_id'] = supplies_brand_id;
+  supplyData["supplies_brand_id"] = supplies_brand_id;
 
   const supplies_type_id = await createNewType();
   if (supplies_type_id == -1) {
     loading.value = false;
     return;
   }
-  supplyData['supplies_type_id'] = supplies_type_id;
+  supplyData["supplies_type_id"] = supplies_type_id;
 
   const supplier_id = await createNewSupplier();
   if (supplier_id == -1) {
@@ -544,7 +535,7 @@ async function onSubmit() {
   supplyData["supplier_id"] = supplier_id;
   await createNewWorker(supplier_id);
 
-  const supply_id = await createNewSupply(supplyData)
+  const supply_id = await createNewSupply(supplyData);
   if (supply_id == -1) {
     loading.value = false;
     return;

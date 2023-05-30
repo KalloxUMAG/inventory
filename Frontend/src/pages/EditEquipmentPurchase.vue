@@ -97,7 +97,7 @@ const props = defineProps({
   reception_date_value: String,
   invoice_value: Object,
   project_value: Object,
-  stage_value: Object
+  stage_value: Object,
 });
 
 const {
@@ -106,69 +106,71 @@ const {
   reception_date_value,
   invoice_value,
   project_value,
-  stage_value
+  stage_value,
 } = toRefs(props);
 
-const supplier = ref(supplier_value.value.id)
-const reception_date = ref(reception_date_value.value)
-const invoice = ref(invoice_value.value.id)
-const project = ref(project_value.value.id)
-const stage = ref(stage_value.value.id)
+const supplier = ref(supplier_value.value.id);
+const reception_date = ref(reception_date_value.value);
+const invoice = ref(invoice_value.value.id);
+const project = ref(project_value.value.id);
+const stage = ref(stage_value.value.id);
 
-const supplierOptions = ref([])
-const invoiceOptions = ref([])
-const projectOptions = ref([])
-const stageOptions = ref([])
+const supplierOptions = ref([]);
+const invoiceOptions = ref([]);
+const projectOptions = ref([]);
+const stageOptions = ref([]);
 
-const EditEquipmentPurchaseForm = ref(null)
+const EditEquipmentPurchaseForm = ref(null);
+
+const api_prefix = process.env.API;
 
 const getSuppliers = () => {
-  axios.get("http://localhost:8000/api/suppliers").then((response) => {
+  axios.get(api_prefix + "/suppliers").then((response) => {
     const suppliers = response.data;
     supplierOptions.value = suppliers.map((x) => {
       return { id: x.id, name: x.name };
     });
   });
-}
+};
 
 const getInvoices = () => {
-  if(supplier.value === null){
+  if (supplier.value === null) {
     invoiceOptions.value = [];
     invoice.value = null;
-  }
-  else{
-    axios.get("http://localhost:8000/api/invoices/supplier/"+supplier.value).then((response) => {
-      const invoices = response.data;
-      invoiceOptions.value = invoices.map((x) => {
-        return { id: x.id, name: x.number };
+  } else {
+    axios
+      .get(api_prefix + "/invoices/supplier/" + supplier.value)
+      .then((response) => {
+        const invoices = response.data;
+        invoiceOptions.value = invoices.map((x) => {
+          return { id: x.id, name: x.number };
+        });
       });
-    });
   }
-}
+};
 
 const getProjects = () => {
-  axios.get("http://localhost:8000/api/projects").then((response) => {
+  axios.get(api_prefix + "/projects").then((response) => {
     const projects = response.data;
     projectOptions.value = projects.map((x) => {
       return { id: x.id, name: x.name };
     });
   });
-}
+};
 
 const getStages = () => {
-  if(project.value === null){
+  if (project.value === null) {
     stageOptions.value = [];
     stage.value = null;
-  }
-  else{
-    axios.get("http://localhost:8000/api/stages/"+project.value).then((response) => {
+  } else {
+    axios.get(api_prefix + "/stages/" + project.value).then((response) => {
       const stages = response.data;
       stageOptions.value = stages.map((x) => {
         return { id: x.id, name: x.name };
       });
     });
   }
-}
+};
 
 onMounted(() => {
   getSuppliers();
@@ -177,9 +179,7 @@ onMounted(() => {
   getStages();
 });
 
-defineEmits([
-  ...useDialogPluginComponent.emits,
-]);
+defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
@@ -196,14 +196,14 @@ async function onOKClick() {
   // call onDialogOK (with optional payload)
   EditEquipmentPurchaseForm.value.resetValidation();
   const data = {
-    'id': props.id,
-    'supplier_id': supplier.value,
-    'reception_date': reception_date.value,
-    'invoice_id': invoice.value,
-  }
+    id: props.id,
+    supplier_id: supplier.value,
+    reception_date: reception_date.value,
+    invoice_id: invoice.value,
+  };
   try {
     const response = await axios.put(
-      "http://localhost:8000/api/equipments/" + data.id,
+      api_prefix + "/equipments/" + data.id,
       data
     );
   } catch (error) {

@@ -9,7 +9,10 @@
       >
         <!--Datos Producto-->
         <h5>Agregar equipos</h5>
-        <div class="section-title">Datos equipo<hr/></div>
+        <div class="section-title">
+          Datos equipo
+          <hr />
+        </div>
         <q-input
           outlined
           v-model="name"
@@ -79,7 +82,13 @@
           </div>
           <div v-else class="col">
             <div class="row">
-              <q-input outlined v-model="newbrand" label="Nombre marca" class="col" :disable="disableBrand"/>
+              <q-input
+                outlined
+                v-model="newbrand"
+                label="Nombre marca"
+                class="col"
+                :disable="disableBrand"
+              />
             </div>
           </div>
           <div v-if="!newbrandstate && !newmodelstate" class="col q-mr-md">
@@ -110,7 +119,13 @@
           </div>
           <div v-else class="col q-pl-md">
             <div class="row">
-              <q-input outlined v-model="newmodel" label="Nombre modelo" class="col" :disable="disableBrand"/>
+              <q-input
+                outlined
+                v-model="newmodel"
+                label="Nombre modelo"
+                class="col"
+                :disable="disableBrand"
+              />
             </div>
           </div>
           <div
@@ -153,15 +168,19 @@
             </div>
           </div>
         </div>
-        <div v-if="newmodelstate || newmodelnumberstate || newbrandstate" class="row justify-end q-pt-md">
-
-          <q-btn v-if="disableBrand"
+        <div
+          v-if="newmodelstate || newmodelnumberstate || newbrandstate"
+          class="row justify-end q-pt-md"
+        >
+          <q-btn
+            v-if="disableBrand"
             label="Editar"
             color="amber"
             @click="disableBrand = false"
             class="q-mr-sm"
           />
-          <q-btn v-else
+          <q-btn
+            v-else
             label="Guardar"
             color="amber"
             @click="disableBrand = true"
@@ -170,7 +189,12 @@
           <q-btn
             label="Ver lista"
             color="amber"
-            @click="newmodelnumberstate = false, newmodelstate = false, newbrandstate = false, disableBrand = false"
+            @click="
+              (newmodelnumberstate = false),
+                (newmodelstate = false),
+                (newbrandstate = false),
+                (disableBrand = false)
+            "
           />
         </div>
 
@@ -220,7 +244,10 @@
         </div>
 
         <!--Datos de compra-->
-        <div class="section-title q-mt-xl">Datos compra<hr/></div>
+        <div class="section-title q-mt-xl">
+          Datos compra
+          <hr />
+        </div>
         <!--Datos de proveedor-->
         <div v-if="!newsupplierstate">
           <SelectForm
@@ -230,7 +257,11 @@
             option_label="name"
             label="Proveedor"
             not_found_label="No hay proveedores disponibles"
-            @updateModel="(value) => {supplier = value, getInvoicesSupplier(value)}"
+            @updateModel="
+              (value) => {
+                (supplier = value), getInvoicesSupplier(value);
+              }
+            "
           />
           <div class="row justify-end q-mt-md">
             <q-btn
@@ -251,7 +282,13 @@
               class="col"
               :disable="disableSupplier"
             />
-            <q-input outlined v-model="newsupplierrut" label="Rut" class="col q-ml-md" :disable="disableSupplier"/>
+            <q-input
+              outlined
+              v-model="newsupplierrut"
+              label="Rut"
+              class="col q-ml-md"
+              :disable="disableSupplier"
+            />
             <q-input
               outlined
               v-model="newsupplieraddress"
@@ -329,13 +366,15 @@
             />
           </div>
           <div class="row justify-end q-mt-sm">
-            <q-btn v-if="disableSupplier"
+            <q-btn
+              v-if="disableSupplier"
               label="Editar"
               color="amber"
               @click="disableSupplier = false"
               class="q-mr-sm"
             />
-            <q-btn v-else
+            <q-btn
+              v-else
               label="Guardar"
               color="amber"
               @click="disableSupplier = true"
@@ -344,7 +383,10 @@
             <q-btn
               label="Ver lista"
               color="amber"
-              @click="newsupplierstate = !newsupplierstate, disableSupplier = false"
+              @click="
+                (newsupplierstate = !newsupplierstate),
+                  (disableSupplier = false)
+              "
             />
           </div>
         </div>
@@ -418,13 +460,15 @@
             </q-file>
           </div>
           <div class="row justify-end q-mt-sm">
-            <q-btn v-if="disableInvoice"
+            <q-btn
+              v-if="disableInvoice"
               label="Editar"
               color="amber"
               @click="disableInvoice = false"
               class="q-mr-sm"
             />
-            <q-btn v-else
+            <q-btn
+              v-else
               label="Guardar"
               color="amber"
               @click="disableInvoice = true"
@@ -433,7 +477,9 @@
             <q-btn
               label="Ver lista"
               color="amber"
-              @click="newinvoicestate = !newinvoicestate, disableInvoice = false"
+              @click="
+                (newinvoicestate = !newinvoicestate), (disableInvoice = false)
+              "
             />
           </div>
         </div>
@@ -513,13 +559,15 @@
           </div>
         </div>
         <div v-if="newstagestate || newprojectstate" class="row justify-end">
-          <q-btn v-if="disableProject"
+          <q-btn
+            v-if="disableProject"
             label="Editar"
             color="amber"
             @click="disableProject = false"
             class="q-mr-sm"
           />
-          <q-btn v-else
+          <q-btn
+            v-else
             label="Guardar"
             color="amber"
             @click="disableProject = true"
@@ -528,8 +576,12 @@
           <q-btn
             label="Ver lista"
             color="amber"
-            @click="newstagestate = false, newprojectstate = false, disableProject = false"
-            />
+            @click="
+              (newstagestate = false),
+                (newprojectstate = false),
+                (disableProject = false)
+            "
+          />
         </div>
         <div v-if="newprojectstate" class="row">
           <div v-if="!newProjectOwnerState" class="col">
@@ -566,13 +618,15 @@
               :disable="disableProjectOwner"
             />
             <div class="row justify-end q-mt-md">
-              <q-btn v-if="disableProjectOwner"
+              <q-btn
+                v-if="disableProjectOwner"
                 label="Editar"
                 color="amber"
                 @click="disableProjectOwner = false"
                 class="q-mr-sm"
               />
-              <q-btn v-else
+              <q-btn
+                v-else
                 label="Guardar"
                 color="amber"
                 @click="disableProjectOwner = true"
@@ -581,14 +635,19 @@
               <q-btn
                 label="Ver lista"
                 color="amber"
-                @click="disableProjectOwner = false, newProjectOwnerState = false"
+                @click="
+                  (disableProjectOwner = false), (newProjectOwnerState = false)
+                "
               />
             </div>
           </div>
         </div>
 
         <!--Location-->
-        <div class="section-title q-mt-xl">Datos Ubicacion<hr/></div>
+        <div class="section-title q-mt-xl">
+          Datos Ubicacion
+          <hr />
+        </div>
         <div class="row justify-center">
           <div v-if="!newbuildingstate" class="col q-mr-md">
             <SelectForm
@@ -695,18 +754,29 @@
           </div>
           <div v-else class="col q-pl-md">
             <div class="row">
-              <q-input outlined v-model="newroomname" label="Nombre sala" class="col" :disable="disableLocation"/>
+              <q-input
+                outlined
+                v-model="newroomname"
+                label="Nombre sala"
+                class="col"
+                :disable="disableLocation"
+              />
             </div>
           </div>
         </div>
-        <div v-if="newbuildingstate || newunitstate || newroomstate" class="row justify-end">
-          <q-btn v-if="disableLocation"
+        <div
+          v-if="newbuildingstate || newunitstate || newroomstate"
+          class="row justify-end"
+        >
+          <q-btn
+            v-if="disableLocation"
             label="Editar"
             color="amber"
             @click="disableLocation = false"
             class="q-mr-sm"
           />
-          <q-btn v-else
+          <q-btn
+            v-else
             label="Guardar"
             color="amber"
             @click="disableLocation = true"
@@ -715,7 +785,12 @@
           <q-btn
             label="Ver lista"
             color="amber"
-            @click="newbuildingstate = false, newunitstate = false, newroomstate = false,  disableLocation = false"
+            @click="
+              (newbuildingstate = false),
+                (newunitstate = false),
+                (newroomstate = false),
+                (disableLocation = false)
+            "
           />
         </div>
 
@@ -776,12 +851,12 @@ const brandOptions = ref([]);
 const building = ref(null);
 const buildingOptions = ref([]);
 const createEquipmentForm = ref(null);
-const disableBrand = ref(false)
-const disableInvoice = ref(false)
-const disableLocation = ref(false)
-const disableProject = ref(false)
-const disableProjectOwner = ref(false)
-const disableSupplier = ref(false)
+const disableBrand = ref(false);
+const disableInvoice = ref(false);
+const disableLocation = ref(false);
+const disableProject = ref(false);
+const disableProjectOwner = ref(false);
+const disableSupplier = ref(false);
 const equipmentimages = ref(null);
 const invoiceimage = ref(null);
 const name = ref(null);
@@ -809,8 +884,8 @@ const newinvoicenumber = ref(null);
 const newinvoicedate = ref(null);
 const newprojectstate = ref(null);
 const newprojectname = ref(null);
-const newProjectOwnerState = ref(false)
-const newprojectownername = ref(null)
+const newProjectOwnerState = ref(false);
+const newprojectownername = ref(null);
 const newroomname = ref(null);
 const newroomstate = ref(null);
 const newstagestate = ref(null);
@@ -822,9 +897,9 @@ const newsupplieraddress = ref(null);
 const newunitname = ref(null);
 const newunitstate = ref(false);
 const project = ref(null);
-const projectowner = ref(null)
+const projectowner = ref(null);
 const projectOptions = ref([]);
-const projectOwnersOptions = ref([])
+const projectOwnersOptions = ref([]);
 const reception_date = ref(null);
 const stage = ref(null);
 const stagesOptions = ref([]);
@@ -845,9 +920,10 @@ const workermail2 = ref(null);
 const workerphone2 = ref(null);
 const $q = useQuasar();
 const router = useRouter();
+const api_prefix = process.env.API;
 
 const getBrands = () => {
-  axios.get("http://localhost:8000/api/brands").then((response) => {
+  axios.get(api_prefix + "/brands").then((response) => {
     const brands = response.data;
     brandOptions.value = brands.map((x) => {
       return { id: x.id, name: x.name };
@@ -856,7 +932,7 @@ const getBrands = () => {
 };
 
 const getBuildings = () => {
-  axios.get("http://localhost:8000/api/buildings").then((response) => {
+  axios.get(api_prefix + "/buildings").then((response) => {
     const buildings = response.data;
     buildingOptions.value = buildings.map((x) => {
       return { id: x.id, name: x.name };
@@ -865,7 +941,7 @@ const getBuildings = () => {
 };
 
 const getInvoices = () => {
-  axios.get("http://localhost:8000/api/invoices").then((response) => {
+  axios.get(api_prefix + "/invoices").then((response) => {
     const invoices = response.data;
     invoicesOptions.value = invoices.map((x) => {
       return { id: x.id, name: x.number.toString() };
@@ -874,38 +950,36 @@ const getInvoices = () => {
 };
 
 const getInvoicesSupplier = (supplier_id) => {
-  axios.get("http://localhost:8000/api/invoices/supplier/"+supplier_id).then((response) => {
-    const invoices = response.data;
-    invoicesOptions.value = invoices.map((x) => {
-      return { id: x.id, name: x.number.toString() };
+  axios
+    .get(api_prefix + "/invoices/supplier/" + supplier_id)
+    .then((response) => {
+      const invoices = response.data;
+      invoicesOptions.value = invoices.map((x) => {
+        return { id: x.id, name: x.number.toString() };
+      });
+    });
+};
+
+const getModels = () => {
+  axios.get(api_prefix + "/models/" + brand.value).then((response) => {
+    const models = response.data;
+    modelOptions.value = models.map((x) => {
+      return { id: x.id, name: x.name };
     });
   });
 };
 
-const getModels = () => {
-  axios
-    .get("http://localhost:8000/api/models/" + brand.value)
-    .then((response) => {
-      const models = response.data;
-      modelOptions.value = models.map((x) => {
-        return { id: x.id, name: x.name };
-      });
-    });
-};
-
 const getModelNumbers = () => {
-  axios
-    .get("http://localhost:8000/api/model_numbers/" + model.value)
-    .then((response) => {
-      const modelnumbers = response.data;
-      modelNumberOptions.value = modelnumbers.map((x) => {
-        return { id: x.id, name: x.number };
-      });
+  axios.get(api_prefix + "/model_numbers/" + model.value).then((response) => {
+    const modelnumbers = response.data;
+    modelNumberOptions.value = modelnumbers.map((x) => {
+      return { id: x.id, name: x.number };
     });
+  });
 };
 
 const getProjects = () => {
-  axios.get("http://localhost:8000/api/projects").then((response) => {
+  axios.get(api_prefix + "/projects").then((response) => {
     const projects = response.data;
     projectOptions.value = projects.map((x) => {
       return { id: x.id, name: x.name };
@@ -914,7 +988,7 @@ const getProjects = () => {
 };
 
 const getProjectOwners = () => {
-  axios.get("http://localhost:8000/api/project_owners").then((response) => {
+  axios.get(api_prefix + "/project_owners").then((response) => {
     const projectsowners = response.data;
     projectOwnersOptions.value = projectsowners.map((x) => {
       return { id: x.id, name: x.name };
@@ -923,7 +997,7 @@ const getProjectOwners = () => {
 };
 
 const getRooms = () => {
-  const api_url = "http://localhost:8000/api/rooms/" + unit.value;
+  const api_url = api_prefix + "/rooms/" + unit.value;
   axios.get(api_url).then((response) => {
     room.value = null;
     const rooms = response.data;
@@ -934,7 +1008,7 @@ const getRooms = () => {
 };
 
 const getStages = () => {
-  const api_url = "http://localhost:8000/api/stages/" + project.value;
+  const api_url = api_prefix + "/stages/" + project.value;
   axios.get(api_url).then((response) => {
     stage.value = null;
     const stages = response.data;
@@ -945,7 +1019,7 @@ const getStages = () => {
 };
 
 const getSuppliers = () => {
-  axios.get("http://localhost:8000/api/suppliers").then((response) => {
+  axios.get(api_prefix + "/suppliers").then((response) => {
     const suppliers = response.data;
     suppliersOptions.value = suppliers.map((x) => {
       return { id: x.id, name: x.name };
@@ -954,7 +1028,7 @@ const getSuppliers = () => {
 };
 
 const getUnits = () => {
-  const api_url = "http://localhost:8000/api/units/" + building.value;
+  const api_url = api_prefix + "/units/" + building.value;
   axios.get(api_url).then((response) => {
     unit.value = null;
     room.value = null;
@@ -986,10 +1060,7 @@ async function createNewBrand() {
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/brands",
-      branddata
-    );
+    const response = await axios.post(api_prefix + "/brands", branddata);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1011,10 +1082,7 @@ async function createNewBuilding() {
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/buildings",
-      buildingdata
-    );
+    const response = await axios.post(api_prefix + "/buildings", buildingdata);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1034,14 +1102,11 @@ async function createNewInvoice(supplier_id) {
   const invoicedata = {
     number: newinvoicenumber.value,
     date: newinvoicedate.value,
-    supplier_id: supplier_id
+    supplier_id: supplier_id,
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/invoices",
-      invoicedata
-    );
+    const response = await axios.post(api_prefix + "/invoices", invoicedata);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1064,10 +1129,7 @@ async function createNewModel(brand_id) {
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/models",
-      newmodeldata
-    );
+    const response = await axios.post(api_prefix + "/models", newmodeldata);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1092,7 +1154,7 @@ async function createNewModelnumber(model_id) {
 
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/model_numbers",
+      api_prefix + "/model_numbers",
       newmodelnumberdata
     );
     return response.data;
@@ -1117,20 +1179,17 @@ async function createNewProject(project_owner_id) {
     return -1;
   }
 
-  if (project_owner_id == -1){
-    project_owner_id = null
+  if (project_owner_id == -1) {
+    project_owner_id = null;
   }
 
   const projectdata = {
     name: projectname,
-    owner_id: project_owner_id
+    owner_id: project_owner_id,
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/projects",
-      projectdata
-    );
+    const response = await axios.post(api_prefix + "/projects", projectdata);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1159,7 +1218,7 @@ async function createNewProjectOwner() {
 
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/project_owners",
+      api_prefix + "/project_owners",
       projectownerdata
     );
     return response.data;
@@ -1184,10 +1243,7 @@ async function createNewUnit(building_id) {
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/units",
-      unitdata
-    );
+    const response = await axios.post(api_prefix + "/units", unitdata);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1209,10 +1265,7 @@ async function createNewRoom(unit_id) {
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/rooms",
-      roomdata
-    );
+    const response = await axios.post(api_prefix + "/rooms", roomdata);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1234,10 +1287,7 @@ async function createNewSupplier() {
     city_address: newsupplieraddress.value,
   };
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/suppliers",
-      supplierdata
-    );
+    const response = await axios.post(api_prefix + "/suppliers", supplierdata);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1263,7 +1313,7 @@ async function createNewWorker(supplier_id) {
     };
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/suppliers_contacts",
+        api_prefix + "/suppliers_contacts",
         workerdata1
       );
     } catch (error) {
@@ -1285,7 +1335,7 @@ async function createNewWorker(supplier_id) {
     };
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/suppliers_contacts",
+        api_prefix + "/suppliers_contacts",
         workerdata2
       );
     } catch (error) {
@@ -1316,10 +1366,7 @@ async function createNewStage(project_id) {
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/stages",
-      stagedata
-    );
+    const response = await axios.post(api_prefix + "/stages", stagedata);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1334,7 +1381,7 @@ async function createNewStage(project_id) {
 async function createNewEquipment(equipmentdata) {
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/equipments",
+      api_prefix + "/equipments",
       equipmentdata
     );
     if (response.status == 201) {
@@ -1373,7 +1420,7 @@ async function createNewProjectEquipment(equipment_id, project_id, stage_id) {
 
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/equipments_projects",
+      api_prefix + "/equipments_projects",
       relationdata
     );
 
@@ -1403,7 +1450,7 @@ async function uploadInvoiceImage(equipment_id) {
   formData.append("file", invoiceimage.value);
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/invoices/" + equipment_id,
+      api_prefix + "/invoices/" + equipment_id,
       formData
     );
   } catch (error) {
@@ -1430,7 +1477,7 @@ async function uploadEquipmentImage(equipment_id) {
 async function uploadEquipmentImage2(equipment_id, formData) {
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/equipments/" + equipment_id,
+      api_prefix + "/equipments/" + equipment_id,
       formData
     );
   } catch (error) {
@@ -1546,7 +1593,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-body{
+body {
   background-image: url(./../assets/background.jpg);
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -1558,13 +1605,13 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
-.add-btn{
+.add-btn {
   background-color: #7b7bd2 !important;
   color: #fff;
   border: 2px solid #7777cf;
 }
 
-.q-form{
+.q-form {
   margin-top: 10px;
   background-color: #fffffe;
   border-radius: 1%;
@@ -1572,14 +1619,14 @@ input[type="number"]::-webkit-inner-spin-button {
   border-style: solid;
 }
 
-.section-title{
+.section-title {
   text-align: center;
   font-weight: bold;
   font-size: 20px;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-hr{
+hr {
   width: 20%;
   height: 2px;
   background-color: black;

@@ -1,12 +1,13 @@
 <template>
   <q-page padding>
-    <RenderTable :columns="columns" :rows="this.equipments" title="Equipamiento" detail_query="/equipments/" row_key="id" addTo="/equipments/new_equipment"/>
+    <RenderTable :columns="columns" :rows="equipments" title="Equipamiento" detail_query="/equipments/" row_key="id" addTo="/equipments/new_equipment"/>
   </q-page>
 </template>
 
-<script>
+<script setup>
 import RenderTable from "src/components/RenderTable.vue";
 import axios from 'axios'
+import { onMounted, ref } from "vue";
 
 const columns = [
   {
@@ -60,29 +61,18 @@ const columns = [
   }
 ];
 
-export default {
-  components: { RenderTable },
-  data(){
-    return{
-      equipments: []
-    }
-  },
-  methods:{
-    getEquipments(){
-      axios.get("http://localhost:8000/api/equipments").then(
+const equipments = ref([])
+
+const getEquipments = () => {
+  axios.get("http://localhost:8000/api/equipments").then(
         response => (
-          this.equipments = response.data
+          equipments.value = response.data
         )
       )
-    }
-  },
-  mounted(){
-    this.getEquipments();
-  },
-  setup() {
-    return {
-      columns,
-    };
-  },
-};
+}
+
+onMounted( () => {
+  getEquipments();
+})
+
 </script>

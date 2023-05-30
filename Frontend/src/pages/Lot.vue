@@ -39,9 +39,11 @@ const route = useRoute();
 const id = computed(() => route.params.id);
 const lot = ref({});
 
+const api_prefix = process.env.API;
+
 const getLot = () => {
   axios
-    .get("http://localhost:8000/api/lots/" + id.value)
+    .get(api_prefix + "/lots/" + id.value)
     .then((response) => (lot.value = response.data));
 };
 

@@ -357,11 +357,12 @@ const loading = ref(false);
 //Form
 const createLotForm = ref(null);
 const $q = useQuasar();
+const api_prefix = process.env.API;
 
 //Get functions
 
 const getSupplies = () => {
-  axios.get("http://localhost:8000/api/supplies").then((response) => {
+  axios.get(api_prefix + "/supplies").then((response) => {
     const supplies = response.data;
     suppliesOptions.value = supplies.map((x) => {
       const name = `${x.name} | ${x.supplies_brand_name} | ${x.code} | ${x.supplier_name}`;
@@ -371,7 +372,7 @@ const getSupplies = () => {
 };
 
 const getLocations = () => {
-  axios.get("http://localhost:8000/api/locations").then((response) => {
+  axios.get(api_prefix + "/locations").then((response) => {
     const locations = response.data;
     locationOptions.value = locations.map((x) => {
       return { id: x.id, name: x.name };
@@ -380,7 +381,7 @@ const getLocations = () => {
 };
 
 const getProjects = () => {
-  axios.get("http://localhost:8000/api/projects").then((response) => {
+  axios.get(api_prefix + "/projects").then((response) => {
     const projects = response.data;
     projectOptions.value = projects.map((x) => {
       return { id: x.id, name: x.name };
@@ -389,7 +390,7 @@ const getProjects = () => {
 };
 
 const getProjectOwners = () => {
-  axios.get("http://localhost:8000/api/project_owners").then((response) => {
+  axios.get(api_prefix + "/project_owners").then((response) => {
     const projectsowners = response.data;
     projectOwnersOptions.value = projectsowners.map((x) => {
       return { id: x.id, name: x.name };
@@ -403,7 +404,7 @@ const getSublocations = () => {
     sublocationOptions.value = [];
   } else {
     axios
-      .get("http://localhost:8000/api/sub_locations/" + location.value)
+      .get(api_prefix + "/sub_locations/" + location.value)
       .then((response) => {
         const sublocations = response.data;
         sublocationOptions.value = sublocations.map((x) => {
@@ -415,8 +416,8 @@ const getSublocations = () => {
 
 //Create functions
 
-async function createNewLocation(){
-  if(!newLocationState.value){
+async function createNewLocation() {
+  if (!newLocationState.value) {
     return location.value;
   }
 
@@ -427,14 +428,11 @@ async function createNewLocation(){
   }
 
   const locationData = {
-    'name': locationName
-  }
+    name: locationName,
+  };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/locations",
-      locationData
-    );
+    const response = await axios.post(api_prefix + "/locations", locationData);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -446,12 +444,9 @@ async function createNewLocation(){
   }
 }
 
-async function createNewLot(lotData){
+async function createNewLot(lotData) {
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/lots",
-      lotData
-    );
+    const response = await axios.post(api_prefix + "/lots", lotData);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -463,8 +458,8 @@ async function createNewLot(lotData){
   }
 }
 
-async function createNewSublocation(location_id){
-  if(!newSublocationState.value && !newLocationState.value){
+async function createNewSublocation(location_id) {
+  if (!newSublocationState.value && !newLocationState.value) {
     return sublocation.value;
   }
 
@@ -476,12 +471,12 @@ async function createNewSublocation(location_id){
 
   const sublocationData = {
     name: sublocationName,
-    location_id: location_id
-  }
+    location_id: location_id,
+  };
 
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/sub_locations",
+      api_prefix + "/sub_locations",
       sublocationData
     );
     return response.data;
@@ -493,7 +488,6 @@ async function createNewSublocation(location_id){
       message: "No se pudo crear la sub-ubicación: " + error,
     });
   }
-
 }
 
 async function createNewProject(project_owner_id) {
@@ -517,10 +511,7 @@ async function createNewProject(project_owner_id) {
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:8000/api/projects",
-      projectData
-    );
+    const response = await axios.post(api_prefix + "/projects", projectData);
     return response.data;
   } catch (error) {
     $q.notify({
@@ -549,7 +540,7 @@ async function createNewProjectOwner() {
 
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/project_owners",
+      api_prefix + "/project_owners",
       projectOwnerData
     );
     return response.data;
@@ -582,15 +573,15 @@ async function onSubmit() {
   const project_owner_id = await createNewProjectOwner();
   const project_id = await createNewProject(project_owner_id);
 
-  lot['project_id'] = project_id;
+  lot["project_id"] = project_id;
 
   const location_id = await createNewLocation();
   const sub_location_id = await createNewSublocation(location_id);
-  if(sub_location_id == -1){
+  if (sub_location_id == -1) {
     loading.value = false;
     return;
   }
-  lot['sub_location_id'] = sub_location_id;
+  lot["sub_location_id"] = sub_location_id;
   const lot_id = await createNewLot(lot);
   console.log(lot_id);
   loading.value = false;

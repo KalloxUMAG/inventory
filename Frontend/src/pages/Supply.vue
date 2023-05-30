@@ -36,9 +36,11 @@ const route = useRoute();
 const id = computed(() => route.params.id);
 const supply = ref({});
 
+const api_prefix = process.env.API;
+
 const getSupply = () => {
   axios
-    .get("http://localhost:8000/api/supplies/" + id.value)
+    .get(api_prefix + "/supplies/" + id.value)
     .then((response) => (supply.value = response.data));
 };
 

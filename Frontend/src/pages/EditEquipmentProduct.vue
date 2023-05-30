@@ -139,8 +139,8 @@ const maintenanceOptions = [
   },
   {
     id: null,
-    name: "No aplica"
-  }
+    name: "No aplica",
+  },
 ];
 
 const {
@@ -167,9 +167,10 @@ const modelNumberOptions = ref([]);
 const maintenance_period = ref(maintenance_period_value.value);
 const observation = ref(observation_value.value);
 const EditEquipmentProductForm = ref(null);
+const api_prefix = process.env.API;
 
 const getBrands = () => {
-  axios.get("http://localhost:8000/api/brands").then((response) => {
+  axios.get(api_prefix + "/brands").then((response) => {
     const brands = response.data;
     brandOptions.value = brands.map((x) => {
       return { id: x.id, name: x.name };
@@ -178,29 +179,27 @@ const getBrands = () => {
 };
 
 const getModels = () => {
-  if(brand.value === null){
+  if (brand.value === null) {
     modelOptions.value = [];
     model.value = null;
     modelNumberOptions.value = [];
     model_number.value = null;
-  }
-  else{
-    axios.get("http://localhost:8000/api/models/"+brand.value).then((response) => {
+  } else {
+    axios.get(api_prefix + "/models/" + brand.value).then((response) => {
       const models = response.data;
       modelOptions.value = models.map((x) => {
-        return { id: x.id, name: x.name};
+        return { id: x.id, name: x.name };
       });
     });
   }
 };
 
 const getModelNumbers = () => {
-  if(model.value === null){
+  if (model.value === null) {
     modelNumberOptions.value = [];
     model_number.value = null;
-  }
-  else{
-    axios.get("http://localhost:8000/api/model_numbers/"+model.value).then((response) => {
+  } else {
+    axios.get(api_prefix + "/model_numbers/" + model.value).then((response) => {
       const modelnumbers = response.data;
       modelNumberOptions.value = modelnumbers.map((x) => {
         return { id: x.id, name: x.number };
@@ -215,9 +214,7 @@ onMounted(() => {
   getModelNumbers();
 });
 
-defineEmits([
-  ...useDialogPluginComponent.emits,
-]);
+defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
@@ -234,16 +231,16 @@ async function onOKClick() {
   // call onDialogOK (with optional payload)
   EditEquipmentProductForm.value.resetValidation();
   const data = {
-    'id': props.id,
-    'name': name.value,
-    'serial_number': serial_number.value,
-    'umag_inventory_code': umag_inventory_code.value,
-    'observation': observation.value,
-    'model_number_id': model_number.value
-  }
+    id: props.id,
+    name: name.value,
+    serial_number: serial_number.value,
+    umag_inventory_code: umag_inventory_code.value,
+    observation: observation.value,
+    model_number_id: model_number.value,
+  };
   try {
     const response = await axios.put(
-      "http://localhost:8000/api/equipments/" + data.id,
+      api_prefix + "/equipments/" + data.id,
       data
     );
   } catch (error) {

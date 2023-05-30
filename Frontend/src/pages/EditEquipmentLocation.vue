@@ -72,15 +72,10 @@ const props = defineProps({
   id: Number,
   room_value: Object,
   unit_value: Object,
-  building_value: Object
+  building_value: Object,
 });
 
-const {
-  id,
-  room_value,
-  unit_value,
-  building_value
-} = toRefs(props);
+const { id, room_value, unit_value, building_value } = toRefs(props);
 
 const room = ref(room_value.value.id);
 const unit = ref(unit_value.value.id);
@@ -88,10 +83,11 @@ const building = ref(building_value.value.id);
 const roomOptions = ref([]);
 const unitOptions = ref([]);
 const buildingOptions = ref([]);
-const EditEquipmentLocationForm = ref(null)
+const EditEquipmentLocationForm = ref(null);
+const api_prefix = process.env.API;
 
 const getBuildings = () => {
-  axios.get("http://localhost:8000/api/buildings").then((response) => {
+  axios.get(api_prefix + "/buildings").then((response) => {
     const buildings = response.data;
     buildingOptions.value = buildings.map((x) => {
       return { id: x.id, name: x.name };
@@ -100,14 +96,13 @@ const getBuildings = () => {
 };
 
 const getUnits = () => {
-  if(building.value === null){
+  if (building.value === null) {
     unitOptions.value = [];
     unit.value = null;
     roomOptions.value = [];
     room.value = null;
-  }
-  else{
-    axios.get("http://localhost:8000/api/units/"+building.value).then((response) => {
+  } else {
+    axios.get(api_prefix + "/units/" + building.value).then((response) => {
       const units = response.data;
       unitOptions.value = units.map((x) => {
         return { id: x.id, name: x.name };
@@ -117,13 +112,12 @@ const getUnits = () => {
 };
 
 const getRooms = () => {
-  if(unit.value === null){
+  if (unit.value === null) {
     console.log("Entro aqui");
     roomOptions.value = [];
     room.value = null;
-  }
-  else{
-    axios.get("http://localhost:8000/api/rooms/"+unit.value).then((response) => {
+  } else {
+    axios.get(api_prefix + "/rooms/" + unit.value).then((response) => {
       const rooms = response.data;
       roomOptions.value = rooms.map((x) => {
         return { id: x.id, name: x.name };
@@ -138,9 +132,7 @@ onMounted(() => {
   getRooms();
 });
 
-defineEmits([
-  ...useDialogPluginComponent.emits,
-]);
+defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
@@ -157,12 +149,12 @@ async function onOKClick() {
   // call onDialogOK (with optional payload)
   EditEquipmentLocationForm.value.resetValidation();
   const data = {
-    'id': props.id,
-    'room_id': room.value
-  }
+    id: props.id,
+    room_id: room.value,
+  };
   try {
     const response = await axios.put(
-      "http://localhost:8000/api/equipments/" + data.id,
+      api_prefix + "/equipments/" + data.id,
       data
     );
   } catch (error) {

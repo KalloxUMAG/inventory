@@ -16,7 +16,14 @@
           <q-separator vertical />
           <!--Datos producto-->
           <q-card-section class="col">
-            <div class="text-h5 q-mb-md text-center">Datos producto<q-btn class="q-ml-md glossy" icon="edit" color="positive" @click="editProduct"/></div>
+            <div class="text-h5 q-mb-md text-center">
+              Datos producto<q-btn
+                class="q-ml-md glossy"
+                icon="edit"
+                color="positive"
+                @click="editProduct"
+              />
+            </div>
             <div class="row q-mb-xs">
               <div class="col-5 field-label text-right q-mr-md">Nombre:</div>
               <div class="col field-content q-ml-xs">{{ equipment.name }}</div>
@@ -84,7 +91,14 @@
         <q-separator horizontal />
         <q-card-section horizontal class="row">
           <q-card-section class="col-4">
-            <div class="text-h5 q-mb-md text-center">Datos Ubicación<q-btn class="q-ml-md glossy" icon="edit" color="positive" @click="editLocation"/></div>
+            <div class="text-h5 q-mb-md text-center">
+              Datos Ubicación<q-btn
+                class="q-ml-md glossy"
+                icon="edit"
+                color="positive"
+                @click="editLocation"
+              />
+            </div>
             <div class="row q-mb-xs">
               <div class="col-5 field-label text-right q-mr-md">Sala:</div>
               <div class="col field-content q-ml-xs">
@@ -107,7 +121,14 @@
           <q-separator />
           <!--Datos compra-->
           <q-card-section class="col">
-            <div class="text-h5 q-mb-md text-center">Datos compra<q-btn class="q-ml-md glossy" icon="edit" color="positive" @click="editPurchase"/></div>
+            <div class="text-h5 q-mb-md text-center">
+              Datos compra<q-btn
+                class="q-ml-md glossy"
+                icon="edit"
+                color="positive"
+                @click="editPurchase"
+              />
+            </div>
             <div class="row q-mb-xs">
               <div class="col-5 field-label text-right q-mr-md">Proveedor:</div>
               <div class="col field-content q-ml-xs">
@@ -181,7 +202,7 @@ import EditEquipmentLocation from "./EditEquipmentLocation.vue";
 import EditEquipmentPurchase from "./EditEquipmentPurchase.vue";
 import { useQuasar } from "quasar";
 
-const $q = useQuasar()
+const $q = useQuasar();
 
 const columns_maintenances = [
   {
@@ -214,18 +235,18 @@ const equipment = ref(null);
 const maintenances = ref([]);
 const project = ref(null);
 
+const api_prefix = process.env.API;
+
 const route = useRoute();
 const id = computed(() => route.params.id);
-const query_equipment = "http://localhost:8000/api/equipments/" + id.value;
-const query_maintenances = "http://localhost:8000/api/maintenances/" + id.value;
-const query_projects =
-  "http://localhost:8000/api/equipment_projects/" + id.value;
+const query_equipment = api_prefix + "/equipments/" + id.value;
+const query_maintenances = api_prefix + "/maintenances/" + id.value;
+const query_projects = api_prefix + "/equipment_projects/" + id.value;
 
 function getEquipment() {
   axios.get(query_equipment).then((response) => {
     equipment.value = response.data;
-    img_api.value =
-      "http://localhost:8000/api/equipments/image/" + equipment.value.id;
+    img_api.value = api_prefix + "/equipments/image/" + equipment.value.id;
   });
 }
 function getMaintenances() {
@@ -237,33 +258,61 @@ function getProjects() {
   axios.get(query_projects).then((response) => (project.value = response.data));
 }
 
-function addFunction(){
+function addFunction() {
   $q.dialog({
     component: FormModal,
     componentProps: {
-      title: 'Agregar mantenimiento',
+      title: "Agregar mantenimiento",
       fields: [
-        {label: 'Fecha', type: 'date', defaultvalue: null, rules: [(val) => (val && val != null) || 'Este campo es obligatorio']},
-        {label: 'Tipo de mantenimiento', type: 'select', defaultvalue: null, options: [{id: 'Programada', name: 'Programada'}, {id: 'Correctiva', name: 'Correctiva'}], option_value: 'id', option_label: 'name', not_found_label: 'No hay tipos de mantenimiento', rules: [(val) => (val && val != null) || 'Este campo es obligatorio']},
-        {label: 'Observaciones', type: 'text', defaultvalue: null, autogrow: true, rules: []},
-      ]
-    }
-  }).onOk((data) => {
-    const maintenance_data = {
-      "date": data[0],
-      "observations": data[2],
-      "maintenance_type": data[1],
-      "equiptment_id": equipment.value.id
-    }
+        {
+          label: "Fecha",
+          type: "date",
+          defaultvalue: null,
+          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
+        },
+        {
+          label: "Tipo de mantenimiento",
+          type: "select",
+          defaultvalue: null,
+          options: [
+            { id: "Programada", name: "Programada" },
+            { id: "Correctiva", name: "Correctiva" },
+          ],
+          option_value: "id",
+          option_label: "name",
+          not_found_label: "No hay tipos de mantenimiento",
+          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
+        },
+        {
+          label: "Observaciones",
+          type: "text",
+          defaultvalue: null,
+          autogrow: true,
+          rules: [],
+        },
+      ],
+    },
+  })
+    .onOk((data) => {
+      const maintenance_data = {
+        date: data[0],
+        observations: data[2],
+        maintenance_type: data[1],
+        equiptment_id: equipment.value.id,
+      };
 
-    axios.post("http://localhost:8000/api/maintenances", maintenance_data,{ headers: {
-      'Content-Type': 'application/json'
-    }}).then((response) => getMaintenances());
-    }).onCancel(() => {
+      axios
+        .post(api_prefix + "/maintenances", maintenance_data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => getMaintenances());
     })
+    .onCancel(() => {});
 }
 
-function editProduct(){
+function editProduct() {
   $q.dialog({
     component: EditEquipmentProduct,
     componentProps: {
@@ -271,48 +320,75 @@ function editProduct(){
       name_value: equipment.value.name,
       serial_number_value: equipment.value.serial_number,
       umag_inventory_code_value: equipment.value.umag_inventory_code,
-      brand_value: {'id': equipment.value.brand_id, 'name': equipment.value.brand_name},
-      model_value: {'id': equipment.value.model_id, 'name': equipment.value.model_name},
-      model_number_value: {'id': equipment.value.model_number_id, 'name': equipment.value.model_number},
+      brand_value: {
+        id: equipment.value.brand_id,
+        name: equipment.value.brand_name,
+      },
+      model_value: {
+        id: equipment.value.model_id,
+        name: equipment.value.model_name,
+      },
+      model_number_value: {
+        id: equipment.value.model_number_id,
+        name: equipment.value.model_number,
+      },
       maintenance_period_value: equipment.value.maintenance_period,
-      observation_value: equipment.value.observation
-    }
-  }).onOk((data) => {
-    })
+      observation_value: equipment.value.observation,
+    },
+  }).onOk((data) => {});
 }
 
-function editLocation(){
+function editLocation() {
   $q.dialog({
     component: EditEquipmentLocation,
     componentProps: {
       id: equipment.value.id,
-      room_value: {'id': equipment.value.room_id, 'name': equipment.value.room_name},
-      unit_value: {'id': equipment.value.unit_id, 'name': equipment.value.unit_name},
-      building_value: {'id': equipment.value.building_id, 'name': equipment.value.building_name},
-    }
-  }).onOk((data) => {
-    })
+      room_value: {
+        id: equipment.value.room_id,
+        name: equipment.value.room_name,
+      },
+      unit_value: {
+        id: equipment.value.unit_id,
+        name: equipment.value.unit_name,
+      },
+      building_value: {
+        id: equipment.value.building_id,
+        name: equipment.value.building_name,
+      },
+    },
+  }).onOk((data) => {});
 }
 
-function editPurchase(){
+function editPurchase() {
   const projectData = {
     project_id: project.value ? project.value.id : null,
     project_name: project.value ? project.value.project_name : null,
     stage_id: project.value ? project.value.stage_id : null,
-    stage_name: project.value ? project.value.stage_name : null
-  }
+    stage_name: project.value ? project.value.stage_name : null,
+  };
   $q.dialog({
     component: EditEquipmentPurchase,
     componentProps: {
       id: equipment.value.id,
-      supplier_value: {'id': equipment.value.supplier_id, 'name': equipment.value.supplier_name},
+      supplier_value: {
+        id: equipment.value.supplier_id,
+        name: equipment.value.supplier_name,
+      },
       reception_date_value: equipment.value.reception_date,
-      invoice_value: {'id': equipment.value.invoice_id, 'name': equipment.value.invoice_number},
-      project_value: {'id': projectData['project_id'], 'name': projectData['project_name']},
-      stage_value: {'id': projectData['stage_id'], 'name': projectData['stage_name']}
-    }
-  }).onOk((data) => {
-    })
+      invoice_value: {
+        id: equipment.value.invoice_id,
+        name: equipment.value.invoice_number,
+      },
+      project_value: {
+        id: projectData["project_id"],
+        name: projectData["project_name"],
+      },
+      stage_value: {
+        id: projectData["stage_id"],
+        name: projectData["stage_name"],
+      },
+    },
+  }).onOk((data) => {});
 }
 
 onMounted(() => {
