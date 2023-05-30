@@ -8,7 +8,6 @@ class LotListSchema(BaseModel):
     number: str
     due_date: Optional[date]
     stock: int
-    samples: Optional[int]
     observations: Optional[str]
     supply_name: str
     supply_code: str
