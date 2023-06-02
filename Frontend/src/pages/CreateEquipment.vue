@@ -1403,45 +1403,6 @@ async function createNewEquipment(equipmentdata) {
   }
 }
 
-async function createNewProjectEquipment(equipment_id, project_id, stage_id) {
-  let relationdata = {
-    equipment_id: equipment_id,
-    project_id: project_id,
-    stage_id: stage_id,
-  };
-  if (
-    project_id == -1 ||
-    project_id == null ||
-    stage_id == -1 ||
-    stage_id == null
-  ) {
-    return;
-  }
-
-  try {
-    const response = await axios.post(
-      api_prefix + "/equipments_projects",
-      relationdata
-    );
-
-    if (response.status == 201) {
-      $q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "check",
-        message: "Relación creada con éxito",
-      });
-    }
-  } catch (error) {
-    $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la relacion: " + error,
-    });
-  }
-}
-
 async function uploadInvoiceImage(equipment_id) {
   if (!newinvoicestate.value || invoiceimage.value == null) {
     return;
@@ -1502,6 +1463,7 @@ async function onSubmit() {
     supplier_id: supplier.value,
     invoice_id: invoice.value,
     room_id: room.value,
+    stage_id: stage.value
   };
 
   loading.value = true;
@@ -1510,19 +1472,16 @@ async function onSubmit() {
   }
   const building_id = await createNewBuilding();
   if (building_id == -1) {
-    console.log("1");
     loading.value = false;
     return;
   }
   const unit_id = await createNewUnit(building_id);
   if (unit_id == -1) {
-    console.log("2");
     loading.value = false;
     return;
   }
   const room_id = await createNewRoom(unit_id);
   if (room_id == -1) {
-    console.log("3");
     loading.value = false;
     return;
   }
@@ -1530,19 +1489,16 @@ async function onSubmit() {
 
   const brand_id = await createNewBrand();
   if (brand_id == -1) {
-    console.log("4");
     loading.value = false;
     return;
   }
   const model_id = await createNewModel(brand_id);
   if (model_id == -1) {
-    console.log("5");
     loading.value = false;
     return;
   }
   const model_number_id = await createNewModelnumber(model_id);
   if (model_number_id == -1) {
-    console.log("6");
     loading.value = false;
     return;
   }
@@ -1551,7 +1507,6 @@ async function onSubmit() {
 
   const supplier_id = await createNewSupplier();
   if (supplier_id == -1) {
-    console.log("7");
     loading.value = false;
     return;
   }
@@ -1559,17 +1514,20 @@ async function onSubmit() {
   await createNewWorker(supplier_id);
   const invoice_id = await createNewInvoice(supplier_id);
   if (invoice_id == -1) {
-    console.log("8");
     loading.value = false;
     return;
   }
   equipmentdata["invoice_id"] = invoice_id;
 
-  const equipment_id = await createNewEquipment(equipmentdata);
   const project_owner_id = await createNewProjectOwner();
   const project_id = await createNewProject(project_owner_id);
   const stage_id = await createNewStage(project_id);
-  await createNewProjectEquipment(equipment_id, project_id, stage_id);
+  if(stage_id == -1){
+    loading.value = false;
+    return;
+  }
+  equipmentdata['stage_id'] = stage_id
+  const equipment_id = await createNewEquipment(equipmentdata);
   await uploadEquipmentImage(equipment_id);
   await uploadInvoiceImage(equipment_id);
   loading.value = false;
@@ -1593,11 +1551,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-body {
-  background-image: url(./../assets/background.jpg);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-}
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

@@ -85,7 +85,7 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
         if not db_room:
             return Response(status_code=HTTP_404_NOT_FOUND)
     if equipment.stage_id != None:
-        db_stage = get_stage(equipment.stage_id)
+        db_stage = get_stage(equipment.stage_id, db=db)
         if not db_stage:
             return Response(status_code=HTTP_404_NOT_FOUND)
 
