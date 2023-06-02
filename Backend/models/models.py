@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, LargeBinary, Date, Boolean, Sequence
+from sqlalchemy import Integer, String, Date, Boolean, Sequence
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 from typing import List, Optional
@@ -139,7 +139,9 @@ class Equipments(Base):
     room_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("Rooms.id", ondelete="SET NULL")
     )
-    stage_id: Mapped[int] = mapped_column(Integer, ForeignKey("Stages.id", ondelete="SET NULL"))
+    stage_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("Stages.id", ondelete="SET NULL")
+    )
     maintenances: Mapped[List["Maintenances"]] = relationship(
         "Maintenances", backref="Equipments", cascade="delete,merge"
     )

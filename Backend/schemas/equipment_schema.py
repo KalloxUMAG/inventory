@@ -2,6 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 from datetime import date
 
+
 class EquipmentSchema(BaseModel):
     id: Optional[int]
     name: str
@@ -15,10 +16,11 @@ class EquipmentSchema(BaseModel):
     invoice_id: Optional[int]
     model_number_id: Optional[int]
     room_id: Optional[int]
-
+    stage_id: Optional[int]
 
     class Config:
         orm_mode = True
+
 
 class EquipmentListSchema(BaseModel):
     id: Optional[int]
@@ -41,6 +43,7 @@ class EquipmentListSchema(BaseModel):
     class Config:
         orm_mode = True
 
+
 class EquipmentFullSchema(BaseModel):
     id: Optional[int]
     name: str
@@ -49,7 +52,7 @@ class EquipmentFullSchema(BaseModel):
     reception_date: date
     maintenance_period: Optional[int]
     observation: Optional[str]
-    last_preventive_mainteinance: Optional[date]  
+    last_preventive_mainteinance: Optional[date]
     room_id: Optional[int]
     room_name: Optional[str]
     unit_id: Optional[int]
@@ -66,9 +69,14 @@ class EquipmentFullSchema(BaseModel):
     model_name: Optional[str]
     model_number_id: Optional[int]
     model_number: Optional[str]
+    stage_id: Optional[int]
+    stage_name: Optional[str]
+    project_id: Optional[int]
+    project_name: Optional[str]
 
     class Config:
         orm_mode = True
+
 
 class UpdateEquipmentSchema(BaseModel):
     id: Optional[int]
@@ -83,6 +91,7 @@ class UpdateEquipmentSchema(BaseModel):
     invoice_id: Optional[int]
     model_number_id: Optional[int]
     room_id: Optional[int]
+    stage_id: Optional[int]
 
     class Config:
         orm_mode = True
