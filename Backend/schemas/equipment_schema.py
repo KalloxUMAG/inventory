@@ -73,6 +73,8 @@ class EquipmentFullSchema(BaseModel):
     stage_name: Optional[str]
     project_id: Optional[int]
     project_name: Optional[str]
+    project_owner_id: Optional[str]
+    project_owner_name: Optional[str]
 
     class Config:
         orm_mode = True

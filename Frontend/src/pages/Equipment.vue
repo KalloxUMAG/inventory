@@ -153,14 +153,14 @@
             </div>
             <div class="row q-mb-xs">
               <div class="col-5 field-label text-right q-mr-md">Proyecto:</div>
-              <div class="col field-content q-ml-xs" v-if="project != null">
-                {{ project.project_name }}
+              <div class="col field-content q-ml-xs">
+                {{ equipment.project_name }}
               </div>
             </div>
             <div class="row q-mb-xs">
               <div class="col-5 field-label text-right q-mr-md">Etapa:</div>
-              <div class="col field-content q-ml-xs" v-if="project != null">
-                {{ project.stage_name }}
+              <div class="col field-content q-ml-xs">
+                {{ equipment.stage_name }}
               </div>
             </div>
             <div class="row q-mb-xs">
@@ -169,11 +169,9 @@
               </div>
               <div
                 class="col field-content q-ml-xs"
-                v-if="project != null && project.project_owner != null"
               >
-                {{ project.project_owner }}
+                {{ equipment.project_owner_name }}
               </div>
-              <div class="col field-content q-ml-xs" v-else>Ninguno</div>
             </div>
           </q-card-section>
         </q-card-section>
@@ -241,7 +239,6 @@ const route = useRoute();
 const id = computed(() => route.params.id);
 const query_equipment = api_prefix + "/equipments/" + id.value;
 const query_maintenances = api_prefix + "/maintenances/" + id.value;
-const query_projects = api_prefix + "/equipment_projects/" + id.value;
 
 function getEquipment() {
   axios.get(query_equipment).then((response) => {
@@ -253,9 +250,6 @@ function getMaintenances() {
   axios.get(query_maintenances).then((response) => {
     maintenances.value = response.data;
   });
-}
-function getProjects() {
-  axios.get(query_projects).then((response) => (project.value = response.data));
 }
 
 function addFunction() {
@@ -394,7 +388,6 @@ function editPurchase() {
 onMounted(() => {
   getEquipment();
   getMaintenances();
-  getProjects();
   content_loaded.value = true;
 });
 </script>

@@ -14,6 +14,7 @@ from models.models import (
     Models,
     Stages,
     Projects,
+    Project_owners,
 )
 from schemas.equipment_schema import (
     EquipmentSchema,
@@ -171,6 +172,8 @@ def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
             Stages.name.label("stage_name"),
             Projects.id.label("project_id"),
             Projects.name.label("project_name"),
+            Project_owners.id.label("project_owner_id"),
+            Project_owners.name.label("project_owner_name"),
         )
         .outerjoin(Rooms, Rooms.id == Equipments.room_id)
         .outerjoin(Suppliers, Suppliers.id == Equipments.supplier_id)
@@ -182,6 +185,7 @@ def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
         .outerjoin(Buildings, Buildings.id == Units.building_id)
         .outerjoin(Stages, Stages.id == Equipments.stage_id)
         .outerjoin(Projects, Projects.id == Stages.project_id)
+        .outerjoin(Project_owners, Project_owners.id == Projects.owner_id)
         .filter(Equipments.id == equipment_id)
         .first()
     )
