@@ -16,20 +16,25 @@
           <div class="row">
             <q-input
               outlined
-              v-model="name"
+              v-model="supply.name"
               label="Nombre"
               class="col q-mr-md"
             />
             <q-input
               outlined
-              v-model="code"
+              v-model="supply.code"
               label="Codigo"
               class="col q-mr-md"
             />
-            <q-input outlined v-model="cost" label="Valor" class="col" />
           </div>
         </div>
-        <div v-if="!newBrandState" class="col">
+        <div class="col">
+          <div class="row">
+            <q-input outlined v-model="supply.cost" label="Valor" type="number" class="col q-mr-md" />
+            <q-input outlined v-model="supply.samples" label="Muestras por unidad" type="number" class="col q-mr-md" />
+          </div>
+        </div>
+        <div v-if="!flags.newBrandState" class="col">
           <SelectForm
             outlined
             class="row"
@@ -40,7 +45,7 @@
             not_found_label="No hay marcas disponibles"
             @updateModel="
               (value) => {
-                brand = value;
+                supply.brand = value;
               }
             "
           />
@@ -48,7 +53,7 @@
             <q-btn
               label="Añadir marca"
               class="add-btn"
-              @click="newBrandState = true"
+              @click="flags.newBrandState = true"
             />
           </div>
         </div>
@@ -59,25 +64,25 @@
               v-model="newBrand"
               class="col"
               label="Marca"
-              :disable="disableBrand"
+              :disable="flags.disableBrand"
             />
           </div>
           <div class="row justify-end q-pt-md">
             <q-btn
-              :label="disableBrand ? 'Editar' : 'Guardar'"
+              :label="flags.disableBrand ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="disableBrand = !disableBrand"
+              @click="flags.disableBrand = !flags.disableBrand"
             />
             <q-btn
               label="Ver lista"
               color="amber"
-              @click="newBrandState = false"
+              @click="flags.newBrandState = false"
             />
           </div>
         </div>
 
-        <div v-if="!newTypeState" class="col">
+        <div v-if="!flags.newTypeState" class="col">
           <SelectForm
             outlined
             class="row"
@@ -88,7 +93,7 @@
             not_found_label="No hay tipos de insumos disponibles"
             @updateModel="
               (value) => {
-                type = value;
+                supply.type = value;
               }
             "
           />
@@ -96,7 +101,7 @@
             <q-btn
               label="Añadir tipo de insumo"
               class="add-btn"
-              @click="newTypeState = true"
+              @click="flags.newTypeState = true"
             />
           </div>
         </div>
@@ -107,167 +112,23 @@
               v-model="newType"
               class="col"
               label="Tipo de insumo"
-              :disable="disableType"
+              :disable="flags.disableType"
             />
           </div>
           <div class="row justify-end q-pt-md">
             <q-btn
-              :label="disableType ? 'Editar' : 'Guardar'"
+              :label="flags.disableType ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="disableType = !disableType"
+              @click="flags.disableType = !flags.disableType"
             />
             <q-btn
               label="Ver lista"
               color="amber"
-              @click="newTypeState = false"
+              @click="flags.newTypeState = false"
             />
           </div>
         </div>
-
-        <!--Supplier-->
-        <div v-if="!newSupplierState">
-          <SelectForm
-            outlined
-            :options="suppliersOptions"
-            option_value="id"
-            option_label="name"
-            label="Proveedor"
-            not_found_label="No hay proveedores disponibles"
-            @updateModel="
-              (value) => {
-                supplier = value;
-              }
-            "
-          />
-          <div class="row justify-end q-mt-md">
-            <q-btn
-              label="Añadir proveedor"
-              icon="add"
-              class="add-btn text-caption"
-              @click="newSupplierState = !newSupplierState"
-            />
-          </div>
-        </div>
-
-        <div v-else>
-          <div class="row">
-            <q-input
-              outlined
-              v-model="newSupplierName"
-              label="Nombre proveedor"
-              class="col"
-              :disable="disableSupplier"
-            />
-            <q-input
-              outlined
-              v-model="newSupplierRut"
-              label="Rut"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-            />
-            <q-input
-              outlined
-              v-model="newSupplierAddress"
-              label="Dirección"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-            />
-          </div>
-          <div class="row q-mt-sm">
-            <q-input
-              outlined
-              v-model="workerName1"
-              label="Nombre trabajador"
-              class="col"
-              :disable="disableSupplier"
-            />
-            <SelectForm
-              outlined
-              :disable="disableSupplier"
-              :options="rolOptions"
-              option_value="value"
-              option_label="name"
-              label="Roles"
-              not_found_label="No hay roles disponibles"
-              @updateModel="(value) => (workerRol1 = value)"
-              class="col q-ml-md"
-            />
-            <q-input
-              outlined
-              v-model="workerMail1"
-              label="Correo trabajador"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-            />
-            <q-input
-              outlined
-              v-model="workerPhone1"
-              label="Telefono trabajador"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-            />
-          </div>
-          <div class="row q-mt-sm">
-            <q-input
-              outlined
-              v-model="workerName2"
-              label="Nombre trabajador"
-              class="col"
-              :disable="disableSupplier"
-            />
-            <SelectForm
-              outlined
-              :disable="disableSupplier"
-              :options="rolOptions"
-              option_value="value"
-              option_label="name"
-              label="Roles"
-              not_found_label="No hay roles disponibles"
-              @updateModel="(value) => (workerRol2 = value)"
-              class="col q-ml-md"
-            />
-            <q-input
-              outlined
-              v-model="workerMail2"
-              label="Correo trabajador"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-            />
-            <q-input
-              outlined
-              v-model="workerPhone2"
-              label="Telefono trabajador"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-            />
-          </div>
-          <div class="row justify-end q-mt-sm">
-            <q-btn
-              v-if="disableSupplier"
-              label="Editar"
-              color="amber"
-              @click="disableSupplier = false"
-              class="q-mr-sm"
-            />
-            <q-btn
-              v-else
-              label="Guardar"
-              color="amber"
-              @click="disableSupplier = true"
-              class="q-mr-sm"
-            />
-            <q-btn
-              label="Ver lista"
-              color="amber"
-              @click="
-                (newSupplierState = !newSupplierState),
-                  (disableSupplier = false)
-              "
-            />
-          </div>
-        </div>
-
         <!--Form button-->
         <div class="row justify-end q-mt-mx">
           <q-btn label="Crear" type="submit" color="positive" />
@@ -286,53 +147,34 @@
 <script setup>
 import { useQuasar } from "quasar";
 import { useRoute, useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import axios from "axios";
 import SelectForm from "src/components/SelectForm.vue";
 
 //Options Selects
 const brandOptions = ref([]);
-const suppliersOptions = ref([]);
 const typeOptions = ref([]);
-const rolOptions = [
-  {
-    value: "Vendedor",
-    name: "Vendedor",
-  },
-  {
-    value: "Tecnico",
-    name: "Tecnico",
-  },
-];
 
 //Models
-const brand = ref(null);
-const type = ref(null);
-const name = ref(null);
-const code = ref(null);
-const cost = ref(null);
+const supply = reactive({
+  brand: null,
+  type: null,
+  name: null,
+  code: null,
+  cost: null,
+  samples: null,
+});
 const newBrand = ref(null);
 const newType = ref(null);
-const supplier = ref(null);
-const newSupplierName = ref(null);
-const newSupplierRut = ref(null);
-const newSupplierAddress = ref(null);
-const workerName1 = ref(null);
-const workerRol1 = ref(null);
-const workerMail1 = ref(null);
-const workerPhone1 = ref(null);
-const workerName2 = ref(null);
-const workerRol2 = ref(null);
-const workerMail2 = ref(null);
-const workerPhone2 = ref(null);
 
 //Flags
-const disableBrand = ref(false);
-const newBrandState = ref(false);
-const disableType = ref(false);
-const newTypeState = ref(false);
-const newSupplierState = ref(false);
-const disableSupplier = ref(false);
+const flags = reactive({
+  disableBrand: false,
+  newBrandState: false,
+  disableType: false,
+  newTypeState: false
+})
+
 const loading = ref(false);
 
 //Form
@@ -358,20 +200,11 @@ const getSuppliesTypes = () => {
   });
 };
 
-const getSuppliers = () => {
-  axios.get(api_prefix + "/suppliers").then((response) => {
-    const result = response.data;
-    suppliersOptions.value = result.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  });
-};
-
 //Create functions
 
 async function createNewBrand() {
-  if (!newBrandState.value) {
-    return brand.value;
+  if (!flags.newBrandState.value) {
+    return supply.brand;
   }
   const brandData = {
     name: newBrand.value,
@@ -394,8 +227,8 @@ async function createNewBrand() {
 }
 
 async function createNewType() {
-  if (!newTypeState.value) {
-    return type.value;
+  if (!flags.newTypeState.value) {
+    return supply.type;
   }
   const typeData = {
     name: newType.value,
@@ -411,78 +244,6 @@ async function createNewType() {
       icon: "error",
       message: "No se pudo crear el tipo de insumo: " + error,
     });
-  }
-}
-
-async function createNewSupplier() {
-  if (!newSupplierState.value) {
-    return supplier.value;
-  }
-  const supplierData = {
-    name: newSupplierName.value,
-    rut: newSupplierRut.value,
-    city_address: newSupplierAddress.value,
-  };
-  try {
-    const response = await axios.post(api_prefix + "/suppliers", supplierData);
-    return response.data;
-  } catch (error) {
-    $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el proveedor: " + error,
-    });
-  }
-}
-
-async function createNewWorker(supplier_id) {
-  if (!newSupplierState.value) {
-    return;
-  }
-  if (workerName1.value != null) {
-    const workerData1 = {
-      name: workerName1.value,
-      position: workerRol1.value,
-      phone: workerPhone1.value,
-      email: workerMail1.value,
-      supplier_id: supplier_id,
-    };
-    try {
-      const response = await axios.post(
-        api_prefix + "/suppliers_contacts",
-        workerData1
-      );
-    } catch (error) {
-      $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "No se pudo crear el contacto 1: " + error,
-      });
-    }
-  }
-  if (workerName2.value != null) {
-    const workerData2 = {
-      name: workerName2.value,
-      position: workerRol2.value,
-      phone: workerPhone2.value,
-      email: workerMail2.value,
-      supplier_id: supplier_id,
-    };
-    try {
-      const response = await axios.post(
-        api_prefix + "/suppliers_contacts",
-        workerData2
-      );
-    } catch (error) {
-      $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "No se pudo crear el contacto 2: " + error,
-      });
-    }
   }
 }
 
@@ -503,12 +264,13 @@ async function createNewSupply(supplyData) {
 async function onSubmit() {
   createSupplyForm.value.resetValidation();
   let supplyData = {
-    name: name.value,
-    code: code.value,
-    cost: cost.value,
-    supplies_brand_id: brand.value,
-    supplier_id: supplier.value,
-    supplies_type_id: type.value,
+    name: supply.name,
+    code: supply.code,
+    cost: supply.cost,
+    critical_stock: supply
+    samples: supply.samples,
+    supplies_brand_id: supply.brand,
+    supplies_type_id: supply.type,
   };
 
   loading.value = true;
@@ -527,20 +289,12 @@ async function onSubmit() {
   }
   supplyData["supplies_type_id"] = supplies_type_id;
 
-  const supplier_id = await createNewSupplier();
-  if (supplier_id == -1) {
-    loading.value = false;
-    return;
-  }
-  supplyData["supplier_id"] = supplier_id;
-  await createNewWorker(supplier_id);
-
   const supply_id = await createNewSupply(supplyData);
   if (supply_id == -1) {
     loading.value = false;
     return;
   }
-
+  
   loading.value = false;
   //Redirect to table
 }
@@ -548,7 +302,6 @@ async function onSubmit() {
 onMounted(() => {
   getSuppliesBrands();
   getSuppliesTypes();
-  getSuppliers();
 });
 </script>
 

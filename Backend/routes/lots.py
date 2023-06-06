@@ -24,13 +24,11 @@ def get_lots(db: Session = Depends(get_db)):
             Locations.name.label("location"),
             Sub_locations.name.label("sub_location"),
             Projects.name.label("project"),
-            Suppliers.name.label("supplier_name"),
         )
         .outerjoin(Supplies, Supplies.id == Lots.supplies_id)
         .outerjoin(Sub_locations, Sub_locations.id == Lots.sub_location_id)
         .outerjoin(Locations, Locations.id == Sub_locations.id)
         .outerjoin(Projects, Projects.id == Lots.project_id)
-        .outerjoin(Suppliers, Suppliers.id == Supplies.supplier_id)
         .all()
     )
     return result

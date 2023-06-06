@@ -21,11 +21,9 @@ def get_supplies(db: Session = Depends(get_db)):
             Supplies.critical_stock,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),
-            Suppliers.name.label("supplier_name"),
         )
         .outerjoin(Supplies_brand, Supplies_brand.id == Supplies.supplies_brand_id)
         .outerjoin(Supplies_types, Supplies_types.id == Supplies.supplies_type_id)
-        .outerjoin(Suppliers, Suppliers.id == Supplies.supplier_id)
         .all()
     )
     return result
@@ -38,9 +36,9 @@ def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
         code=supply.code,
         cost=supply.cost,
         stock=supply.stock,
+        samples=supply.samples,
         critical_stock=supply.critical_stock,
         supplies_brand_id=supply.supplies_brand_id,
-        supplier_id=supply.supplier_id,
         supplies_type_id=supply.supplies_type_id,
     )
     db.add(new_supply)
@@ -60,13 +58,12 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
             Supplies.cost,
             Supplies.stock,
             Supplies.critical_stock,
+            Supplies.samples,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),
-            Suppliers.name.label("supplier_name"),
         )
         .outerjoin(Supplies_brand, Supplies_brand.id == Supplies.supplies_brand_id)
         .outerjoin(Supplies_types, Supplies_types.id == Supplies.supplies_type_id)
-        .outerjoin(Suppliers, Suppliers.id == Supplies.supplier_id)
         .filter(Supplies.id == supply_id)
         .first()
     )

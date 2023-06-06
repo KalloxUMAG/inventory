@@ -87,10 +87,10 @@ export const suppliesColumns = [
     sortable: true,
   },
   {
-    name: "supplier_name",
+    name: "samples",
     align: "left",
-    label: "Proveedor",
-    field: "supplier_name",
+    label: "Muestras",
+    field: "samples",
     sortable: true,
   },
 ];

@@ -10,16 +10,6 @@
         addTo="/supplies/new_supply"
       />
     </div>
-    <div class="q-mt-xl">
-      <RenderTable
-        :columns="lotsColumns"
-        :rows="lots"
-        title="Lotes"
-        detail_query="/supplies/lot/"
-        row_key="id"
-        addTo="/supplies/new_lot"
-      />
-    </div>
   </q-page>
 </template>
 
