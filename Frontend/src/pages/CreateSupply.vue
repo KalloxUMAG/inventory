@@ -24,14 +24,19 @@
               outlined
               v-model="supply.code"
               label="Codigo"
-              class="col q-mr-md"
+              class="col"
             />
           </div>
         </div>
         <div class="col">
           <div class="row">
             <q-input outlined v-model="supply.cost" label="Valor" type="number" class="col q-mr-md" />
-            <q-input outlined v-model="supply.samples" label="Muestras por unidad" type="number" class="col q-mr-md" />
+            <q-input outlined v-model="supply.samples" label="Muestras por unidad" type="number" class="col" />
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <q-input outlined v-model="supply.critical_stock" label="Stock crítico" type="number" class="col" />
           </div>
         </div>
         <div v-if="!flags.newBrandState" class="col">
@@ -163,6 +168,7 @@ const supply = reactive({
   code: null,
   cost: null,
   samples: null,
+  critical_stock: null,
 });
 const newBrand = ref(null);
 const newType = ref(null);
@@ -203,7 +209,7 @@ const getSuppliesTypes = () => {
 //Create functions
 
 async function createNewBrand() {
-  if (!flags.newBrandState.value) {
+  if (!flags.newBrandState) {
     return supply.brand;
   }
   const brandData = {
@@ -227,7 +233,7 @@ async function createNewBrand() {
 }
 
 async function createNewType() {
-  if (!flags.newTypeState.value) {
+  if (!flags.newTypeState) {
     return supply.type;
   }
   const typeData = {
@@ -267,7 +273,8 @@ async function onSubmit() {
     name: supply.name,
     code: supply.code,
     cost: supply.cost,
-    critical_stock: supply
+    stock: 0,
+    critical_stock: supply.critical_stock,
     samples: supply.samples,
     supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,
@@ -294,7 +301,7 @@ async function onSubmit() {
     loading.value = false;
     return;
   }
-  
+
   loading.value = false;
   //Redirect to table
 }

@@ -26,7 +26,7 @@ from routes.sub_locations import sub_locations
 
 
 def create_tables():
-    #    Base.metadata.drop_all(bind=engine)
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
 
