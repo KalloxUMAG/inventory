@@ -18,6 +18,7 @@ def get_supplies(db: Session = Depends(get_db)):
             Supplies.code,
             Supplies.cost,
             Supplies.stock,
+            Supplies.samples,
             Supplies.critical_stock,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),

@@ -32,7 +32,10 @@ const getLots = () => {
 const getSupplies = () => {
   axios
     .get(api_prefix + "/supplies")
-    .then((response) => (supplies.value = response.data));
+    .then((response) => (supplies.value = response.data.map((supply) => {
+      supply.max_samples = supply.samples * supply.stock;
+      return supply;
+    })))
 };
 
 onMounted(() => {

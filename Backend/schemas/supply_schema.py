@@ -8,7 +8,7 @@ class SupplyListSchema(BaseModel):
     code: Optional[str]
     cost: Optional[int]
     stock: Optional[int]
-    critcal_stock: Optional[int]
+    critical_stock: Optional[int]
     samples: Optional[int]
     supplies_brand_name: Optional[str]
     supplies_type_name: Optional[str]

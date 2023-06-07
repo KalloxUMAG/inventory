@@ -301,7 +301,7 @@ async function onSubmit() {
     loading.value = false;
     return;
   }
-
+  console.log(supplyData);
   loading.value = false;
   //Redirect to table
 }
