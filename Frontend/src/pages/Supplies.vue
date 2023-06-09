@@ -34,6 +34,7 @@ const getSupplies = () => {
     .get(api_prefix + "/supplies")
     .then((response) => (supplies.value = response.data.map((supply) => {
       supply.max_samples = supply.samples * supply.stock;
+      supply.critical = supply.stock <= supply.critical_stock ? true : false;
       return supply;
     })))
 };

@@ -13,8 +13,8 @@
   >
     <template v-slot:top>
       <h1 class="text-h5">{{ title }}</h1>
-      <q-space/>
-      <q-btn class="add-btn q-mr-sm" :to="addTo" icon="add" rounded/>
+      <q-space />
+      <q-btn class="add-btn q-mr-sm" :to="addTo" icon="add" rounded />
       <q-input
         outlined
         dense
@@ -27,6 +27,14 @@
         </template>
       </q-input>
     </template>
+    <template v-slot:body-cell="props">
+          <q-td
+            :props="props"
+            :class="props.row.critical &&'bg-negative text-white'"
+          >
+            {{ props.value }}
+          </q-td>
+        </template>
   </q-table>
 </template>
 
@@ -43,10 +51,10 @@ export default {
     addTo: String,
   },
   methods: {
-    rowClicker(e, row){
+    rowClicker(e, row) {
       const item = row.id;
       this.$router.push(this.detail_query + item);
-    }
+    },
   },
   setup() {
     const filter = ref("");
@@ -63,10 +71,9 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
-  .add-btn{
-    background-color: #5390EB;
-    color: #FEFEFE;
-  }
+.add-btn {
+  background-color: #5390eb;
+  color: #fefefe;
+}
 </style>

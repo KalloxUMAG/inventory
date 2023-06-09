@@ -1,27 +1,61 @@
 <template>
   <q-page padding>
-    <div class="row justify-center">
-      <q-card class="my-card" flat bordered>
-        <q-item class="row justify-center">
-          <div class="text-h5">
-            {{ supply.name }}
+    <div class="row q-col-gutter-md">
+      <div class="flex col-7">
+        <q-card class="my-card fit" flat bordered>
+          <q-item class="row justify-center">
+            <div class="text-h5">Insumo</div>
+          </q-item>
+          <q-separator />
+          <q-card-section horizontal>
+            <q-separator vertical />
+            <!--Datos producto-->
+            <div class="col">
+            <div class="row">
+              <div class="col">
+                <div class="row">Nombre:</div>
+                <div class="row">{{ supply.name }}</div>
+              </div>
+              <div class="col">
+                <div class="row">Codigo:</div>
+                <div class="row">{{ supply.code }}</div>
+              </div>
+              <div class="col">
+                <div class="row">Costo:</div>
+                <div class="row">{{ supply.cost }}</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row">Marca:</div>
+                <div class="row">{{ supply.supplies_brand_name }}</div>
+              </div>
+              <div class="col">
+                <div class="row">Tipo:</div>
+                <div class="row">{{ supply.supplies_type_name }}</div>
+              </div>
+              <div class="col">
+                <div class="row">Cantidad actual:</div>
+                <div class="row">{{ supply.stock }}</div>
+              </div>
+            </div>
           </div>
-        </q-item>
-        <q-separator />
-        <q-card-section horizontal>
-          <q-separator vertical />
-          <!--Datos producto-->
-          <div class="col">
-            <div class="row">Nombre: {{ supply.name }}</div>
-            <div class="row">Codigo: {{ supply.code }}</div>
-            <div class="row">Costo: {{ supply.cost }}</div>
-            <div class="row">Marca: {{ supply.supplies_brand_name }}</div>
-            <div class="row">Tipo: {{ supply.supplies_types_name }}</div>
-            <div class="row">Proveedor: {{ supply.supplier_name }}</div>
-          </div>
-          <q-card-section class="col"> </q-card-section>
-        </q-card-section>
-      </q-card>
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="flex col-5">
+        <q-card class="my-card fit" flat bordered>
+          <q-item class="row justify-center">
+            <div class="text-h5">Proveedores</div>
+          </q-item>
+          <q-separator />
+          <q-card-section horizontal>
+            <q-separator vertical />
+            <!--Datos producto-->
+            <div class="col">Tabla proveedores</div>
+          </q-card-section>
+        </q-card>
+      </div>
     </div>
   </q-page>
 </template>
@@ -50,9 +84,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.my-card {
-  width: 100%;
-}
 .field-label {
   font-size: 16px;
   font-weight: bold;
@@ -61,6 +92,10 @@ onMounted(() => {
 .field-content {
   font-size: 16px;
   font-weight: 500;
+}
+
+.col {
+  height: 100%;
 }
 
 .q-page {

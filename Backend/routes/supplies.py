@@ -30,6 +30,28 @@ def get_supplies(db: Session = Depends(get_db)):
     return result
 
 
+@supplies.get("/api/supplies/critical", response_model=List[SupplyListSchema])
+def get_supplies_critical(db: Session = Depends(get_db)):
+    result = (
+        db.query(
+            Supplies.id,
+            Supplies.name,
+            Supplies.code,
+            Supplies.cost,
+            Supplies.stock,
+            Supplies.samples,
+            Supplies.critical_stock,
+            Supplies_brand.name.label("supplies_brand_name"),
+            Supplies_types.name.label("supplies_type_name"),
+        )
+        .outerjoin(Supplies_brand, Supplies_brand.id == Supplies.supplies_brand_id)
+        .outerjoin(Supplies_types, Supplies_types.id == Supplies.supplies_type_id)
+        .filter(Supplies.stock <= Supplies.critical_stock)
+        .all()
+    )
+    return result
+
+
 @supplies.post("/api/supplies", status_code=HTTP_201_CREATED)
 def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
     new_supply = Supplies(
