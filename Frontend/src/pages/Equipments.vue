@@ -12,8 +12,6 @@ import {equipmentsColumns} from '../constants/columns.js'
 
 const equipments = ref([])
 
-console.log(equipmentsColumns)
-
 const getEquipments = () => {
   axios.get("http://localhost:8000/api/equipments").then(
         response => (

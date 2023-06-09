@@ -1463,7 +1463,8 @@ async function onSubmit() {
     supplier_id: supplier.value,
     invoice_id: invoice.value,
     room_id: room.value,
-    stage_id: stage.value
+    stage_id: stage.value,
+    last_preventive_mainteinance: reception_date.value
   };
 
   loading.value = true;
