@@ -1,3 +1,5 @@
+from datetime import timedelta, date
+from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Response, Depends, UploadFile
 from fastapi.responses import FileResponse
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
@@ -64,6 +66,20 @@ def get_equipments(db: Session = Depends(get_db)):
         .all()
     )
     return result
+
+
+@equipments.get(
+    "/api/equipments/nextmaintenances", response_model=List[EquipmentSchema]
+)
+def get_equipments_nextmaintenances(db: Session = Depends(get_db)):
+    return (
+        db.query(Equipments)
+        .filter(
+            Equipments.last_preventive_mainteinance + relativedelta(months=+2)
+            == date.today() - timedelta(30)
+        )
+        .all()
+    )
 
 
 @equipments.post("/api/equipments", status_code=HTTP_201_CREATED)
@@ -194,7 +210,7 @@ def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
 
 @equipments.get("/api/equipment/{equipment_id}", response_model=EquipmentSchema)
 def get_equipment_exist(equipment_id: int, db: Session = Depends(get_db)):
-    return db.query(Equipments).filter(Equipments.id == equipment_id)
+    return db.query(Equipments).filter(Equipments.id == equipment_id).first()
 
 
 @equipments.delete("/api/equipments/{equipment_id}", status_code=HTTP_204_NO_CONTENT)

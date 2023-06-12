@@ -160,3 +160,27 @@ export const lotsColumns = [
     sortable: false,
   },
 ];
+
+export const suppliersColumns = [
+  {
+    name: "name",
+    align: "left",
+    label: "Nombre",
+    field: "name",
+    sortable: false,
+  },
+  {
+    name: "rut",
+    align: "left",
+    label: "Rut",
+    field: "rut",
+    sortable: false,
+  },
+  {
+    name: "city_address",
+    align: "left",
+    label: "Dirección",
+    field: "city_address",
+    sortable: false,
+  }
+]

@@ -14,7 +14,7 @@
     <template v-slot:top>
       <h1 class="text-h5">{{ title }}</h1>
       <q-space />
-      <q-btn class="add-btn q-mr-sm" :to="addTo" icon="add" rounded />
+      <q-btn v-if="addTo != null" class="add-btn q-mr-sm" :to="addTo" icon="add" rounded />
       <q-input
         outlined
         dense
@@ -30,7 +30,7 @@
     <template v-slot:body-cell="props">
           <q-td
             :props="props"
-            :class="props.row.critical &&'bg-negative text-white'"
+            :class="props.row.critical &&'bg-red-3'"
           >
             {{ props.value }}
           </q-td>
