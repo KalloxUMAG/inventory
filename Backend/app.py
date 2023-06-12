@@ -23,7 +23,7 @@ from routes.supplies_types import supplies_types
 from routes.supplies_brands import supplies_brands
 from routes.locations import locations
 from routes.sub_locations import sub_locations
-
+from routes.Suppliers_supplies import suppliers_supplies
 
 def create_tables():
     Base.metadata.drop_all(bind=engine)
@@ -62,6 +62,7 @@ routes = [
     supplies_types,
     suppliers,
     suppliers_contacts,
+    suppliers_supplies,
 ]
 
 for route in routes:

@@ -58,6 +58,8 @@
               <NoRedirectTable
                 title="Proveedores"
                 :columns="suppliersColumns"
+                :rows="suppliers"
+                :addFunction="addSupplier"
               />
             </div>
           </q-card-section>
@@ -77,11 +79,16 @@ import { useRoute } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import axios from "axios";
 import NoRedirectTable from "src/components/NoRedirectTable.vue";
+import AddSupplier from "./AddSupplier.vue"; 
 import { suppliersColumns } from "../constants/columns.js";
+import { useQuasar } from "quasar";
 
 const route = useRoute();
 const id = computed(() => route.params.id);
 const supply = ref({});
+const suppliers = ref([])
+
+const $q = useQuasar();
 
 const api_prefix = process.env.API;
 
@@ -91,8 +98,23 @@ const getSupply = () => {
     .then((response) => (supply.value = response.data));
 };
 
+const getSuppliers = () => {
+  axios.get(api_prefix+"/suppliers_supplies/"+id.value).then((response) => (suppliers.value = response.data));
+}
+
+function addSupplier() {
+  $q.dialog({
+    component: AddSupplier,
+    componentProps: {
+      supply_id: supply.value.id,
+    },
+  }).onOk((data) => {});
+}
+
+
 onMounted(() => {
   getSupply();
+  getSuppliers();
 });
 </script>
 

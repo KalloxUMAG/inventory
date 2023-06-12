@@ -184,3 +184,14 @@ export const suppliersColumns = [
     sortable: false,
   }
 ]
+
+export const rolOptions = [
+  {
+    value: "Vendedor",
+    name: "Vendedor",
+  },
+  {
+    value: "Tecnico",
+    name: "Tecnico",
+  },
+];

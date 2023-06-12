@@ -221,11 +221,7 @@ class Supplies(Base):
     code: Mapped[str] = mapped_column(String)
     cost: Mapped[str] = mapped_column(Integer)
     stock: Mapped[int] = mapped_column(Integer)
-<<<<<<< HEAD
     critical_stock: Mapped[int] = mapped_column(Integer)
-=======
-    critical_stock: Mapped[str] = mapped_column(Integer)
->>>>>>> a0e7ea4 (deleted project relatoin)
     samples: Mapped[int] = mapped_column(Integer)
 
     supplies_brand_id: Mapped[int] = mapped_column(

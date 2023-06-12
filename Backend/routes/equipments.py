@@ -75,7 +75,7 @@ def get_equipments_nextmaintenances(db: Session = Depends(get_db)):
     return (
         db.query(Equipments)
         .filter(
-            Equipments.last_preventive_mainteinance + relativedelta(months=+2)
+            Equipments.last_preventive_mainteinance + relativedelta(months=+Equipments.maintenance_period)
             == date.today() - timedelta(30)
         )
         .all()
