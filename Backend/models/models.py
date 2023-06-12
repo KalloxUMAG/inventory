@@ -106,6 +106,9 @@ class Suppliers(Base):
     equipments: Mapped[List["Equipments"]] = relationship(
         "Equipments", backref="Suppliers"
     )
+    lots: Mapped[List["Lots"]] = relationship(
+        "Lots", backref="Suppliers", cascade="delete,merge"
+    )
     supplies: Mapped[List["Supplies"]] = relationship(
         "Supplies", secondary="Suppliers_has_Supplies", back_populates="suppliers"
     )
@@ -291,6 +294,9 @@ class Lots(Base):
     observations: Mapped[str] = mapped_column(String)
     supplies_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Supplies.id", ondelete="CASCADE")
+    )
+    supplier_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("Suppliers.id", ondelete="CASCADE")
     )
     sub_location_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Sub_locations.id")

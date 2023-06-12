@@ -23,11 +23,6 @@ const lots = ref([]);
 const supplies = ref([]);
 const api_prefix = process.env.API;
 
-const getLots = () => {
-  axios
-    .get(api_prefix + "/lots")
-    .then((response) => (lots.value = response.data));
-};
 
 const getSupplies = () => {
   axios
@@ -40,7 +35,6 @@ const getSupplies = () => {
 };
 
 onMounted(() => {
-  getLots();
   getSupplies();
 });
 </script>

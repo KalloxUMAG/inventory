@@ -63,7 +63,7 @@
     </div>
     <div class="row q-mt-md">
       <div class="col">
-        <NoRedirectTable title="Lotes" :columns="suppliersColumns" />
+        <NoRedirectTable title="Lotes" :columns="lotsColumns" :rows="[]" :addFunction="addLot"/>
       </div>
     </div>
   </q-page>
@@ -75,7 +75,8 @@ import { computed, onMounted, ref } from "vue";
 import axios from "axios";
 import NoRedirectTable from "src/components/NoRedirectTable.vue";
 import AddSupplier from "./AddSupplier.vue"; 
-import { suppliersSupplyColumns } from "../constants/columns.js";
+import AddLot from "./AddLot.vue";
+import { suppliersSupplyColumns, lotsColumns } from "../constants/columns.js";
 import { useQuasar } from "quasar";
 
 const route = useRoute();
@@ -106,6 +107,14 @@ function addSupplier() {
   }).onOk((data) => {});
 }
 
+function addLot() {
+  $q.dialog({
+    component: AddLot,
+    componentProps: {
+      supply_id: supply.value.id,
+    },
+  }).onOk((data) => {});
+}
 
 onMounted(() => {
   getSupply();
