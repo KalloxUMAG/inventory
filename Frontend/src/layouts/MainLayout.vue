@@ -4,12 +4,12 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
-          Sistema de gestion de inventario CADI
+          <div class="text-h4 q-ma-md">Sistema de gestion de inventario CADI</div>
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" elevated>
+    <q-drawer v-model="leftDrawerOpen" side="left" elevated width="500">
       <q-scroll-area class="fit">
         <q-list>
           <template v-for="(menuItem, index) in menuItems" :key="index">
@@ -17,7 +17,7 @@
               <q-item-section avatar>
                 <q-icon :name="menuItem.icon" />
               </q-item-section>
-              <q-item-section class="text-weight-bold">
+              <q-item-section class="text-weight-bold text-h5">
                 {{ menuItem.label }}
               </q-item-section>
             </q-item>

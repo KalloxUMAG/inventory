@@ -31,11 +31,6 @@
               </div>
               <q-separator/>
               <div class="row q-my-sm">
-                <div class="col-3 text-h6 text-weight-bold q-pl-md">Valor</div>
-                <div class="col text-h6 text-grey-8">{{ supply.cost }}</div>
-              </div>
-              <q-separator/>
-              <div class="row q-my-sm">
                 <div class="col-3 text-h6 text-weight-bold q-pl-md">Stock actual</div>
                 <div class="col text-h6 text-grey-8">{{ supply.stock }} unidades</div>
               </div>
@@ -57,7 +52,7 @@
             <div class="col">
               <NoRedirectTable
                 title="Proveedores"
-                :columns="suppliersColumns"
+                :columns="suppliersSupplyColumns"
                 :rows="suppliers"
                 :addFunction="addSupplier"
               />
@@ -80,7 +75,7 @@ import { computed, onMounted, ref } from "vue";
 import axios from "axios";
 import NoRedirectTable from "src/components/NoRedirectTable.vue";
 import AddSupplier from "./AddSupplier.vue"; 
-import { suppliersColumns } from "../constants/columns.js";
+import { suppliersSupplyColumns } from "../constants/columns.js";
 import { useQuasar } from "quasar";
 
 const route = useRoute();

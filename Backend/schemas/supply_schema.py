@@ -6,7 +6,6 @@ class SupplyListSchema(BaseModel):
     id: int
     name: str
     code: Optional[str]
-    cost: Optional[int]
     stock: Optional[int]
     critical_stock: Optional[int]
     samples: Optional[int]
@@ -21,7 +20,6 @@ class SupplySchema(BaseModel):
     id: Optional[int]
     name: str
     code: Optional[str]
-    cost: Optional[int]
     stock: Optional[int]
     critical_stock: Optional[int]
     samples: Optional[int]

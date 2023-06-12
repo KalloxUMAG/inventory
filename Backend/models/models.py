@@ -219,7 +219,6 @@ class Supplies(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
     code: Mapped[str] = mapped_column(String)
-    cost: Mapped[str] = mapped_column(Integer)
     stock: Mapped[int] = mapped_column(Integer)
     critical_stock: Mapped[int] = mapped_column(Integer)
     samples: Mapped[int] = mapped_column(Integer)
@@ -308,3 +307,4 @@ class Suppliers_has_Supplies(Base):
     supply_id = mapped_column(
         Integer, ForeignKey("Supplies.id", ondelete="CASCADE"), primary_key=True
     )
+    cost: Mapped[int] = mapped_column(Integer)

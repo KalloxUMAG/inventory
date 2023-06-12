@@ -32,7 +32,7 @@ def add_supplier_supply(
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
     new_supplier_supply = Suppliers_has_Supplies(
-        supplier_id=supplier_supply.supplier_id, supply_id=supplier_supply.supply_id
+        supplier_id=supplier_supply.supplier_id, supply_id=supplier_supply.supply_id, cost=supplier_supply.cost
     )
     db.add(new_supplier_supply)
     db.commit()
@@ -48,6 +48,7 @@ def get_suppliers_supply(supply_id: int, db: Session = Depends(get_db)):
         db.query(
             Suppliers_has_Supplies.supplier_id,
             Suppliers_has_Supplies.supply_id,
+            Suppliers_has_Supplies.cost,
             Suppliers.name.label("name"),
             Suppliers.rut.label("rut"),
             Suppliers.city_address.label("city_address"),

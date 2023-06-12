@@ -30,7 +30,6 @@
         </div>
         <div class="col">
           <div class="row">
-            <q-input outlined v-model="supply.cost" label="Valor" type="number" class="col q-mr-md" />
             <q-input outlined v-model="supply.samples" label="Muestras por unidad" type="number" class="col" />
           </div>
         </div>
@@ -166,7 +165,6 @@ const supply = reactive({
   type: null,
   name: null,
   code: null,
-  cost: null,
   samples: null,
   critical_stock: null,
 });
@@ -272,7 +270,6 @@ async function onSubmit() {
   let supplyData = {
     name: supply.name,
     code: supply.code,
-    cost: supply.cost,
     stock: 0,
     critical_stock: supply.critical_stock,
     samples: supply.samples,

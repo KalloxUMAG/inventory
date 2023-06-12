@@ -122,6 +122,14 @@
             />
           </div>
         </div>
+        <div class="row">
+          <q-input
+              outlined
+              v-model="cost"
+              label="Costo"
+              class="col q-my-sm"
+            />
+        </div>
         <!--Buttons-->
         <div class="q-mt-sm row justify-end">
           <q-btn
@@ -143,6 +151,8 @@ import { useDialogPluginComponent, useQuasar } from "quasar";
 import { onMounted, ref, toRefs } from "vue";
 import SelectForm from "src/components/SelectForm.vue";
 import {rolOptions} from "src/constants/columns.js";
+
+const cost = ref(null);
 
 const disableSupplier = ref(false);
 
@@ -244,6 +254,7 @@ async function onOKClick() {
   const data = {
     supplier_id: supplier_id,
     supply_id: props.supply_id,
+    cost: cost.value
   };
   try {
     const response = await axios.post(api_prefix + "/suppliers_supplies", data);

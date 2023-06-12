@@ -185,6 +185,37 @@ export const suppliersColumns = [
   }
 ]
 
+export const suppliersSupplyColumns = [
+  {
+    name: "name",
+    align: "left",
+    label: "Nombre",
+    field: "name",
+    sortable: false,
+  },
+  {
+    name: "rut",
+    align: "left",
+    label: "Rut",
+    field: "rut",
+    sortable: false,
+  },
+  {
+    name: "city_address",
+    align: "left",
+    label: "Dirección",
+    field: "city_address",
+    sortable: false,
+  },
+  {
+    name: "cost",
+    align: "left",
+    label: "Costo",
+    field: "cost",
+    sortable: false,
+  }
+]
+
 export const rolOptions = [
   {
     value: "Vendedor",
