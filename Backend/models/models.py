@@ -80,7 +80,6 @@ class Projects(Base):
     )
     lots: Mapped[List["Lots"]] = relationship("Lots", backref="Projects")
 
-
 class Project_owners(Base):
     __tablename__ = "Project_owners"
 
@@ -146,7 +145,7 @@ class Equipments(Base):
         "Maintenances", backref="Equipments", cascade="delete,merge"
     )
     last_preventive_mainteinance = mapped_column(Date)
-
+    
 
 class Maintenances(Base):
     __tablename__ = "Maintenances"
@@ -222,7 +221,11 @@ class Supplies(Base):
     code: Mapped[str] = mapped_column(String)
     cost: Mapped[str] = mapped_column(Integer)
     stock: Mapped[int] = mapped_column(Integer)
+<<<<<<< HEAD
     critical_stock: Mapped[int] = mapped_column(Integer)
+=======
+    critical_stock: Mapped[str] = mapped_column(Integer)
+>>>>>>> a0e7ea4 (deleted project relatoin)
     samples: Mapped[int] = mapped_column(Integer)
 
     supplies_brand_id: Mapped[int] = mapped_column(
