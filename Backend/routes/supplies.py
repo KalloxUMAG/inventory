@@ -87,3 +87,15 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
         .first()
     )
     return result
+
+@supplies.put("/api/supplies/{supply_id}", response_model=SupplySchema)
+def update_stock(data_update: SupplySchema, supply_id: int, db:Session = Depends(get_db)):
+    db_supply = get_supply(supply_id, db=db)
+    if not db_supply:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    for key, value in data_update.dict(exclude_unset=True).items():
+        setattr(db_supply, key, value)
+    db.add(db_supply)
+    db.commit()
+    db.refresh(db_supply)
+    return db_supply

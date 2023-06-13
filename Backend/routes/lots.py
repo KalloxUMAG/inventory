@@ -44,6 +44,7 @@ def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
         supplies_id=lot.supply_id,
         sub_location_id=lot.sub_location_id,
         project_id=lot.project_id,
+        supplier_id = lot.supplier_id
     )
     db.add(new_lot)
     db.commit()
@@ -52,7 +53,7 @@ def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@lots.get("/api/lots/{lot_id}", response_model=LotListSchema)
+@lots.get("/api/lots/lot/{lot_id}", response_model=LotListSchema)
 def get_lot(lot_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -78,3 +79,27 @@ def get_lot(lot_id: int, db: Session = Depends(get_db)):
         .first()
     )
     return result
+
+@lots.get("/api/lots/supply/{supply_id}", response_model=List[LotListSchema])
+def get_lots_supply(supply_id: int, db: Session = Depends(get_db)):
+    result = (
+        db.query(
+            Lots.id,
+            Lots.number,
+            Lots.due_date,
+            Lots.stock,
+            Lots.observations,
+            Locations.name.label("location"),
+            Sub_locations.name.label("sub_location"),
+            Projects.name.label("project"),
+            Suppliers.name.label("supplier_name"),
+        )
+        .filter(Lots.supplies_id == supply_id)
+        .outerjoin(Sub_locations, Sub_locations.id == Lots.sub_location_id)
+        .outerjoin(Locations, Locations.id == Sub_locations.id)
+        .outerjoin(Projects, Projects.id == Lots.project_id)
+        .outerjoin(Suppliers, Suppliers.id == Lots.supplier_id)
+        .all()
+    )
+    return result
+

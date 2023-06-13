@@ -97,20 +97,6 @@ export const suppliesColumns = [
 
 export const lotsColumns = [
   {
-    name: "supply_name",
-    align: "left",
-    label: "Insumo",
-    field: "supply_name",
-    sortable: false,
-  },
-  {
-    name: "supply_code",
-    align: "left",
-    label: "Codigo",
-    field: "supply_code",
-    sortable: false,
-  },
-  {
     name: "number",
     align: "left",
     label: "Lote",
@@ -150,6 +136,13 @@ export const lotsColumns = [
     align: "left",
     label: "Proveedor",
     field: "supplier_name",
+    sortable: false,
+  },
+  {
+    name: "project",
+    align: "left",
+    label: "Proyecto",
+    field: "project",
     sortable: false,
   },
   {

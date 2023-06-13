@@ -4,7 +4,7 @@
       class="q-dialog-plugin q-pa-md"
       style="width: 900px; max-width: 1000px"
     >
-      <q-form @submit="onOKClick" ref="AddSupplierForm">
+      <q-form @submit="onOKClick" ref="AddLotForm">
         <div class="text-bold text-subtitle1 q-my-sm">Datos lote</div>
         <!--Fields-->
         <div class="col">
@@ -42,9 +42,9 @@
             <q-input
               outlined
               class="col"
-              v-model="reception_date"
+              v-model="due_date"
               type="date"
-              label="Fecha de recepción*"
+              label="Fecha de vencimiento*"
               stack-label
               lazy-rules
               :rules="[
@@ -63,7 +63,7 @@
             />
           </div>
           <div class="row">
-            <div v-if="!newLocationState" class="col q-mr-md">
+            <div v-if="!newLocationState" class="col q-mt-md">
               <SelectForm
                 outlined
                 class="row q-mr-md"
@@ -76,6 +76,7 @@
                 @updateModel="
                   (value) => {
                     location = value;
+                    getSublocations();
                   }
                 "
               />
@@ -88,7 +89,7 @@
                 />
               </div>
             </div>
-            <div v-else class="col">
+            <div v-else class="col q-mt-md">
               <div class="row">
                 <q-input
                   outlined
@@ -101,11 +102,11 @@
             </div>
             <div
               v-if="!newLocationState && !newSublocationState"
-              class="col q-mr-md"
+              class="col q-mt-md"
             >
               <SelectForm
                 outlined
-                class="row q-mr-md"
+                class="row"
                 :disable="disableSublocation"
                 :options="sublocationOptions"
                 option_value="id"
@@ -123,12 +124,12 @@
                   outlined
                   label="Añadir sub-localizacion"
                   icon="add"
-                  class="add-btn text-caption q-mr-md"
+                  class="add-btn text-caption"
                   @click="newSublocationState = !newSublocationState"
                 />
               </div>
             </div>
-            <div v-else class="col q-pl-md">
+            <div v-else class="col q-mt-md">
               <div class="row">
                 <q-input
                   outlined
@@ -141,7 +142,7 @@
             </div>
           </div>
         </div>
-        <div class="col">
+        <div class="col q-mt-sm">
           <div v-if="newLocationState || newSublocationState" class="row justify-end">
             <q-btn
               v-if="disableLocation"
@@ -166,6 +167,24 @@
                   (disableLocation = false)
               "
             />
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <SelectForm
+                outlined
+                class="col q-mt-md"
+                :options="projectOptions"
+                option_value="id"
+                option_label="name"
+                label="Proyecto"
+                not_found_label="No hay proyectos disponibles"
+                @updateModel="
+                  (value) => {
+                    project = value;
+                  }
+                "
+              />
           </div>
         </div>
         <!--Buttons-->
@@ -193,10 +212,11 @@ const api_prefix = process.env.API;
 const number = ref(null);
 const stock = ref(null);
 const supplier = ref(null);
-const observation = ref(null);
-const reception_date = ref(null);
+const observation = ref('');
+const due_date = ref(null);
 const location = ref(null);
 const sublocation = ref(null);
+const project = ref(null);
 
 const newLocationState = ref(false);
 const disableLocation = ref(false);
@@ -208,6 +228,9 @@ const newSublocation = ref(null);
 const suppliersOptions = ref([]);
 const locationOptions = ref([]);
 const sublocationOptions = ref([]);
+const projectOptions = ref([]);
+
+const AddLotForm = ref(null);
 
 const $q = useQuasar();
 
@@ -221,8 +244,87 @@ const getSuppliers = () => {
     .then((response) => (suppliersOptions.value = response.data));
 };
 
+const getProjects = () => {
+  axios
+    .get(api_prefix + "/projects")
+    .then((response) => (projectOptions.value = response.data));
+};
+
+const getLocations = () => {
+  axios
+    .get(api_prefix + "/locations")
+    .then((response) => (locationOptions.value = response.data));
+};
+
+const getSublocations = () => {
+  axios
+    .get(api_prefix + "/sub_locations/" + location.value)
+    .then((response) => (sublocationOptions.value = response.data));
+};
+
+async function createNewLocation() {
+  if (!newLocationState.value) {
+    return location.value;
+  }
+  const data = {
+    name: newLocation.value,
+  };
+  try {
+    const response = await axios.post(api_prefix + "/locations", data);
+    return response.data;
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo crear la localizacion: " + error,
+    });
+  }
+}
+
+async function createNewSublocation(location_id) {
+  if (!newLocationState.value && !newSublocationState.value) {
+    return sublocation.value;
+  }
+  const data = {
+    name: newSublocation.value,
+    location_id: location_id
+  };
+  try {
+    const response = await axios.post(api_prefix + "/sub_locations", data);
+    return response.data;
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo crear la sublocalizacion: " + error,
+    });
+  }
+}
+
+async function createNewLot(data){
+  try {
+    const response = await axios.post(api_prefix + "/lots", data);
+    return response.data;
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo crear el insumo: " + error,
+    });
+  }
+}
+
+async function updateStock(supply_id, stock){
+  //Update stock on database
+}
+
 onMounted(() => {
   getSuppliers();
+  getProjects();
+  getLocations();
 });
 
 defineEmits([...useDialogPluginComponent.emits]);
@@ -231,18 +333,32 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
 async function onOKClick() {
-  AddSupplierForm.value.resetValidation();
+  AddLotForm.value.resetValidation();
 
   const data = {
-    supplier_id: supplier.value,
     number: number.value,
     due_date: due_date.value,
     stock: stock.value,
-    observation: observation.value,
-    sub_location_id: sub_location.value,
-    project_id: project.value,
+    observations: observation.value,
     supply_id: props.supply_id,
+    sub_location_id: sublocation.value,
+    project_id: project.value,
+    supplier_id: supplier.value.supplier_id,
   };
+
+  const location_id = await createNewLocation();
+  const sub_location_id = await createNewSublocation(location_id);
+
+  data['sub_location_id'] = sub_location_id;
+
+  const lot_id = await createNewLot(data);
+  
+  if (lot_id != 1){
+    await updateStock(props.supply_id, stock.value)
+  }
+
+
+
   onDialogOK();
 }
 </script>

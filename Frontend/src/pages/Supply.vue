@@ -14,32 +14,43 @@
                 <div class="col-3 text-h6 text-weight-bold q-pl-md">Nombre</div>
                 <div class="col text-h6 text-grey-8">{{ supply.name }}</div>
               </div>
-              <q-separator/>
+              <q-separator />
               <div class="row q-my-sm">
                 <div class="col-3 text-h6 text-weight-bold q-pl-md">Código</div>
                 <div class="col text-h6 text-grey-8">{{ supply.code }}</div>
               </div>
-              <q-separator/>
+              <q-separator />
               <div class="row q-my-sm">
                 <div class="col-3 text-h6 text-weight-bold q-pl-md">Marca</div>
-                <div class="col text-h6 text-grey-8">{{ supply.supplies_brand_name }}</div>
+                <div class="col text-h6 text-grey-8">
+                  {{ supply.supplies_brand_name }}
+                </div>
               </div>
-              <q-separator/>
+              <q-separator />
               <div class="row q-my-sm">
                 <div class="col-3 text-h6 text-weight-bold q-pl-md">Tipo</div>
-                <div class="col text-h6 text-grey-8">{{ supply.supplies_type_name }}</div>
+                <div class="col text-h6 text-grey-8">
+                  {{ supply.supplies_type_name }}
+                </div>
               </div>
-              <q-separator/>
+              <q-separator />
               <div class="row q-my-sm">
-                <div class="col-3 text-h6 text-weight-bold q-pl-md">Stock actual</div>
-                <div class="col text-h6 text-grey-8">{{ supply.stock }} unidades</div>
+                <div class="col-3 text-h6 text-weight-bold q-pl-md">
+                  Stock actual
+                </div>
+                <div class="col text-h6 text-grey-8">
+                  {{ supply.stock }} unidades
+                </div>
               </div>
-              <q-separator/>
+              <q-separator />
               <div class="row q-mt-sm">
-                <div class="col-3 text-h6 text-weight-bold q-pl-md">Stock crítico</div>
-                <div class="col text-h6 text-grey-8">{{ supply.critical_stock }}</div>
+                <div class="col-3 text-h6 text-weight-bold q-pl-md">
+                  Stock crítico
+                </div>
+                <div class="col text-h6 text-grey-8">
+                  {{ supply.critical_stock }}
+                </div>
               </div>
-
             </div>
           </q-card-section>
         </q-card>
@@ -63,7 +74,12 @@
     </div>
     <div class="row q-mt-md">
       <div class="col">
-        <NoRedirectTable title="Lotes" :columns="lotsColumns" :rows="[]" :addFunction="addLot"/>
+        <NoRedirectTable
+          title="Lotes"
+          :columns="lotsColumns"
+          :rows="lots"
+          :addFunction="addLot"
+        />
       </div>
     </div>
   </q-page>
@@ -74,7 +90,7 @@ import { useRoute } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import axios from "axios";
 import NoRedirectTable from "src/components/NoRedirectTable.vue";
-import AddSupplier from "./AddSupplier.vue"; 
+import AddSupplier from "./AddSupplier.vue";
 import AddLot from "./AddLot.vue";
 import { suppliersSupplyColumns, lotsColumns } from "../constants/columns.js";
 import { useQuasar } from "quasar";
@@ -82,7 +98,8 @@ import { useQuasar } from "quasar";
 const route = useRoute();
 const id = computed(() => route.params.id);
 const supply = ref({});
-const suppliers = ref([])
+const suppliers = ref([]);
+const lots = ref([]);
 
 const $q = useQuasar();
 
@@ -95,8 +112,16 @@ const getSupply = () => {
 };
 
 const getSuppliers = () => {
-  axios.get(api_prefix+"/suppliers_supplies/"+id.value).then((response) => (suppliers.value = response.data));
-}
+  axios
+    .get(api_prefix + "/suppliers_supplies/" + id.value)
+    .then((response) => (suppliers.value = response.data));
+};
+
+const getLots = () => {
+  axios
+    .get(api_prefix + "/lots/supply/" + id.value)
+    .then((response) => (lots.value = response.data));
+};
 
 function addSupplier() {
   $q.dialog({
@@ -119,6 +144,7 @@ function addLot() {
 onMounted(() => {
   getSupply();
   getSuppliers();
+  getLots();
 });
 </script>
 
