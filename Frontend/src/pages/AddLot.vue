@@ -319,6 +319,20 @@ async function createNewLot(data){
 
 async function updateStock(supply_id, stock){
   //Update stock on database
+  const data = {
+    stock: stock
+  }
+  try {
+    const response = await axios.put(api_prefix + "/supplies/" + supply_id, data);
+    return response.data;
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo modificar el stock del insumo: " + error,
+    });
+  }
 }
 
 onMounted(() => {

@@ -28,3 +28,9 @@ class SupplySchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+class UpdateStockSchema(BaseModel):
+    stock: int
+
+    class Config:
+        orm_mode = True

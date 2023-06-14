@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Depends
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from models.models import Supplies, Supplies_brand, Supplies_types, Suppliers
-from schemas.supply_schema import SupplyListSchema, SupplySchema
+from schemas.supply_schema import SupplyListSchema, SupplySchema, UpdateStockSchema
 from typing import List
 from config.database import get_db
 from sqlalchemy.orm import Session
@@ -89,12 +89,11 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
     return result
 
 @supplies.put("/api/supplies/{supply_id}", response_model=SupplySchema)
-def update_stock(data_update: SupplySchema, supply_id: int, db:Session = Depends(get_db)):
-    db_supply = get_supply(supply_id, db=db)
+def update_stock(data_update: UpdateStockSchema, supply_id: int, db:Session = Depends(get_db)):
+    db_supply = db.query(Supplies).filter(Supplies.id == supply_id).first()
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    for key, value in data_update.dict(exclude_unset=True).items():
-        setattr(db_supply, key, value)
+    setattr(db_supply, 'stock', db_supply.stock+data_update.stock)
     db.add(db_supply)
     db.commit()
     db.refresh(db_supply)
