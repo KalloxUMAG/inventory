@@ -554,6 +554,27 @@ async function createNewProjectOwner() {
   }
 }
 
+async function modifyStock(supply_id){
+  const data = {
+    stock: stock.value
+  };
+
+  try {
+    const response = await axios.post(
+      api_prefix + "/supplies/"+supply_id,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo sumar el stock: " + error,
+    });
+  }
+}
+
 async function onSubmit() {
   createLotForm.value.resetValidation();
   let lot = {
@@ -583,7 +604,9 @@ async function onSubmit() {
   }
   lot["sub_location_id"] = sub_location_id;
   const lot_id = await createNewLot(lot);
-  console.log(lot_id);
+  if (lot_id != -1){
+    await modifyStock(supply.value);
+  }
   loading.value = false;
 }
 

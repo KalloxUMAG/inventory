@@ -152,6 +152,13 @@ export const lotsColumns = [
     field: "observations",
     sortable: false,
   },
+  {
+    name: "action",
+    align: "left",
+    label: "Eliminar",
+    field: "action",
+    sortable: false,
+  },
 ];
 
 export const suppliersColumns = [

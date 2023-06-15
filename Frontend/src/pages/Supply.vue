@@ -11,31 +11,31 @@
           <q-card-section>
             <div class="col q-pa-sm">
               <div class="row q-mb-sm">
-                <div class="col-3 text-h6 text-weight-bold q-pl-md">Nombre</div>
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">Nombre</div>
                 <div class="col text-h6 text-grey-8">{{ supply.name }}</div>
               </div>
               <q-separator />
               <div class="row q-my-sm">
-                <div class="col-3 text-h6 text-weight-bold q-pl-md">Código</div>
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">Código</div>
                 <div class="col text-h6 text-grey-8">{{ supply.code }}</div>
               </div>
               <q-separator />
               <div class="row q-my-sm">
-                <div class="col-3 text-h6 text-weight-bold q-pl-md">Marca</div>
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">Marca</div>
                 <div class="col text-h6 text-grey-8">
                   {{ supply.supplies_brand_name }}
                 </div>
               </div>
               <q-separator />
               <div class="row q-my-sm">
-                <div class="col-3 text-h6 text-weight-bold q-pl-md">Tipo</div>
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">Tipo</div>
                 <div class="col text-h6 text-grey-8">
                   {{ supply.supplies_type_name }}
                 </div>
               </div>
               <q-separator />
               <div class="row q-my-sm">
-                <div class="col-3 text-h6 text-weight-bold q-pl-md">
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">
                   Stock actual
                 </div>
                 <div class="col text-h6 text-grey-8">
@@ -44,11 +44,29 @@
               </div>
               <q-separator />
               <div class="row q-mt-sm">
-                <div class="col-3 text-h6 text-weight-bold q-pl-md">
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">
                   Stock crítico
                 </div>
                 <div class="col text-h6 text-grey-8">
                   {{ supply.critical_stock }}
+                </div>
+              </div>
+              <q-separator />
+              <div class="row q-mt-sm">
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                  Muestras por unidad
+                </div>
+                <div class="col text-h6 text-grey-8">
+                  {{ supply.samples }}
+                </div>
+              </div>
+              <q-separator />
+              <div class="row q-mt-sm">
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                  Muestras totales
+                </div>
+                <div class="col text-h6 text-grey-8">
+                  {{ supply.samples * supply.stock }}
                 </div>
               </div>
             </div>
@@ -79,6 +97,7 @@
           :columns="lotsColumns"
           :rows="lots"
           :addFunction="addLot"
+          :deleteFunction="removeLot"
         />
       </div>
     </div>
@@ -87,7 +106,7 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, getCurrentInstance} from "vue";
 import axios from "axios";
 import NoRedirectTable from "src/components/NoRedirectTable.vue";
 import AddSupplier from "./AddSupplier.vue";
@@ -129,7 +148,7 @@ function addSupplier() {
     componentProps: {
       supply_id: supply.value.id,
     },
-  }).onOk((data) => {});
+  }).onOk((data) => {getSuppliers()});
 }
 
 function addLot() {
@@ -138,7 +157,42 @@ function addLot() {
     componentProps: {
       supply_id: supply.value.id,
     },
-  }).onOk((data) => {});
+  }).onOk((data) => {getLots(); getSupply()});
+}
+
+function removeLot(lot) {
+  $q.dialog({
+    title: "Eliminar lote",
+    message: "Se eliminara el lote y se descontara del stock actual del insumo",
+    ok: {
+      color: "negative",
+      label: "Aceptar y eliminar",
+    },
+    cancel: {
+      color: "warning",
+      label: "Cancelar y mantener",
+    },
+  })
+    .onOk(() => {
+      const lot_id = lot.id;
+      const lot_stock = lot.stock * -1;
+      axios
+        .put(api_prefix + "/lots/" + lot_id)
+        .then((response) => getLots());
+
+      const data = {
+        stock: lot_stock,
+      };
+      axios
+        .put(api_prefix + "/supplies/" + id.value, data)
+        .then((response) => getSupply());
+    })
+    .onCancel(() => {
+      // console.log('Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    });
 }
 
 onMounted(() => {
