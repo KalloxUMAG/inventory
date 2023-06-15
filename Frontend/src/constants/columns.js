@@ -66,13 +66,6 @@ export const suppliesColumns = [
     sortable: false,
   },
   {
-    name: "cost",
-    align: "left",
-    label: "Costo",
-    field: "cost",
-    sortable: false,
-  },
-  {
     name: "supplies_brand_name",
     align: "left",
     label: "Marca",
@@ -84,6 +77,13 @@ export const suppliesColumns = [
     align: "left",
     label: "Tipo de insumo",
     field: "supplies_type_name",
+    sortable: true,
+  },
+  {
+    name: "stock",
+    align: "left",
+    label: "Stock actual",
+    field: "stock",
     sortable: true,
   },
   {

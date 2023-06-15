@@ -603,10 +603,9 @@ async function onSubmit() {
     return;
   }
   lot["sub_location_id"] = sub_location_id;
-  const lot_id = await createNewLot(lot);
-  if (lot_id != -1){
-    await modifyStock(supply.value);
-  }
+  await createNewLot(lot);
+  await modifyStock(supply.value);
+  
   loading.value = false;
 }
 

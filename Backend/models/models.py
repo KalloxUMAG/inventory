@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Date, Boolean, Sequence
+from sqlalchemy import Integer, String, Date, Boolean, Sequence, Float
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 from typing import List, Optional
@@ -224,7 +224,7 @@ class Supplies(Base):
     code: Mapped[str] = mapped_column(String)
     stock: Mapped[int] = mapped_column(Integer)
     critical_stock: Mapped[int] = mapped_column(Integer)
-    samples: Mapped[int] = mapped_column(Integer)
+    samples: Mapped[float] = mapped_column(Float)
 
     supplies_brand_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Supplies_brands.id", ondelete="CASCADE")

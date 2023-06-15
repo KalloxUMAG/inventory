@@ -30,7 +30,7 @@
         </div>
         <div class="col">
           <div class="row">
-            <q-input outlined v-model="supply.samples" label="Muestras por unidad" type="number" class="col" />
+            <q-input outlined v-model="supply.samples" label="Muestras por unidad" type="number" step="any" class="col" />
           </div>
         </div>
         <div class="col">
