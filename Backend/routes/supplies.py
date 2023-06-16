@@ -68,7 +68,7 @@ def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
     db.add(new_supply)
     db.commit()
     db.refresh(new_supply)
-    content = str(new_supply)
+    content = str(new_supply.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 

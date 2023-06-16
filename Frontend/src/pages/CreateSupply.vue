@@ -183,6 +183,7 @@ const loading = ref(false);
 
 //Form
 const createSupplyForm = ref(null);
+const router = useRouter();
 const $q = useQuasar();
 const api_prefix = process.env.API;
 
@@ -298,9 +299,13 @@ async function onSubmit() {
     loading.value = false;
     return;
   }
-  console.log(supplyData);
   loading.value = false;
+  redirectToSupply(supply_id.toString())
   //Redirect to table
+}
+
+function redirectToSupply(supply_id) {
+  router.push({ path: supply_id });
 }
 
 onMounted(() => {
