@@ -222,6 +222,7 @@ class Supplies(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
     code: Mapped[str] = mapped_column(String)
+    state: Mapped[bool] = mapped_column(Boolean)
     stock: Mapped[int] = mapped_column(Integer)
     critical_stock: Mapped[int] = mapped_column(Integer)
     samples: Mapped[float] = mapped_column(Float)

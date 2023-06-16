@@ -5,6 +5,7 @@ from schemas.supply_schema import SupplyListSchema, SupplySchema, UpdateStockSch
 from typing import List
 from config.database import get_db
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 
 supplies = APIRouter()
 
@@ -16,6 +17,7 @@ def get_supplies(db: Session = Depends(get_db)):
             Supplies.id,
             Supplies.name,
             Supplies.code,
+            Supplies.state,
             Supplies.stock,
             Supplies.samples,
             Supplies.critical_stock,
@@ -24,6 +26,7 @@ def get_supplies(db: Session = Depends(get_db)):
         )
         .outerjoin(Supplies_brand, Supplies_brand.id == Supplies.supplies_brand_id)
         .outerjoin(Supplies_types, Supplies_types.id == Supplies.supplies_type_id)
+        .filter(Supplies.state == True)
         .all()
     )
     return result
@@ -44,7 +47,7 @@ def get_supplies_critical(db: Session = Depends(get_db)):
         )
         .outerjoin(Supplies_brand, Supplies_brand.id == Supplies.supplies_brand_id)
         .outerjoin(Supplies_types, Supplies_types.id == Supplies.supplies_type_id)
-        .filter(Supplies.stock <= Supplies.critical_stock)
+        .filter(and_(Supplies.stock <= Supplies.critical_stock, Supplies.state == True))
         .all()
     )
     return result
@@ -55,6 +58,7 @@ def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
     new_supply = Supplies(
         name=supply.name,
         code=supply.code,
+        state=True,
         stock=supply.stock,
         samples=supply.samples,
         critical_stock=supply.critical_stock,
@@ -75,25 +79,43 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
             Supplies.id,
             Supplies.name,
             Supplies.code,
+            Supplies.state,
             Supplies.stock,
             Supplies.critical_stock,
             Supplies.samples,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),
         )
+        .filter(and_(Supplies.id == supply_id, Supplies.state == True))
         .outerjoin(Supplies_brand, Supplies_brand.id == Supplies.supplies_brand_id)
         .outerjoin(Supplies_types, Supplies_types.id == Supplies.supplies_type_id)
-        .filter(Supplies.id == supply_id)
         .first()
     )
+    if result == None:
+        return Response(status_code=HTTP_404_NOT_FOUND)
     return result
 
+
 @supplies.put("/api/supplies/{supply_id}", response_model=SupplySchema)
-def update_stock(data_update: UpdateStockSchema, supply_id: int, db:Session = Depends(get_db)):
+def update_stock(
+    data_update: UpdateStockSchema, supply_id: int, db: Session = Depends(get_db)
+):
     db_supply = db.query(Supplies).filter(Supplies.id == supply_id).first()
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    setattr(db_supply, 'stock', db_supply.stock+data_update.stock)
+    setattr(db_supply, "stock", db_supply.stock + data_update.stock)
+    db.add(db_supply)
+    db.commit()
+    db.refresh(db_supply)
+    return db_supply
+
+
+@supplies.delete("/api/supplies/{supply_id}", status_code=HTTP_204_NO_CONTENT)
+def delete_supply(supply_id: int, db: Session = Depends(get_db)):
+    db_supply = db.query(Supplies).filter(Supplies.id == supply_id).first()
+    if not db_supply:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    setattr(db_supply, "state", False)
     db.add(db_supply)
     db.commit()
     db.refresh(db_supply)

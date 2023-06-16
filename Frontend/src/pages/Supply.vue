@@ -101,11 +101,14 @@
         />
       </div>
     </div>
+    <div class="row q-mt-md justify-end">
+      <q-btn label="Eliminar" color="negative" class="text-h6" @click="removeSupply"/>
+    </div>
   </q-page>
 </template>
 
 <script setup>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { computed, onMounted, ref, getCurrentInstance} from "vue";
 import axios from "axios";
 import NoRedirectTable from "src/components/NoRedirectTable.vue";
@@ -121,6 +124,7 @@ const suppliers = ref([]);
 const lots = ref([]);
 
 const $q = useQuasar();
+const router = useRouter();
 
 const api_prefix = process.env.API;
 
@@ -193,6 +197,36 @@ function removeLot(lot) {
     .onDismiss(() => {
       // console.log('I am triggered on both OK and Cancel')
     });
+}
+
+function removeSupply(){
+  $q.dialog({
+    title: "Eliminar insumo",
+    message: "El insumo sera archivado y solo podra ser recuperado por un administrador",
+    ok: {
+      color: "negative",
+      label: "Aceptar y eliminar",
+    },
+    cancel: {
+      color: "warning",
+      label: "Cancelar y mantener",
+    },
+  })
+    .onOk(() => {
+      axios
+        .delete(api_prefix + "/supplies/" + id.value)
+        .then((response) => redirectToSupplies());
+    })
+    .onCancel(() => {
+      // console.log('Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    });
+}
+
+function redirectToSupplies() {
+  router.push({ path: '../supplies' });
 }
 
 onMounted(() => {
