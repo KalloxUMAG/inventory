@@ -12,8 +12,10 @@ import {equipmentsColumns} from '../constants/columns.js'
 
 const equipments = ref([])
 
+const api_prefix = process.env.API;
+
 const getEquipments = () => {
-  axios.get("http://localhost:8000/api/equipments").then(
+  axios.get(api_prefix+"/equipments").then(
         response => (
           equipments.value = response.data
         )

@@ -169,22 +169,103 @@
             />
           </div>
         </div>
-        <div class="col">
+        <div v-if="!newProjectState" class="col">
+          <SelectForm
+            outlined
+            class="row"
+            :options="projectOptions"
+            option_value="id"
+            option_label="name"
+            label="Proyectos"
+            not_found_label="No hay proyectos disponibles"
+            @updateModel="
+              (value) => {
+                project = value;
+              }
+            "
+          />
+          <div class="row justify-end q-pt-md">
+            <q-btn
+              label="Añadir Proyecto"
+              icon="add"
+              class="add-btn text-caption"
+              @click="newProjectState = !newProjectState"
+            />
+          </div>
+        </div>
+        <div v-else class="col">
           <div class="row">
+            <q-input
+              outlined
+              v-model="newProject"
+              label="Nombre proyeto"
+              class="col"
+              :disable="disableProject"
+            />
+          </div>
+        </div>
+        <div v-if="newProjectState" class="row justify-end">
+          <q-btn
+            :label="disableProject ? 'Editar' : 'Guardar'"
+            color="amber"
+            @click="disableProject = !disableProject"
+            class="q-mr-sm"
+          />
+          <q-btn
+            label="Ver lista"
+            color="amber"
+            @click="(newProjectState = false), (disableProject = false)"
+          />
+        </div>
+        <div v-if="newProjectState" class="row">
+          <div v-if="!newProjectOwnerState" class="col">
             <SelectForm
-                outlined
-                class="col q-mt-md"
-                :options="projectOptions"
-                option_value="id"
-                option_label="name"
-                label="Proyecto"
-                not_found_label="No hay proyectos disponibles"
-                @updateModel="
-                  (value) => {
-                    project = value;
-                  }
+              outlined
+              class="row"
+              :disable="disableProjectOwner"
+              :options="projectOwnersOptions"
+              option_value="id"
+              option_label="name"
+              label="Dueño proyecto"
+              not_found_label="No hay dueños disponibles"
+              @updateModel="
+                (value) => {
+                  projectOwner = value;
+                }
+              "
+            />
+            <div class="row justify-end q-mt-md">
+              <q-btn
+                label="Añadir dueño"
+                color="amber"
+                class="add-btn"
+                @click="newProjectOwnerState = true"
+              />
+            </div>
+          </div>
+          <div v-else class="col">
+            <q-input
+              outlined
+              class="row"
+              v-model="newProjectOwner"
+              label="Nombre dueño"
+              :disable="disableProjectOwner"
+            />
+            <div class="row justify-end q-mt-md">
+              <q-btn
+                :label="disableProjectOwner ? 'Editar' : 'Guardar'"
+                color="amber"
+                @click="disableProjectOwner = !disableProjectOwner"
+                class="q-mr-sm"
+              />
+              <q-btn
+                label="Ver lista"
+                color="amber"
+                @click="
+                  (disableProjectOwner = false), (newProjectOwnerState = false)
                 "
               />
+            </div>
           </div>
         </div>
         <!--Buttons-->
@@ -217,18 +298,27 @@ const due_date = ref(null);
 const location = ref(null);
 const sublocation = ref(null);
 const project = ref(null);
+const projectOwner = ref(null);
 
 const newLocationState = ref(false);
 const disableLocation = ref(false);
 const newSublocationState = ref(false);
 const disableSublocation = ref(false);
+const disableProject = ref(false)
+const disableProjectOwner = ref(false)
+const newProjectState = ref(false);
+const newProjectOwnerState = ref(false);
 const newLocation = ref(null);
 const newSublocation = ref(null);
+const newProject = ref(null)
+const newProjectOwner = ref(null);
+
 
 const suppliersOptions = ref([]);
 const locationOptions = ref([]);
 const sublocationOptions = ref([]);
 const projectOptions = ref([]);
+const projectOwnersOptions = ref([])
 
 const AddLotForm = ref(null);
 
@@ -248,6 +338,15 @@ const getProjects = () => {
   axios
     .get(api_prefix + "/projects")
     .then((response) => (projectOptions.value = response.data));
+};
+
+const getProjectOwners = () => {
+  axios.get(api_prefix + "/project_owners").then((response) => {
+    const projectsowners = response.data;
+    projectOwnersOptions.value = projectsowners.map((x) => {
+      return { id: x.id, name: x.name };
+    });
+  });
 };
 
 const getLocations = () => {
@@ -314,6 +413,7 @@ async function createNewLot(data){
       icon: "error",
       message: "No se pudo crear el insumo: " + error,
     });
+    return -1
   }
 }
 
@@ -335,9 +435,74 @@ async function updateStock(supply_id, stock){
   }
 }
 
+async function createNewProject(project_owner_id) {
+  if (!newProjectState.value) {
+    return project.value;
+  }
+
+  const projectName = newProject.value;
+
+  if (projectName.trim().length == 0) {
+    return -1;
+  }
+
+  if (project_owner_id == -1) {
+    project_owner_id = null;
+  }
+
+  const projectData = {
+    name: projectName,
+    owner_id: project_owner_id,
+  };
+
+  try {
+    const response = await axios.post(api_prefix + "/projects", projectData);
+    return response.data;
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo crear el proyecto: " + error,
+    });
+  }
+}
+
+async function createNewProjectOwner() {
+  if (!newProjectOwnerState.value) {
+    return projectOwner.value;
+  }
+
+  const projectOwnerName = newProjectOwner.value;
+
+  if (projectOwnerName.trim().length == 0) {
+    return -1;
+  }
+
+  const projectOwnerData = {
+    name: projectOwnerName,
+  };
+
+  try {
+    const response = await axios.post(
+      api_prefix + "/project_owners",
+      projectOwnerData
+    );
+    return response.data;
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo crear el dueño: " + error,
+    });
+  }
+}
+
 onMounted(() => {
   getSuppliers();
   getProjects();
+  getProjectOwners();
   getLocations();
 });
 
@@ -360,6 +525,9 @@ async function onOKClick() {
     supplier_id: supplier.value.supplier_id,
   };
 
+  const project_owner_id = await createNewProjectOwner();
+  const project_id = await createNewProject(project_owner_id);
+  data["project_id"] = project_id
   const location_id = await createNewLocation();
   const sub_location_id = await createNewSublocation(location_id);
 
@@ -367,12 +535,9 @@ async function onOKClick() {
 
   const lot_id = await createNewLot(data);
   
-  if (lot_id != 1){
+  if (lot_id != -1){
     await updateStock(props.supply_id, stock.value)
   }
-
-
-
   onDialogOK();
 }
 </script>

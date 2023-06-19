@@ -13,6 +13,6 @@ export default defineComponent({
 <style lang="scss">
 @import './css/quasar.variables.scss';
 body{
-  background-color: $light-page;
+  background-color: #eef5f9;
 }
 </style>

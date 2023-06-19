@@ -8,7 +8,7 @@
     :filter="filter"
     v-model:pagination="pagination"
     @row-click="rowClicker"
-    card-class="text-grey-8 bg-grey-2"
+    card-class="text-grey-8 bg-white"
     table-header-class="text-black"
   >
     <template v-slot:top>

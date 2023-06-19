@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh LpR fFf">
-    <q-header bordered class="bg-primary text-grey" height-hint="98">
+    <q-header bordered class="text-white" height-hint="98">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
@@ -9,7 +9,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" elevated :width="500">
+    <q-drawer v-model="leftDrawerOpen" side="left" elevated :width="400">
       <q-scroll-area class="fit">
         <q-list>
           <template v-for="(menuItem, index) in menuItems" :key="index">
@@ -45,8 +45,16 @@ function toggleLeftDrawer() {
 </script>
 
 <style lang="scss">
+.q-header{
+  background-color: #2196f3;
+}
+
+.q-drawer{
+  background-color: #d1dce1;
+}
+
 .my-menu-link {
   color: #fff;
-  background: rgba(61, 61, 65, 0.9);
+  background: rgba(54, 110, 120, 0.9);
 }
 </style>
