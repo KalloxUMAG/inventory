@@ -53,8 +53,7 @@ services:
       context: ./Frontend
       dockerfile: Containerfile
     ports:
-      10002:8080
-    read_only: true
+      10002:80
     tmpfs:
       - /tmp
     environment:
