@@ -30,7 +30,7 @@ def create_tables():
     Base.metadata.create_all(bind=engine)
 
 
-#create_tables()
+create_tables()
 app = FastAPI()
 app.mount("/images", StaticFiles(directory="images"), name="images")
 app.add_middleware(

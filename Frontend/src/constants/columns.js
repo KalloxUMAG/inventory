@@ -226,3 +226,41 @@ export const rolOptions = [
     name: "Tecnico",
   },
 ];
+
+export const columns_maintenances = [
+  {
+    name: "maintenance_type",
+    align: "left",
+    label: "Tipo mantenimiento",
+    field: "maintenance_type",
+    sortable: true,
+  },
+  {
+    name: "state",
+    align: "left",
+    label: "Realizado",
+    field: "state",
+    sortable: true,
+  },
+  {
+    name: "date",
+    align: "left",
+    label: "Fecha",
+    field: "date",
+    sortable: true,
+  },
+  {
+    name: "observations",
+    align: "left",
+    label: "Observaciones",
+    field: "observations",
+    sortable: false,
+  },
+  {
+    name: "actions",
+    align: "left",
+    label: "Acciones",
+    field: "actions",
+    sortable: false,
+  },
+];

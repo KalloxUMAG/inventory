@@ -181,10 +181,13 @@
             :columns="columns_maintenances"
             :rows="maintenances"
             :addFunction="addFunction"
+            :deleteFunction="removeMaintenance"
+            :editFunction="editMaintenance"
           />
         </q-card-section>
       </q-card>
     </div>
+    {{ equipment }}
   </q-page>
 </template>
 
@@ -198,33 +201,13 @@ import FormModal from "src/components/FormModal.vue";
 import EditEquipmentProduct from "./EditEquipmentProduct.vue";
 import EditEquipmentLocation from "./EditEquipmentLocation.vue";
 import EditEquipmentPurchase from "./EditEquipmentPurchase.vue";
+import EditMaintenance from "./EditMaintenance.vue";
 import { useQuasar } from "quasar";
+import {columns_maintenances} from "src/constants/columns.js";
 
 const $q = useQuasar();
 
-const columns_maintenances = [
-  {
-    name: "date",
-    align: "left",
-    label: "Fecha",
-    field: "date",
-    sortable: true,
-  },
-  {
-    name: "maintenance_type",
-    align: "left",
-    label: "Tipo mantenimiento",
-    field: "maintenance_type",
-    sortable: true,
-  },
-  {
-    name: "observations",
-    align: "left",
-    label: "Observaciones",
-    field: "observations",
-    sortable: false,
-  },
-];
+
 
 const content_loaded = ref(false);
 
@@ -278,6 +261,19 @@ function addFunction() {
           rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
         },
         {
+          label: "Estado",
+          type: "select",
+          defaultvalue: null,
+          options: [
+            { id: "0", name: "Sin realizar" },
+            { id: "1", name: "Realizado" },
+          ],
+          option_value: "id",
+          option_label: "name",
+          not_found_label: " ",
+          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
+        },
+        {
           label: "Observaciones",
           type: "text",
           defaultvalue: null,
@@ -288,13 +284,15 @@ function addFunction() {
     },
   })
     .onOk((data) => {
+      const state = data[2]==1 ? true : false
       const maintenance_data = {
         date: data[0],
-        observations: data[2],
+        observations: data[3],
         maintenance_type: data[1],
+        state: state,
         equiptment_id: equipment.value.id,
       };
-
+      
       axios
         .post(api_prefix + "/maintenances", maintenance_data, {
           headers: {
@@ -383,6 +381,58 @@ function editPurchase() {
       },
     },
   }).onOk((data) => {});
+}
+
+function editMaintenance(maintenance) {
+  $q.dialog({
+    component: EditMaintenance,
+    componentProps: {
+      id: maintenance.id,
+      date_value: maintenance.date,
+      type_value: {id: maintenance.maintenance_type, name: maintenance.maintenance_type},
+      typeOptions: [{ id: "Programada", name: "Programada" },
+            { id: "Correctiva", name: "Correctiva" },]
+    },
+  })
+    .onOk(() => {
+      const maintenance_id = maintenance.id;
+      axios
+        .put(api_prefix + "/maintenances/" + maintenance_id)
+        .then((response) => getMaintenances());
+    })
+    .onCancel(() => {
+      // console.log('Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    });
+}
+
+function removeMaintenance(maintenance) {
+  $q.dialog({
+    title: "Eliminar mantenimiento",
+    message: "Se eliminara el mantenimiento",
+    ok: {
+      color: "negative",
+      label: "Aceptar y eliminar",
+    },
+    cancel: {
+      color: "warning",
+      label: "Cancelar y mantener",
+    },
+  })
+    .onOk(() => {
+      const maintenance_id = maintenance.id;
+      axios
+        .delete(api_prefix + "/maintenances/" + maintenance_id)
+        .then((response) => getMaintenances());
+    })
+    .onCancel(() => {
+      // console.log('Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    });
 }
 
 onMounted(() => {

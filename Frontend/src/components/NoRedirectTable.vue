@@ -34,6 +34,18 @@
         <q-btn flat dense icon="delete" color="negative" @click="deleteFunction(props.row)"/>
       </q-td>
     </template>
+    <template v-slot:body-cell-actions="props">
+      <q-td :props="props">
+        <q-btn flat dense icon="edit" color="warning" @click="editFunction(props.row)"/>
+        <q-btn flat dense icon="delete" color="negative" @click="deleteFunction(props.row)"/>
+      </q-td>
+    </template>
+    <template v-slot:body-cell-state="props">
+      <q-td :props="props">
+        <q-btn v-if="props.row.state == true" flat dense icon="done_all" color="positive"/>
+        <q-btn v-else flat dense icon="close" color="negative"/>
+      </q-td>
+    </template>
   </q-table>
 </template>
 
@@ -46,6 +58,7 @@ export default {
     title: String,
     rows: Array,
     addFunction: Function,
+    editFunction: Function,
     deleteFunction: Function,
   },
   methods: {

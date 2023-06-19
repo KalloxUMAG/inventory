@@ -76,7 +76,7 @@ const filterFn = (val, update) => {
     );
   });
 };
-
+/*
 watch(props.options, (newOptions, oldOptions) => {
   if(oldOptions !== undefined){
     model.value = null;
@@ -84,5 +84,5 @@ watch(props.options, (newOptions, oldOptions) => {
   }
   console.log("Updated")
 })
-
+*/
 </script>
