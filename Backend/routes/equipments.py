@@ -1,7 +1,6 @@
 from datetime import timedelta, date
 from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Response, Depends, UploadFile
-from fastapi.responses import FileResponse
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from models.models import (
     Equipments,

@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Response
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
-#from config.database import get_session
 from models.models import Buildings
 from schemas.building_schema import BuildingSchema
 from typing import List
