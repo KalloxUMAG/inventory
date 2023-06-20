@@ -58,7 +58,7 @@
               class="col"
               type="text"
               stack-label
-              label="Observacion"
+              label="Observación"
               v-model="observation"
             />
           </div>
@@ -71,7 +71,7 @@
                 :options="locationOptions"
                 option_value="id"
                 option_label="name"
-                label="Localizacion"
+                label="Localización"
                 not_found_label="No hay localizaciones disponibles"
                 @updateModel="
                   (value) => {
@@ -82,7 +82,7 @@
               />
               <div class="row justify-end q-pt-md">
                 <q-btn
-                  label="Añadir localizacion"
+                  label="Añadir localización"
                   icon="add"
                   class="add-btn text-caption q-mr-md"
                   @click="newLocationState = !newLocationState"
@@ -94,7 +94,7 @@
                 <q-input
                   outlined
                   v-model="newLocation"
-                  label="Nombre localizacion"
+                  label="Nombre localización"
                   class="col"
                   :disable="disableLocation"
                 />
@@ -111,7 +111,7 @@
                 :options="sublocationOptions"
                 option_value="id"
                 option_label="name"
-                label="Sub-localizacion"
+                label="Sub-localización"
                 not_found_label="No hay sublocalizaciones disponibles"
                 @updateModel="
                   (value) => {
@@ -122,7 +122,7 @@
               <div class="row justify-end q-pt-md">
                 <q-btn
                   outlined
-                  label="Añadir sub-localizacion"
+                  label="Añadir sub-localización"
                   icon="add"
                   class="add-btn text-caption"
                   @click="newSublocationState = !newSublocationState"
@@ -134,7 +134,7 @@
                 <q-input
                   outlined
                   v-model="newSublocation"
-                  label="Nombre sub-localizacion"
+                  label="Nombre sub-localización"
                   class="col"
                   :disable="disableLocation"
                 />

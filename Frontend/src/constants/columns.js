@@ -61,7 +61,7 @@ export const suppliesColumns = [
   {
     name: "code",
     align: "left",
-    label: "Codigo",
+    label: "Código",
     field: "code",
     sortable: false,
   },
@@ -113,14 +113,14 @@ export const lotsColumns = [
   {
     name: "location",
     align: "left",
-    label: "Localizacion",
+    label: "Localización",
     field: "location",
     sortable: true,
   },
   {
     name: "sub_location",
     align: "left",
-    label: "Sub-localizacion",
+    label: "Sub-localización",
     field: "sub_location",
     sortable: true,
   },
@@ -148,7 +148,7 @@ export const lotsColumns = [
   {
     name: "observations",
     align: "left",
-    label: "Observacion",
+    label: "Observación",
     field: "observations",
     sortable: false,
   },
@@ -223,7 +223,7 @@ export const rolOptions = [
   },
   {
     value: "Tecnico",
-    name: "Tecnico",
+    name: "Técnico",
   },
 ];
 
