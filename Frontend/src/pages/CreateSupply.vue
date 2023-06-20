@@ -17,25 +17,45 @@
             <q-input
               outlined
               v-model="supply.name"
-              label="Nombre"
+              label="Nombre*"
               class="col q-mr-md"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <q-input
               outlined
               v-model="supply.code"
-              label="Codigo"
+              label="Codigo*"
               class="col"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
         </div>
         <div class="col">
           <div class="row">
-            <q-input outlined v-model="supply.samples" label="Muestras por unidad" type="number" step="any" class="col" />
+            <q-input
+              outlined
+              v-model="supply.samples"
+              label="Muestras por unidad*"
+              type="number"
+              step="any"
+              class="col"
+              :rules="[(val) => (val.length > 0 && val != null) || 'Campo obligatorio']"
+            />
           </div>
         </div>
         <div class="col">
           <div class="row">
-            <q-input outlined v-model="supply.critical_stock" label="Stock crítico" type="number" class="col" />
+            <q-input
+              outlined
+              v-model="supply.critical_stock"
+              label="Stock crítico*"
+              type="number"
+              class="col"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
+            />
           </div>
         </div>
         <div v-if="!flags.newBrandState" class="col">
@@ -45,13 +65,15 @@
             :options="brandOptions"
             option_value="id"
             option_label="name"
-            label="Marca"
+            label="Marca*"
             not_found_label="No hay marcas disponibles"
             @updateModel="
               (value) => {
                 supply.brand = value;
               }
             "
+            :rules="[val => !!val || 'Campo obligatorio']"
+            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -67,8 +89,10 @@
               outlined
               v-model="newBrand"
               class="col"
-              label="Marca"
+              label="Marca*"
               :disable="flags.disableBrand"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row justify-end q-pt-md">
@@ -93,13 +117,15 @@
             :options="typeOptions"
             option_value="id"
             option_label="name"
-            label="Tipo de insumo"
+            label="Tipo de insumo*"
             not_found_label="No hay tipos de insumos disponibles"
             @updateModel="
               (value) => {
                 supply.type = value;
               }
             "
+            :rules="[val => !!val || 'Campo obligatorio']"
+            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -115,8 +141,10 @@
               outlined
               v-model="newType"
               class="col"
-              label="Tipo de insumo"
+              label="Tipo de insumo*"
               :disable="flags.disableType"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row justify-end q-pt-md">
@@ -165,8 +193,8 @@ const supply = reactive({
   type: null,
   name: null,
   code: null,
-  samples: null,
-  critical_stock: null,
+  samples: 0,
+  critical_stock: 0,
 });
 const newBrand = ref(null);
 const newType = ref(null);
@@ -176,8 +204,8 @@ const flags = reactive({
   disableBrand: false,
   newBrandState: false,
   disableType: false,
-  newTypeState: false
-})
+  newTypeState: false,
+});
 
 const loading = ref(false);
 
@@ -300,7 +328,7 @@ async function onSubmit() {
     return;
   }
   loading.value = false;
-  redirectToSupply(supply_id.toString())
+  redirectToSupply(supply_id.toString());
   //Redirect to table
 }
 
