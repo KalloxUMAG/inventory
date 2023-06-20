@@ -167,6 +167,7 @@ def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
             Equipments.reception_date,
             Equipments.maintenance_period,
             Equipments.observation,
+            Equipments.last_preventive_mainteinance,
             Equipments.room_id,
             Rooms.name.label("room_name"),
             Equipments.supplier_id,

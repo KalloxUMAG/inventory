@@ -149,7 +149,7 @@
             />
             <div class="row justify-end q-pt-md">
               <q-btn
-                label="Añadir número modelo"
+                label="Añadir nro. modelo"
                 icon="add"
                 class="add-btn text-caption"
                 @click="newmodelnumberstate = !newmodelnumberstate"

@@ -19,19 +19,19 @@
             "
           />
           <SelectForm
-            :options="typeOptions"
+            :options="stateOptions"
             option_value="id"
             option_label="name"
-            label="Estado de mantenimineto"
+            label="Estado de mantenimiento"
             not_found_label="No hay estados disponibles"
-            :default_value="type"
+            :default_value="state"
             @updateModel="
               (value) => {
-                type = value
+                state = value
               }
             "
           />
-          
+          <q-input v-model="observation" label="Observacion" autogrow=""/>
           <!--Buttons-->
           <div class="q-mt-sm row justify-end">
             <q-btn
@@ -59,17 +59,23 @@
     id: Number,
     date_value: String,
     type_value: Object,
-    typeOptions: Array
+    typeOptions: Array,
+    state_value: Object,
+    stateOptions: Array,
+    observation_value: String,
+    equiptment_id: Number
   });
   
-  const { id, date_value, type_value, typeOptions } = toRefs(props);
+  const { id, date_value, type_value, typeOptions, state_value, stateOptions, observation_value, equiptment_id } = toRefs(props);
 
   const EditMaintenanceForm = ref(null);
   const api_prefix = process.env.API;
   
-  const date = ref(date_value);
-  const type = ref(type_value)
-  
+  const date = ref(date_value.value);
+  const type = ref(type_value.value);
+  const state = ref(state_value.value);
+  const observation = ref(observation_value.value)
+
   onMounted(() => {
   });
   
@@ -77,25 +83,19 @@
   
   const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
     useDialogPluginComponent();
-  // dialogRef      - Vue ref to be applied to QDialog
-  // onDialogHide   - Function to be used as handler for @hide on QDialog
-  // onDialogOK     - Function to call to settle dialog with "ok" outcome
-  //                    example: onDialogOK() - no payload
-  //                    example: onDialogOK({ /*...*/ }) - with payload
-  // onDialogCancel - Function to call to settle dialog with "cancel" outcome
-  
-  // this is part of our example (so not required)
   async function onOKClick() {
-    // on OK, it is REQUIRED to
-    // call onDialogOK (with optional payload)
-    EditEquipmentLocationForm.value.resetValidation();
+    EditMaintenanceForm.value.resetValidation();
+    const newState = state.value == 0 ? false : true;
     const data = {
-      id: props.id,
-      room_id: room.value,
+      date: date.value,
+      observations: observation.value,
+      state: newState,
+      maintenance_type: type.value.id,
     };
+    console.log(data)
     try {
       const response = await axios.put(
-        api_prefix + "/equipments/" + data.id,
+        api_prefix + "/maintenances/" + id.value,
         data
       );
     } catch (error) {
@@ -108,8 +108,6 @@
       return;
     }
     onDialogOK();
-    // or with payload: onDialogOK({ ... })
-    // ...and it will also hide the dialog automatically
   }
   </script>
   

@@ -167,9 +167,7 @@
               <div class="col-5 field-label text-right q-mr-md">
                 Dueño proyecto:
               </div>
-              <div
-                class="col field-content q-ml-xs"
-              >
+              <div class="col field-content q-ml-xs">
                 {{ equipment.project_owner_name }}
               </div>
             </div>
@@ -187,7 +185,6 @@
         </q-card-section>
       </q-card>
     </div>
-    {{ equipment }}
   </q-page>
 </template>
 
@@ -203,11 +200,9 @@ import EditEquipmentLocation from "./EditEquipmentLocation.vue";
 import EditEquipmentPurchase from "./EditEquipmentPurchase.vue";
 import EditMaintenance from "./EditMaintenance.vue";
 import { useQuasar } from "quasar";
-import {columns_maintenances} from "src/constants/columns.js";
+import { columns_maintenances } from "src/constants/columns.js";
 
 const $q = useQuasar();
-
-
 
 const content_loaded = ref(false);
 
@@ -284,7 +279,7 @@ function addFunction() {
     },
   })
     .onOk((data) => {
-      const state = data[2]==1 ? true : false
+      const state = data[2] == 1 ? true : false;
       const maintenance_data = {
         date: data[0],
         observations: data[3],
@@ -292,7 +287,7 @@ function addFunction() {
         state: state,
         equiptment_id: equipment.value.id,
       };
-      
+
       axios
         .post(api_prefix + "/maintenances", maintenance_data, {
           headers: {
@@ -384,28 +379,35 @@ function editPurchase() {
 }
 
 function editMaintenance(maintenance) {
+  console.log(maintenance)
   $q.dialog({
     component: EditMaintenance,
     componentProps: {
       id: maintenance.id,
       date_value: maintenance.date,
-      type_value: {id: maintenance.maintenance_type, name: maintenance.maintenance_type},
-      typeOptions: [{ id: "Programada", name: "Programada" },
-            { id: "Correctiva", name: "Correctiva" },]
+      type_value: {
+        id: maintenance.maintenance_type,
+        name: maintenance.maintenance_type,
+      },
+      typeOptions: [
+        { id: "Programada", name: "Programada" },
+        { id: "Correctiva", name: "Correctiva" },
+      ],
+      state_value: {
+        id: maintenance.state ? 1 : 0,
+        name: maintenance.state ? "Realizado" : "Sin realizar",
+      },
+      stateOptions: [
+        { id: "0", name: "Sin realizar" },
+        { id: "1", name: "Realizado" },
+      ],
+      observation_value: maintenance.observations,
+      equiptment_id: maintenance.equiptment_id
     },
   })
-    .onOk(() => {
-      const maintenance_id = maintenance.id;
-      axios
-        .put(api_prefix + "/maintenances/" + maintenance_id)
-        .then((response) => getMaintenances());
-    })
-    .onCancel(() => {
-      // console.log('Cancel')
-    })
-    .onDismiss(() => {
-      // console.log('I am triggered on both OK and Cancel')
-    });
+  .onOk(() => {
+    getMaintenances();
+  })
 }
 
 function removeMaintenance(maintenance) {

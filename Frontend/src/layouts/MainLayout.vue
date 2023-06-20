@@ -50,11 +50,11 @@ function toggleLeftDrawer() {
 }
 
 .q-drawer{
-  background-color: #d1dce1;
+  background-color: #ffffff;
 }
 
 .my-menu-link {
   color: #fff;
-  background: rgba(54, 110, 120, 0.9);
+  background: rgba(0, 0, 0, 0.9);
 }
 </style>
