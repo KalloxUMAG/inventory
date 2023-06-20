@@ -43,7 +43,8 @@
     <template v-slot:body-cell-state="props">
       <q-td :props="props">
         <q-btn v-if="props.row.state == true" flat dense icon="done_all" color="positive"/>
-        <q-btn v-else flat dense icon="close" color="negative"/>
+        <q-btn v-if="props.row.state == false" flat dense icon="close" color="negative"/>
+        <q-btn v-if="props.row.state == null" flat dense icon="play_arrow" color="warning"/>
       </q-td>
     </template>
   </q-table>

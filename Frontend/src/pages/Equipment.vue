@@ -266,7 +266,6 @@ function addFunction() {
           option_value: "id",
           option_label: "name",
           not_found_label: " ",
-          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
         },
         {
           label: "Observaciones",
@@ -279,7 +278,7 @@ function addFunction() {
     },
   })
     .onOk((data) => {
-      const state = data[2] == 1 ? true : false;
+      const state = data[2] == 1 ? true : (data[2] == 0 ? false : null);
       const maintenance_data = {
         date: data[0],
         observations: data[3],
