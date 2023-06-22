@@ -4,14 +4,14 @@
         <q-form @submit="onOKClick" ref="EditMaintenanceForm">
           <div class="text-bold text-subtitle1">Editar mantenimiento</div>
           <!--Fields-->
-          <q-input type="date" stack-label label="fecha" v-model="date" rules="[(val) => (val && val != null)" lazy-rules/>
+          <q-input type="date" stack-label label="fecha" v-model="date" :rules="[val => !!val || 'Campo obligatorio']" lazy-rules/>
           <SelectForm
             :options="typeOptions"
             option_value="id"
             option_label="name"
             label="Tipo de mantenimiento"
             not_found_label="No hay tipos disponibles"
-            :default_value="type"
+            :default_value="type_value"
             @updateModel="
               (value) => {
                 type = value
@@ -24,7 +24,7 @@
             option_label="name"
             label="Estado de mantenimiento"
             not_found_label="No hay estados disponibles"
-            :default_value="state"
+            :default_value="state_value"
             @updateModel="
               (value) => {
                 state = value
@@ -72,8 +72,8 @@
   const api_prefix = process.env.API;
   
   const date = ref(date_value.value);
-  const type = ref(type_value.value);
-  const state = ref(state_value.value);
+  const type = ref(type_value.value.id);
+  const state = ref(state_value.value.id);
   const observation = ref(observation_value.value)
 
   onMounted(() => {
@@ -90,9 +90,26 @@
       date: date.value,
       observations: observation.value,
       state: newState,
-      maintenance_type: type.value.id,
+      maintenance_type: type.value,
     };
-    console.log(data)
+
+    if(id.value == null){
+      data["equiptment_id"] = equiptment_id.value
+      try {
+      const response = await axios.post(
+        api_prefix + "/maintenances",
+        data
+      );
+    } catch (error) {
+      $q.notify({
+        color: "red-3",
+        textColor: "white",
+        icon: "error",
+        message: "No se pudo guardar los cambios: " + error,
+      });
+      return;
+    }
+    }else{
     try {
       const response = await axios.put(
         api_prefix + "/maintenances/" + id.value,
@@ -107,6 +124,7 @@
       });
       return;
     }
+  }
     onDialogOK();
   }
   </script>

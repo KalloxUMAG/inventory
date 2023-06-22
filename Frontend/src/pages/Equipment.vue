@@ -206,9 +206,10 @@ const $q = useQuasar();
 
 const content_loaded = ref(false);
 
-const img_api = ref(null);
-const equipment = ref(null);
+const img_api = ref("");
+const equipment = ref({});
 const maintenances = ref([]);
+const last_maintenance = ref({});
 const project = ref(null);
 
 const api_prefix = process.env.API;
@@ -217,16 +218,63 @@ const route = useRoute();
 const id = computed(() => route.params.id);
 const query_equipment = api_prefix + "/equipments/" + id.value;
 const query_maintenances = api_prefix + "/maintenances/" + id.value;
+const query_last_maintenance = api_prefix + "/maintenances/last_maintenance/" + id.value;
+
+function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
+
+function formatDate(date) {
+  return [
+    date.getFullYear(),
+    padTo2Digits(date.getMonth() + 1),
+    padTo2Digits(date.getDate()),
+  ].join('-');
+}
+
+function createNextMaintenance(){
+  const dateString = last_maintenance.value.date+"T00:00:00"
+  const months = equipment.value.maintenance_period
+  let date = new Date(dateString);
+  date.setDate(date.getDate()+months*30)
+  date = formatDate(date)
+  const data = {
+    id: null,
+    date: date,
+    observations: "Próxima mantención programada",
+    state: null,
+    maintenance_type: "Programada",
+    equiptment_id: equipment.value.id
+  }
+  maintenances.value.unshift(data)
+  maintenances.value.sort((x,y) => {
+    const date1 = new date(x.date+"T00:00:00");
+    const date2 = new date(y.date+"T00:00:00");
+    if(date1 < date2){
+      return -1
+    }
+    return 1
+  })
+} 
 
 function getEquipment() {
   axios.get(query_equipment).then((response) => {
     equipment.value = response.data;
     img_api.value = api_prefix + "/equipments/image/" + equipment.value.id;
+    getMaintenances();
   });
 }
 function getMaintenances() {
   axios.get(query_maintenances).then((response) => {
     maintenances.value = response.data;
+    getLastMaintenance();
+  });
+}
+
+function getLastMaintenance(){
+  axios.get(query_last_maintenance).then((response) => {
+    last_maintenance.value = response.data;
+    createNextMaintenance();
   });
 }
 
@@ -266,13 +314,14 @@ function addFunction() {
           option_value: "id",
           option_label: "name",
           not_found_label: " ",
+          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
         },
         {
           label: "Observaciones",
           type: "text",
           defaultvalue: null,
           autogrow: true,
-          rules: [],
+          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
         },
       ],
     },
@@ -438,7 +487,6 @@ function removeMaintenance(maintenance) {
 
 onMounted(() => {
   getEquipment();
-  getMaintenances();
   content_loaded.value = true;
 });
 </script>

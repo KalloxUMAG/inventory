@@ -32,11 +32,11 @@ def get_maintenance(maintenance_id: int, db:Session = Depends(get_db)):
 
 @maintenances.get("/api/maintenances/{equipment_id}", response_model=List[MaintenanceFromEquipment])
 def get_maintenances_equipment(equipment_id: int, db:Session = Depends(get_db)):
-    return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations, Maintenances.state).filter(Maintenances.equiptment_id == equipment_id).order_by(Maintenances.date.desc()).all()
+    return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations, Maintenances.state, Maintenances.equiptment_id).filter(Maintenances.equiptment_id == equipment_id).order_by(Maintenances.date.desc()).all()
 
 @maintenances.get("/api/maintenances/last_maintenance/{equipment_id}", response_model=MaintenanceFromEquipment)
 def get_last_maintenance_equipment(equipment_id: int, db:Session = Depends(get_db)):
-    return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations, Maintenances.state).filter(Maintenances.equiptment_id == equipment_id, Maintenances.maintenance_type == "Programada").order_by(Maintenances.date.desc()).first()
+    return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations, Maintenances.state, Maintenances.equiptment_id).filter(Maintenances.equiptment_id == equipment_id, Maintenances.maintenance_type == "Programada").order_by(Maintenances.date.desc()).first()
 
 
 @maintenances.put("/api/maintenances/{maintenance_id}", response_model=MaintenanceSchema)
