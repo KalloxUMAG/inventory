@@ -47,6 +47,7 @@
               outlined
               v-model="newsupplierrut"
               label="Rut"
+              mask="##.###.###-X"
               class="row q-my-sm"
               :disable="disableSupplier"
               :rules="[val => !!val || 'Campo obligatorio']"
@@ -93,6 +94,7 @@
           <div class="row">
             <q-input
               outlined
+              type="email"
               v-model="workermail1"
               label="Correo trabajador"
               class="col q-my-sm"
@@ -106,6 +108,7 @@
               outlined
               v-model="workerphone1"
               label="Telefono trabajador"
+              mask="(+##) #####-####"
               class="col q-my-sm"
               :disable="disableSupplier"
               :rules="[val => !!val || 'Campo obligatorio']"

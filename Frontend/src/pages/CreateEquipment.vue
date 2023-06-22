@@ -305,6 +305,7 @@
               outlined
               v-model="newsupplierrut"
               label="Rut"
+              mask="##.###.###-X"
               class="col q-ml-md"
               :disable="disableSupplier"
               :rules="[val => !!val || 'Campo obligatorio']"
@@ -345,6 +346,7 @@
             />
             <q-input
               outlined
+              type="email"
               v-model="workermail1"
               label="Correo trabajador"
               class="col q-ml-md"
@@ -356,6 +358,7 @@
               outlined
               v-model="workerphone1"
               label="Telefono trabajador"
+              mask="(+##) #####-####"
               class="col q-ml-md"
               :disable="disableSupplier"
               :rules="[val => !!val || 'Campo obligatorio']"
@@ -383,6 +386,7 @@
             />
             <q-input
               outlined
+              type="email"
               v-model="workermail2"
               label="Correo trabajador"
               class="col q-ml-md"
@@ -392,6 +396,7 @@
               outlined
               v-model="workerphone2"
               label="Telefono trabajador"
+              mask="(+##) #####-####"
               class="col q-ml-md"
               :disable="disableSupplier"
             />
