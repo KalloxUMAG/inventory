@@ -165,7 +165,7 @@ const modelNumberOptions = ref([]);
 const maintenance_period = ref(maintenance_period_value.value);
 const observation = ref(observation_value.value);
 const EditEquipmentProductForm = ref(null);
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const getBrands = () => {
   axios.get(api_prefix + "/brands").then((response) => {

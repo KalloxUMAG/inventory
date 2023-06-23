@@ -122,7 +122,7 @@ const stageOptions = ref([]);
 
 const EditEquipmentPurchaseForm = ref(null);
 
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const getSuppliers = () => {
   axios.get(api_prefix + "/suppliers").then((response) => {

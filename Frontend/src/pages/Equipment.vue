@@ -213,7 +213,7 @@ const maintenances = ref([]);
 const last_maintenance = ref({});
 const project = ref(null);
 
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const route = useRoute();
 const id = computed(() => route.params.id);
@@ -256,7 +256,7 @@ function createNextMaintenance(){
     }
     return 1
   })
-} 
+}
 
 function getEquipment() {
   axios.get(query_equipment).then((response) => {

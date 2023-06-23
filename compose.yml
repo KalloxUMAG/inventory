@@ -52,12 +52,12 @@ services:
     build:
       context: ./Frontend
       dockerfile: Containerfile
+      args:
+        - API_URL=${BACKEND_BASEURL}
     ports:
       10002:80
     tmpfs:
       - /tmp
-    environment:
-      - API_URL=${BACKEND_BASEURL}
 
 networks:
   inventory:

@@ -21,7 +21,7 @@ import {suppliesColumns, lotsColumns} from '../constants/columns.js'
 
 const lots = ref([]);
 const supplies = ref([]);
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 
 const getSupplies = () => {

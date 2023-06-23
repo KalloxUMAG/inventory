@@ -2,12 +2,10 @@ FROM node:lts as build
 
 ARG API_URL=http://localhost:8001
 
-ENV API=${API_URL}
-
 WORKDIR /app
 COPY ./ .
 RUN npm install
-RUN NODE_ENV=production npm run build
+RUN API_URL=${API_URL} NODE_ENV=production npm run build
 
 
 FROM nginx:stable as runtime

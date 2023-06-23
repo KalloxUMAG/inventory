@@ -13,18 +13,16 @@ if production:
     username = environ.get('DB_USER')
     password = environ.get('DB_PASSWORD')
     database = environ.get('DB_NAME')
-
-    DATABASE_URL = f"postgresql://{username}:{password}@{host}:{port}/{database}"
 else:
     config = dotenv_values(".env")
 
+    host = config['IP']
+    port = config['PORT']
     username = config['USERNAME']
     password = config['PASSWORD']
     database = config['DATABASE']
-    ip = config['IP']
-    port = config['PORT']
 
-    DATABASE_URL = f"postgresql://{username}:{password}@{ip}:{port}/{database}"
+DATABASE_URL = f"postgresql://{username}:{password}@{host}:{port}/{database}"
 
 engine = create_engine(DATABASE_URL, pool_size=20, max_overflow=0)
 SessionLocal = sessionmaker(bind=engine, autoflush=False)

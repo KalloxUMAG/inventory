@@ -16,7 +16,7 @@ import {suppliesColumns} from '../constants/columns.js'
 import axios from "axios";
 import RenderTable from 'src/components/RenderTable.vue';
 
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const supplies = ref([])
 

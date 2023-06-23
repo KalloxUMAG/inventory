@@ -357,7 +357,7 @@ const loading = ref(false);
 //Form
 const createLotForm = ref(null);
 const $q = useQuasar();
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 //Get functions
 
@@ -605,7 +605,7 @@ async function onSubmit() {
   lot["sub_location_id"] = sub_location_id;
   await createNewLot(lot);
   await modifyStock(supply.value);
-  
+
   loading.value = false;
 }
 
