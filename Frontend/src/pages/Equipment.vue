@@ -11,7 +11,7 @@
         <q-card-section horizontal>
           <!--Datos carrucel-->
           <q-card-section class="col-4">
-            <Carousel v-if="equipment != null" :api_endpoint="img_api" />
+            <Carousel v-if="img_api != null" :api_endpoint="img_api" />
           </q-card-section>
           <q-separator vertical />
           <!--Datos producto-->
@@ -184,7 +184,6 @@
             :editFunction="editMaintenance"
           />
       </div>
-
     </div>
   </q-page>
 </template>
@@ -207,7 +206,7 @@ const $q = useQuasar();
 
 const content_loaded = ref(false);
 
-const img_api = ref("");
+const img_api = ref(null);
 const equipment = ref({});
 const maintenances = ref([]);
 const last_maintenance = ref({});
@@ -249,8 +248,8 @@ function createNextMaintenance(){
   }
   maintenances.value.unshift(data)
   maintenances.value.sort((x,y) => {
-    const date1 = new date(x.date+"T00:00:00");
-    const date2 = new date(y.date+"T00:00:00");
+    const date1 = new Date(x.date+"T00:00:00");
+    const date2 = new Date(y.date+"T00:00:00");
     if(date1 < date2){
       return -1
     }
