@@ -198,7 +198,7 @@ const props = defineProps({
 
 const { supply_id } = toRefs(props);
 const AddSupplierForm = ref(null);
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const getSuppliers = () => {
   axios.get(api_prefix + "/suppliers").then((response) => {

@@ -46,15 +46,15 @@
       </q-card>
     </q-dialog>
   </template>
-  
+
   <script setup>
   import axios from "axios";
   import { useDialogPluginComponent, useQuasar } from "quasar";
   import { onMounted, ref, toRefs } from "vue";
   import SelectForm from "src/components/SelectForm.vue";
-  
+
   const $q = useQuasar();
-  
+
   const props = defineProps({
     id: Number,
     date_value: String,
@@ -65,12 +65,12 @@
     observation_value: String,
     equiptment_id: Number
   });
-  
+
   const { id, date_value, type_value, typeOptions, state_value, stateOptions, observation_value, equiptment_id } = toRefs(props);
 
   const EditMaintenanceForm = ref(null);
-  const api_prefix = process.env.API;
-  
+  const api_prefix = process.env.API_URL;
+
   const date = ref(date_value.value);
   const type = ref(type_value.value.id);
   const state = ref(state_value.value.id);
@@ -78,9 +78,9 @@
 
   onMounted(() => {
   });
-  
+
   defineEmits([...useDialogPluginComponent.emits]);
-  
+
   const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
     useDialogPluginComponent();
   async function onOKClick() {
@@ -128,4 +128,3 @@
     onDialogOK();
   }
   </script>
-  

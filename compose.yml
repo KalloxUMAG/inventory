@@ -1,0 +1,65 @@
+services:
+  backend:
+    image: inventory-backend
+    links:
+      - db
+    restart: unless-stopped
+    container_name: inventory-backend
+    build:
+      context: ./Backend
+      dockerfile: Containerfile
+    user: 3001
+    ports:
+      - 10001:8080
+    networks:
+      - inventory
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      - ~/container-volumes/inventory/images:/app/images:Z
+    environment:
+      - PRODUCTION=true
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_PORT=5432
+      - DB_HOST=db
+
+  db:
+    image: postgres:15
+    container_name: inventory-db
+    restart: unless-stopped
+    ports:
+      - 15432:5432
+    networks:
+      - inventory
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    volumes:
+      - ~/container-volumes/inventory/db:/var/lib/postgresql/data:Z
+    environment:
+      - TZ=${TZ}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+
+  frontend:
+    image: inventory-frontend
+    restart: unless-stopped
+    container_name: inventory-frontend
+    build:
+      context: ./Frontend
+      dockerfile: Containerfile
+      args:
+        - API_URL=${BACKEND_BASEURL}
+    ports:
+      10002:80
+    tmpfs:
+      - /tmp
+
+networks:
+  inventory:
+    name: inventory
+    driver: bridge

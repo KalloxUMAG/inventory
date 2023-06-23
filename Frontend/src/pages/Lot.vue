@@ -39,7 +39,7 @@ const route = useRoute();
 const id = computed(() => route.params.id);
 const lot = ref({});
 
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const getLot = () => {
   axios

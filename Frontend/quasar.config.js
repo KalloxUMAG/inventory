@@ -12,6 +12,8 @@
 const { configure } = require('quasar/wrappers');
 const config = require('./config/index.js');
 
+require('dotenv').config()
+
 module.exports = configure(function ( ctx ) {
   return {
     eslint: {
@@ -55,13 +57,15 @@ module.exports = configure(function ( ctx ) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
-      env: require('dotenv').config().parsed,
+      env: {
+        API_URL: process.env.API_URL,
+      },
       target: {
         browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
         node: 'node16',
       },
 
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
@@ -70,7 +74,6 @@ module.exports = configure(function ( ctx ) {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

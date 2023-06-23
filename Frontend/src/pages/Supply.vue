@@ -126,7 +126,7 @@ const lots = ref([]);
 const $q = useQuasar();
 const router = useRouter();
 
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const getSupply = () => {
   axios

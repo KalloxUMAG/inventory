@@ -213,7 +213,7 @@ const loading = ref(false);
 const createSupplyForm = ref(null);
 const router = useRouter();
 const $q = useQuasar();
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const getSuppliesBrands = () => {
   axios.get(api_prefix + "/supplies_brands").then((response) => {

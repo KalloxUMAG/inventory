@@ -986,7 +986,7 @@ const workermail2 = ref(null);
 const workerphone2 = ref(null);
 const $q = useQuasar();
 const router = useRouter();
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const getBrands = () => {
   axios.get(api_prefix + "/brands").then((response) => {

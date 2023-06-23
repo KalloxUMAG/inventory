@@ -84,7 +84,7 @@ const roomOptions = ref([]);
 const unitOptions = ref([]);
 const buildingOptions = ref([]);
 const EditEquipmentLocationForm = ref(null);
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const getBuildings = () => {
   axios.get(api_prefix + "/buildings").then((response) => {

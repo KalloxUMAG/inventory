@@ -311,7 +311,7 @@ import axios from "axios";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import { onMounted, ref, toRefs } from "vue";
 import SelectForm from "src/components/SelectForm.vue";
-const api_prefix = process.env.API;
+const api_prefix = process.env.API_URL;
 
 const number = ref(0);
 const stock = ref(0);
@@ -557,7 +557,7 @@ async function onOKClick() {
   data['sub_location_id'] = sub_location_id;
 
   const lot_id = await createNewLot(data);
-  
+
   if (lot_id != -1){
     await updateStock(props.supply_id, stock.value)
   }
