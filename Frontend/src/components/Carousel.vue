@@ -1,48 +1,38 @@
 <template>
   <q-carousel v-model="slide" animated arrows thumbnails infinite control-color="amber" class="rounded-borders">
 
-      <q-carousel-slide v-if="this.images == null" :name="1" img-src="https://cdn.quasar.dev/img/mountains.jpg" />
+      <q-carousel-slide v-if="images.length == 0" :name="1" img-src="https://cdn.quasar.dev/img/mountains.jpg" />
       <q-carousel-slide v-for="image in images" :key="image.id" :name="image.id" :img-src="image.path"/>
 
 
   </q-carousel>
 </template>
 
-<script>
-import {ref} from 'vue'
+<script setup>
+import {onMounted, ref, toRefs} from 'vue'
 import axios from 'axios';
 
-export default {
-  data(){
-    return{
-      images: null,
-    }
-  },
-  methods:{
-    getContent(){
-      axios.get(this.api_endpoint).then(
-        response => {
-          this.images = response.data
-        }
+const props = defineProps({
+  api_endpoint: String,
+});
+
+const { api_endpoint } = toRefs(props);
+
+const slide = ref(1)
+const images = ref([]);
+
+const getContent = () => {
+  axios.get(api_endpoint.value).then(
+        (response) => (
+          images.value = response.data
+        )
       )
-    }
-  },
-  mounted(){
-    this.getContent()
-  },
-  props:{
-    api_endpoint: {
-      type: String,
-      required: true
-    }
-  },
-  setup(props){
-    return{
-      slide: ref(1),
-      fullscreen: ref(false)
-    }
-  }
 }
+
+onMounted(() => {
+  getContent();
+})
+
 </script>
 
 <style lang="scss" scoped>
