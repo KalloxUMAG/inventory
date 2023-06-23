@@ -70,6 +70,8 @@
                   getModels();
                 }
               "
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-pt-md">
               <q-btn
@@ -88,6 +90,8 @@
                 label="Nombre marca"
                 class="col"
                 :disable="disableBrand"
+                :rules="[val => !!val || 'Campo obligatorio']"
+                lazy-rules
               />
             </div>
           </div>
@@ -107,6 +111,8 @@
                   getModelNumbers();
                 }
               "
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-pt-md">
               <q-btn
@@ -125,6 +131,8 @@
                 label="Nombre modelo"
                 class="col"
                 :disable="disableBrand"
+                :rules="[val => !!val || 'Campo obligatorio']"
+                lazy-rules
               />
             </div>
           </div>
@@ -146,10 +154,12 @@
                   modelNumber = value;
                 }
               "
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-pt-md">
               <q-btn
-                label="Añadir número modelo"
+                label="Añadir nro. modelo"
                 icon="add"
                 class="add-btn text-caption"
                 @click="newmodelnumberstate = !newmodelnumberstate"
@@ -164,6 +174,8 @@
                 label="Número modelo"
                 class="col"
                 :disable="disableBrand"
+                :rules="[val => !!val || 'Campo obligatorio']"
+                lazy-rules
               />
             </div>
           </div>
@@ -213,6 +225,8 @@
           label="Periodo de mantención"
           not_found_label="No hay periodos disponibles"
           @updateModel="(value) => (maintenance = value)"
+          :rules="[val => !!val || 'Campo obligatorio']"
+          lazy-rules
         />
         <!--Observacion-->
         <q-input
@@ -220,6 +234,7 @@
           v-model="observation"
           type="textarea"
           label="Observación"
+          :rules="[val => !!val || 'Campo obligatorio']"
           lazy-rules
         />
 
@@ -262,6 +277,8 @@
                 (supplier = value), getInvoicesSupplier(value);
               }
             "
+            :rules="[val => !!val || 'Campo obligatorio']"
+            lazy-rules
           />
           <div class="row justify-end q-mt-md">
             <q-btn
@@ -281,13 +298,18 @@
               label="Nombre proveedor"
               class="col"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <q-input
               outlined
               v-model="newsupplierrut"
               label="Rut"
+              mask="##.###.###-X"
               class="col q-ml-md"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <q-input
               outlined
@@ -295,6 +317,8 @@
               label="Dirección"
               class="col q-ml-md"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row q-mt-sm">
@@ -304,6 +328,8 @@
               label="Nombre trabajador"
               class="col"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <SelectForm
               outlined
@@ -315,20 +341,28 @@
               not_found_label="No hay roles disponibles"
               @updateModel="(value) => (workerrol1 = value)"
               class="col q-ml-md"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <q-input
               outlined
+              type="email"
               v-model="workermail1"
               label="Correo trabajador"
               class="col q-ml-md"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <q-input
               outlined
               v-model="workerphone1"
               label="Telefono trabajador"
+              mask="(+##) #####-####"
               class="col q-ml-md"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row q-mt-sm">
@@ -352,6 +386,7 @@
             />
             <q-input
               outlined
+              type="email"
               v-model="workermail2"
               label="Correo trabajador"
               class="col q-ml-md"
@@ -361,6 +396,7 @@
               outlined
               v-model="workerphone2"
               label="Telefono trabajador"
+              mask="(+##) #####-####"
               class="col q-ml-md"
               :disable="disableSupplier"
             />
@@ -413,6 +449,8 @@
             label="Facturas"
             not_found_label="No hay facturas disponibles"
             @updateModel="(value) => (invoice = value)"
+            :rules="[val => !!val || 'Campo obligatorio']"
+            lazy-rules
           />
           <div class="row justify-end q-mt-md">
             <q-btn
@@ -433,6 +471,8 @@
               type="number"
               class="col"
               :disable="disableInvoice"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <q-input
               outlined
@@ -442,6 +482,8 @@
               stack-label
               class="col q-ml-md"
               :disable="disableInvoice"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row q-mt-sm">
@@ -503,6 +545,8 @@
                   getStages();
                 }
               "
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-pt-md">
               <q-btn
@@ -521,6 +565,8 @@
                 label="Nombre proyeto"
                 class="col"
                 :disable="disableProject"
+                :rules="[val => !!val || 'Campo obligatorio']"
+                lazy-rules
               />
             </div>
           </div>
@@ -536,6 +582,8 @@
               label="Etapas"
               not_found_label="No hay etapas disponibles"
               @updateModel="(value) => (stage = value)"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-pt-md">
               <q-btn
@@ -554,6 +602,8 @@
                 label="Nombre etapa"
                 class="col"
                 :disable="disableProject"
+                :rules="[val => !!val || 'Campo obligatorio']"
+                lazy-rules
               />
             </div>
           </div>
@@ -599,6 +649,8 @@
                   projectowner = value;
                 }
               "
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-mt-md">
               <q-btn
@@ -616,6 +668,8 @@
               v-model="newprojectownername"
               label="Nombre dueño"
               :disable="disableProjectOwner"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-mt-md">
               <q-btn
@@ -665,6 +719,8 @@
                   getUnits();
                 }
               "
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-pt-md">
               <q-btn
@@ -683,6 +739,8 @@
                 label="Nombre edificio"
                 class="col"
                 :disable="disableLocation"
+                :rules="[val => !!val || 'Campo obligatorio']"
+                lazy-rules
               />
             </div>
           </div>
@@ -702,6 +760,8 @@
                   getRooms();
                 }
               "
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-pt-md">
               <q-btn
@@ -721,6 +781,8 @@
                 label="Nombre unidad"
                 class="col"
                 :disable="disableLocation"
+                :rules="[val => !!val || 'Campo obligatorio']"
+                lazy-rules
               />
             </div>
           </div>
@@ -742,6 +804,8 @@
                   room = value;
                 }
               "
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-pt-md">
               <q-btn
@@ -760,6 +824,8 @@
                 label="Nombre sala"
                 class="col"
                 :disable="disableLocation"
+                :rules="[val => !!val || 'Campo obligatorio']"
+                lazy-rules
               />
             </div>
           </div>
@@ -861,7 +927,7 @@ const equipmentimages = ref(null);
 const invoiceimage = ref(null);
 const name = ref(null);
 const serial = ref(null);
-const inventory = ref(null);
+const inventory = ref(0);
 const invoice = ref(null);
 const invoicesOptions = ref([]);
 const loading = ref(false);

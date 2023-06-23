@@ -156,7 +156,7 @@ class Maintenances(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     date = mapped_column(Date)
     observations: Mapped[str] = mapped_column(String)
-    state: Mapped[bool] = mapped_column(Boolean)
+    state: Mapped[bool] = mapped_column(Boolean, nullable=True)
     equiptment_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Equipments.id", ondelete="CASCADE")
     )

@@ -95,8 +95,6 @@
           <q-btn color="negative" label="Cancelar" @click="onDialogCancel" />
         </div>
       </q-form>
-      {{ brand }}
-      {{ modelOptions }}
     </q-card>
   </q-dialog>
 </template>

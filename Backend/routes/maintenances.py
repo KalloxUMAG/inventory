@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Depends
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from models.models import Maintenances
-from schemas.maintenance_schema import MaintenanceSchema, MaintenanceFromEquipment
+from schemas.maintenance_schema import MaintenanceSchema, MaintenanceFromEquipment, EditMaintenanceSchema
 from typing import List
 from config.database import get_db
 from sqlalchemy.orm import Session
@@ -32,10 +32,15 @@ def get_maintenance(maintenance_id: int, db:Session = Depends(get_db)):
 
 @maintenances.get("/api/maintenances/{equipment_id}", response_model=List[MaintenanceFromEquipment])
 def get_maintenances_equipment(equipment_id: int, db:Session = Depends(get_db)):
-    return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations, Maintenances.state).filter(Maintenances.equiptment_id == equipment_id).all()
+    return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations, Maintenances.state, Maintenances.equiptment_id).filter(Maintenances.equiptment_id == equipment_id).order_by(Maintenances.date.desc()).all()
+
+@maintenances.get("/api/maintenances/last_maintenance/{equipment_id}", response_model=MaintenanceFromEquipment)
+def get_last_maintenance_equipment(equipment_id: int, db:Session = Depends(get_db)):
+    return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations, Maintenances.state, Maintenances.equiptment_id).filter(Maintenances.equiptment_id == equipment_id, Maintenances.maintenance_type == "Programada").order_by(Maintenances.date.desc()).first()
+
 
 @maintenances.put("/api/maintenances/{maintenance_id}", response_model=MaintenanceSchema)
-def update_maintenance(data_update: MaintenanceSchema, maintenance_id: int, db:Session = Depends(get_db)):
+def update_maintenance(data_update: EditMaintenanceSchema, maintenance_id: int, db:Session = Depends(get_db)):
     db_maintenance = get_maintenance(maintenance_id, db=db)
     if not db_maintenance:
         return Response(status_code=HTTP_404_NOT_FOUND)

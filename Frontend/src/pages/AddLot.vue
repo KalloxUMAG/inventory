@@ -22,6 +22,8 @@
                   supplier = value;
                 }
               "
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row q-my-sm">
@@ -30,12 +32,17 @@
               v-model="number"
               label="Número"
               class="col q-mr-sm"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <q-input
               outlined
+              type="number"
               v-model="stock"
               label="Stock"
               class="col q-ml-sm"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row q-my-sm">
@@ -58,7 +65,7 @@
               class="col"
               type="text"
               stack-label
-              label="Observacion"
+              label="Observación"
               v-model="observation"
             />
           </div>
@@ -71,7 +78,7 @@
                 :options="locationOptions"
                 option_value="id"
                 option_label="name"
-                label="Localizacion"
+                label="Localización"
                 not_found_label="No hay localizaciones disponibles"
                 @updateModel="
                   (value) => {
@@ -79,10 +86,12 @@
                     getSublocations();
                   }
                 "
+                :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
               />
               <div class="row justify-end q-pt-md">
                 <q-btn
-                  label="Añadir localizacion"
+                  label="Añadir localización"
                   icon="add"
                   class="add-btn text-caption q-mr-md"
                   @click="newLocationState = !newLocationState"
@@ -94,9 +103,11 @@
                 <q-input
                   outlined
                   v-model="newLocation"
-                  label="Nombre localizacion"
+                  label="Nombre localización"
                   class="col"
                   :disable="disableLocation"
+                  :rules="[val => !!val || 'Campo obligatorio']"
+                  lazy-rules
                 />
               </div>
             </div>
@@ -111,18 +122,20 @@
                 :options="sublocationOptions"
                 option_value="id"
                 option_label="name"
-                label="Sub-localizacion"
+                label="Sub-localización"
                 not_found_label="No hay sublocalizaciones disponibles"
                 @updateModel="
                   (value) => {
                     sublocation = value;
                   }
                 "
+                :rules="[val => !!val || 'Campo obligatorio']"
+                lazy-rules
               />
               <div class="row justify-end q-pt-md">
                 <q-btn
                   outlined
-                  label="Añadir sub-localizacion"
+                  label="Añadir sub-localización"
                   icon="add"
                   class="add-btn text-caption"
                   @click="newSublocationState = !newSublocationState"
@@ -134,9 +147,11 @@
                 <q-input
                   outlined
                   v-model="newSublocation"
-                  label="Nombre sub-localizacion"
+                  label="Nombre sub-localización"
                   class="col"
                   :disable="disableLocation"
+                  :rules="[val => !!val || 'Campo obligatorio']"
+                  lazy-rules
                 />
               </div>
             </div>
@@ -183,6 +198,8 @@
                 project = value;
               }
             "
+            :rules="[val => !!val || 'Campo obligatorio']"
+            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -201,6 +218,8 @@
               label="Nombre proyeto"
               class="col"
               :disable="disableProject"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
         </div>
@@ -233,6 +252,8 @@
                   projectOwner = value;
                 }
               "
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-mt-md">
               <q-btn
@@ -250,6 +271,8 @@
               v-model="newProjectOwner"
               label="Nombre dueño"
               :disable="disableProjectOwner"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
             <div class="row justify-end q-mt-md">
               <q-btn
@@ -290,8 +313,8 @@ import { onMounted, ref, toRefs } from "vue";
 import SelectForm from "src/components/SelectForm.vue";
 const api_prefix = process.env.API;
 
-const number = ref(null);
-const stock = ref(null);
+const number = ref(0);
+const stock = ref(0);
 const supplier = ref(null);
 const observation = ref('');
 const due_date = ref(null);

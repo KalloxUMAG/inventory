@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
-          <div class="text-h4 q-ma-md">Sistema de gestion de inventario CADI</div>
+          <div class="text-h4 q-ma-md">Sistema de gestión de inventario CADI</div>
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -50,11 +50,11 @@ function toggleLeftDrawer() {
 }
 
 .q-drawer{
-  background-color: #d1dce1;
+  background-color: #ffffff;
 }
 
 .my-menu-link {
   color: #fff;
-  background: rgba(54, 110, 120, 0.9);
+  background: rgba(0, 0, 0, 0.9);
 }
 </style>

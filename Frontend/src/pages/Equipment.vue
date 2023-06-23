@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div v-if="equipment != null" class="row justify-center bg-secondary">
+    <div v-if="equipment != null" class="row justify-center">
       <q-card class="my-card" flat bordered>
         <q-item class="row justify-center">
           <div class="text-h5">
@@ -167,23 +167,24 @@
               <div class="col-5 field-label text-right q-mr-md">
                 Dueño proyecto:
               </div>
-              <div
-                class="col field-content q-ml-xs"
-              >
+              <div class="col field-content q-ml-xs">
                 {{ equipment.project_owner_name }}
               </div>
             </div>
           </q-card-section>
         </q-card-section>
-        <q-card-section v-if="equipment.maintenance_period != null">
-          <NoRedirectTable
+      </q-card>
+      <div v-if="equipment.maintenance_period != null" class="q-mt-md maintenance-table">
+        <NoRedirectTable
             title="Mantenimientos"
             :columns="columns_maintenances"
             :rows="maintenances"
             :addFunction="addFunction"
+            :deleteFunction="removeMaintenance"
+            :editFunction="editMaintenance"
           />
-        </q-card-section>
-      </q-card>
+      </div>
+
     </div>
   </q-page>
 </template>
@@ -198,39 +199,18 @@ import FormModal from "src/components/FormModal.vue";
 import EditEquipmentProduct from "./EditEquipmentProduct.vue";
 import EditEquipmentLocation from "./EditEquipmentLocation.vue";
 import EditEquipmentPurchase from "./EditEquipmentPurchase.vue";
+import EditMaintenance from "./EditMaintenance.vue";
 import { useQuasar } from "quasar";
+import { columns_maintenances } from "src/constants/columns.js";
 
 const $q = useQuasar();
 
-const columns_maintenances = [
-  {
-    name: "date",
-    align: "left",
-    label: "Fecha",
-    field: "date",
-    sortable: true,
-  },
-  {
-    name: "maintenance_type",
-    align: "left",
-    label: "Tipo mantenimiento",
-    field: "maintenance_type",
-    sortable: true,
-  },
-  {
-    name: "observations",
-    align: "left",
-    label: "Observaciones",
-    field: "observations",
-    sortable: false,
-  },
-];
-
 const content_loaded = ref(false);
 
-const img_api = ref(null);
-const equipment = ref(null);
+const img_api = ref("");
+const equipment = ref({});
 const maintenances = ref([]);
+const last_maintenance = ref({});
 const project = ref(null);
 
 const api_prefix = process.env.API;
@@ -239,16 +219,63 @@ const route = useRoute();
 const id = computed(() => route.params.id);
 const query_equipment = api_prefix + "/equipments/" + id.value;
 const query_maintenances = api_prefix + "/maintenances/" + id.value;
+const query_last_maintenance = api_prefix + "/maintenances/last_maintenance/" + id.value;
+
+function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
+
+function formatDate(date) {
+  return [
+    date.getFullYear(),
+    padTo2Digits(date.getMonth() + 1),
+    padTo2Digits(date.getDate()),
+  ].join('-');
+}
+
+function createNextMaintenance(){
+  const dateString = last_maintenance.value.date+"T00:00:00"
+  const months = equipment.value.maintenance_period
+  let date = new Date(dateString);
+  date.setDate(date.getDate()+months*30)
+  date = formatDate(date)
+  const data = {
+    id: null,
+    date: date,
+    observations: "Próxima mantención programada",
+    state: null,
+    maintenance_type: "Programada",
+    equiptment_id: equipment.value.id
+  }
+  maintenances.value.unshift(data)
+  maintenances.value.sort((x,y) => {
+    const date1 = new date(x.date+"T00:00:00");
+    const date2 = new date(y.date+"T00:00:00");
+    if(date1 < date2){
+      return -1
+    }
+    return 1
+  })
+} 
 
 function getEquipment() {
   axios.get(query_equipment).then((response) => {
     equipment.value = response.data;
     img_api.value = api_prefix + "/equipments/image/" + equipment.value.id;
+    getMaintenances();
   });
 }
 function getMaintenances() {
   axios.get(query_maintenances).then((response) => {
     maintenances.value = response.data;
+    getLastMaintenance();
+  });
+}
+
+function getLastMaintenance(){
+  axios.get(query_last_maintenance).then((response) => {
+    last_maintenance.value = response.data;
+    createNextMaintenance();
   });
 }
 
@@ -278,20 +305,35 @@ function addFunction() {
           rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
         },
         {
+          label: "Estado",
+          type: "select",
+          defaultvalue: null,
+          options: [
+            { id: "0", name: "Sin realizar" },
+            { id: "1", name: "Realizado" },
+          ],
+          option_value: "id",
+          option_label: "name",
+          not_found_label: " ",
+          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
+        },
+        {
           label: "Observaciones",
           type: "text",
           defaultvalue: null,
           autogrow: true,
-          rules: [],
+          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
         },
       ],
     },
   })
     .onOk((data) => {
+      const state = data[2] == 1 ? true : (data[2] == 0 ? false : null);
       const maintenance_data = {
         date: data[0],
-        observations: data[2],
+        observations: data[3],
         maintenance_type: data[1],
+        state: state,
         equiptment_id: equipment.value.id,
       };
 
@@ -374,26 +416,87 @@ function editPurchase() {
         name: equipment.value.invoice_number,
       },
       project_value: {
-        id: projectData["project_id"],
-        name: projectData["project_name"],
+        id: equipment.value.project_id,
+        name: equipment.value.project_name,
       },
       stage_value: {
-        id: projectData["stage_id"],
-        name: projectData["stage_name"],
+        id: equipment.value.stage_id,
+        name: equipment.value.stage_name,
       },
     },
   }).onOk((data) => {});
 }
 
+function editMaintenance(maintenance) {
+  $q.dialog({
+    component: EditMaintenance,
+    componentProps: {
+      id: maintenance.id,
+      date_value: maintenance.date,
+      type_value: {
+        id: maintenance.maintenance_type,
+        name: maintenance.maintenance_type,
+      },
+      typeOptions: [
+        { id: "Programada", name: "Programada" },
+        { id: "Correctiva", name: "Correctiva" },
+      ],
+      state_value: {
+        id: maintenance.state ? 1 : 0,
+        name: maintenance.state ? "Realizado" : "Sin realizar",
+      },
+      stateOptions: [
+        { id: "0", name: "Sin realizar" },
+        { id: "1", name: "Realizado" },
+      ],
+      observation_value: maintenance.observations,
+      equiptment_id: maintenance.equiptment_id
+    },
+  })
+  .onOk(() => {
+    getMaintenances();
+  })
+}
+
+function removeMaintenance(maintenance) {
+  $q.dialog({
+    title: "Eliminar mantenimiento",
+    message: "Se eliminara el mantenimiento",
+    ok: {
+      color: "negative",
+      label: "Aceptar y eliminar",
+    },
+    cancel: {
+      color: "warning",
+      label: "Cancelar y mantener",
+    },
+  })
+    .onOk(() => {
+      const maintenance_id = maintenance.id;
+      axios
+        .delete(api_prefix + "/maintenances/" + maintenance_id)
+        .then((response) => getMaintenances());
+    })
+    .onCancel(() => {
+      // console.log('Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    });
+}
+
 onMounted(() => {
   getEquipment();
-  getMaintenances();
   content_loaded.value = true;
 });
 </script>
 
 <style scoped>
 .my-card {
+  width: 100%;
+}
+
+.maintenance-table{
   width: 100%;
 }
 .field-label {

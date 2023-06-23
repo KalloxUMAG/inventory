@@ -61,7 +61,7 @@ export const suppliesColumns = [
   {
     name: "code",
     align: "left",
-    label: "Codigo",
+    label: "Código",
     field: "code",
     sortable: false,
   },
@@ -113,14 +113,14 @@ export const lotsColumns = [
   {
     name: "location",
     align: "left",
-    label: "Localizacion",
+    label: "Localización",
     field: "location",
     sortable: true,
   },
   {
     name: "sub_location",
     align: "left",
-    label: "Sub-localizacion",
+    label: "Sub-localización",
     field: "sub_location",
     sortable: true,
   },
@@ -148,7 +148,7 @@ export const lotsColumns = [
   {
     name: "observations",
     align: "left",
-    label: "Observacion",
+    label: "Observación",
     field: "observations",
     sortable: false,
   },
@@ -223,6 +223,44 @@ export const rolOptions = [
   },
   {
     value: "Tecnico",
-    name: "Tecnico",
+    name: "Técnico",
+  },
+];
+
+export const columns_maintenances = [
+  {
+    name: "maintenance_type",
+    align: "left",
+    label: "Tipo mantenimiento",
+    field: "maintenance_type",
+    sortable: true,
+  },
+  {
+    name: "state",
+    align: "left",
+    label: "Realizado",
+    field: "state",
+    sortable: true,
+  },
+  {
+    name: "date",
+    align: "left",
+    label: "Fecha",
+    field: "date",
+    sortable: true,
+  },
+  {
+    name: "observations",
+    align: "left",
+    label: "Observaciones",
+    field: "observations",
+    sortable: false,
+  },
+  {
+    name: "actions",
+    align: "left",
+    label: "Acciones",
+    field: "actions",
+    sortable: false,
   },
 ];

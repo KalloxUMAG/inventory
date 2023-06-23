@@ -17,6 +17,8 @@
                 (supplier = value);
               }
             "
+            :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
           />
           <div class="row justify-end q-mt-md">
             <q-btn
@@ -36,6 +38,8 @@
               label="Nombre proveedor"
               class="col q-my-sm"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div>
@@ -43,8 +47,11 @@
               outlined
               v-model="newsupplierrut"
               label="Rut"
+              mask="##.###.###-X"
               class="row q-my-sm"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -54,6 +61,8 @@
               label="Dirección"
               class="col q-my-sm"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -63,6 +72,8 @@
               label="Nombre trabajador"
               class="col q-my-sm"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -76,15 +87,20 @@
               not_found_label="No hay roles disponibles"
               @updateModel="(value) => (workerrol1 = value)"
               class="col q-my-sm"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row">
             <q-input
               outlined
+              type="email"
               v-model="workermail1"
               label="Correo trabajador"
               class="col q-my-sm"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -92,8 +108,11 @@
               outlined
               v-model="workerphone1"
               label="Telefono trabajador"
+              mask="(+##) #####-####"
               class="col q-my-sm"
               :disable="disableSupplier"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
 
@@ -126,8 +145,11 @@
           <q-input
               outlined
               v-model="cost"
+              type="number"
               label="Costo"
               class="col q-my-sm"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
         </div>
         <!--Buttons-->
@@ -152,7 +174,7 @@ import { onMounted, ref, toRefs } from "vue";
 import SelectForm from "src/components/SelectForm.vue";
 import {rolOptions} from "src/constants/columns.js";
 
-const cost = ref(null);
+const cost = ref(0);
 
 const disableSupplier = ref(false);
 
