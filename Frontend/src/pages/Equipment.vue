@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div v-if="equipment != null" class="row justify-center bg-secondary">
+    <div v-if="equipment != null" class="row justify-center">
       <q-card class="my-card" flat bordered>
         <q-item class="row justify-center">
           <div class="text-h5">
@@ -173,8 +173,9 @@
             </div>
           </q-card-section>
         </q-card-section>
-        <q-card-section v-if="equipment.maintenance_period != null">
-          <NoRedirectTable
+      </q-card>
+      <div v-if="equipment.maintenance_period != null" class="q-mt-md maintenance-table">
+        <NoRedirectTable
             title="Mantenimientos"
             :columns="columns_maintenances"
             :rows="maintenances"
@@ -182,8 +183,8 @@
             :deleteFunction="removeMaintenance"
             :editFunction="editMaintenance"
           />
-        </q-card-section>
-      </q-card>
+      </div>
+
     </div>
   </q-page>
 </template>
@@ -493,6 +494,10 @@ onMounted(() => {
 
 <style scoped>
 .my-card {
+  width: 100%;
+}
+
+.maintenance-table{
   width: 100%;
 }
 .field-label {
