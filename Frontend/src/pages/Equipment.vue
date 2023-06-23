@@ -416,19 +416,18 @@ function editPurchase() {
         name: equipment.value.invoice_number,
       },
       project_value: {
-        id: projectData["project_id"],
-        name: projectData["project_name"],
+        id: equipment.value.project_id,
+        name: equipment.value.project_name,
       },
       stage_value: {
-        id: projectData["stage_id"],
-        name: projectData["stage_name"],
+        id: equipment.value.stage_id,
+        name: equipment.value.stage_name,
       },
     },
   }).onOk((data) => {});
 }
 
 function editMaintenance(maintenance) {
-  console.log(maintenance)
   $q.dialog({
     component: EditMaintenance,
     componentProps: {
