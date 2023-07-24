@@ -21,6 +21,7 @@ def get_supplies(db: Session = Depends(get_db)):
             Supplies.stock,
             Supplies.samples,
             Supplies.critical_stock,
+            Supplies.observation,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),
         )
@@ -42,6 +43,7 @@ def get_supplies_critical(db: Session = Depends(get_db)):
             Supplies.stock,
             Supplies.samples,
             Supplies.critical_stock,
+            Supplies.observation,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),
         )
@@ -61,6 +63,7 @@ def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
         state=True,
         stock=supply.stock,
         samples=supply.samples,
+        observation=supply.observation,
         critical_stock=supply.critical_stock,
         supplies_brand_id=supply.supplies_brand_id,
         supplies_type_id=supply.supplies_type_id,
@@ -83,6 +86,7 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
             Supplies.stock,
             Supplies.critical_stock,
             Supplies.samples,
+            Supplies.observation,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),
         )

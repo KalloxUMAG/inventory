@@ -69,6 +69,15 @@
                   {{ supply.samples * supply.stock }}
                 </div>
               </div>
+              <q-separator />
+              <div class="row q-mt-sm">
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                  Observación
+                </div>
+                <div class="col text-h6 text-grey-8">
+                  {{ supply.observation }}
+                </div>
+              </div>
             </div>
           </q-card-section>
         </q-card>

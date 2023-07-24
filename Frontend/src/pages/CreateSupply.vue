@@ -161,6 +161,14 @@
             />
           </div>
         </div>
+        <q-input
+          outlined
+          v-model="supply.observation"
+          type="textarea"
+          label="Observación"
+          :rules="[val => !!val || 'Campo obligatorio']"
+          lazy-rules
+        />
         <!--Form button-->
         <div class="row justify-end q-mt-mx">
           <q-btn label="Crear" type="submit" color="positive" />
@@ -194,6 +202,7 @@ const supply = reactive({
   name: null,
   code: null,
   samples: 0,
+  observation: null,
   critical_stock: 0,
 });
 const newBrand = ref(null);
@@ -302,6 +311,7 @@ async function onSubmit() {
     stock: 0,
     critical_stock: supply.critical_stock,
     samples: supply.samples,
+    observation: supply.observation,
     supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,
   };

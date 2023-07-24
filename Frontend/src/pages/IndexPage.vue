@@ -1,12 +1,15 @@
 <template>
-  <q-page class="flex flex-center">
-    <RenderTable
-        :columns="suppliesColumns"
-        :rows="supplies"
-        title="Insumos criticos"
-        detail_query="/supplies/"
-        row_key="id"
-      />
+  <q-page class="flex flex-center content-start">
+    <div class="critic-tables q-mt-md">
+
+      <RenderTable
+          :columns="suppliesColumns"
+          :rows="supplies"
+          title="Insumos criticos"
+          detail_query="/supplies/"
+          row_key="id"
+        />
+    </div>
   </q-page>
 </template>
 
@@ -34,3 +37,9 @@ onMounted(() => {
 });
 
 </script>
+
+<style>
+.critic-tables{
+  width: 90%;
+}
+</style>

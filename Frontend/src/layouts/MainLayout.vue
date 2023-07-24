@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
-          <div class="text-h4 q-ma-md">Sistema de gestión de inventario CADI</div>
+          <div class="text-h4 q-ma-md text-uppercase">Sistema de gestión de inventario CADI</div>
         </q-toolbar-title>
       </q-toolbar>
     </q-header>

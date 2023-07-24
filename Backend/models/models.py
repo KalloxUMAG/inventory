@@ -226,6 +226,7 @@ class Supplies(Base):
     stock: Mapped[int] = mapped_column(Integer)
     critical_stock: Mapped[int] = mapped_column(Integer)
     samples: Mapped[float] = mapped_column(Float)
+    observation: Mapped[str] = mapped_column(String)
 
     supplies_brand_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Supplies_brands.id", ondelete="CASCADE")
