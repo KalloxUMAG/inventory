@@ -50,6 +50,15 @@
                 </div>
               </div>
               <q-separator />
+              <div class="row q-my-sm">
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                  Stock por lote
+                </div>
+                <div class="col text-h6 text-grey-8">
+                  {{ supply.lot_stock }} unidades por lote.
+                </div>
+              </div>
+              <q-separator />
               <div class="row q-mt-sm">
                 <div class="col-5 text-h6 text-weight-bold q-pl-md">
                   Stock crítico
@@ -176,6 +185,7 @@ function addLot() {
     component: AddLot,
     componentProps: {
       supply_id: supply.value.id,
+      stock: supply.value.lot_stock,
     },
   }).onOk((data) => {getLots(); getSupply()});
 }

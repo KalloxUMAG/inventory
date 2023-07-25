@@ -40,6 +40,15 @@
               label="Muestras por unidad*"
               type="number"
               step="any"
+              class="col q-mr-md"
+              :rules="[(val) => (val.length > 0 && val != null) || 'Campo obligatorio']"
+            />
+            <q-input
+              outlined
+              v-model="supply.lot_stock"
+              label="Stock por lote*"
+              type="number"
+              step="any"
               class="col"
               :rules="[(val) => (val.length > 0 && val != null) || 'Campo obligatorio']"
             />
@@ -256,6 +265,7 @@ const supply = reactive({
   code: null,
   format: null,
   samples: 0,
+  lot_stock: 0,
   observation: null,
   critical_stock: 0,
 });
@@ -400,7 +410,8 @@ async function onSubmit() {
     code: supply.code,
     stock: 0,
     critical_stock: supply.critical_stock,
-    samples: supply.samples, 
+    samples: supply.samples,
+    lot_stock: supply.lot_stock,
     observation: supply.observation,
     supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,

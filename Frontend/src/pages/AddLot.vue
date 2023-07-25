@@ -30,17 +30,8 @@
             <q-input
               outlined
               v-model="number"
-              label="Número"
+              label="Número de lote"
               class="col q-mr-sm"
-              :rules="[val => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-            <q-input
-              outlined
-              type="number"
-              v-model="stock"
-              label="Stock"
-              class="col q-ml-sm"
               :rules="[val => !!val || 'Campo obligatorio']"
               lazy-rules
             />
@@ -314,7 +305,6 @@ import SelectForm from "src/components/SelectForm.vue";
 const api_prefix = process.env.API_URL;
 
 const number = ref(0);
-const stock = ref(0);
 const supplier = ref(null);
 const observation = ref('');
 const due_date = ref(null);
@@ -349,6 +339,7 @@ const $q = useQuasar();
 
 const props = defineProps({
   supply_id: Number,
+  stock: Number,
 });
 
 const getSuppliers = () => {
@@ -440,10 +431,10 @@ async function createNewLot(data){
   }
 }
 
-async function updateStock(supply_id, stock){
+async function updateStock(supply_id){
   //Update stock on database
   const data = {
-    stock: stock
+    stock: props.stock
   }
   try {
     const response = await axios.put(api_prefix + "/supplies/" + supply_id, data);
@@ -540,7 +531,6 @@ async function onOKClick() {
   const data = {
     number: number.value,
     due_date: due_date.value,
-    stock: stock.value,
     observations: observation.value,
     supply_id: props.supply_id,
     sub_location_id: sublocation.value,
@@ -559,7 +549,7 @@ async function onOKClick() {
   const lot_id = await createNewLot(data);
 
   if (lot_id != -1){
-    await updateStock(props.supply_id, stock.value)
+    await updateStock(props.supply_id)
   }
   onDialogOK();
 }

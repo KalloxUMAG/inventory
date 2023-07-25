@@ -125,13 +125,6 @@ export const lotsColumns = [
     sortable: true,
   },
   {
-    name: "stock",
-    align: "left",
-    label: "Stock",
-    field: "stock",
-    sortable: false,
-  },
-  {
     name: "supplier_name",
     align: "left",
     label: "Proveedor",

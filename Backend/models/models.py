@@ -223,6 +223,7 @@ class Supplies(Base):
     code: Mapped[str] = mapped_column(String)
     state: Mapped[bool] = mapped_column(Boolean)
     stock: Mapped[int] = mapped_column(Integer)
+    lot_stock: Mapped[int] = mapped_column(Integer)
     critical_stock: Mapped[int] = mapped_column(Integer)
     samples: Mapped[float] = mapped_column(Float)
     observation: Mapped[str] = mapped_column(String)
@@ -302,7 +303,6 @@ class Lots(Base):
         String
     )  # Numero unico por cada lote (puede tener letras)
     due_date = mapped_column(Date)
-    stock: Mapped[int] = mapped_column(Integer)
     observations: Mapped[str] = mapped_column(String)
     state: Mapped[bool] = mapped_column(Boolean)
     supplies_id: Mapped[int] = mapped_column(
