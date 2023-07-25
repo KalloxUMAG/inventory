@@ -21,6 +21,7 @@ from routes.lots import lots
 from routes.supplies import supplies
 from routes.supplies_types import supplies_types
 from routes.supplies_brands import supplies_brands
+from routes.supplies_formats import supplies_formats
 from routes.locations import locations
 from routes.sub_locations import sub_locations
 from routes.Suppliers_supplies import suppliers_supplies
@@ -62,6 +63,7 @@ routes = [
     sub_locations,
     supplies,
     supplies_brands,
+    supplies_formats,
     supplies_types,
     suppliers,
     suppliers_contacts,

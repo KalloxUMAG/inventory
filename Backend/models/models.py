@@ -209,7 +209,6 @@ class Units(Base):
         "Rooms", backref="Units", cascade="delete,merge"
     )
 
-
 # Relaciones N - M
 
 
@@ -233,6 +232,9 @@ class Supplies(Base):
     )
     supplies_type_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Supplies_types.id", ondelete="CASCADE")
+    )
+    supplies_format_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("Supplies_formats.id", ondelete="CASCADE")
     )
 
     lots: Mapped[List["Lots"]] = relationship(
@@ -262,6 +264,14 @@ class Supplies_types(Base):
         "Supplies", backref="Supplies_types", cascade="delete,merge"
     )
 
+class Supplies_formats(Base):
+    __tablename__ = "Supplies_formats"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String)
+    supplies: Mapped[List["Supplies"]] = relationship(
+        "Supplies", backref="Supplies_formats", cascade="delete,merge"
+    )
 
 class Locations(Base):
     __tablename__ = "Locations"

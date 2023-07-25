@@ -35,6 +35,13 @@
               </div>
               <q-separator />
               <div class="row q-my-sm">
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">Formato</div>
+                <div class="col text-h6 text-grey-8">
+                  {{ supply.supplies_format_name }}
+                </div>
+              </div>
+              <q-separator />
+              <div class="row q-my-sm">
                 <div class="col-5 text-h6 text-weight-bold q-pl-md">
                   Stock actual
                 </div>

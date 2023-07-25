@@ -48,6 +48,7 @@
               v-model="newsupplierrut"
               label="Rut"
               mask="##.###.###-X"
+              unmasked-value
               class="row q-my-sm"
               :disable="disableSupplier"
               :rules="[val => !!val || 'Campo obligatorio']"

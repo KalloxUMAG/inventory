@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, Depends
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
-from models.models import Supplies, Supplies_brand, Supplies_types, Suppliers
+from models.models import Supplies, Supplies_brand, Supplies_types, Supplies_formats, Suppliers
 from schemas.supply_schema import SupplyListSchema, SupplySchema, UpdateStockSchema
 from typing import List
 from config.database import get_db
@@ -24,9 +24,11 @@ def get_supplies(db: Session = Depends(get_db)):
             Supplies.observation,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),
+            Supplies_formats.name.label("supplies_format_name"),
         )
         .outerjoin(Supplies_brand, Supplies_brand.id == Supplies.supplies_brand_id)
         .outerjoin(Supplies_types, Supplies_types.id == Supplies.supplies_type_id)
+        .outerjoin(Supplies_formats, Supplies_formats.id == Supplies.supplies_format_id)
         .filter(Supplies.state == True)
         .all()
     )
@@ -46,9 +48,11 @@ def get_supplies_critical(db: Session = Depends(get_db)):
             Supplies.observation,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),
+            Supplies_formats.name.label("supplies_format_name"),
         )
         .outerjoin(Supplies_brand, Supplies_brand.id == Supplies.supplies_brand_id)
         .outerjoin(Supplies_types, Supplies_types.id == Supplies.supplies_type_id)
+        .outerjoin(Supplies_formats, Supplies_formats.id == Supplies.supplies_format_id)
         .filter(and_(Supplies.stock <= Supplies.critical_stock, Supplies.state == True))
         .all()
     )
@@ -66,6 +70,7 @@ def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
         observation=supply.observation,
         critical_stock=supply.critical_stock,
         supplies_brand_id=supply.supplies_brand_id,
+        supplies_format_id=supply.supplies_format_id,
         supplies_type_id=supply.supplies_type_id,
     )
     db.add(new_supply)
@@ -89,10 +94,12 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
             Supplies.observation,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),
+            Supplies_formats.name.label("supplies_format_name"),
         )
         .filter(and_(Supplies.id == supply_id, Supplies.state == True))
         .outerjoin(Supplies_brand, Supplies_brand.id == Supplies.supplies_brand_id)
         .outerjoin(Supplies_types, Supplies_types.id == Supplies.supplies_type_id)
+        .outerjoin(Supplies_formats, Supplies_formats.id == Supplies.supplies_format_id)
         .first()
     )
     if result == None:

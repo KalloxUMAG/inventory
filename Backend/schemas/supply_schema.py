@@ -13,6 +13,7 @@ class SupplyListSchema(BaseModel):
     observation: Optional[str]
     supplies_brand_name: Optional[str]
     supplies_type_name: Optional[str]
+    supplies_format_name: Optional[str]
 
     class Config:
         orm_mode = True
@@ -29,6 +30,7 @@ class SupplySchema(BaseModel):
     observation: Optional[str]
     supplies_brand_id: Optional[int]
     supplies_type_id: Optional[int]
+    supplies_format_id: Optional[int]
 
     class Config:
         orm_mode = True

@@ -161,6 +161,58 @@
             />
           </div>
         </div>
+
+        <div v-if="!flags.newFormatState" class="col">
+          <SelectForm
+            outlined
+            class="row"
+            :options="formatOptions"
+            option_value="id"
+            option_label="name"
+            label="Formato de insumo*"
+            not_found_label="No hay formatos de insumos disponibles"
+            @updateModel="
+              (value) => {
+                supply.format = value;
+              }
+            "
+            :rules="[val => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <div class="row justify-end q-pt-md">
+            <q-btn
+              label="Añadir formato de insumo"
+              class="add-btn"
+              @click="flags.newFormatState = true"
+            />
+          </div>
+        </div>
+        <div v-else>
+          <div class="row">
+            <q-input
+              outlined
+              v-model="newFormat"
+              class="col"
+              label="Tipo de insumo*"
+              :disable="flags.disableFormat"
+              :rules="[val => !!val || 'Campo obligatorio']"
+              lazy-rules
+            />
+          </div>
+          <div class="row justify-end q-pt-md">
+            <q-btn
+              :label="flags.disableFormat ? 'Editar' : 'Guardar'"
+              color="amber"
+              class="q-mr-sm"
+              @click="flags.disableFormat = !flags.disableFormat"
+            />
+            <q-btn
+              label="Ver lista"
+              color="amber"
+              @click="flags.newFormatState = false"
+            />
+          </div>
+        </div>
         <q-input
           outlined
           v-model="supply.observation"
@@ -193,6 +245,7 @@ import SelectForm from "src/components/SelectForm.vue";
 
 //Options Selects
 const brandOptions = ref([]);
+const formatOptions = ref([]);
 const typeOptions = ref([]);
 
 //Models
@@ -201,19 +254,23 @@ const supply = reactive({
   type: null,
   name: null,
   code: null,
+  format: null,
   samples: 0,
   observation: null,
   critical_stock: 0,
 });
 const newBrand = ref(null);
+const newFormat = ref(null);
 const newType = ref(null);
 
 //Flags
 const flags = reactive({
   disableBrand: false,
+  disableFormat: false,
   newBrandState: false,
   disableType: false,
   newTypeState: false,
+  newFormatState: false,
 });
 
 const loading = ref(false);
@@ -228,6 +285,15 @@ const getSuppliesBrands = () => {
   axios.get(api_prefix + "/supplies_brands").then((response) => {
     const result = response.data;
     brandOptions.value = result.map((x) => {
+      return { id: x.id, name: x.name };
+    });
+  });
+};
+
+const getSuppliesFormats = () => {
+  axios.get(api_prefix + "/supplies_formats").then((response) => {
+    const result = response.data;
+    formatOptions.value = result.map((x) => {
       return { id: x.id, name: x.name };
     });
   });
@@ -264,6 +330,30 @@ async function createNewBrand() {
       textColor: "white",
       icon: "error",
       message: "No se pudo crear la marca: " + error,
+    });
+  }
+}
+
+async function createNewFormat() {
+  if (!flags.newFormatState) {
+    return supply.format;
+  }
+  const formatData = {
+    name: newFormat.value,
+  };
+
+  try {
+    const response = await axios.post(
+      api_prefix + "/supplies_formats",
+      formatData
+    );
+    return response.data;
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo crear el formato: " + error,
     });
   }
 }
@@ -310,10 +400,11 @@ async function onSubmit() {
     code: supply.code,
     stock: 0,
     critical_stock: supply.critical_stock,
-    samples: supply.samples,
+    samples: supply.samples, 
     observation: supply.observation,
     supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,
+    supplies_format_id: supply.format
   };
 
   loading.value = true;
@@ -332,6 +423,13 @@ async function onSubmit() {
   }
   supplyData["supplies_type_id"] = supplies_type_id;
 
+  const supplies_format_id = await createNewFormat();
+  if (supplies_format_id == -1) {
+    loading.value = false;
+    return;
+  }
+  supplyData["supplies_format_id"] = supplies_format_id;
+
   const supply_id = await createNewSupply(supplyData);
   if (supply_id == -1) {
     loading.value = false;
@@ -349,6 +447,7 @@ function redirectToSupply(supply_id) {
 onMounted(() => {
   getSuppliesBrands();
   getSuppliesTypes();
+  getSuppliesFormats();
 });
 </script>
 
