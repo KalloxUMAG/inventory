@@ -146,10 +146,10 @@ export const lotsColumns = [
     sortable: false,
   },
   {
-    name: "action",
+    name: "actions",
     align: "left",
-    label: "Eliminar",
-    field: "action",
+    label: "Acciones",
+    field: "actions",
     sortable: false,
   },
 ];

@@ -9,9 +9,15 @@ class LotListSchema(BaseModel):
     due_date: Optional[date]
     observations: Optional[str]
     state: Optional[bool]
+    location_id: Optional[int]
     location: Optional[str]
+    sub_location_id: Optional[int]
     sub_location: Optional[str]
+    project_id: Optional[int]
     project: Optional[str]
+    project_owner_id: Optional[int]
+    project_owner_name: Optional[str]
+    supplier_id: Optional[int]
     supplier_name: Optional[str]
 
     class Config:

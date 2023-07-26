@@ -122,6 +122,7 @@
           :columns="lotsColumns"
           :rows="lots"
           :addFunction="addLot"
+          :editFunction="editLot"
           :deleteFunction="removeLot"
         />
       </div>
@@ -139,6 +140,7 @@ import axios from "axios";
 import NoRedirectTable from "src/components/NoRedirectTable.vue";
 import AddSupplier from "./AddSupplier.vue";
 import AddLot from "./AddLot.vue";
+import EditLot from "./EditLot.vue";
 import { suppliersSupplyColumns, lotsColumns } from "../constants/columns.js";
 import { useQuasar } from "quasar";
 
@@ -205,9 +207,9 @@ function removeLot(lot) {
   })
     .onOk(() => {
       const lot_id = lot.id;
-      const lot_stock = lot.stock * -1;
+      const lot_stock = supply.value.lot_stock * -1;
       axios
-        .put(api_prefix + "/lots/" + lot_id)
+        .put(api_prefix + "/lots/deactive/" + lot_id)
         .then((response) => getLots());
 
       const data = {
@@ -217,6 +219,30 @@ function removeLot(lot) {
         .put(api_prefix + "/supplies/" + id.value, data)
         .then((response) => getSupply());
     })
+    .onCancel(() => {
+      // console.log('Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    });
+}
+
+function editLot(lot) {
+  $q.dialog({
+    component: EditLot,
+    componentProps: {
+      supply_id: supply.value.id,
+      lot_id: lot.id,
+      number: lot.number,
+      supplier: {id: lot.supplier_id, name: lot.supplier_name},
+      observation: lot.observations,
+      due_date: lot.due_date,
+      location: {id: lot.location_id, name: lot.location},
+      sublocation: {id: lot.sub_location_id, name:lot.sub_location},
+      project: {id: lot.project_id, name: lot.project}
+    },
+  })
+    .onOk((data) => {getLots(); getSupply()})
     .onCancel(() => {
       // console.log('Cancel')
     })
