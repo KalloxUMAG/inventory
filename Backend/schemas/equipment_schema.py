@@ -97,3 +97,12 @@ class UpdateEquipmentSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+class NextMaintenanceSchema(BaseModel):
+    
+    id: Optional[int]
+    maintenance_id: Optional[int]
+    date: Optional[date]
+
+    class Config:
+        orm_mode = True

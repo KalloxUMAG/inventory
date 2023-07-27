@@ -9,13 +9,13 @@ from sqlalchemy.orm import Session
 supplies_brands = APIRouter()
 
 
-@supplies_brands.get("/api/supplies_brands", response_model=List[SuppliesBrandsSchema])
+@supplies_brands.get("/api/supplies_brands", response_model=List[SuppliesBrandsSchema], tags=["supplies"])
 def get_supplies_brands(db: Session = Depends(get_db)):
     result = db.query(Supplies_brand.id, Supplies_brand.name).all()
     return result
 
 
-@supplies_brands.post("/api/supplies_brands", status_code=HTTP_201_CREATED)
+@supplies_brands.post("/api/supplies_brands", status_code=HTTP_201_CREATED, tags=["supplies"])
 def add_supplies_brand(brand: SuppliesBrandsSchema, db: Session = Depends(get_db)):
     new_supplies_brand = Supplies_brand(name=brand.name)
     db.add(new_supplies_brand)

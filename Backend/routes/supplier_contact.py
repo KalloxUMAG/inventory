@@ -10,12 +10,12 @@ from routes.suppliers import get_supplier
 
 suppliers_contacts = APIRouter()
 
-@suppliers_contacts.get("/api/suppliers_contacts", response_model=List[SupplierContactSchema])
+@suppliers_contacts.get("/api/suppliers_contacts", response_model=List[SupplierContactSchema], tags=["suppliers"])
 def get_suppliers_contacts(db:Session = Depends(get_db)):
     result = db.query(Supplier_contact).all()
     return result
 
-@suppliers_contacts.post("/api/suppliers_contacts", status_code=HTTP_201_CREATED)
+@suppliers_contacts.post("/api/suppliers_contacts", status_code=HTTP_201_CREATED, tags=["suppliers"])
 def add_supplier_contact(supplier_contact: SupplierContactSchema, db:Session = Depends(get_db)):
     db_supplier = get_supplier(supplier_contact.supplier_id, db=db)
     if not db_supplier:
@@ -26,15 +26,15 @@ def add_supplier_contact(supplier_contact: SupplierContactSchema, db:Session = D
     db.refresh(new_supplier_contact)
     return Response(status_code=HTTP_201_CREATED)
 
-@suppliers_contacts.get("/api/suppliers_contacts/{supplier_contact_id}", response_model=SupplierContactSchema)
+@suppliers_contacts.get("/api/suppliers_contacts/{supplier_contact_id}", response_model=SupplierContactSchema, tags=["suppliers"])
 def get_supplier_contact(supplier_contact_id: int, db:Session = Depends(get_db)):
     return db.query(Supplier_contact).filter(Supplier_contact.id == supplier_contact_id).first()
 
-@suppliers_contacts.get("/api/supplier_contacts/{supplier_id}", response_model=List[SupplierContactSchema])
+@suppliers_contacts.get("/api/supplier_contacts/{supplier_id}", response_model=List[SupplierContactSchema], tags=["suppliers"])
 def get_supplier_contacts(supplier_id: int, db:Session = Depends(get_db)):
     return db.query(Supplier_contact).filter(Supplier_contact.supplier_id == supplier_id).all()
 
-@suppliers_contacts.put("/api/suppliers_contacts/{supplier_contact_id}", response_model=SupplierContactSchema)
+@suppliers_contacts.put("/api/suppliers_contacts/{supplier_contact_id}", response_model=SupplierContactSchema, tags=["suppliers"])
 def update_supplier_contact(data_update: SupplierContactSchema, supplier_contact_id: int, db:Session = Depends(get_db)):
     db_supplier_contact = get_supplier_contact(supplier_contact_id, db=db)
     if not db_supplier_contact:
@@ -46,7 +46,7 @@ def update_supplier_contact(data_update: SupplierContactSchema, supplier_contact
     db.refresh(db_supplier_contact)
     return db_supplier_contact
 
-@suppliers_contacts.delete("/api/suppliers_contacts/{supplier_contact_id}", status_code=HTTP_204_NO_CONTENT)
+@suppliers_contacts.delete("/api/suppliers_contacts/{supplier_contact_id}", status_code=HTTP_204_NO_CONTENT, tags=["suppliers"])
 def delete_supplier_contact(supplier_id: int, db:Session = Depends(get_db)):
     db_supplier_contact = get_supplier_contact(supplier_id, db=db)
     if not db_supplier_contact:

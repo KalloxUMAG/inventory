@@ -8,12 +8,12 @@ from sqlalchemy.orm import Session
 
 units = APIRouter()
 
-@units.get("/api/units", response_model=List[UnitSchema])
+@units.get("/api/units", response_model=List[UnitSchema], tags=["locations"])
 def get_units(db:Session = Depends(get_db)):
     result = db.query(Units).all()
     return result
 
-@units.post("/api/units", status_code=HTTP_201_CREATED)
+@units.post("/api/units", status_code=HTTP_201_CREATED, tags=["locations"])
 def add_unit(unit: UnitSchema, db:Session = Depends(get_db)):
     db_building = db.query(Buildings).filter(Buildings.id == unit.building_id).first()
     if not db_building:
@@ -25,15 +25,15 @@ def add_unit(unit: UnitSchema, db:Session = Depends(get_db)):
     content = str(new_unit.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
-@units.get("/api/unit/{unit_id}", response_model=UnitSchema)
+@units.get("/api/unit/{unit_id}", response_model=UnitSchema, tags=["locations"])
 def get_unit(unit_id: int, db:Session = Depends(get_db)):
     return db.query(Units).filter(Units.id == unit_id).first()
 
-@units.get("/api/units/{building_id}", response_model=List[UnitSchema])
+@units.get("/api/units/{building_id}", response_model=List[UnitSchema], tags=["locations"])
 def get_units_building(building_id: int, db:Session = Depends(get_db)):
     return db.query(Units).filter(Units.building_id == building_id).all()
 
-@units.put("/api/units/{unit_id}", response_model=UnitSchema)
+@units.put("/api/units/{unit_id}", response_model=UnitSchema, tags=["locations"])
 def update_unit(data_update: UnitSchema, unit_id: int, db:Session = Depends(get_db)):
     db_unit = db.query(Units).filter(Units.id == unit_id).first()
     if not db_unit:
@@ -45,7 +45,7 @@ def update_unit(data_update: UnitSchema, unit_id: int, db:Session = Depends(get_
     db.refresh(db_unit)
     return db_unit
 
-@units.delete("/api/units/{unit_id}", status_code=HTTP_204_NO_CONTENT)
+@units.delete("/api/units/{unit_id}", status_code=HTTP_204_NO_CONTENT, tags=["locations"])
 def delete_unit(unit_id: int, db:Session = Depends(get_db)):
     db_unit = db.query(Units).filter(Units.id == unit_id).first()
     if not db_unit:

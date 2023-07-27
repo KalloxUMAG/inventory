@@ -10,14 +10,14 @@ suppliers_supplies = APIRouter()
 
 
 @suppliers_supplies.get(
-    "/api/suppliers_supplies", response_model=List[SupplierSupplySchema]
+    "/api/suppliers_supplies", response_model=List[SupplierSupplySchema], tags=["suppliers"]
 )
 def get_suppliers_supplies(db: Session = Depends(get_db)):
     result = db.query(Suppliers_has_Supplies).all()
     return result
 
 
-@suppliers_supplies.post("/api/suppliers_supplies", status_code=HTTP_201_CREATED)
+@suppliers_supplies.post("/api/suppliers_supplies", status_code=HTTP_201_CREATED, tags=["suppliers"])
 def add_supplier_supply(
     supplier_supply: SupplierSupplySchema, db: Session = Depends(get_db)
 ):
@@ -41,7 +41,7 @@ def add_supplier_supply(
 
 
 @suppliers_supplies.get(
-    "/api/suppliers_supplies/{supply_id}", response_model=List[GetSupplierSupplySchema]
+    "/api/suppliers_supplies/{supply_id}", response_model=List[GetSupplierSupplySchema], tags=["suppliers"]
 )
 def get_suppliers_supply(supply_id: int, db: Session = Depends(get_db)):
     result = (

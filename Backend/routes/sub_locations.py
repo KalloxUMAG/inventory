@@ -9,13 +9,13 @@ from sqlalchemy.orm import Session
 sub_locations = APIRouter()
 
 
-@sub_locations.get("/api/sub_locations", response_model=List[SubLocationSchema])
+@sub_locations.get("/api/sub_locations", response_model=List[SubLocationSchema], tags=["locations"])
 def get_sub_locations(db: Session = Depends(get_db)):
     result = db.query(Sub_locations).all()
     return result
 
 
-@sub_locations.post("/api/sub_locations", status_code=HTTP_201_CREATED)
+@sub_locations.post("/api/sub_locations", status_code=HTTP_201_CREATED, tags=["locations"])
 def add_sub_location(sub_location: SubLocationSchema, db: Session = Depends(get_db)):
     db_location = (
         db.query(Locations).filter(Locations.id == sub_location.location_id).first()
@@ -33,7 +33,7 @@ def add_sub_location(sub_location: SubLocationSchema, db: Session = Depends(get_
 
 
 @sub_locations.get(
-    "/api/sub_locations/{location_id}", response_model=List[SubLocationSchema]
+    "/api/sub_locations/{location_id}", response_model=List[SubLocationSchema], tags=["locations"]
 )
 def get_sub_locations_locations(location_id: int, db: Session = Depends(get_db)):
     return (

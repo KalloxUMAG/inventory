@@ -26,6 +26,7 @@ from routes.locations import locations
 from routes.sub_locations import sub_locations
 from routes.Suppliers_supplies import suppliers_supplies
 
+import fastapi_metadata as fm
 
 def create_tables():
     if not production:
@@ -35,7 +36,7 @@ def create_tables():
 
 create_tables()
 
-app = FastAPI()
+app = FastAPI(title=fm.title, description=fm.description, summary=fm.summary, version=fm.version, openapi_tags=fm.tags_metadata)
 app.mount("/images", StaticFiles(directory="images"), name="images")
 app.add_middleware(
     CORSMiddleware,

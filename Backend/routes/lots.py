@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 lots = APIRouter()
 
 
-@lots.get("/api/lots", response_model=List[LotListSchema])
+@lots.get("/api/lots", response_model=List[LotListSchema], tags=["supplies"])
 def get_lots(db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -32,7 +32,7 @@ def get_lots(db: Session = Depends(get_db)):
     return result
 
 
-@lots.post("/api/lots", status_code=HTTP_201_CREATED)
+@lots.post("/api/lots", status_code=HTTP_201_CREATED, tags=["supplies"])
 def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
     new_lot = Lots(
         number=lot.number,
@@ -51,7 +51,7 @@ def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@lots.get("/api/lots/lot/{lot_id}", response_model=LotListSchema)
+@lots.get("/api/lots/lot/{lot_id}", response_model=LotListSchema, tags=["supplies"])
 def get_lot(lot_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -77,7 +77,7 @@ def get_lot(lot_id: int, db: Session = Depends(get_db)):
     )
     return result
 
-@lots.get("/api/lots/supply/{supply_id}", response_model=List[LotListSchema])
+@lots.get("/api/lots/supply/{supply_id}", response_model=List[LotListSchema], tags=["supplies"])
 def get_lots_supply(supply_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -106,7 +106,7 @@ def get_lots_supply(supply_id: int, db: Session = Depends(get_db)):
     )
     return result
 
-@lots.put("/api/lots/{lot_id}", response_model=CreateLotSchema)
+@lots.put("/api/lots/{lot_id}", response_model=CreateLotSchema, tags=["supplies"])
 def update_lot(data_update: CreateLotSchema, lot_id: int, db: Session = Depends(get_db)):
     db_lot = db.query(Lots).filter(Lots.id == lot_id).first()
     if not db_lot:
@@ -118,7 +118,7 @@ def update_lot(data_update: CreateLotSchema, lot_id: int, db: Session = Depends(
     db.refresh(db_lot)
     return db_lot
 
-@lots.put("/api/lots/deactive/{lot_id}", status_code=HTTP_205_RESET_CONTENT)
+@lots.put("/api/lots/deactive/{lot_id}", status_code=HTTP_205_RESET_CONTENT, tags=["supplies"])
 def deactive_lot(lot_id: int, db: Session = Depends(get_db)):
     db_lot = db.query(Lots).filter(Lots.id == lot_id).first()
     if not db_lot:

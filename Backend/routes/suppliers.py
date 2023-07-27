@@ -8,12 +8,12 @@ from sqlalchemy.orm import Session
 
 suppliers = APIRouter()
 
-@suppliers.get("/api/suppliers", response_model=List[SupplierSchema])
+@suppliers.get("/api/suppliers", response_model=List[SupplierSchema], tags=["suppliers"])
 def get_suppliers(db:Session = Depends(get_db)):
     result = db.query(Suppliers).all()
     return result
 
-@suppliers.post("/api/suppliers", status_code=HTTP_201_CREATED)
+@suppliers.post("/api/suppliers", status_code=HTTP_201_CREATED, tags=["suppliers"])
 def add_supplier(supplier: SupplierSchema, db:Session = Depends(get_db)):
     new_supplier = Suppliers(name = supplier.name, rut = supplier.rut, city_address = supplier.city_address)
     db.add(new_supplier)
@@ -22,11 +22,11 @@ def add_supplier(supplier: SupplierSchema, db:Session = Depends(get_db)):
     content = str(new_supplier.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
-@suppliers.get("/api/suppliers/{supplier_id}", response_model=SupplierSchema)
+@suppliers.get("/api/suppliers/{supplier_id}", response_model=SupplierSchema, tags=["suppliers"])
 def get_supplier(supplier_id: int, db:Session = Depends(get_db)):
     return db.query(Suppliers).filter(Suppliers.id == supplier_id).first()
 
-@suppliers.put("/api/suppliers/{supplier_id}", response_model=SupplierSchema)
+@suppliers.put("/api/suppliers/{supplier_id}", response_model=SupplierSchema, tags=["suppliers"])
 def update_supplier(data_update: SupplierSchema, supplier_id: int, db:Session = Depends(get_db)):
     db_supplier = get_supplier(supplier_id, db=db)
     if not db_supplier:
@@ -38,7 +38,7 @@ def update_supplier(data_update: SupplierSchema, supplier_id: int, db:Session = 
     db.refresh(db_supplier)
     return db_supplier
 
-@suppliers.delete("/api/suppliers/{supplier_id}", status_code=HTTP_204_NO_CONTENT)
+@suppliers.delete("/api/suppliers/{supplier_id}", status_code=HTTP_204_NO_CONTENT, tags=["suppliers"])
 def delete_supplier(supplier_id: int, db:Session = Depends(get_db)):
     db_supplier = get_supplier(supplier_id, db=db)
     if not db_supplier:

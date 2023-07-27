@@ -9,13 +9,13 @@ from sqlalchemy.orm import Session
 supplies_formats = APIRouter()
 
 
-@supplies_formats.get("/api/supplies_formats", response_model=List[SuppliesFormatsSchema])
+@supplies_formats.get("/api/supplies_formats", response_model=List[SuppliesFormatsSchema], tags=["supplies"])
 def get_supplies_formats(db: Session = Depends(get_db)):
     result = db.query(Supplies_formats.id, Supplies_formats.name).all()
     return result
 
 
-@supplies_formats.post("/api/supplies_formats", status_code=HTTP_201_CREATED)
+@supplies_formats.post("/api/supplies_formats", status_code=HTTP_201_CREATED, tags=["supplies"])
 def add_supplies_format(sformat: SuppliesFormatsSchema, db: Session = Depends(get_db)):
     new_supplies_format = Supplies_formats(name=sformat.name)
     db.add(new_supplies_format)

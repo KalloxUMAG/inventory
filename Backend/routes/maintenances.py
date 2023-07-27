@@ -10,12 +10,12 @@ from routes.equipments import get_equipment_exist
 
 maintenances = APIRouter()
 
-@maintenances.get("/api/maintenances", response_model=List[MaintenanceSchema])
+@maintenances.get("/api/maintenances", response_model=List[MaintenanceSchema], tags=["equipments"])
 def get_maintenances(db:Session = Depends(get_db)):
     result = db.query(Maintenances).all()
     return result
 
-@maintenances.post("/api/maintenances", status_code=HTTP_201_CREATED)
+@maintenances.post("/api/maintenances", status_code=HTTP_201_CREATED, tags=["equipments"])
 def add_maintenances(maintenance: MaintenanceSchema, db:Session = Depends(get_db)):
     db_equipment = get_equipment_exist(maintenance.equiptment_id, db=db)
     if not db_equipment:
@@ -26,20 +26,20 @@ def add_maintenances(maintenance: MaintenanceSchema, db:Session = Depends(get_db
     db.refresh(new_maintenance)
     return Response(status_code=HTTP_201_CREATED)
 
-@maintenances.get("/api/maintenance/{maintenance_id}", response_model=MaintenanceSchema)
+@maintenances.get("/api/maintenance/{maintenance_id}", response_model=MaintenanceSchema, tags=["equipments"])
 def get_maintenance(maintenance_id: int, db:Session = Depends(get_db)):
     return db.query(Maintenances).filter(Maintenances.id == maintenance_id).first()
 
-@maintenances.get("/api/maintenances/{equipment_id}", response_model=List[MaintenanceFromEquipment])
+@maintenances.get("/api/maintenances/{equipment_id}", response_model=List[MaintenanceFromEquipment], tags=["equipments"])
 def get_maintenances_equipment(equipment_id: int, db:Session = Depends(get_db)):
     return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations, Maintenances.state, Maintenances.equiptment_id).filter(Maintenances.equiptment_id == equipment_id).order_by(Maintenances.date.desc()).all()
 
-@maintenances.get("/api/maintenances/last_maintenance/{equipment_id}", response_model=MaintenanceFromEquipment)
+@maintenances.get("/api/maintenances/last_maintenance/{equipment_id}", response_model=MaintenanceFromEquipment, tags=["equipments"])
 def get_last_maintenance_equipment(equipment_id: int, db:Session = Depends(get_db)):
     return db.query(Maintenances.id, Maintenances.date, Maintenances.maintenance_type, Maintenances.observations, Maintenances.state, Maintenances.equiptment_id).filter(Maintenances.equiptment_id == equipment_id, Maintenances.maintenance_type == "Programada").order_by(Maintenances.date.desc()).first()
 
 
-@maintenances.put("/api/maintenances/{maintenance_id}", response_model=MaintenanceSchema)
+@maintenances.put("/api/maintenances/{maintenance_id}", response_model=MaintenanceSchema, tags=["equipments"])
 def update_maintenance(data_update: EditMaintenanceSchema, maintenance_id: int, db:Session = Depends(get_db)):
     db_maintenance = get_maintenance(maintenance_id, db=db)
     if not db_maintenance:
@@ -51,7 +51,7 @@ def update_maintenance(data_update: EditMaintenanceSchema, maintenance_id: int, 
     db.refresh(db_maintenance)
     return db_maintenance
 
-@maintenances.delete("/api/maintenances/{maintenance_id}", status_code=HTTP_204_NO_CONTENT)
+@maintenances.delete("/api/maintenances/{maintenance_id}", status_code=HTTP_204_NO_CONTENT, tags=["equipments"])
 def delete_maintenance(maintenance_id: int, db:Session = Depends(get_db)):
     db_maintenance = get_maintenance(maintenance_id, db=db)
     if not db_maintenance:

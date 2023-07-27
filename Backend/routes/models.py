@@ -10,12 +10,12 @@ from routes.brands import get_brand
 
 models = APIRouter()
 
-@models.get("/api/models", response_model=List[ModelSchema])
+@models.get("/api/models", response_model=List[ModelSchema], tags=["equipments"])
 def get_models(db:Session = Depends(get_db)):
     result = db.query(Models).all()
     return result
 
-@models.post("/api/models", status_code=HTTP_201_CREATED)
+@models.post("/api/models", status_code=HTTP_201_CREATED, tags=["equipments"])
 def add_model(model: ModelSchema, db:Session = Depends(get_db)):
     db_brand = get_brand(model.brand_id, db=db)
     if not db_brand:
@@ -27,15 +27,15 @@ def add_model(model: ModelSchema, db:Session = Depends(get_db)):
     content = str(new_model.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
-@models.get("/api/model/{model_id}", response_model=ModelSchema)
+@models.get("/api/model/{model_id}", response_model=ModelSchema, tags=["equipments"])
 def get_model(model_id: int, db:Session = Depends(get_db)):
     return db.query(Models).filter(Models.id == model_id).first()
 
-@models.get("/api/models/{brand_id}", response_model=List[ModelSchema])
+@models.get("/api/models/{brand_id}", response_model=List[ModelSchema], tags=["equipments"])
 def get_models_brand(brand_id: int, db:Session = Depends(get_db)):
     return db.query(Models).filter(Models.brand_id == brand_id).all()
 
-@models.put("/api/models/{model_id}", response_model=ModelSchema)
+@models.put("/api/models/{model_id}", response_model=ModelSchema, tags=["equipments"])
 def update_model(data_update: ModelSchema, model_id: int, db:Session = Depends(get_db)):
     db_model = get_model(model_id, db=db)
     if not db_model:
@@ -47,7 +47,7 @@ def update_model(data_update: ModelSchema, model_id: int, db:Session = Depends(g
     db.refresh(db_model)
     return db_model
 
-@models.delete("/api/models/{model_id}", status_code=HTTP_204_NO_CONTENT)
+@models.delete("/api/models/{model_id}", status_code=HTTP_204_NO_CONTENT, tags=["equipments"])
 def delete_model(model_id: int, db:Session = Depends(get_db)):
     db_model = get_model(model_id, db=db)
     if not db_model:

@@ -9,13 +9,13 @@ from sqlalchemy.orm import Session
 locations = APIRouter()
 
 
-@locations.get("/api/locations", response_model=List[LocationSchema])
+@locations.get("/api/locations", response_model=List[LocationSchema], tags=["locations"])
 def get_locations(db: Session = Depends(get_db)):
     result = db.query(Locations).all()
     return result
 
 
-@locations.post("/api/locations", status_code=HTTP_201_CREATED)
+@locations.post("/api/locations", status_code=HTTP_201_CREATED, tags=["locations"])
 def add_location(location: LocationSchema, db: Session = Depends(get_db)):
     new_location = Locations(name=location.name)
     db.add(new_location)
@@ -25,6 +25,6 @@ def add_location(location: LocationSchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@locations.get("/api/locations/{location_id}", response_model=LocationSchema)
+@locations.get("/api/locations/{location_id}", response_model=LocationSchema, tags=["locations"])
 def get_location(location_id: int, db: Session = Depends(get_db)):
     return db.query(Locations).filter(Locations.id == location_id).first()

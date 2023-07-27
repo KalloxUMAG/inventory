@@ -10,13 +10,13 @@ from sqlalchemy.orm import Session
 
 buildings = APIRouter()
 
-@buildings.get("/api/buildings", response_model=List[BuildingSchema])
+@buildings.get("/api/buildings", response_model=List[BuildingSchema], tags=["locations"])
 def get_buildings(db:Session = Depends(get_db)):
     result = db.query(Buildings).all()
     return result
 
 
-@buildings.post("/api/buildings", status_code=HTTP_201_CREATED)
+@buildings.post("/api/buildings", status_code=HTTP_201_CREATED, tags=["locations"])
 def add_building(building: BuildingSchema, db:Session = Depends(get_db)):
     new_building = Buildings(name=building.name)
     db.add(new_building)
@@ -25,11 +25,11 @@ def add_building(building: BuildingSchema, db:Session = Depends(get_db)):
     content = str(new_building.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
-@buildings.get("/api/buildings/{building_id}", response_model=BuildingSchema)
+@buildings.get("/api/buildings/{building_id}", response_model=BuildingSchema, tags=["locations"])
 def get_building(building_id: int, db:Session = Depends(get_db)):
     return db.query(Buildings).filter(Buildings.id == building_id).first()
 
-@buildings.put("/api/buildings/{building_id}", response_model=BuildingSchema)
+@buildings.put("/api/buildings/{building_id}", response_model=BuildingSchema, tags=["locations"])
 def update_building(data_update: BuildingSchema, building_id: int, db:Session = Depends(get_db)):
     db_building = db.query(Buildings).filter(Buildings.id == building_id).first()
     if not db_building:
@@ -41,7 +41,7 @@ def update_building(data_update: BuildingSchema, building_id: int, db:Session = 
     db.refresh(db_building)
     return db_building
 
-@buildings.delete("/api/buildings/{building_id}", status_code=HTTP_204_NO_CONTENT)
+@buildings.delete("/api/buildings/{building_id}", status_code=HTTP_204_NO_CONTENT, tags=["locations"])
 def delete_building(building_id: int, db:Session = Depends(get_db)):
     db_building = db.query(Buildings).filter(Buildings.id == building_id).first()
     if not db_building:
