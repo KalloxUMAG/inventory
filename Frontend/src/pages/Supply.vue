@@ -4,7 +4,13 @@
       <div class="flex col">
         <q-card class="my-card fit" flat bordered>
           <q-item class="row justify-center">
-            <div class="text-h5 text-weight-bold">Datos insumo</div>
+            <div class="text-h5 text-weight-bold">Datos insumo 
+              <q-btn
+                class="q-ml-md glossy"
+                icon="edit"
+                color="positive"
+                @click="editSupply"
+              /></div>
           </q-item>
           <q-separator />
           <!--Datos producto-->
@@ -141,8 +147,10 @@ import NoRedirectTable from "src/components/NoRedirectTable.vue";
 import AddSupplier from "./AddSupplier.vue";
 import AddLot from "./AddLot.vue";
 import EditLot from "./EditLot.vue";
+import EditSupply from "./EditSupply.vue";
 import { suppliersSupplyColumns, lotsColumns } from "../constants/columns.js";
 import { useQuasar } from "quasar";
+
 
 const route = useRoute();
 const id = computed(() => route.params.id);
@@ -182,6 +190,8 @@ function addSupplier() {
   }).onOk((data) => {getSuppliers()});
 }
 
+
+
 function addLot() {
   $q.dialog({
     component: AddLot,
@@ -216,7 +226,7 @@ function removeLot(lot) {
         stock: lot_stock,
       };
       axios
-        .put(api_prefix + "/supplies/" + id.value, data)
+        .put(api_prefix + "/supplies/stock/" + id.value, data)
         .then((response) => getSupply());
     })
     .onCancel(() => {
@@ -249,6 +259,31 @@ function editLot(lot) {
     .onDismiss(() => {
       // console.log('I am triggered on both OK and Cancel')
     });
+}
+
+function editSupply(){
+  $q.dialog({
+    component: EditSupply,
+    componentProps: {
+      supply_id: supply.value.id,
+      brand: {id: supply.value.supplies_brand_id, name: supply.value.supplies_brand_name},
+      type: {id: supply.value.supplies_type_id, name: supply.value.supplies_type_name},
+      name: supply.value.name,
+      code: supply.value.code,
+      format: {id: supply.value.supplies_format_id, name: supply.value.supplies_format_name},
+      samples: supply.value.samples,
+      stock: supply.value.stock,
+      lot_stock: supply.value.lot_stock,
+      observation: supply.value.observation,
+      critical_stock: supply.value.critical_stock,
+    }
+  })
+  .onOk((data) => {
+    getSupply()
+  })
+  .onCancel(() => {
+
+  })
 }
 
 function removeSupply(){

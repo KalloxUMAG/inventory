@@ -19,6 +19,25 @@ class SupplyListSchema(BaseModel):
     class Config:
         orm_mode = True
 
+class SupplySchemaFull(BaseModel):
+    id: Optional[int]
+    name: str
+    code: Optional[str]
+    state: Optional[bool]
+    stock: Optional[int]
+    lot_stock: Optional[int]
+    critical_stock: Optional[int]
+    samples: Optional[float]
+    observation: Optional[str]
+    supplies_brand_id: Optional[int]
+    supplies_type_id: Optional[int]
+    supplies_format_id: Optional[int]
+    supplies_brand_name: Optional[str]
+    supplies_type_name: Optional[str]
+    supplies_format_name: Optional[str]
+
+    class Config:
+        orm_mode = True
 
 class SupplySchema(BaseModel):
     id: Optional[int]

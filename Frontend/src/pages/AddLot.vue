@@ -437,7 +437,7 @@ async function updateStock(supply_id){
     stock: props.stock
   }
   try {
-    const response = await axios.put(api_prefix + "/supplies/" + supply_id, data);
+    const response = await axios.put(api_prefix + "/supplies/stock/" + supply_id, data);
     return response.data;
   } catch (error) {
     $q.notify({

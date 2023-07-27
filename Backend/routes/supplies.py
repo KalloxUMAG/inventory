@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Depends
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from models.models import Supplies, Supplies_brand, Supplies_types, Supplies_formats, Suppliers
-from schemas.supply_schema import SupplyListSchema, SupplySchema, UpdateStockSchema
+from schemas.supply_schema import SupplyListSchema, SupplySchema, UpdateStockSchema, SupplySchemaFull
 from typing import List
 from config.database import get_db
 from sqlalchemy.orm import Session
@@ -83,7 +83,7 @@ def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@supplies.get("/api/supplies/{supply_id}", response_model=SupplyListSchema)
+@supplies.get("/api/supplies/{supply_id}", response_model=SupplySchemaFull)
 def get_supply(supply_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -96,6 +96,9 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
             Supplies.lot_stock,
             Supplies.samples,
             Supplies.observation,
+            Supplies.supplies_brand_id,
+            Supplies.supplies_format_id,
+            Supplies.supplies_type_id,
             Supplies_brand.name.label("supplies_brand_name"),
             Supplies_types.name.label("supplies_type_name"),
             Supplies_formats.name.label("supplies_format_name"),
@@ -111,7 +114,7 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
     return result
 
 
-@supplies.put("/api/supplies/{supply_id}", response_model=SupplySchema)
+@supplies.put("/api/supplies/stock/{supply_id}", response_model=SupplySchema)
 def update_stock(
     data_update: UpdateStockSchema, supply_id: int, db: Session = Depends(get_db)
 ):
@@ -124,6 +127,19 @@ def update_stock(
     db.refresh(db_supply)
     return db_supply
 
+@supplies.put("/api/supplies/{supply_id}", response_model=SupplySchema)
+def update_supply(
+    data_update: SupplySchema, supply_id: int, db: Session = Depends(get_db)
+):
+    db_supply = db.query(Supplies).filter(Supplies.id == supply_id).first()
+    if not db_supply:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    for key, value in data_update.dict(exclude_unset=True).items():
+        setattr(db_supply, key, value)
+    db.add(db_supply)
+    db.commit()
+    db.refresh(db_supply)
+    return db_supply
 
 @supplies.delete("/api/supplies/{supply_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_supply(supply_id: int, db: Session = Depends(get_db)):
