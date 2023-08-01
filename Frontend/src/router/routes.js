@@ -8,10 +8,9 @@ const routes = [
       { path: "/equipments/new_equipment", component: () => import("src/pages/CreateEquipment.vue")},
       { path: "/equipments", component: () => import("src/pages/Equipments.vue")},
       { path: "/supplies/new_supply", component: () => import("src/pages/CreateSupply.vue")},
-      { path: "/supplies/new_lot", component: () => import("src/pages/CreateLot.vue")},
       { path: "/supplies/:id", component: () => import("src/pages/Supply.vue")},
       { path: "/supplies/lot/:id", component: () => import("src/pages/Lot.vue")},
-      { path: "/supplies", component: () => import("src/pages/Supplies.vue")},
+      { path: "/supplies", component: () => import("src/pages/Supplies.vue")}
     ],
   },
   //Not found
