@@ -129,7 +129,7 @@
               v-else
               label="Guardar"
               color="amber"
-              @click="disableSupplier = true"
+              @click="notEmptyFields() ? disableSupplier = true : ''"
               class="q-mr-sm"
             />
             <q-btn
@@ -179,17 +179,18 @@ const cost = ref(0);
 
 const disableSupplier = ref(false);
 
-const newsuppliername = ref(null);
-const newsupplierrut = ref(null);
-const newsupplieraddress = ref(null);
+const newsuppliername = ref('');
+const newsupplierrut = ref('');
+const newsupplieraddress = ref('');
 
 const supplier = ref(null);
 const suppliersOptions = ref([]);
 const newsupplierstate = ref(false);
-const workername1 = ref(null);
-const workerrol1 = ref(null);
-const workermail1 = ref(null);
-const workerphone1 = ref(null);
+
+const workername1 = ref('');
+const workerrol1 = ref('');
+const workermail1 = ref('');
+const workerphone1 = ref('');
 
 const $q = useQuasar();
 
@@ -209,6 +210,10 @@ const getSuppliers = () => {
     });
   });
 };
+
+function notEmptyFields(){
+  return newsuppliername.value != '' && newsupplierrut.value != '' && newsupplieraddress.value != '' && workername1.value != '' && workerrol1.value != '' && workermail1.value != '' && workerphone1.value != '' 
+}
 
 async function createNewSupplier() {
   if (!newsupplierstate.value) {

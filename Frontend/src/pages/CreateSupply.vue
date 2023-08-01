@@ -109,7 +109,7 @@
               :label="flags.disableBrand ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="flags.disableBrand = !flags.disableBrand"
+              @click="newBrand != '' ? flags.disableBrand = !flags.disableBrand : ''"
             />
             <q-btn
               label="Ver lista"
@@ -161,7 +161,7 @@
               :label="flags.disableType ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="flags.disableType = !flags.disableType"
+              @click="newType != '' ? flags.disableType = !flags.disableType : ''"
             />
             <q-btn
               label="Ver lista"
@@ -213,7 +213,7 @@
               :label="flags.disableFormat ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="flags.disableFormat = !flags.disableFormat"
+              @click="newFormat != '' ? flags.disableFormat = !flags.disableFormat : ''"
             />
             <q-btn
               label="Ver lista"
@@ -269,9 +269,9 @@ const supply = reactive({
   observation: null,
   critical_stock: 0,
 });
-const newBrand = ref(null);
-const newFormat = ref(null);
-const newType = ref(null);
+const newBrand = ref("");
+const newFormat = ref("");
+const newType = ref("");
 
 //Flags
 const flags = reactive({

@@ -164,7 +164,7 @@
                 v-else
                 label="Guardar"
                 color="amber"
-                @click="disableLocation = true"
+                @click="newSublocation != '' ? (newLocationState == true ? (newLocation != '' ? disableLocation = true : '') : (location != null ? disableLocation = true : '')) : ''"
                 class="q-mr-sm"
               />
               <q-btn
@@ -222,7 +222,7 @@
             <q-btn
               :label="disableProject ? 'Editar' : 'Guardar'"
               color="amber"
-              @click="disableProject = !disableProject"
+              @click="newProject != '' ? disableProject = !disableProject : ''"
               class="q-mr-sm"
             />
             <q-btn
@@ -273,7 +273,7 @@
                 <q-btn
                   :label="disableProjectOwner ? 'Editar' : 'Guardar'"
                   color="amber"
-                  @click="disableProjectOwner = !disableProjectOwner"
+                  @click="newProjectOwner != '' ? disableProjectOwner = !disableProjectOwner : ''"
                   class="q-mr-sm"
                 />
                 <q-btn
@@ -337,10 +337,10 @@
   const disableProjectOwner = ref(false)
   const newProjectState = ref(false);
   const newProjectOwnerState = ref(false);
-  const newLocation = ref(null);
-  const newSublocation = ref(null);
-  const newProject = ref(null)
-  const newProjectOwner = ref(null);
+  const newLocation = ref("");
+  const newSublocation = ref("");
+  const newProject = ref("")
+  const newProjectOwner = ref("");
   
   
   const suppliersOptions = ref([]);
