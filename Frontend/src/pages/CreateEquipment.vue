@@ -449,7 +449,7 @@
             label="Facturas"
             not_found_label="No hay facturas disponibles"
             @updateModel="(value) => (invoice = value)"
-            :rules="[val => !!val || 'Campo obligatorio']"
+            :rules="[/*val => !!val || 'Campo obligatorio'*/]"
             lazy-rules
           />
           <div class="row justify-end q-mt-md">
@@ -545,7 +545,7 @@
                   getStages();
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[/*val => !!val || 'Campo obligatorio'*/]"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -582,7 +582,7 @@
               label="Etapas"
               not_found_label="No hay etapas disponibles"
               @updateModel="(value) => (stage = value)"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[/*val => !!val || 'Campo obligatorio'*/]"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">

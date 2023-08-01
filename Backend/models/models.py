@@ -114,6 +114,16 @@ class Suppliers(Base):
     )
 
 
+class Users(Base):
+    __tablename__ = "Users"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(String, unique=True)
+    fullname: Mapped[str] = mapped_column(String)
+    email: Mapped[str] = mapped_column(String, unique=True)
+    disable: Mapped[bool] = mapped_column(Boolean, default=False)
+    hashed_password: Mapped[str] = mapped_column(String)
+
 # Tablas dependientes
 
 
@@ -133,7 +143,7 @@ class Equipments(Base):
         Integer, ForeignKey("Suppliers.id", ondelete="SET NULL")
     )
     invoice_id: Mapped[Optional[int]] = mapped_column(
-        Integer, ForeignKey("Invoices.id", ondelete="SET NULL")
+        Integer, ForeignKey("Invoices.id", ondelete="SET NULL"), nullable=True
     )
     model_number_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("Model_numbers.id", ondelete="SET NULL")
@@ -142,7 +152,7 @@ class Equipments(Base):
         Integer, ForeignKey("Rooms.id", ondelete="SET NULL")
     )
     stage_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("Stages.id", ondelete="SET NULL")
+        Integer, ForeignKey("Stages.id", ondelete="SET NULL"), nullable=True
     )
     maintenances: Mapped[List["Maintenances"]] = relationship(
         "Maintenances", backref="Equipments", cascade="delete,merge"

@@ -39,6 +39,10 @@ class EquipmentListSchema(BaseModel):
     invoice_number: Optional[int]
     model_number_id: Optional[int]
     model_number: Optional[str]
+    project_id: Optional[int]
+    project_name: Optional[str]
+    stage_id: Optional[int]
+    stage_name: Optional[str]
 
     class Config:
         orm_mode = True

@@ -21,6 +21,13 @@ export const equipmentsColumns = [
     sortable: false,
   },
   {
+    name: "project_name",
+    align: "left",
+    label: "Proyecto",
+    field: "project_name",
+    sortable: true,
+  },
+  {
     name: "supplier_name",
     align: "left",
     label: "Proveedor",
@@ -32,13 +39,6 @@ export const equipmentsColumns = [
     align: "left",
     label: "Inventariado",
     field: "umag_inventory_code",
-    sortable: true,
-  },
-  {
-    name: "last_preventive_maintenance",
-    align: "left",
-    label: "Mantención",
-    field: "last_preventive_maintenance",
     sortable: true,
   },
   {
