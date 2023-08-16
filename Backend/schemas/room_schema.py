@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class RoomSchema(BaseModel):
@@ -8,6 +8,5 @@ class RoomSchema(BaseModel):
     name: str
     unit_id: int
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True

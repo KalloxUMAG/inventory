@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class MaintenanceSchema(BaseModel):
@@ -12,7 +12,6 @@ class MaintenanceSchema(BaseModel):
     maintenance_type: str
     equiptment_id: int
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True
 
@@ -25,7 +24,6 @@ class MaintenanceFromEquipment(BaseModel):
     maintenance_type: str
     equiptment_id: int
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True
 
@@ -36,6 +34,5 @@ class EditMaintenanceSchema(BaseModel):
     state: Optional[bool] = None
     maintenance_type: str
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True

@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class EquipmentSchema(BaseModel):
@@ -19,7 +19,6 @@ class EquipmentSchema(BaseModel):
     room_id: Optional[int] = None
     stage_id: Optional[int] = None
 
-    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
     class Config:
         orm_mode = True
 
@@ -46,7 +45,6 @@ class EquipmentListSchema(BaseModel):
     stage_id: Optional[int] = None
     stage_name: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
     class Config:
         orm_mode = True
 
@@ -83,7 +81,6 @@ class EquipmentFullSchema(BaseModel):
     project_owner_id: Optional[str] = None
     project_owner_name: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
     class Config:
         orm_mode = True
 
@@ -103,7 +100,6 @@ class UpdateEquipmentSchema(BaseModel):
     room_id: Optional[int] = None
     stage_id: Optional[int] = None
 
-    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
     class Config:
         orm_mode = True
 
@@ -113,6 +109,5 @@ class NextMaintenanceSchema(BaseModel):
     maintenance_id: Optional[int] = None
     date: Optional[date] = None
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True

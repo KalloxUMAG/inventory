@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class LotListSchema(BaseModel):
@@ -21,7 +21,6 @@ class LotListSchema(BaseModel):
     supplier_id: Optional[int] = None
     supplier_name: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True
 
@@ -36,6 +35,5 @@ class CreateLotSchema(BaseModel):
     project_id: Optional[int] = None
     supplier_id: int
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True

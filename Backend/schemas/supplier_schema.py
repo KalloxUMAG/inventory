@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class SupplierSchema(BaseModel):
@@ -9,6 +9,5 @@ class SupplierSchema(BaseModel):
     rut: Optional[str] = None
     city_address: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True

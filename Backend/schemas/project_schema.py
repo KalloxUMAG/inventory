@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class ProjectSchema(BaseModel):
@@ -8,6 +8,5 @@ class ProjectSchema(BaseModel):
     name: str
     owner_id: Optional[int] = None
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True

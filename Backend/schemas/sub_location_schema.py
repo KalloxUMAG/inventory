@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class SubLocationSchema(BaseModel):
@@ -8,6 +8,5 @@ class SubLocationSchema(BaseModel):
     name: str
     location_id: Optional[int] = None
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True

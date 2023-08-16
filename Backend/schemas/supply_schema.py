@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class SupplyListSchema(BaseModel):
@@ -17,7 +17,6 @@ class SupplyListSchema(BaseModel):
     supplies_type_name: Optional[str] = None
     supplies_format_name: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True
 
@@ -39,7 +38,6 @@ class SupplySchemaFull(BaseModel):
     supplies_type_name: Optional[str] = None
     supplies_format_name: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True
 
@@ -58,7 +56,6 @@ class SupplySchema(BaseModel):
     supplies_type_id: Optional[int] = None
     supplies_format_id: Optional[int] = None
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True
 
@@ -66,6 +63,5 @@ class SupplySchema(BaseModel):
 class UpdateStockSchema(BaseModel):
     stock: int
 
-    model_config = ConfigDict(from_attributes=True)
     class Config:
         orm_mode = True

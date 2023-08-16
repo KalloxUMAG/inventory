@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class ModelNumberSchema(BaseModel):
@@ -8,6 +8,5 @@ class ModelNumberSchema(BaseModel):
     number: str
     model_id: int
 
-    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
     class Config:
         orm_mode = True
