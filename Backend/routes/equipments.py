@@ -1,38 +1,39 @@
-from fastapi import APIRouter, Response, Depends, UploadFile
-from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
-from models.models import (
-    Equipments,
-    Suppliers,
-    Invoices,
-    Maintenances,
-    Model_numbers,
-    Rooms,
-    Units,
-    Buildings,
-    Brands,
-    Models,
-    Stages,
-    Projects,
-    Project_owners,
-)
-from schemas.equipment_schema import (
-    EquipmentSchema,
-    EquipmentFullSchema,
-    EquipmentListSchema,
-    UpdateEquipmentSchema,
-    NextMaintenanceSchema
-)
-from typing import List
-from config.database import get_db
-from sqlalchemy.orm import Session
+import logging
 import os
 import shutil
+from typing import List
 
-from routes.suppliers import get_supplier
+from fastapi import APIRouter, Depends, Response, UploadFile
+from sqlalchemy.orm import Session
+from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+
+from config.database import get_db
+from models.models import (
+    Brand,
+    Building,
+    Equipment,
+    Invoice,
+    Model,
+    ModelNumber,
+    Project,
+    ProjectOwner,
+    Room,
+    Stage,
+    Supplier,
+    Unit,
+)
 from routes.invoices import get_invoice
 from routes.model_numbers import get_model_number
 from routes.rooms import get_room
 from routes.stages import get_stage
+from routes.suppliers import get_supplier
+from schemas.equipment_schema import (
+    EquipmentFullSchema,
+    EquipmentListSchema,
+    EquipmentSchema,
+    NextMaintenanceSchema,
+    UpdateEquipmentSchema,
+)
 
 equipments = APIRouter()
 
@@ -41,71 +42,73 @@ equipments = APIRouter()
 def get_equipments(db: Session = Depends(get_db)):
     result = (
         db.query(
-            Equipments.id,
-            Equipments.name,
-            Equipments.serial_number,
-            Equipments.umag_inventory_code,
-            Equipments.reception_date,
-            Equipments.maintenance_period,
-            Equipments.observation,
-            Equipments.room_id,
-            Rooms.name.label("room_name"),
-            Equipments.supplier_id,
-            Suppliers.name.label("supplier_name"),
-            Equipments.invoice_id,
-            Invoices.number.label("invoice_number"),
-            Equipments.model_number_id,
-            Model_numbers.number.label("model_number"),
-            Equipments.stage_id,
-            Stages.name.label("stage_name"),
-            Projects.id.label("project_id"),
-            Projects.name.label("project_name")
+            Equipment.id,
+            Equipment.name,
+            Equipment.serial_number,
+            Equipment.umag_inventory_code,
+            Equipment.reception_date,
+            Equipment.maintenance_period,
+            Equipment.observation,
+            Equipment.room_id,
+            Room.name.label("room_name"),
+            Equipment.supplier_id,
+            Supplier.name.label("supplier_name"),
+            Equipment.invoice_id,
+            Invoice.number.label("invoice_number"),
+            Equipment.model_number_id,
+            ModelNumber.number.label("model_number"),
+            Equipment.stage_id,
+            Stage.name.label("stage_name"),
+            Project.id.label("project_id"),
+            Project.name.label("project_name"),
         )
-        .outerjoin(Rooms, Rooms.id == Equipments.room_id)
-        .outerjoin(Suppliers, Suppliers.id == Equipments.supplier_id)
-        .outerjoin(Invoices, Invoices.id == Equipments.invoice_id)
-        .outerjoin(Model_numbers, Model_numbers.id == Equipments.model_number_id)
-        .outerjoin(Stages, Stages.id == Equipments.stage_id)
-        .outerjoin(Projects, Projects.id == Stages.project_id)
+        .outerjoin(Room, Room.id == Equipment.room_id)
+        .outerjoin(Supplier, Supplier.id == Equipment.supplier_id)
+        .outerjoin(Invoice, Invoice.id == Equipment.invoice_id)
+        .outerjoin(ModelNumber, ModelNumber.id == Equipment.model_number_id)
+        .outerjoin(Stage, Stage.id == Equipment.stage_id)
+        .outerjoin(Project, Project.id == Stage.project_id)
         .all()
     )
     return result
 
 
 @equipments.get(
-    "/api/equipments/nextmaintenances", response_model=List[NextMaintenanceSchema], tags=["equipments"]
+    "/api/equipments/nextmaintenances",
+    response_model=List[NextMaintenanceSchema],
+    tags=["equipments"],
 )
 def get_equipments_nextmaintenances(db: Session = Depends(get_db)):
-    query = db.query(Equipments).all()
-    
+    query = db.query(Equipment).all()
+
     return query
 
 
 @equipments.post("/api/equipments", status_code=HTTP_201_CREATED, tags=["equipments"])
 def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
-    if equipment.supplier_id != None:
+    if equipment.supplier_id is not None:
         db_supplier = get_supplier(equipment.supplier_id, db=db)
         if not db_supplier:
             return Response(status_code=HTTP_404_NOT_FOUND)
-    if equipment.invoice_id != None:
+    if equipment.invoice_id is not None:
         db_invoice = get_invoice(equipment.invoice_id, db=db)
         if not db_invoice:
-            print("No se encontro el invoice", equipment.invoice_id)
+            logging.warning("No se encontro el invoice", equipment.invoice_id)
             return Response(status_code=HTTP_404_NOT_FOUND)
-    if equipment.model_number_id != None:
+    if equipment.model_number_id is not None:
         db_model_number = get_model_number(equipment.model_number_id, db=db)
         if not db_model_number:
             return Response(status_code=HTTP_404_NOT_FOUND)
-    if equipment.room_id != None:
+    if equipment.room_id is not None:
         db_room = get_room(equipment.room_id, db=db)
         if not db_room:
             return Response(status_code=HTTP_404_NOT_FOUND)
-    if equipment.stage_id != None:
+    if equipment.stage_id is not None:
         db_stage = get_stage(equipment.stage_id, db=db)
         if not db_stage:
             return Response(status_code=HTTP_404_NOT_FOUND)
 
-    new_equipment = Equipments(
+    new_equipment = Equipment(
         name=equipment.name,
         serial_number=equipment.serial_number,
         umag_inventory_code=equipment.umag_inventory_code,
@@ -127,7 +130,9 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
 
 
 # Upload image to equipments folder using invoice id
-@equipments.post("/api/equipments/{equipment_id}", status_code=HTTP_201_CREATED, tags=["equipments"])
+@equipments.post(
+    "/api/equipments/{equipment_id}", status_code=HTTP_201_CREATED, tags=["equipments"]
+)
 async def add_image(equipment_id: int, file: UploadFile):
     if not os.path.exists(f"./images/equipments/{equipment_id}"):
         os.makedirs(f"./images/equipments/{equipment_id}")
@@ -156,66 +161,72 @@ async def get_images(equipment_id: int):
     return response
 
 
-@equipments.get("/api/equipments/{equipment_id}", response_model=EquipmentFullSchema, tags=["equipments"])
+@equipments.get(
+    "/api/equipments/{equipment_id}", response_model=EquipmentFullSchema, tags=["equipments"]
+)
 def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
-            Equipments.id,
-            Equipments.name,
-            Equipments.serial_number,
-            Equipments.umag_inventory_code,
-            Equipments.reception_date,
-            Equipments.maintenance_period,
-            Equipments.observation,
-            Equipments.last_preventive_mainteinance,
-            Equipments.room_id,
-            Rooms.name.label("room_name"),
-            Equipments.supplier_id,
-            Suppliers.name.label("supplier_name"),
-            Equipments.invoice_id,
-            Invoices.number.label("invoice_number"),
-            Brands.id.label("brand_id"),
-            Brands.name.label("brand_name"),
-            Models.id.label("model_id"),
-            Models.name.label("model_name"),
-            Equipments.model_number_id,
-            Model_numbers.number.label("model_number"),
-            Units.id.label("unit_id"),
-            Units.name.label("unit_name"),
-            Buildings.id.label("building_id"),
-            Buildings.name.label("building_name"),
-            Stages.id.label("stage_id"),
-            Stages.name.label("stage_name"),
-            Projects.id.label("project_id"),
-            Projects.name.label("project_name"),
-            Project_owners.id.label("project_owner_id"),
-            Project_owners.name.label("project_owner_name"),
+            Equipment.id,
+            Equipment.name,
+            Equipment.serial_number,
+            Equipment.umag_inventory_code,
+            Equipment.reception_date,
+            Equipment.maintenance_period,
+            Equipment.observation,
+            Equipment.last_preventive_mainteinance,
+            Equipment.room_id,
+            Room.name.label("room_name"),
+            Equipment.supplier_id,
+            Supplier.name.label("supplier_name"),
+            Equipment.invoice_id,
+            Invoice.number.label("invoice_number"),
+            Brand.id.label("brand_id"),
+            Brand.name.label("brand_name"),
+            Model.id.label("model_id"),
+            Model.name.label("model_name"),
+            Equipment.model_number_id,
+            ModelNumber.number.label("model_number"),
+            Unit.id.label("unit_id"),
+            Unit.name.label("unit_name"),
+            Building.id.label("building_id"),
+            Building.name.label("building_name"),
+            Stage.id.label("stage_id"),
+            Stage.name.label("stage_name"),
+            Project.id.label("project_id"),
+            Project.name.label("project_name"),
+            ProjectOwner.id.label("project_owner_id"),
+            ProjectOwner.name.label("project_owner_name"),
         )
-        .outerjoin(Rooms, Rooms.id == Equipments.room_id)
-        .outerjoin(Suppliers, Suppliers.id == Equipments.supplier_id)
-        .outerjoin(Invoices, Invoices.id == Equipments.invoice_id)
-        .outerjoin(Model_numbers, Model_numbers.id == Equipments.model_number_id)
-        .outerjoin(Models, Models.id == Model_numbers.id)
-        .outerjoin(Brands, Brands.id == Models.brand_id)
-        .outerjoin(Units, Units.id == Rooms.unit_id)
-        .outerjoin(Buildings, Buildings.id == Units.building_id)
-        .outerjoin(Stages, Stages.id == Equipments.stage_id)
-        .outerjoin(Projects, Projects.id == Stages.project_id)
-        .outerjoin(Project_owners, Project_owners.id == Projects.owner_id)
-        .filter(Equipments.id == equipment_id)
+        .outerjoin(Room, Room.id == Equipment.room_id)
+        .outerjoin(Supplier, Supplier.id == Equipment.supplier_id)
+        .outerjoin(Invoice, Invoice.id == Equipment.invoice_id)
+        .outerjoin(ModelNumber, ModelNumber.id == Equipment.model_number_id)
+        .outerjoin(Model, Model.id == ModelNumber.id)
+        .outerjoin(Brand, Brand.id == Model.brand_id)
+        .outerjoin(Unit, Unit.id == Room.unit_id)
+        .outerjoin(Building, Building.id == Unit.building_id)
+        .outerjoin(Stage, Stage.id == Equipment.stage_id)
+        .outerjoin(Project, Project.id == Stage.project_id)
+        .outerjoin(ProjectOwner, ProjectOwner.id == Project.owner_id)
+        .filter(Equipment.id == equipment_id)
         .first()
     )
     return result
 
 
-@equipments.get("/api/equipment/{equipment_id}", response_model=EquipmentSchema, tags=["equipments"])
+@equipments.get(
+    "/api/equipment/{equipment_id}", response_model=EquipmentSchema, tags=["equipments"]
+)
 def get_equipment_exist(equipment_id: int, db: Session = Depends(get_db)):
-    return db.query(Equipments).filter(Equipments.id == equipment_id).first()
+    return db.query(Equipment).filter(Equipment.id == equipment_id).first()
 
 
-@equipments.delete("/api/equipments/{equipment_id}", status_code=HTTP_204_NO_CONTENT, tags=["equipments"])
+@equipments.delete(
+    "/api/equipments/{equipment_id}", status_code=HTTP_204_NO_CONTENT, tags=["equipments"]
+)
 def delete_equipment(equipment_id: int, db: Session = Depends(get_db)):
-    db_equipment = db.query(Equipments).filter(Equipments.id == equipment_id).first()
+    db_equipment = db.query(Equipment).filter(Equipment.id == equipment_id).first()
     if not db_equipment:
         return Response(status_code=HTTP_404_NOT_FOUND)
     db.delete(db_equipment)
@@ -223,14 +234,16 @@ def delete_equipment(equipment_id: int, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@equipments.put("/api/equipments/{equipment_id}", response_model=UpdateEquipmentSchema, tags=["equipments"])
+@equipments.put(
+    "/api/equipments/{equipment_id}", response_model=UpdateEquipmentSchema, tags=["equipments"]
+)
 def update_equipment(
     data_update: UpdateEquipmentSchema, equipment_id: int, db: Session = Depends(get_db)
 ):
-    db_equipment = db.query(Equipments).filter(Equipments.id == equipment_id).first()
+    db_equipment = db.query(Equipment).filter(Equipment.id == equipment_id).first()
     if not db_equipment:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    for key, value in data_update.dict(exclude_unset=True).items():
+    for key, value in data_update.model_dump(exclude_unset=True).items():
         setattr(db_equipment, key, value)
     db.add(db_equipment)
     db.commit()

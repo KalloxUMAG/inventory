@@ -1,9 +1,10 @@
-from pydantic import BaseModel
 from typing import Optional
 
+from pydantic import BaseModel, ConfigDict
+
+
 class ProjectOwnerSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

@@ -1,10 +1,15 @@
-__pycache__
+# python stuff
+__pycache__/
+*.py[cod]
+*$py.class
+.ruff_cache/
+.pdm-python
 
-#images
-/images/equipments/
-/images/invoices/
+# virtualenv
+.venv/
+venv/
 
-#Environments files
+# project stuff
 .env
-
-!.gitkeep
+./images/equipments/
+./images/invoices/
