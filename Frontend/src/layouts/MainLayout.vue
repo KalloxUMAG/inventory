@@ -24,7 +24,7 @@
             <q-separator :key="'sep' + index" v-if="menuItem.separator" />
           </template>
         </q-list>
-        <footer class="absolute-bottom"><small>Fecha de actualización: 01-08-2023</small></footer>
+        <footer class="absolute-bottom"><small>Fecha de actualización: 16-08-2023</small></footer>
       </q-scroll-area>
     </q-drawer>
 

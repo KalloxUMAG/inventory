@@ -136,11 +136,11 @@ class Equipments(Base):
     name: Mapped[str] = mapped_column(String)
     serial_number: Mapped[Optional[str]] = mapped_column(String)
     umag_inventory_code: Mapped[Optional[str]] = mapped_column(String)
-    reception_date = mapped_column(Date)
+    reception_date = mapped_column(Date, nullable=True)
     maintenance_period: Mapped[Optional[int]] = mapped_column(Integer)
     observation: Mapped[Optional[str]] = mapped_column(String)
     supplier_id: Mapped[Optional[int]] = mapped_column(
-        Integer, ForeignKey("Suppliers.id", ondelete="SET NULL")
+        Integer, ForeignKey("Suppliers.id", ondelete="SET NULL"), nullable=True
     )
     invoice_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("Invoices.id", ondelete="SET NULL"), nullable=True
