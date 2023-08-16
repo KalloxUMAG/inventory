@@ -9,7 +9,7 @@ class EquipmentSchema(BaseModel):
     name: str
     serial_number: Optional[str] = None
     umag_inventory_code: Optional[str] = None
-    reception_date: date
+    reception_date: Optional[date] = None
     maintenance_period: Optional[int] = None
     last_preventive_mainteinance: Optional[date] = None
     observation: Optional[str] = None
@@ -27,7 +27,7 @@ class EquipmentListSchema(BaseModel):
     name: str
     serial_number: Optional[str] = None
     umag_inventory_code: Optional[str] = None
-    reception_date: date
+    reception_date: Optional[date] = None
     maintenance_period: Optional[int] = None
     last_preventive_mainteinance: Optional[date] = None
     observation: Optional[str] = None
@@ -52,7 +52,7 @@ class EquipmentFullSchema(BaseModel):
     name: str
     serial_number: Optional[str] = None
     umag_inventory_code: Optional[str] = None
-    reception_date: date
+    reception_date: Optional[date] = None
     maintenance_period: Optional[int] = None
     observation: Optional[str] = None
     last_preventive_mainteinance: Optional[date] = None

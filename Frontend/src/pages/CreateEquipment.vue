@@ -277,7 +277,7 @@
                 (supplier = value), getInvoicesSupplier(value);
               }
             "
-            :rules="[val => !!val || 'Campo obligatorio']"
+            :rules="[/*[val => !!val || 'Campo obligatorio']*/]"
             lazy-rules
           />
           <div class="row justify-end q-mt-md">
@@ -431,11 +431,11 @@
           outlined
           v-model="reception_date"
           type="date"
-          label="Fecha de recepción*"
+          label="Fecha de recepción"
           stack-label
           lazy-rules
           :rules="[
-            (val) => (val && val != null) || 'Este campo es obligatorio',
+            /*(val) => (val && val != null) || 'Este campo es obligatorio',*/
           ]"
         />
 
