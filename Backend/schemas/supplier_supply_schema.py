@@ -1,13 +1,13 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, ConfigDict
+
 
 class SupplierSupplySchema(BaseModel):
     supplier_id: int
     supply_id: int
     cost: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
+
 
 class GetSupplierSupplySchema(BaseModel):
     supplier_id: int
@@ -17,5 +17,4 @@ class GetSupplierSupplySchema(BaseModel):
     rut: str
     city_address: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

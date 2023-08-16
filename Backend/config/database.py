@@ -1,26 +1,25 @@
 from os import environ
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import sessionmaker
 from dotenv import dotenv_values
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-production = environ.get('PRODUCTION', False)
+print(environ.get("PRODUCTION"))
 
-if production:
-    host = environ.get('DB_HOST')
-    port = environ.get('DB_PORT', 5432)
-    username = environ.get('DB_USER')
-    password = environ.get('DB_PASSWORD')
-    database = environ.get('DB_NAME')
+if production := environ.get("PRODUCTION", False):
+    host = environ.get("DB_HOST")
+    port = environ.get("DB_PORT", 5432)
+    username = environ.get("DB_USER")
+    password = environ.get("DB_PASSWORD")
+    database = environ.get("DB_NAME")
 else:
     config = dotenv_values(".env")
 
-    host = config['IP']
-    port = config['PORT']
-    username = config['USERNAME']
-    password = config['PASSWORD']
-    database = config['DATABASE']
+    host = config["IP"]
+    port = config["PORT"]
+    username = config["USERNAME"]
+    password = config["PASSWORD"]
+    database = config["DATABASE"]
 
 DATABASE_URL = f"postgresql://{username}:{password}@{host}:{port}/{database}"
 
@@ -38,6 +37,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-# def get_session():
-# return Session

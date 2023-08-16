@@ -1,9 +1,10 @@
-from pydantic import BaseModel
 from typing import Optional
 
-class BuildingSchema(BaseModel):
-        id: Optional[int]
-        name: str
+from pydantic import BaseModel, ConfigDict
 
-        class Config:
-                orm_mode = True
+
+class BuildingSchema(BaseModel):
+    id: Optional[int] = None
+    name: str
+
+    model_config = ConfigDict(from_attributes=True)

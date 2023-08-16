@@ -1,0 +1,45 @@
+[project]
+name = ""
+version = "0.4.0"
+description = "CADI inventory backend"
+authors = [
+    { name = "Claudio Ramírez", email = "clramire@umag.cl" },
+]
+dependencies = [
+    "fastapi~=0.101.1",
+    "gunicorn>=21.2.0",
+    "Pillow~=10.0.0",
+    "psycopg2-binary>=2.9.7",
+    "pydantic~=2.1.1",
+    "python-dateutil>=2.8.2",
+    "python-dotenv>=1.0.0",
+    "python-multipart>=0.0.6",
+    "SQLAlchemy~=2.0.20",
+    "tomli~=2.0.1",
+    "uvicorn>=0.23.2",
+    "alembic>=1.11.3",
+]
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = [
+    "ruff>=0.0.284",
+    "black>=23.7.0",
+]
+
+[tool.pdm.scripts]
+black = "black ."
+ruff_sort = "ruff --fix --select 'I' ."
+format = { composite = ["black", "ruff_sort"] }
+requirements = "pdm export -f requirements --without-hashes -o requirements.txt"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+select = ["E", "F", "I", "N", "T", "ERA"]
+line-length = 100
+target-version = "py311"

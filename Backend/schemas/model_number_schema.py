@@ -1,10 +1,11 @@
-from pydantic import BaseModel
 from typing import Optional
 
+from pydantic import BaseModel, ConfigDict
+
+
 class ModelNumberSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     number: str
     model_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())

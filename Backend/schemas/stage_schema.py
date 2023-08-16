@@ -1,10 +1,11 @@
-from pydantic import BaseModel
 from typing import Optional
 
-class StageSchema(BaseModel):
-    id: Optional[int]
-    name: str
-    project_id: Optional[int]
+from pydantic import BaseModel, ConfigDict
 
-    class Config:
-        orm_mode = True
+
+class StageSchema(BaseModel):
+    id: Optional[int] = None
+    name: str
+    project_id: Optional[int] = None
+
+    model_config = ConfigDict(from_attributes=True)

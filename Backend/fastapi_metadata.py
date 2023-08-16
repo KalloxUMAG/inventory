@@ -1,4 +1,4 @@
-title="CADI Inventory API"
+title = "CADI Inventory API"
 description = """
 ## Equipos
 
@@ -8,8 +8,8 @@ Lectura y modificacion de equipos.
 
 Lectura y modificacion de insumos:
 """
-summary="API para inventario CADI"
-version="0.1"
+summary = "API para inventario CADI"
+version = "0.1"
 
 tags_metadata = [
     {
@@ -20,16 +20,7 @@ tags_metadata = [
         "name": "equipments",
         "description": "Manage equipments.",
     },
-    {
-        "name": "supplies",
-        "description": "Manage supplies."
-    },
-    {
-        "name": "suppliers",
-        "description": "Manage suppliers."
-    },
-    {
-        "name": "locations",
-        "description": "Manage locations, sublocations, rooms, etc..."
-    },
+    {"name": "supplies", "description": "Manage supplies."},
+    {"name": "suppliers", "description": "Manage suppliers."},
+    {"name": "locations", "description": "Manage locations, sublocations, rooms, etc..."},
 ]

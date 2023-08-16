@@ -1,38 +1,37 @@
-from typing import Optional
-from pydantic import BaseModel
 from datetime import date
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class LotListSchema(BaseModel):
     id: int
     number: str
-    due_date: Optional[date]
-    observations: Optional[str]
-    state: Optional[bool]
-    location_id: Optional[int]
-    location: Optional[str]
-    sub_location_id: Optional[int]
-    sub_location: Optional[str]
-    project_id: Optional[int]
-    project: Optional[str]
-    project_owner_id: Optional[int]
-    project_owner_name: Optional[str]
-    supplier_id: Optional[int]
-    supplier_name: Optional[str]
+    due_date: Optional[date] = None
+    observations: Optional[str] = None
+    state: Optional[bool] = None
+    location_id: Optional[int] = None
+    location: Optional[str] = None
+    sub_location_id: Optional[int] = None
+    sub_location: Optional[str] = None
+    project_id: Optional[int] = None
+    project: Optional[str] = None
+    project_owner_id: Optional[int] = None
+    project_owner_name: Optional[str] = None
+    supplier_id: Optional[int] = None
+    supplier_name: Optional[str] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CreateLotSchema(BaseModel):
     number: str
-    due_date: Optional[date]
-    observations: Optional[str]
-    state: Optional[bool]
+    due_date: Optional[date] = None
+    observations: Optional[str] = None
+    state: Optional[bool] = None
     supply_id: int
-    sub_location_id: Optional[int]
-    project_id: Optional[int]
+    sub_location_id: Optional[int] = None
+    project_id: Optional[int] = None
     supplier_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

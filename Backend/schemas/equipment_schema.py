@@ -1,112 +1,108 @@
-from typing import Optional
-from pydantic import BaseModel
 from datetime import date
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class EquipmentSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     name: str
-    serial_number: Optional[str]
-    umag_inventory_code: Optional[str]
+    serial_number: Optional[str] = None
+    umag_inventory_code: Optional[str] = None
     reception_date: date
-    maintenance_period: Optional[int]
-    last_preventive_mainteinance: Optional[date]
-    observation: Optional[str]
-    supplier_id: Optional[int]
-    invoice_id: Optional[int]
-    model_number_id: Optional[int]
-    room_id: Optional[int]
-    stage_id: Optional[int]
+    maintenance_period: Optional[int] = None
+    last_preventive_mainteinance: Optional[date] = None
+    observation: Optional[str] = None
+    supplier_id: Optional[int] = None
+    invoice_id: Optional[int] = None
+    model_number_id: Optional[int] = None
+    room_id: Optional[int] = None
+    stage_id: Optional[int] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
 
 
 class EquipmentListSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     name: str
-    serial_number: Optional[str]
-    umag_inventory_code: Optional[str]
+    serial_number: Optional[str] = None
+    umag_inventory_code: Optional[str] = None
     reception_date: date
-    maintenance_period: Optional[int]
-    last_preventive_mainteinance: Optional[date]
-    observation: Optional[str]
-    room_id: Optional[int]
-    room_name: Optional[str]
-    supplier_id: Optional[int]
-    supplier_name: Optional[str]
-    invoice_id: Optional[int]
-    invoice_number: Optional[int]
-    model_number_id: Optional[int]
-    model_number: Optional[str]
-    project_id: Optional[int]
-    project_name: Optional[str]
-    stage_id: Optional[int]
-    stage_name: Optional[str]
+    maintenance_period: Optional[int] = None
+    last_preventive_mainteinance: Optional[date] = None
+    observation: Optional[str] = None
+    room_id: Optional[int] = None
+    room_name: Optional[str] = None
+    supplier_id: Optional[int] = None
+    supplier_name: Optional[str] = None
+    invoice_id: Optional[int] = None
+    invoice_number: Optional[int] = None
+    model_number_id: Optional[int] = None
+    model_number: Optional[str] = None
+    project_id: Optional[int] = None
+    project_name: Optional[str] = None
+    stage_id: Optional[int] = None
+    stage_name: Optional[str] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
 
 
 class EquipmentFullSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     name: str
-    serial_number: Optional[str]
-    umag_inventory_code: Optional[str]
+    serial_number: Optional[str] = None
+    umag_inventory_code: Optional[str] = None
     reception_date: date
-    maintenance_period: Optional[int]
-    observation: Optional[str]
-    last_preventive_mainteinance: Optional[date]
-    room_id: Optional[int]
-    room_name: Optional[str]
-    unit_id: Optional[int]
-    unit_name: Optional[str]
-    building_id: Optional[int]
-    building_name: Optional[str]
-    supplier_id: Optional[int]
-    supplier_name: Optional[str]
-    invoice_id: Optional[int]
-    invoice_number: Optional[int]
-    brand_id: Optional[int]
-    brand_name: Optional[str]
-    model_id: Optional[int]
-    model_name: Optional[str]
-    model_number_id: Optional[int]
-    model_number: Optional[str]
-    stage_id: Optional[int]
-    stage_name: Optional[str]
-    project_id: Optional[int]
-    project_name: Optional[str]
-    project_owner_id: Optional[str]
-    project_owner_name: Optional[str]
+    maintenance_period: Optional[int] = None
+    observation: Optional[str] = None
+    last_preventive_mainteinance: Optional[date] = None
+    room_id: Optional[int] = None
+    room_name: Optional[str] = None
+    unit_id: Optional[int] = None
+    unit_name: Optional[str] = None
+    building_id: Optional[int] = None
+    building_name: Optional[str] = None
+    supplier_id: Optional[int] = None
+    supplier_name: Optional[str] = None
+    invoice_id: Optional[int] = None
+    invoice_number: Optional[int] = None
+    brand_id: Optional[int] = None
+    brand_name: Optional[str] = None
+    model_id: Optional[int] = None
+    model_name: Optional[str] = None
+    model_number_id: Optional[int] = None
+    model_number: Optional[str] = None
+    stage_id: Optional[int] = None
+    stage_name: Optional[str] = None
+    project_id: Optional[int] = None
+    project_name: Optional[str] = None
+    project_owner_id: Optional[str] = None
+    project_owner_name: Optional[str] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
 
 
 class UpdateEquipmentSchema(BaseModel):
-    id: Optional[int]
-    name: Optional[str]
-    serial_number: Optional[str]
-    umag_inventory_code: Optional[str]
-    reception_date: Optional[date]
-    maintenance_period: Optional[int]
-    last_preventive_mainteinance: Optional[date]
-    observation: Optional[str]
-    supplier_id: Optional[int]
-    invoice_id: Optional[int]
-    model_number_id: Optional[int]
-    room_id: Optional[int]
-    stage_id: Optional[int]
+    id: Optional[int] = None
+    name: Optional[str] = None
+    serial_number: Optional[str] = None
+    umag_inventory_code: Optional[str] = None
+    reception_date: Optional[date] = None
+    maintenance_period: Optional[int] = None
+    last_preventive_mainteinance: Optional[date] = None
+    observation: Optional[str] = None
+    supplier_id: Optional[int] = None
+    invoice_id: Optional[int] = None
+    model_number_id: Optional[int] = None
+    room_id: Optional[int] = None
+    stage_id: Optional[int] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
+
 
 class NextMaintenanceSchema(BaseModel):
-    
-    id: Optional[int]
-    maintenance_id: Optional[int]
-    date: Optional[date]
+    id: Optional[int] = None
+    maintenance_id: Optional[int] = None
+    date: Optional[date] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

@@ -1,13 +1,14 @@
-from pydantic import BaseModel
 from typing import Optional
 
-class SupplierContactSchema(BaseModel):
-        id: Optional[int]
-        name: str
-        position: Optional[str]
-        phone: Optional[str]
-        email: Optional[str]
-        supplier_id: int
+from pydantic import BaseModel, ConfigDict
 
-        class Config:
-                orm_mode = True
+
+class SupplierContactSchema(BaseModel):
+    id: Optional[int] = None
+    name: str
+    position: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    supplier_id: int
+
+    model_config = ConfigDict(from_attributes=True)

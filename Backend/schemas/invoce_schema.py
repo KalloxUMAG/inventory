@@ -1,14 +1,13 @@
-from typing import Optional
-from pydantic import BaseModel, validator
 from datetime import date
-from io import BytesIO
-from PIL import Image
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
+
 
 class InvoiceSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     number: int
     date: date
-    supplier_id: Optional[int]
+    supplier_id: Optional[int] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

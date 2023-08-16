@@ -1,11 +1,11 @@
-from pydantic import BaseModel
 from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
 class SubLocationSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     name: str
-    location_id: Optional[int]
+    location_id: Optional[int] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
