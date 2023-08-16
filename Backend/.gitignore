@@ -9,5 +9,7 @@ __pycache__/
 .venv/
 venv/
 
-# local config
+# project stuff
 .env
+./images/equipments/
+./images/invoices/
