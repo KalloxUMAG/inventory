@@ -7,6 +7,8 @@ class SupplierSupplySchema(BaseModel):
     cost: int
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True
 
 
 class GetSupplierSupplySchema(BaseModel):
@@ -18,3 +20,5 @@ class GetSupplierSupplySchema(BaseModel):
     city_address: str
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True

@@ -22,6 +22,8 @@ class LotListSchema(BaseModel):
     supplier_name: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True
 
 
 class CreateLotSchema(BaseModel):
@@ -35,3 +37,5 @@ class CreateLotSchema(BaseModel):
     supplier_id: int
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True

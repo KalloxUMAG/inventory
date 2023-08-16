@@ -74,7 +74,8 @@ routes = [
     supplies_types,
     suppliers,
     suppliers_contacts,
-    suppliers_supplies,
+    suppliers_supplies
+    
 ]
 
 for route in routes:

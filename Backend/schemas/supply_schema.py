@@ -18,6 +18,8 @@ class SupplyListSchema(BaseModel):
     supplies_format_name: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True
 
 
 class SupplySchemaFull(BaseModel):
@@ -38,6 +40,8 @@ class SupplySchemaFull(BaseModel):
     supplies_format_name: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True
 
 
 class SupplySchema(BaseModel):
@@ -55,9 +59,13 @@ class SupplySchema(BaseModel):
     supplies_format_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True
 
 
 class UpdateStockSchema(BaseModel):
     stock: int
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True

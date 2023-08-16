@@ -10,3 +10,5 @@ class SupplierSchema(BaseModel):
     city_address: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True

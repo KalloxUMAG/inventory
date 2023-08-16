@@ -9,3 +9,5 @@ class ModelNumberSchema(BaseModel):
     model_id: int
 
     model_config = ConfigDict(from_attributes=True, protected_namespaces=())
+    class Config:
+        orm_mode = True

@@ -13,6 +13,8 @@ class MaintenanceSchema(BaseModel):
     equiptment_id: int
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True
 
 
 class MaintenanceFromEquipment(BaseModel):
@@ -24,6 +26,8 @@ class MaintenanceFromEquipment(BaseModel):
     equiptment_id: int
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True
 
 
 class EditMaintenanceSchema(BaseModel):
@@ -33,3 +37,5 @@ class EditMaintenanceSchema(BaseModel):
     maintenance_type: str
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True

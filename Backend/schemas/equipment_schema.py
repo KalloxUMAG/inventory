@@ -20,6 +20,8 @@ class EquipmentSchema(BaseModel):
     stage_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True, protected_namespaces=())
+    class Config:
+        orm_mode = True
 
 
 class EquipmentListSchema(BaseModel):
@@ -45,6 +47,8 @@ class EquipmentListSchema(BaseModel):
     stage_name: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True, protected_namespaces=())
+    class Config:
+        orm_mode = True
 
 
 class EquipmentFullSchema(BaseModel):
@@ -80,6 +84,8 @@ class EquipmentFullSchema(BaseModel):
     project_owner_name: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True, protected_namespaces=())
+    class Config:
+        orm_mode = True
 
 
 class UpdateEquipmentSchema(BaseModel):
@@ -98,6 +104,8 @@ class UpdateEquipmentSchema(BaseModel):
     stage_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True, protected_namespaces=())
+    class Config:
+        orm_mode = True
 
 
 class NextMaintenanceSchema(BaseModel):
@@ -106,3 +114,5 @@ class NextMaintenanceSchema(BaseModel):
     date: Optional[date] = None
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True

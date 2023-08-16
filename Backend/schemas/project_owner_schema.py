@@ -8,3 +8,5 @@ class ProjectOwnerSchema(BaseModel):
     name: str
 
     model_config = ConfigDict(from_attributes=True)
+    class Config:
+        orm_mode = True
