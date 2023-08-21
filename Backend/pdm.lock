@@ -6,7 +6,7 @@ groups = ["default", "dev"]
 cross_platform = true
 static_urls = false
 lock_version = "4.3"
-content_hash = "sha256:139597388bd451e2dd58318b010b082a42d6ba64b843c77eb95c0c21e9402b2c"
+content_hash = "sha256:d6214d744900d45427950ffa96bff9fbf594f3c3d694773bef50bf09e36294cc"
 
 [[package]]
 name = "alembic"
@@ -430,6 +430,20 @@ files = [
     {file = "pydantic_core-2.4.0-pp39-pypy39_pp73-musllinux_1_1_x86_64.whl", hash = "sha256:b85778308bf945e9b33ac604e6793df9b07933108d20bdf53811bc7c2798a4af"},
     {file = "pydantic_core-2.4.0-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:3ded19dcaefe2f6706d81e0db787b59095f4ad0fbadce1edffdf092294c8a23f"},
     {file = "pydantic_core-2.4.0.tar.gz", hash = "sha256:ec3473c9789cc00c7260d840c3db2c16dbfc816ca70ec87a00cddfa3e1a1cdd5"},
+]
+
+[[package]]
+name = "pydantic-settings"
+version = "2.0.3"
+requires_python = ">=3.7"
+summary = "Settings management using Pydantic"
+dependencies = [
+    "pydantic>=2.0.1",
+    "python-dotenv>=0.21.0",
+]
+files = [
+    {file = "pydantic_settings-2.0.3-py3-none-any.whl", hash = "sha256:ddd907b066622bd67603b75e2ff791875540dc485b7307c4fffc015719da8625"},
+    {file = "pydantic_settings-2.0.3.tar.gz", hash = "sha256:962dc3672495aad6ae96a4390fac7e593591e144625e5112d359f8f67fb75945"},
 ]
 
 [[package]]

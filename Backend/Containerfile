@@ -20,5 +20,7 @@ WORKDIR /app
 RUN adduser --uid 2001 --system --no-create-home app
 USER app
 
+RUN mkdir -p /data/images && chown app:app /data/images
+
 EXPOSE 8080
 CMD ["sh", "/app/entrypoint.sh"]

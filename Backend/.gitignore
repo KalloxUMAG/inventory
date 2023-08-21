@@ -11,5 +11,4 @@ venv/
 
 # project stuff
 .env
-./images/equipments/
-./images/invoices/
+./images/

@@ -21,6 +21,7 @@ platformdirs==3.10.0
 psycopg2-binary==2.9.7
 pydantic==2.1.1
 pydantic-core==2.4.0
+pydantic-settings==2.0.3
 python-dateutil==2.8.2
 python-dotenv==1.0.0
 python-multipart==0.0.6

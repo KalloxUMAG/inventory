@@ -8,7 +8,6 @@ services:
     build:
       context: ./Backend
       dockerfile: Containerfile
-    user: 3001
     ports:
       - 10001:8080
     networks:
@@ -17,7 +16,7 @@ services:
     tmpfs:
       - /tmp
     volumes:
-      - ~/container-volumes/inventory/images:/app/images:Z
+      - ~/container-volumes/inventory/images:/data/images:Z
     environment:
       - PRODUCTION=true
       - DB_USER=${POSTGRES_USER}
@@ -25,6 +24,8 @@ services:
       - DB_NAME=${POSTGRES_DB}
       - DB_PORT=5432
       - DB_HOST=db
+      - BASE_URL=${BACKEND_BASEURL}
+      - IMAGE_DIRECTORY=/data/images
 
   db:
     image: postgres:15

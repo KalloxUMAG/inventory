@@ -1,9 +1,12 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 import fastapi_metadata as fm
-from config.database import Base, engine, production
+from config.database import Base, engine
+from config.settings import settings
 from routes.brands import brands
 from routes.buildings import buildings
 from routes.equipments import equipments
@@ -29,7 +32,7 @@ from routes.units import units
 
 
 def create_tables():
-    if not production:
+    if not settings.production:
         Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
 
@@ -43,7 +46,7 @@ app = FastAPI(
     version=fm.version,
     openapi_tags=fm.tags_metadata,
 )
-app.mount("/images", StaticFiles(directory="images"), name="images")
+app.mount("/images", StaticFiles(directory=settings.image_directory), name="images")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

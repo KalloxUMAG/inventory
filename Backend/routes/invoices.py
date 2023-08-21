@@ -1,5 +1,6 @@
 import os
 import shutil
+from pathlib import Path
 from typing import List
 
 from fastapi import APIRouter, Depends, Response, UploadFile
@@ -11,6 +12,7 @@ from starlette.status import (
 )
 
 from config.database import get_db
+from config.settings import settings
 from models.models import Invoice
 from schemas.invoce_schema import InvoiceSchema
 
@@ -19,8 +21,7 @@ invoices = APIRouter()
 
 @invoices.get("/api/invoices", response_model=List[InvoiceSchema])
 def get_inovices(db: Session = Depends(get_db)):
-    result = db.query(Invoice).all()
-    return result
+    return db.query(Invoice).all()
 
 
 @invoices.post("/api/invoices", status_code=HTTP_201_CREATED)
@@ -36,10 +37,11 @@ async def add_invoice(invoice: InvoiceSchema, db: Session = Depends(get_db)):
 # Upload image to invoice folder using invoice id
 @invoices.post("/api/invoices/{invoice_id}", status_code=HTTP_201_CREATED)
 async def add_image(invoice_id: int, file: UploadFile):
-    if not os.path.exists(f"./images/invoices/{invoice_id}"):
-        os.makedirs(f"./images/invoices/{invoice_id}")
-    with open(f"./images/invoices/{invoice_id}/{file.filename}", "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    image_path = Path(settings.image_directory, "images", str(invoice_id))
+    image_path.mkdir(parents=True, exist_ok=True)
+    with open(image_path / file.filename, "wb") as buffer:
+        buffer.write(await file.read())
+        # shutil.copyfileobj(file.file, buffer)
     return Response(status_code=HTTP_201_CREATED)
 
 
