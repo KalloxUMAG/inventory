@@ -1,6 +1,4 @@
 import logging
-import os
-import shutil
 from pathlib import Path
 from typing import List
 
@@ -9,6 +7,7 @@ from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
 from config.database import get_db
+from config.settings import settings
 from models.models import (
     Brand,
     Building,
@@ -135,31 +134,29 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
     "/api/equipments/{equipment_id}", status_code=HTTP_201_CREATED, tags=["equipments"]
 )
 async def add_image(equipment_id: int, file: UploadFile):
-    if not os.path.exists(f"./images/equipments/{equipment_id}"):
-        Path(f"./images/equipments/{equipment_id}").mkdir(parents=True, exist_ok=True)
-    with open(f"./images/equipments/{equipment_id}/{file.filename}", "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    image_path = Path(settings.image_directory, "equipments", str(equipment_id))
+    image_path.mkdir(parents=True, exist_ok=True)
+    with open(image_path / file.filename, "wb") as buffer:
+        buffer.write(await file.read())
     return Response(status_code=HTTP_201_CREATED)
 
 
 # Get images from equipments folder
 @equipments.get("/api/equipments/image/{equipment_id}", tags=["equipments"])
 async def get_images(equipment_id: int):
-    image_dir = f"/images/equipments/{equipment_id}"
-    if not os.path.exists("." + image_dir):
+    image_path = Path(settings.image_directory, "equipments", str(equipment_id))
+    if not image_path.exists():
         return Response(status_code=HTTP_404_NOT_FOUND)
-    response = []
-    files = os.listdir("." + image_dir)
-    count = 1
-    for file in files:
-        image = {
-            "id": count,
-            "name": file,
-            "path": f"http://localhost:8000{image_dir}/{file}",
+
+    image_base_url = settings.base_url.replace("/api", "/images")
+    return [
+        {
+            "id": i,
+            "name": file.name,
+            "path": f"{image_base_url}/equipments/{equipment_id}/{file.name}",
         }
-        count = count + 1
-        response.append(image)
-    return response
+        for i, file in enumerate(image_path.iterdir(), start=1)
+    ]
 
 
 @equipments.get(

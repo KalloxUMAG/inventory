@@ -1,10 +1,9 @@
 from logging.config import fileConfig
-from os import environ
 
-from dotenv import dotenv_values
 from sqlalchemy import create_engine
 
 from alembic import context
+from config.settings import settings
 from models.models import Base
 
 # this is the Alembic Config object, which provides
@@ -19,24 +18,6 @@ if config.config_file_name is not None:
 # add your model's MetaData object here
 # for 'autogenerate' support
 target_metadata = Base.metadata
-
-if production := environ.get("PRODUCTION", False):
-    host = environ.get("DB_HOST")
-    port = environ.get("DB_PORT", 5432)
-    username = environ.get("DB_USER")
-    password = environ.get("DB_PASSWORD")
-    database = environ.get("DB_NAME")
-else:
-    config_data = dotenv_values(".env")
-
-    host = config_data["IP"]
-    port = config_data["PORT"]
-    username = config_data["USERNAME"]
-    password = config_data["PASSWORD"]
-    database = config_data["DATABASE"]
-
-DATABASE_URL = f"postgresql://{username}:{password}@{host}:{port}/{database}"
-#
 
 
 def run_migrations_offline() -> None:
@@ -70,7 +51,7 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = create_engine(DATABASE_URL)
+    connectable = create_engine(settings.db_url)
 
     with connectable.connect() as connection:
         context.configure(connection=connection, target_metadata=target_metadata)

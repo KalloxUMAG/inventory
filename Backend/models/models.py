@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from sqlalchemy import Boolean, Date, Float, Integer, Sequence, String
+from sqlalchemy import Boolean, Date, Float, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import ForeignKey
 
@@ -126,9 +126,7 @@ class User(Base):
 class Equipment(Base):
     __tablename__ = "Equipments"
 
-    id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, autoincrement=True
-    )
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
     serial_number: Mapped[Optional[str]] = mapped_column(String)
     umag_inventory_code: Mapped[Optional[str]] = mapped_column(String)
@@ -337,4 +335,3 @@ class SuppliersHasSupplies(Base):
         Integer, ForeignKey("Supplies.id", ondelete="CASCADE"), primary_key=True
     )
     cost: Mapped[int] = mapped_column(Integer)
-
