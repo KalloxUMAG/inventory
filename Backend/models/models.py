@@ -127,7 +127,7 @@ class Equipment(Base):
     __tablename__ = "Equipments"
 
     id: Mapped[int] = mapped_column(
-        Integer, Sequence("equipment_id_seq"), primary_key=True, autoincrement=True
+        Integer, primary_key=True, autoincrement=True
     )
     name: Mapped[str] = mapped_column(String)
     serial_number: Mapped[Optional[str]] = mapped_column(String)
