@@ -1,6 +1,7 @@
 import logging
 import os
 import shutil
+from pathlib import Path
 from typing import List
 
 from fastapi import APIRouter, Depends, Response, UploadFile
@@ -135,7 +136,7 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
 )
 async def add_image(equipment_id: int, file: UploadFile):
     if not os.path.exists(f"./images/equipments/{equipment_id}"):
-        os.makedirs(f"./images/equipments/{equipment_id}")
+        Path(f"./images/equipments/{equipment_id}").mkdir(parents=True, exist_ok=True)
     with open(f"./images/equipments/{equipment_id}/{file.filename}", "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     return Response(status_code=HTTP_201_CREATED)
