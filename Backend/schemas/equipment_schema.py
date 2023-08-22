@@ -78,7 +78,7 @@ class EquipmentFullSchema(BaseModel):
     stage_name: Optional[str] = None
     project_id: Optional[int] = None
     project_name: Optional[str] = None
-    project_owner_id: Optional[str] = None
+    project_owner_id: Optional[int] = None
     project_owner_name: Optional[str] = None
 
     class Config:
