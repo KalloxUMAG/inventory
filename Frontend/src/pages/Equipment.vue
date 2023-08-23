@@ -4,7 +4,7 @@
       <q-card class="my-card" flat bordered>
         <q-item class="row justify-center">
           <div class="text-h5">
-            {{ equipment.name }} - {{ equipment.serial_number }}
+            {{ equipment.name }} - {{ equipment.model_name }}
           </div>
         </q-item>
         <q-separator />
