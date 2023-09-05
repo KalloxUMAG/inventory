@@ -1,0 +1,75 @@
+from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
+
+
+class User(BaseModel):
+    id: Optional[int]
+    username: str
+    email: str | None = None
+    fullname: str | None = None
+    disable: bool | None = None
+
+    class Config:
+        orm_mode = True
+
+
+class UserInDB(User):
+    hashed_password: str
+
+    class Config:
+        orm_mode = True
+
+
+class requestdetails(BaseModel):
+    email: str
+    password: str
+
+
+class TokenSchema(BaseModel):
+    access_token: str
+    refresh_token: str
+
+
+class changepassword(BaseModel):
+    email: str
+    old_password: str
+    new_password: str
+
+
+class TokenCreate(BaseModel):
+    user_id: str
+    access_token: str
+    refresh_token: str
+    status: bool
+    created_date: datetime
+
+
+class UserCreate(BaseModel):
+    username: str
+    email: str
+    password: str
+
+
+class requestdetails(BaseModel):
+    email: str
+    password: str
+
+
+class TokenSchema(BaseModel):
+    access_token: str
+    refresh_token: str
+
+
+class changepassword(BaseModel):
+    email: str
+    old_password: str
+    new_password: str
+
+
+class TokenCreate(BaseModel):
+    user_id: str
+    access_token: str
+    refresh_token: str
+    status: bool
+    created_date: datetime

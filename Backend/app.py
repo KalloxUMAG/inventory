@@ -29,6 +29,7 @@ from routes.supplies_brands import supplies_brands
 from routes.supplies_formats import supplies_formats
 from routes.supplies_types import supplies_types
 from routes.units import units
+from routes.users import users
 
 
 def create_tables():
@@ -77,8 +78,8 @@ routes = [
     supplies_types,
     suppliers,
     suppliers_contacts,
-    suppliers_supplies
-    
+    suppliers_supplies,
+    users,
 ]
 
 for route in routes:
