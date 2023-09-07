@@ -9,4 +9,4 @@ class RoomSchema(BaseModel):
     unit_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

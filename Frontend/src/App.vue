@@ -3,11 +3,28 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { createApp ,defineComponent } from 'vue'
+import { createStore} from 'vuex'
 
-export default defineComponent({
-  name: 'App'
+
+const store = createStore({
+  state(){
+    return {
+      count: 0
+    }
+  },
+  mutations: {
+    increment(state){
+      state.count++
+    }
+  }
 })
+
+const app = defineComponent({
+  name: 'App', 
+})
+
+export default app
 </script>
 
 <style lang="scss">

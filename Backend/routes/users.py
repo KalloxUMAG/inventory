@@ -14,7 +14,8 @@ from sqlalchemy.orm import Session
 
 from models.models import Users, TokenTable
 
-from routes.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer
+from functools import wraps
 
 users = APIRouter()
 
@@ -26,6 +27,26 @@ REFRESH_SECRET_KEY = "13ugfdfgh@#$%^@&jkl45678902"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 10
 REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 3
+
+
+def token_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        payload = jwt.decode(kwargs["dependencies"], SECRET_KEY, ALGORITHM)
+        user_id = payload["sub"]
+        data = (
+            kwargs["session"]
+            .query(TokenTable)
+            .filter_by(user_id=user_id, access_toke=kwargs["dependencies"], status=True)
+            .first()
+        )
+        if data:
+            return func(kwargs["dependencies"], kwargs["session"])
+
+        else:
+            return {"msg": "Token blocked"}
+
+    return wrapper
 
 
 def verify_password(plain_password: str, hashed_password: str) -> str:
@@ -86,7 +107,7 @@ async def create_user(user: UserInDB, db: Session = Depends(get_db)):
     return new_user
 
 
-@users.post("/login", response_model=TokenSchema, tags=["users"])
+@users.post("/api/login", response_model=TokenSchema, tags=["users"])
 def login(request: requestdetails, db: Session = Depends(get_db)):
     user = db.query(Users).filter(Users.email == request.email).first()
     if user is None:
@@ -114,13 +135,13 @@ def login(request: requestdetails, db: Session = Depends(get_db)):
     }
 
 
-@users.get("/getusers", tags=["users"])
+@users.get("/api/getusers", tags=["users"])
 def getusers(dependencies=Depends(JWTBearer()), session: Session = Depends(get_db)):
     user = session.query(Users).all()
     return user
 
 
-@users.post("/change-password", tags=["users"])
+@users.post("/api/change-password", tags=["users"])
 def change_password(request: changepassword, db: Session = Depends(get_db)):
     user = db.query(Users).filter(Users.email == request.email).first()
     if user is None:
@@ -138,3 +159,33 @@ def change_password(request: changepassword, db: Session = Depends(get_db)):
     db.commit()
 
     return {"message": "Password changed successfully"}
+
+
+@users.post("/api/logout", tags=["users"])
+def logout(dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
+    token = dependencies
+    payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
+    user_id = payload["sub"]
+    token_record = db.query(TokenTable).all()
+    info = []
+    for record in token_record:
+        print("record", record)
+        if (datetime.utcnow() - record.created_date).days > 1:
+            info.append(record.user_id)
+    if info:
+        existing_token = (
+            db.query(TokenTable).where(TokenTable.user_id.in_(info)).delete()
+        )
+        db.commit()
+
+    existing_token = (
+        db.query(TokenTable)
+        .filter(TokenTable.user_id == user_id, TokenTable.access_toke == token)
+        .first()
+    )
+    if existing_token:
+        existing_token.status = False
+        db.add(existing_token)
+        db.commit()
+        db.refresh(existing_token)
+    return {"message": "Logout Successfully"}

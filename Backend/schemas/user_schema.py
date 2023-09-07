@@ -11,14 +11,14 @@ class User(BaseModel):
     disable: bool | None = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserInDB(User):
     hashed_password: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class requestdetails(BaseModel):

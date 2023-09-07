@@ -16,7 +16,9 @@ from config.settings import settings
 from models.models import Invoice
 from schemas.invoce_schema import InvoiceSchema
 
-invoices = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+invoices = APIRouter(dependencies=[Depends(JWTBearer())], tags=["invoices"])
 
 
 @invoices.get("/api/invoices", response_model=List[InvoiceSchema])
@@ -26,7 +28,9 @@ def get_inovices(db: Session = Depends(get_db)):
 
 @invoices.post("/api/invoices", status_code=HTTP_201_CREATED)
 async def add_invoice(invoice: InvoiceSchema, db: Session = Depends(get_db)):
-    new_invoice = Invoice(number=invoice.number, date=invoice.date, supplier_id=invoice.supplier_id)
+    new_invoice = Invoice(
+        number=invoice.number, date=invoice.date, supplier_id=invoice.supplier_id
+    )
     db.add(new_invoice)
     db.commit()
     db.refresh(new_invoice)
@@ -51,7 +55,9 @@ def get_invoice(invoice_id: int, db: Session = Depends(get_db)):
 
 
 # Get invoice by supplier_id
-@invoices.get("/api/invoices/supplier/{supplier_id}", response_model=List[InvoiceSchema])
+@invoices.get(
+    "/api/invoices/supplier/{supplier_id}", response_model=List[InvoiceSchema]
+)
 def get_invoice_supplier(supplier_id: int, db: Session = Depends(get_db)):
     return db.query(Invoice).filter(Invoice.supplier_id == supplier_id).all()
 

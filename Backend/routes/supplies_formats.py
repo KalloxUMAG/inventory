@@ -8,18 +8,20 @@ from config.database import get_db
 from models.models import SupplyFormat
 from schemas.supplies_format_schema import SuppliesFormatsSchema
 
-supplies_formats = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+supplies_formats = APIRouter(dependencies=[Depends(JWTBearer())], tags=["supplies"])
 
 
 @supplies_formats.get(
-    "/api/supplies_formats", response_model=List[SuppliesFormatsSchema], tags=["supplies"]
+    "/api/supplies_formats", response_model=List[SuppliesFormatsSchema]
 )
 def get_supplies_formats(db: Session = Depends(get_db)):
     result = db.query(SupplyFormat.id, SupplyFormat.name).all()
     return result
 
 
-@supplies_formats.post("/api/supplies_formats", status_code=HTTP_201_CREATED, tags=["supplies"])
+@supplies_formats.post("/api/supplies_formats", status_code=HTTP_201_CREATED)
 def add_supplies_format(sformat: SuppliesFormatsSchema, db: Session = Depends(get_db)):
     new_supplies_format = SupplyFormat(name=sformat.name)
     db.add(new_supplies_format)

@@ -20,7 +20,7 @@ class EquipmentSchema(BaseModel):
     stage_id: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class EquipmentListSchema(BaseModel):
@@ -46,7 +46,7 @@ class EquipmentListSchema(BaseModel):
     stage_name: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class EquipmentFullSchema(BaseModel):
@@ -82,7 +82,7 @@ class EquipmentFullSchema(BaseModel):
     project_owner_name: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UpdateEquipmentSchema(BaseModel):
@@ -101,7 +101,7 @@ class UpdateEquipmentSchema(BaseModel):
     stage_id: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class NextMaintenanceSchema(BaseModel):
@@ -110,4 +110,4 @@ class NextMaintenanceSchema(BaseModel):
     date: Optional[date] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True

@@ -11,4 +11,4 @@ class InvoiceSchema(BaseModel):
     supplier_id: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True

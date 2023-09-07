@@ -9,7 +9,9 @@ from models.models import Stage
 from routes.projects import get_project
 from schemas.stage_schema import StageSchema
 
-stages = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+stages = APIRouter(dependencies=[Depends(JWTBearer())], tags=["projects"])
 
 
 @stages.get("/api/stages", response_model=List[StageSchema])
@@ -42,7 +44,9 @@ def get_stages_project(project_id: int, db: Session = Depends(get_db)):
 
 
 @stages.put("/api/stages/{stage_id}", response_model=StageSchema)
-def update_stage(data_update: StageSchema, stage_id: int, db: Session = Depends(get_db)):
+def update_stage(
+    data_update: StageSchema, stage_id: int, db: Session = Depends(get_db)
+):
     db_stage = get_stage(stage_id, db=db)
     if not db_stage:
         return Response(status_code=HTTP_404_NOT_FOUND)

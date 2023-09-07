@@ -8,22 +8,26 @@ from config.database import get_db
 from models.models import Supplier, SuppliersHasSupplies, Supply
 from schemas.supplier_supply_schema import GetSupplierSupplySchema, SupplierSupplySchema
 
-suppliers_supplies = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+suppliers_supplies = APIRouter(dependencies=[Depends(JWTBearer())], tags=["suppliers"])
 
 
 @suppliers_supplies.get(
-    "/api/suppliers_supplies", response_model=List[SupplierSupplySchema], tags=["suppliers"]
+    "/api/suppliers_supplies", response_model=List[SupplierSupplySchema]
 )
 def get_suppliers_supplies(db: Session = Depends(get_db)):
     result = db.query(SuppliersHasSupplies).all()
     return result
 
 
-@suppliers_supplies.post(
-    "/api/suppliers_supplies", status_code=HTTP_201_CREATED, tags=["suppliers"]
-)
-def add_supplier_supply(supplier_supply: SupplierSupplySchema, db: Session = Depends(get_db)):
-    db_supplier = db.query(Supplier).filter(Supplier.id == supplier_supply.supplier_id).first()
+@suppliers_supplies.post("/api/suppliers_supplies", status_code=HTTP_201_CREATED)
+def add_supplier_supply(
+    supplier_supply: SupplierSupplySchema, db: Session = Depends(get_db)
+):
+    db_supplier = (
+        db.query(Supplier).filter(Supplier.id == supplier_supply.supplier_id).first()
+    )
     if not db_supplier:
         return Response(status_code=HTTP_404_NOT_FOUND)
     db_supply = db.query(Supply).filter(Supply.id == supplier_supply.supply_id).first()
@@ -41,9 +45,7 @@ def add_supplier_supply(supplier_supply: SupplierSupplySchema, db: Session = Dep
 
 
 @suppliers_supplies.get(
-    "/api/suppliers_supplies/{supply_id}",
-    response_model=List[GetSupplierSupplySchema],
-    tags=["suppliers"],
+    "/api/suppliers_supplies/{supply_id}", response_model=List[GetSupplierSupplySchema]
 )
 def get_suppliers_supply(supply_id: int, db: Session = Depends(get_db)):
     result = (

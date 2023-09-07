@@ -9,4 +9,4 @@ class ModelSchema(BaseModel):
     brand_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

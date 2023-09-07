@@ -18,7 +18,7 @@ class SupplyListSchema(BaseModel):
     supplies_format_name: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SupplySchemaFull(BaseModel):
@@ -39,7 +39,7 @@ class SupplySchemaFull(BaseModel):
     supplies_format_name: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SupplySchema(BaseModel):
@@ -57,11 +57,11 @@ class SupplySchema(BaseModel):
     supplies_format_id: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UpdateStockSchema(BaseModel):
     stock: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

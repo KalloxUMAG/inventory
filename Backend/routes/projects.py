@@ -8,7 +8,9 @@ from config.database import get_db
 from models.models import Project
 from schemas.project_schema import ProjectSchema
 
-projects = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+projects = APIRouter(dependencies=[Depends(JWTBearer())], tags=["projects"])
 
 
 @projects.get("/api/projects", response_model=List[ProjectSchema])
@@ -33,7 +35,9 @@ def get_project(project_id: int, db: Session = Depends(get_db)):
 
 
 @projects.put("/api/projects/{project_id}", response_model=ProjectSchema)
-def update_project(data_update: ProjectSchema, project_id: int, db: Session = Depends(get_db)):
+def update_project(
+    data_update: ProjectSchema, project_id: int, db: Session = Depends(get_db)
+):
     db_project = get_project(project_id, db=db)
     if not db_project:
         return Response(status_code=HTTP_404_NOT_FOUND)

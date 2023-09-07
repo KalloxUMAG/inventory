@@ -22,7 +22,7 @@ class LotListSchema(BaseModel):
     supplier_name: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CreateLotSchema(BaseModel):
@@ -36,4 +36,4 @@ class CreateLotSchema(BaseModel):
     supplier_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

@@ -1,20 +1,18 @@
 from jose import jwt, JWTError
-from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from models.models import TokenTable
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30  # 30 minutes
 REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 ALGORITHM = "HS256"
-JWT_SECRET_KEY = "narscbjim@$@&^@&%^&RFghgjvbdsha"  # should be kept secret
-JWT_REFRESH_SECRET_KEY = "13ugfdfgh@#$%^@&jkl45678902"
+SECRET_KEY = "32375e2ab7aded81e59257233f4c014b94ea0498206a0e2754e3b2221d58f272"
+REFRESH_SECRET_KEY = "13ugfdfgh@#$%^@&jkl45678902"
 
 
 def decodeJWT(jwtoken: str):
     try:
         # Decode and verify the token
-        payload = jwt.decode(jwtoken, JWT_SECRET_KEY, ALGORITHM)
+        payload = jwt.decode(jwtoken, SECRET_KEY, ALGORITHM)
         return payload
     except JWTError:
         return None

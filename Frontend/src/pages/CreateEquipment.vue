@@ -70,7 +70,7 @@
                   getModels();
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -90,7 +90,7 @@
                 label="Nombre marca"
                 class="col"
                 :disable="disableBrand"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -111,7 +111,7 @@
                   getModelNumbers();
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -131,7 +131,7 @@
                 label="Nombre modelo"
                 class="col"
                 :disable="disableBrand"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -154,7 +154,7 @@
                   modelNumber = value;
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -174,7 +174,7 @@
                 label="Número modelo"
                 class="col"
                 :disable="disableBrand"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -225,7 +225,7 @@
           label="Periodo de mantención"
           not_found_label="No hay periodos disponibles"
           @updateModel="(value) => (maintenance = value)"
-          :rules="[val => !!val || 'Campo obligatorio']"
+          :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
         <!--Observacion-->
@@ -234,7 +234,7 @@
           v-model="observation"
           type="textarea"
           label="Observación"
-          :rules="[val => !!val || 'Campo obligatorio']"
+          :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
 
@@ -277,7 +277,9 @@
                 (supplier = value), getInvoicesSupplier(value);
               }
             "
-            :rules="[/*[val => !!val || 'Campo obligatorio']*/]"
+            :rules="[
+              /*[val => !!val || 'Campo obligatorio']*/
+            ]"
             lazy-rules
           />
           <div class="row justify-end q-mt-md">
@@ -298,7 +300,7 @@
               label="Nombre proveedor"
               class="col"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
@@ -308,7 +310,7 @@
               mask="##.###.###-X"
               class="col q-ml-md"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
@@ -317,7 +319,7 @@
               label="Dirección"
               class="col q-ml-md"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -328,7 +330,7 @@
               label="Nombre trabajador"
               class="col"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <SelectForm
@@ -341,7 +343,7 @@
               not_found_label="No hay roles disponibles"
               @updateModel="(value) => (workerrol1 = value)"
               class="col q-ml-md"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
@@ -351,7 +353,7 @@
               label="Correo trabajador"
               class="col q-ml-md"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
@@ -361,7 +363,7 @@
               mask="(+##) #####-####"
               class="col q-ml-md"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -449,7 +451,9 @@
             label="Facturas"
             not_found_label="No hay facturas disponibles"
             @updateModel="(value) => (invoice = value)"
-            :rules="[/*val => !!val || 'Campo obligatorio'*/]"
+            :rules="[
+              /*val => !!val || 'Campo obligatorio'*/
+            ]"
             lazy-rules
           />
           <div class="row justify-end q-mt-md">
@@ -471,7 +475,7 @@
               type="number"
               class="col"
               :disable="disableInvoice"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
@@ -482,7 +486,7 @@
               stack-label
               class="col q-ml-md"
               :disable="disableInvoice"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -545,7 +549,9 @@
                   getStages();
                 }
               "
-              :rules="[/*val => !!val || 'Campo obligatorio'*/]"
+              :rules="[
+                /*val => !!val || 'Campo obligatorio'*/
+              ]"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -565,7 +571,7 @@
                 label="Nombre proyeto"
                 class="col"
                 :disable="disableProject"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -582,7 +588,9 @@
               label="Etapas"
               not_found_label="No hay etapas disponibles"
               @updateModel="(value) => (stage = value)"
-              :rules="[/*val => !!val || 'Campo obligatorio'*/]"
+              :rules="[
+                /*val => !!val || 'Campo obligatorio'*/
+              ]"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -602,7 +610,7 @@
                 label="Nombre etapa"
                 class="col"
                 :disable="disableProject"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -649,7 +657,7 @@
                   projectowner = value;
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-mt-md">
@@ -668,7 +676,7 @@
               v-model="newprojectownername"
               label="Nombre dueño"
               :disable="disableProjectOwner"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-mt-md">
@@ -719,7 +727,7 @@
                   getUnits();
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -739,7 +747,7 @@
                 label="Nombre edificio"
                 class="col"
                 :disable="disableLocation"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -760,7 +768,7 @@
                   getRooms();
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -781,7 +789,7 @@
                 label="Nombre unidad"
                 class="col"
                 :disable="disableLocation"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -804,7 +812,7 @@
                   room = value;
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -824,7 +832,7 @@
                 label="Nombre sala"
                 class="col"
                 :disable="disableLocation"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -1530,7 +1538,7 @@ async function onSubmit() {
     invoice_id: invoice.value,
     room_id: room.value,
     stage_id: stage.value,
-    last_preventive_mainteinance: reception_date.value
+    last_preventive_mainteinance: reception_date.value,
   };
 
   loading.value = true;
@@ -1589,11 +1597,11 @@ async function onSubmit() {
   const project_owner_id = await createNewProjectOwner();
   const project_id = await createNewProject(project_owner_id);
   const stage_id = await createNewStage(project_id);
-  if(stage_id == -1){
+  if (stage_id == -1) {
     loading.value = false;
     return;
   }
-  equipmentdata['stage_id'] = stage_id
+  equipmentdata["stage_id"] = stage_id;
   const equipment_id = await createNewEquipment(equipmentdata);
   await uploadEquipmentImage(equipment_id);
   await uploadInvoiceImage(equipment_id);
@@ -1607,6 +1615,10 @@ function redirectToEquipment(equipment_id) {
   router.push({ path: equipment_id });
 }
 
+function redirectToLogin() {
+  router.push({ path: "/login" });
+}
+
 onMounted(() => {
   getBrands();
   getInvoices();
@@ -1614,11 +1626,11 @@ onMounted(() => {
   getProjectOwners();
   getSuppliers();
   getBuildings();
+  redirectToLogin();
 });
 </script>
 
 <style scoped>
-
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;

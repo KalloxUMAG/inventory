@@ -8,7 +8,9 @@ from config.database import get_db
 from models.models import Brand
 from schemas.brand_schema import BrandSchema
 
-brands = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+brands = APIRouter(dependencies=[Depends(JWTBearer())])
 
 
 @brands.get("/api/brands", response_model=List[BrandSchema])
@@ -33,7 +35,9 @@ def get_brand(brand_id: int, db: Session = Depends(get_db)):
 
 
 @brands.put("/api/brands/{brand_id}", response_model=BrandSchema)
-def update_brand(data_update: BrandSchema, brand_id: int, db: Session = Depends(get_db)):
+def update_brand(
+    data_update: BrandSchema, brand_id: int, db: Session = Depends(get_db)
+):
     db_brand = db.query(Brand).filter(Brand.id == brand_id).first()
     if not db_brand:
         return Response(status_code=HTTP_404_NOT_FOUND)

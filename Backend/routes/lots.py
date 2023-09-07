@@ -20,10 +20,12 @@ from models.models import (
 )
 from schemas.lot_schema import CreateLotSchema, LotListSchema
 
-lots = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+lots = APIRouter(dependencies=[Depends(JWTBearer())], tags=["supplies"])
 
 
-@lots.get("/api/lots", response_model=List[LotListSchema], tags=["supplies"])
+@lots.get("/api/lots", response_model=List[LotListSchema])
 def get_lots(db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -46,7 +48,7 @@ def get_lots(db: Session = Depends(get_db)):
     return result
 
 
-@lots.post("/api/lots", status_code=HTTP_201_CREATED, tags=["supplies"])
+@lots.post("/api/lots", status_code=HTTP_201_CREATED)
 def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
     new_lot = lot(
         number=lot.number,
@@ -65,7 +67,7 @@ def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@lots.get("/api/lots/lot/{lot_id}", response_model=LotListSchema, tags=["supplies"])
+@lots.get("/api/lots/lot/{lot_id}", response_model=LotListSchema)
 def get_lot(lot_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -92,7 +94,7 @@ def get_lot(lot_id: int, db: Session = Depends(get_db)):
     return result
 
 
-@lots.get("/api/lots/supply/{supply_id}", response_model=List[LotListSchema], tags=["supplies"])
+@lots.get("/api/lots/supply/{supply_id}", response_model=List[LotListSchema])
 def get_lots_supply(supply_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -122,8 +124,10 @@ def get_lots_supply(supply_id: int, db: Session = Depends(get_db)):
     return result
 
 
-@lots.put("/api/lots/{lot_id}", response_model=CreateLotSchema, tags=["supplies"])
-def update_lot(data_update: CreateLotSchema, lot_id: int, db: Session = Depends(get_db)):
+@lots.put("/api/lots/{lot_id}", response_model=CreateLotSchema)
+def update_lot(
+    data_update: CreateLotSchema, lot_id: int, db: Session = Depends(get_db)
+):
     db_lot = db.query(Lot).filter(Lot.id == lot_id).first()
     if not db_lot:
         return Response(status_code=HTTP_404_NOT_FOUND)
@@ -135,7 +139,7 @@ def update_lot(data_update: CreateLotSchema, lot_id: int, db: Session = Depends(
     return db_lot
 
 
-@lots.put("/api/lots/deactive/{lot_id}", status_code=HTTP_205_RESET_CONTENT, tags=["supplies"])
+@lots.put("/api/lots/deactive/{lot_id}", status_code=HTTP_205_RESET_CONTENT)
 def deactive_lot(lot_id: int, db: Session = Depends(get_db)):
     db_lot = db.query(Lot).filter(Lot.id == lot_id).first()
     if not db_lot:
