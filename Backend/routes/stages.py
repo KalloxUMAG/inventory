@@ -11,16 +11,18 @@ from schemas.stage_schema import StageSchema
 
 from auth.auth_bearer import JWTBearer
 
-stages = APIRouter(dependencies=[Depends(JWTBearer())], tags=["projects"])
+stages = APIRouter(
+    dependencies=[Depends(JWTBearer())], tags=["projects"], prefix="/api/stages"
+)
 
 
-@stages.get("/api/stages", response_model=List[StageSchema])
+@stages.get("", response_model=List[StageSchema])
 def get_stages(db: Session = Depends(get_db)):
     result = db.query(Stage).all()
     return result
 
 
-@stages.post("/api/stages", status_code=HTTP_201_CREATED)
+@stages.post("", status_code=HTTP_201_CREATED)
 def add_stage(stage: StageSchema, db: Session = Depends(get_db)):
     db_project = get_project(stage.project_id, db=db)
     if not db_project:
@@ -33,17 +35,17 @@ def add_stage(stage: StageSchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@stages.get("/api/stage/{stage_id}", response_model=StageSchema)
+@stages.get("/stage/{stage_id}", response_model=StageSchema)
 def get_stage(stage_id: int, db: Session = Depends(get_db)):
     return db.query(Stage).filter(Stage.id == stage_id).first()
 
 
-@stages.get("/api/stages/{project_id}", response_model=List[StageSchema])
+@stages.get("/{project_id}", response_model=List[StageSchema])
 def get_stages_project(project_id: int, db: Session = Depends(get_db)):
     return db.query(Stage).filter(Stage.project_id == project_id).all()
 
 
-@stages.put("/api/stages/{stage_id}", response_model=StageSchema)
+@stages.put("/{stage_id}", response_model=StageSchema)
 def update_stage(
     data_update: StageSchema, stage_id: int, db: Session = Depends(get_db)
 ):
@@ -62,7 +64,7 @@ def update_stage(
     return db_stage
 
 
-@stages.delete("/api/stages/{stage_id}", status_code=HTTP_204_NO_CONTENT)
+@stages.delete("/{stage_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_stage(stage_id: int, db: Session = Depends(get_db)):
     db_stage = get_stage(stage_id, db=db)
     if not db_stage:

@@ -16,10 +16,12 @@ from schemas.supply_schema import (
 
 from auth.auth_bearer import JWTBearer
 
-supplies = APIRouter(dependencies=[Depends(JWTBearer())], tags=["supplies"])
+supplies = APIRouter(
+    dependencies=[Depends(JWTBearer())], tags=["supplies"], prefix="/api/supplies"
+)
 
 
-@supplies.get("/api/supplies", response_model=List[SupplyListSchema])
+@supplies.get("", response_model=List[SupplyListSchema])
 def get_supplies(db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -45,7 +47,7 @@ def get_supplies(db: Session = Depends(get_db)):
     return result
 
 
-@supplies.get("/api/supplies/critical", response_model=List[SupplyListSchema])
+@supplies.get("/critical", response_model=List[SupplyListSchema])
 def get_supplies_critical(db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -70,7 +72,7 @@ def get_supplies_critical(db: Session = Depends(get_db)):
     return result
 
 
-@supplies.post("/api/supplies", status_code=HTTP_201_CREATED)
+@supplies.post("", status_code=HTTP_201_CREATED)
 def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
     new_supply = Supply(
         name=supply.name,
@@ -92,7 +94,7 @@ def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@supplies.get("/api/supplies/{supply_id}", response_model=SupplySchemaFull)
+@supplies.get("/{supply_id}", response_model=SupplySchemaFull)
 def get_supply(supply_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -123,7 +125,7 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
     return result
 
 
-@supplies.put("/api/supplies/stock/{supply_id}", response_model=SupplySchema)
+@supplies.put("/stock/{supply_id}", response_model=SupplySchema)
 def update_stock(
     data_update: UpdateStockSchema, supply_id: int, db: Session = Depends(get_db)
 ):
@@ -137,7 +139,7 @@ def update_stock(
     return db_supply
 
 
-@supplies.put("/api/supplies/{supply_id}", response_model=SupplySchema)
+@supplies.put("/{supply_id}", response_model=SupplySchema)
 def update_supply(
     data_update: SupplySchema, supply_id: int, db: Session = Depends(get_db)
 ):
@@ -152,7 +154,7 @@ def update_supply(
     return db_supply
 
 
-@supplies.delete("/api/supplies/{supply_id}", status_code=HTTP_204_NO_CONTENT)
+@supplies.delete("/{supply_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_supply(supply_id: int, db: Session = Depends(get_db)):
     db_supply = db.query(Supply).filter(Supply.id == supply_id).first()
     if not db_supply:

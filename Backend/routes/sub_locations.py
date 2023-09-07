@@ -10,16 +10,18 @@ from schemas.sub_location_schema import SubLocationSchema
 
 from auth.auth_bearer import JWTBearer
 
-sub_locations = APIRouter(dependencies=[Depends(JWTBearer())], tags=["locations"])
+sub_locations = APIRouter(
+    dependencies=[Depends(JWTBearer())], tags=["locations"], prefix="/api/sub_locations"
+)
 
 
-@sub_locations.get("/api/sub_locations", response_model=List[SubLocationSchema])
+@sub_locations.get("", response_model=List[SubLocationSchema])
 def get_sub_locations(db: Session = Depends(get_db)):
     result = db.query(SubLocation).all()
     return result
 
 
-@sub_locations.post("/api/sub_locations", status_code=HTTP_201_CREATED)
+@sub_locations.post("", status_code=HTTP_201_CREATED)
 def add_sub_location(sub_location: SubLocationSchema, db: Session = Depends(get_db)):
     db_location = (
         db.query(Location).filter(Location.id == sub_location.location_id).first()
@@ -36,8 +38,6 @@ def add_sub_location(sub_location: SubLocationSchema, db: Session = Depends(get_
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@sub_locations.get(
-    "/api/sub_locations/{location_id}", response_model=List[SubLocationSchema]
-)
+@sub_locations.get("/{location_id}", response_model=List[SubLocationSchema])
 def get_sub_locations_locations(location_id: int, db: Session = Depends(get_db)):
     return db.query(SubLocation).filter(SubLocation.location_id == location_id).all()

@@ -15,16 +15,18 @@ from schemas.maintenance_schema import (
 
 from auth.auth_bearer import JWTBearer
 
-maintenances = APIRouter(dependencies=[Depends(JWTBearer())], tags=["equipments"])
+maintenances = APIRouter(
+    dependencies=[Depends(JWTBearer())], tags=["equipments"], prefix="/api/maintenances"
+)
 
 
-@maintenances.get("/api/maintenances", response_model=List[MaintenanceSchema])
+@maintenances.get("", response_model=List[MaintenanceSchema])
 def get_maintenances(db: Session = Depends(get_db)):
     result = db.query(Maintenance).all()
     return result
 
 
-@maintenances.post("/api/maintenances", status_code=HTTP_201_CREATED)
+@maintenances.post("", status_code=HTTP_201_CREATED)
 def add_maintenances(maintenance: MaintenanceSchema, db: Session = Depends(get_db)):
     db_equipment = get_equipment_exist(maintenance.equiptment_id, db=db)
     if not db_equipment:
@@ -42,14 +44,12 @@ def add_maintenances(maintenance: MaintenanceSchema, db: Session = Depends(get_d
     return Response(status_code=HTTP_201_CREATED)
 
 
-@maintenances.get("/api/maintenance/{maintenance_id}", response_model=MaintenanceSchema)
+@maintenances.get("/maintenance/{maintenance_id}", response_model=MaintenanceSchema)
 def get_maintenance(maintenance_id: int, db: Session = Depends(get_db)):
     return db.query(Maintenance).filter(Maintenance.id == maintenance_id).first()
 
 
-@maintenances.get(
-    "/api/maintenances/{equipment_id}", response_model=List[MaintenanceFromEquipment]
-)
+@maintenances.get("/{equipment_id}", response_model=List[MaintenanceFromEquipment])
 def get_maintenances_equipment(equipment_id: int, db: Session = Depends(get_db)):
     return (
         db.query(
@@ -67,7 +67,7 @@ def get_maintenances_equipment(equipment_id: int, db: Session = Depends(get_db))
 
 
 @maintenances.get(
-    "/api/maintenances/last_maintenance/{equipment_id}",
+    "/last_maintenance/{equipment_id}",
     response_model=MaintenanceFromEquipment,
 )
 def get_last_maintenance_equipment(equipment_id: int, db: Session = Depends(get_db)):
@@ -89,9 +89,7 @@ def get_last_maintenance_equipment(equipment_id: int, db: Session = Depends(get_
     )
 
 
-@maintenances.put(
-    "/api/maintenances/{maintenance_id}", response_model=MaintenanceSchema
-)
+@maintenances.put("/{maintenance_id}", response_model=MaintenanceSchema)
 def update_maintenance(
     data_update: EditMaintenanceSchema,
     maintenance_id: int,
@@ -108,9 +106,7 @@ def update_maintenance(
     return db_maintenance
 
 
-@maintenances.delete(
-    "/api/maintenances/{maintenance_id}", status_code=HTTP_204_NO_CONTENT
-)
+@maintenances.delete("/{maintenance_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_maintenance(maintenance_id: int, db: Session = Depends(get_db)):
     db_maintenance = get_maintenance(maintenance_id, db=db)
     if not db_maintenance:

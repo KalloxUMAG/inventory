@@ -10,16 +10,18 @@ from schemas.location_schema import LocationSchema
 
 from auth.auth_bearer import JWTBearer
 
-locations = APIRouter(dependencies=[Depends(JWTBearer())], tags=["locations"])
+locations = APIRouter(
+    dependencies=[Depends(JWTBearer())], tags=["locations"], prefix="/api/locations"
+)
 
 
-@locations.get("/api/locations", response_model=List[LocationSchema])
+@locations.get("", response_model=List[LocationSchema])
 def get_locations(db: Session = Depends(get_db)):
     result = db.query(Location).all()
     return result
 
 
-@locations.post("/api/locations", status_code=HTTP_201_CREATED)
+@locations.post("", status_code=HTTP_201_CREATED)
 def add_location(location: LocationSchema, db: Session = Depends(get_db)):
     new_location = Location(name=location.name)
     db.add(new_location)
@@ -29,6 +31,6 @@ def add_location(location: LocationSchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@locations.get("/api/locations/{location_id}", response_model=LocationSchema)
+@locations.get("/{location_id}", response_model=LocationSchema)
 def get_location(location_id: int, db: Session = Depends(get_db)):
     return db.query(Location).filter(Location.id == location_id).first()

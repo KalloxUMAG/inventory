@@ -17,7 +17,7 @@ from models.models import Users, TokenTable
 from auth.auth_bearer import JWTBearer
 from functools import wraps
 
-users = APIRouter()
+users = APIRouter(tags=["users"], prefix="/api/users")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -85,7 +85,7 @@ def create_refresh_token(subject: Union[str, Any], expires_delta: int = None) ->
     return encoded_jwt
 
 
-@users.post("/api/users", tags=["users"])
+@users.post("", tags=["users"])
 async def create_user(user: UserInDB, db: Session = Depends(get_db)):
     username = user.username.lower()
     email = user.email.lower()
@@ -107,7 +107,7 @@ async def create_user(user: UserInDB, db: Session = Depends(get_db)):
     return new_user
 
 
-@users.post("/api/login", response_model=TokenSchema, tags=["users"])
+@users.post("/login", response_model=TokenSchema, tags=["users"])
 def login(request: requestdetails, db: Session = Depends(get_db)):
     user = db.query(Users).filter(Users.email == request.email).first()
     if user is None:
@@ -135,13 +135,13 @@ def login(request: requestdetails, db: Session = Depends(get_db)):
     }
 
 
-@users.get("/api/getusers", tags=["users"])
+@users.get("/getusers", tags=["users"])
 def getusers(dependencies=Depends(JWTBearer()), session: Session = Depends(get_db)):
     user = session.query(Users).all()
     return user
 
 
-@users.post("/api/change-password", tags=["users"])
+@users.post("/change-password", tags=["users"])
 def change_password(request: changepassword, db: Session = Depends(get_db)):
     user = db.query(Users).filter(Users.email == request.email).first()
     if user is None:
@@ -161,7 +161,7 @@ def change_password(request: changepassword, db: Session = Depends(get_db)):
     return {"message": "Password changed successfully"}
 
 
-@users.post("/api/logout", tags=["users"])
+@users.post("/logout", tags=["users"])
 def logout(dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     token = dependencies
     payload = jwt.decode(token, SECRET_KEY, ALGORITHM)

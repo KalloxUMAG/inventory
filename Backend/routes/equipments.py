@@ -37,10 +37,12 @@ from schemas.equipment_schema import (
 
 from auth.auth_bearer import JWTBearer
 
-equipments = APIRouter(dependencies=[Depends(JWTBearer())], tags=["equipments"])
+equipments = APIRouter(
+    dependencies=[Depends(JWTBearer())], tags=["equipments"], prefix="/api/equipments"
+)
 
 
-@equipments.get("/api/equipments", response_model=List[EquipmentListSchema])
+@equipments.get("", response_model=List[EquipmentListSchema])
 def get_equipments(db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -75,16 +77,14 @@ def get_equipments(db: Session = Depends(get_db)):
     return result
 
 
-@equipments.get(
-    "/api/equipments/nextmaintenances", response_model=List[NextMaintenanceSchema]
-)
+@equipments.get("/nextmaintenances", response_model=List[NextMaintenanceSchema])
 def get_equipments_nextmaintenances(db: Session = Depends(get_db)):
     query = db.query(Equipment).all()
 
     return query
 
 
-@equipments.post("/api/equipments", status_code=HTTP_201_CREATED)
+@equipments.post("", status_code=HTTP_201_CREATED)
 def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
     if equipment.supplier_id is not None:
         db_supplier = get_supplier(equipment.supplier_id, db=db)
@@ -130,7 +130,7 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
 
 
 # Upload image to equipments folder using invoice id
-@equipments.post("/api/equipments/{equipment_id}", status_code=HTTP_201_CREATED)
+@equipments.post("/{equipment_id}", status_code=HTTP_201_CREATED)
 async def add_image(equipment_id: int, file: UploadFile):
     image_path = Path(settings.image_directory, "equipments", str(equipment_id))
     image_path.mkdir(parents=True, exist_ok=True)
@@ -140,7 +140,7 @@ async def add_image(equipment_id: int, file: UploadFile):
 
 
 # Get images from equipments folder
-@equipments.get("/api/equipments/image/{equipment_id}")
+@equipments.get("/image/{equipment_id}")
 async def get_images(equipment_id: int):
     image_path = Path(settings.image_directory, "equipments", str(equipment_id))
     if not image_path.exists():
@@ -157,7 +157,7 @@ async def get_images(equipment_id: int):
     ]
 
 
-@equipments.get("/api/equipments/{equipment_id}", response_model=EquipmentFullSchema)
+@equipments.get("/{equipment_id}", response_model=EquipmentFullSchema)
 def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -209,12 +209,12 @@ def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
     return result
 
 
-@equipments.get("/api/equipment/{equipment_id}", response_model=EquipmentSchema)
+@equipments.get("/equipment/{equipment_id}", response_model=EquipmentSchema)
 def get_equipment_exist(equipment_id: int, db: Session = Depends(get_db)):
     return db.query(Equipment).filter(Equipment.id == equipment_id).first()
 
 
-@equipments.delete("/api/equipments/{equipment_id}", status_code=HTTP_204_NO_CONTENT)
+@equipments.delete("/{equipment_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_equipment(equipment_id: int, db: Session = Depends(get_db)):
     db_equipment = db.query(Equipment).filter(Equipment.id == equipment_id).first()
     if not db_equipment:
@@ -224,7 +224,7 @@ def delete_equipment(equipment_id: int, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@equipments.put("/api/equipments/{equipment_id}", response_model=UpdateEquipmentSchema)
+@equipments.put("/{equipment_id}", response_model=UpdateEquipmentSchema)
 def update_equipment(
     data_update: UpdateEquipmentSchema, equipment_id: int, db: Session = Depends(get_db)
 ):

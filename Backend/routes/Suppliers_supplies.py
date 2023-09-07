@@ -10,18 +10,20 @@ from schemas.supplier_supply_schema import GetSupplierSupplySchema, SupplierSupp
 
 from auth.auth_bearer import JWTBearer
 
-suppliers_supplies = APIRouter(dependencies=[Depends(JWTBearer())], tags=["suppliers"])
-
-
-@suppliers_supplies.get(
-    "/api/suppliers_supplies", response_model=List[SupplierSupplySchema]
+suppliers_supplies = APIRouter(
+    dependencies=[Depends(JWTBearer())],
+    tags=["suppliers"],
+    prefix="/api/suppliers_supplies",
 )
+
+
+@suppliers_supplies.get("", response_model=List[SupplierSupplySchema])
 def get_suppliers_supplies(db: Session = Depends(get_db)):
     result = db.query(SuppliersHasSupplies).all()
     return result
 
 
-@suppliers_supplies.post("/api/suppliers_supplies", status_code=HTTP_201_CREATED)
+@suppliers_supplies.post("", status_code=HTTP_201_CREATED)
 def add_supplier_supply(
     supplier_supply: SupplierSupplySchema, db: Session = Depends(get_db)
 ):
@@ -44,9 +46,7 @@ def add_supplier_supply(
     return Response(status_code=HTTP_201_CREATED)
 
 
-@suppliers_supplies.get(
-    "/api/suppliers_supplies/{supply_id}", response_model=List[GetSupplierSupplySchema]
-)
+@suppliers_supplies.get("/{supply_id}", response_model=List[GetSupplierSupplySchema])
 def get_suppliers_supply(supply_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(

@@ -10,16 +10,20 @@ from schemas.supplies_brand_schema import SuppliesBrandsSchema
 
 from auth.auth_bearer import JWTBearer
 
-supplies_brands = APIRouter(dependencies=[Depends(JWTBearer())], tags=["supplies"])
+supplies_brands = APIRouter(
+    dependencies=[Depends(JWTBearer())],
+    tags=["supplies"],
+    prefix="/api/supplies_brands",
+)
 
 
-@supplies_brands.get("/api/supplies_brands", response_model=List[SuppliesBrandsSchema])
+@supplies_brands.get("", response_model=List[SuppliesBrandsSchema])
 def get_supplies_brands(db: Session = Depends(get_db)):
     result = db.query(SupplyBrand.id, SupplyBrand.name).all()
     return result
 
 
-@supplies_brands.post("/api/supplies_brands", status_code=HTTP_201_CREATED)
+@supplies_brands.post("", status_code=HTTP_201_CREATED)
 def add_supplies_brand(brand: SuppliesBrandsSchema, db: Session = Depends(get_db)):
     new_supplies_brand = SupplyBrand(name=brand.name)
     db.add(new_supplies_brand)

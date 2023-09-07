@@ -11,16 +11,18 @@ from schemas.room_schema import RoomSchema
 
 from auth.auth_bearer import JWTBearer
 
-rooms = APIRouter(dependencies=[Depends(JWTBearer())], tags=["locations"])
+rooms = APIRouter(
+    dependencies=[Depends(JWTBearer())], tags=["locations"], prefix="/api/rooms"
+)
 
 
-@rooms.get("/api/rooms", response_model=List[RoomSchema])
+@rooms.get("", response_model=List[RoomSchema])
 def get_rooms(db: Session = Depends(get_db)):
     result = db.query(Room).all()
     return result
 
 
-@rooms.post("/api/rooms", status_code=HTTP_201_CREATED)
+@rooms.post("", status_code=HTTP_201_CREATED)
 def add_room(room: RoomSchema, db: Session = Depends(get_db)):
     db_unit = get_unit(room.unit_id, db=db)
     if not db_unit:
@@ -33,17 +35,17 @@ def add_room(room: RoomSchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@rooms.get("/api/room/{room_id}", response_model=RoomSchema)
+@rooms.get("/room/{room_id}", response_model=RoomSchema)
 def get_room(room_id: int, db: Session = Depends(get_db)):
     return db.query(Room).filter(Room.id == room_id).first()
 
 
-@rooms.get("/api/rooms/{unit_id}", response_model=List[RoomSchema])
+@rooms.get("/{unit_id}", response_model=List[RoomSchema])
 def get_rooms_unit(unit_id: int, db: Session = Depends(get_db)):
     return db.query(Room).filter(Room.unit_id == unit_id).all()
 
 
-@rooms.put("/api/rooms/{room_id}", response_model=RoomSchema)
+@rooms.put("/{room_id}", response_model=RoomSchema)
 def update_room(data_update: RoomSchema, room_id: int, db: Session = Depends(get_db)):
     db_room = get_room(room_id, db=db)
     if not db_room:
@@ -56,7 +58,7 @@ def update_room(data_update: RoomSchema, room_id: int, db: Session = Depends(get
     return db_room
 
 
-@rooms.delete("/api/rooms/{room_id}", status_code=HTTP_204_NO_CONTENT)
+@rooms.delete("/{room_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_room(room_id: int, db: Session = Depends(get_db)):
     db_room = get_room(room_id, db=db)
     if not db_room:
