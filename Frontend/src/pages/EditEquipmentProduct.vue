@@ -103,6 +103,7 @@
 import axios from "axios";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import { onMounted, ref, toRefs } from "vue";
+import { sendRequest } from "src/axios/instance.js";
 import SelectForm from "src/components/SelectForm.vue";
 
 const $q = useQuasar();
@@ -167,42 +168,54 @@ const observation = ref(observation_value.value);
 const EditEquipmentProductForm = ref(null);
 const api_prefix = process.env.API_URL;
 
-const getBrands = () => {
-  axios.get(api_prefix + "/brands").then((response) => {
+const getBrands = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/brands",
+    });
     const brands = response.data;
     brandOptions.value = brands.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getModels = () => {
+const getModels = async () => {
   if (brand.value === null) {
     modelOptions.value = [];
     model.value = null;
     modelNumberOptions.value = [];
     model_number.value = null;
   } else {
-    axios.get(api_prefix + "/models/" + brand.value).then((response) => {
+    try {
+      const response = await sendRequest({
+        method: "GET",
+        url: api_prefix + "/models/" + brand.value,
+      });
       const models = response.data;
       modelOptions.value = models.map((x) => {
         return { id: x.id, name: x.name };
       });
-    });
+    } catch (error) {}
   }
 };
 
-const getModelNumbers = () => {
+const getModelNumbers = async () => {
   if (model.value === null) {
     modelNumberOptions.value = [];
     model_number.value = null;
   } else {
-    axios.get(api_prefix + "/model_numbers/" + model.value).then((response) => {
+    try {
+      const response = await sendRequest({
+        method: "GET",
+        url: api_prefix + "/model_numbers/" + model.value,
+      });
       const modelnumbers = response.data;
       modelNumberOptions.value = modelnumbers.map((x) => {
         return { id: x.id, name: x.number };
       });
-    });
+    } catch (error) {}
   }
 };
 
@@ -216,17 +229,8 @@ defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-// dialogRef      - Vue ref to be applied to QDialog
-// onDialogHide   - Function to be used as handler for @hide on QDialog
-// onDialogOK     - Function to call to settle dialog with "ok" outcome
-//                    example: onDialogOK() - no payload
-//                    example: onDialogOK({ /*...*/ }) - with payload
-// onDialogCancel - Function to call to settle dialog with "cancel" outcome
 
-// this is part of our example (so not required)
 async function onOKClick() {
-  // on OK, it is REQUIRED to
-  // call onDialogOK (with optional payload)
   EditEquipmentProductForm.value.resetValidation();
   const data = {
     id: props.id,
@@ -237,10 +241,11 @@ async function onOKClick() {
     model_number_id: model_number.value,
   };
   try {
-    const response = await axios.put(
-      api_prefix + "/equipments/" + data.id,
-      data
-    );
+    const response = await sendRequest({
+      method: "PUT",
+      url: api_prefix + "/equipments/" + data.id,
+      data: data,
+    });
   } catch (error) {
     $q.notify({
       color: "red-3",
@@ -251,7 +256,5 @@ async function onOKClick() {
     return;
   }
   onDialogOK();
-  // or with payload: onDialogOK({ ... })
-  // ...and it will also hide the dialog automatically
 }
 </script>

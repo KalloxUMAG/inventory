@@ -6,6 +6,7 @@ import {
   createWebHashHistory,
 } from "vue-router";
 import routes from "./routes";
+import { LocalStorage } from "quasar";
 
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
@@ -19,6 +20,19 @@ export default route(function (/* { store, ssrContext } */) {
     routes,
 
     history: createHistory(process.env.VUE_ROUTER_BASE),
+  });
+
+  Router.beforeEach((to, from, next) => {
+    const token = LocalStorage.getItem("CATGInventoryToken");
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+      if (!token) {
+        next({ name: "login" });
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
   });
   return Router;
 });

@@ -2,6 +2,7 @@ const routes = [
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
+    meta: { requiresAuth: true },
     children: [
       { path: "", component: () => import("pages/IndexPage.vue") },
       {
@@ -32,10 +33,11 @@ const routes = [
     ],
   },
   {
-    path: "/login", component: () => import("layouts/LoginLayout.vue"),
+    path: "/login",
+    component: () => import("layouts/LoginLayout.vue"),
     children: [
-      {path: "", component: () => import("pages/Login.vue")}
-    ]
+      { path: "", name: "login", component: () => import("pages/Login.vue") },
+    ],
   },
   //Not found
   {

@@ -158,7 +158,8 @@ import EditLot from "./EditLot.vue";
 import EditSupply from "./EditSupply.vue";
 import { suppliersSupplyColumns, lotsColumns } from "../constants/columns.js";
 import { useQuasar } from "quasar";
-import { reqInstance } from "src/axios/instance";
+import { sendRequest } from "src/axios/instance";
+import { api } from "src/boot/axios";
 
 const route = useRoute();
 const id = computed(() => route.params.id);
@@ -173,41 +174,32 @@ const api_prefix = process.env.API_URL;
 
 const getSupply = async () => {
   try {
-    const response = await reqInstance.get(
-      api_prefix + "/supplies/" + id.value
-    );
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/supplies/" + id.value,
+    });
     supply.value = response.data;
-  } catch (error) {
-    if (error.response.status === 403) {
-      router.push("/login");
-    }
-  }
+  } catch (error) {}
 };
 
 const getSuppliers = async () => {
   try {
-    const response = await reqInstance.get(
-      api_prefix + "/suppliers_supplies/" + id.value
-    );
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/suppliers_supplies/" + id.value,
+    });
     suppliers.value = response.data;
-  } catch (error) {
-    if (error.response.status === 403) {
-      router.push("/login");
-    }
-  }
+  } catch (error) {}
 };
 
 const getLots = async () => {
   try {
-    const response = await reqInstance.get(
-      api_prefix + "/lots/supply/" + id.value
-    );
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/lots/supply/" + id.value,
+    });
     lots.value = response.data;
-  } catch (error) {
-    if (error.response.status === 403) {
-      router.push("/login");
-    }
-  }
+  } catch (error) {}
 };
 
 function addSupplier() {
@@ -251,30 +243,24 @@ function removeLot(lot) {
       const lot_id = lot.id;
       const lot_stock = supply.value.lot_stock * -1;
       try {
-        const response = await reqInstance.put(
-          api_prefix + "/lots/deactivate" + lot_id
-        );
+        const response = await sendRequest({
+          method: "PUT",
+          url: api_prefix + "/lots/deactivate" + lot_id,
+        });
         getLots();
-      } catch (error) {
-        if (error.response.status === 403) {
-          router.push("/login");
-        }
-      }
+      } catch (error) {}
 
       const data = {
         stock: lot_stock,
       };
       try {
-        const response = reqInstance.put(
-          api_prefix + "/supplies/stock/" + id.value,
-          data
-        );
+        const response = await sendRequest({
+          method: "PUT",
+          url: api_prefix + "/supplies/stock/" + id.value,
+          data: data,
+        });
         getSupply();
-      } catch (error) {
-        if (error.response.status === 403) {
-          router.push("/login");
-        }
-      }
+      } catch (error) {}
     })
     .onCancel(() => {
       // console.log('Cancel')
@@ -359,15 +345,12 @@ function removeSupply() {
   })
     .onOk(async () => {
       try {
-        const response = reqInstance.delete(
-          api_prefix + "/supplies/" + id.value
-        );
+        const response = await sendRequest({
+          method: "DELETE",
+          url: api_prefix + "/supplies/" + id.value,
+        });
         redirectToSupplies();
-      } catch (error) {
-        if (error.response.status === 403) {
-          router.push("/login");
-        }
-      }
+      } catch (error) {}
     })
     .onCancel(() => {
       // console.log('Cancel')

@@ -203,7 +203,7 @@ import EditEquipmentPurchase from "./EditEquipmentPurchase.vue";
 import EditMaintenance from "./EditMaintenance.vue";
 import { useQuasar } from "quasar";
 import { columns_maintenances } from "src/constants/columns.js";
-import { reqInstance } from "src/axios/instance.js";
+import { sendRequest } from "src/axios/instance.js";
 
 const $q = useQuasar();
 
@@ -264,39 +264,36 @@ function createNextMaintenance() {
 
 async function getEquipment() {
   try {
-    const response = await reqInstance.get(query_equipment);
+    const response = await sendRequest({
+      method: "GET",
+      url: query_equipment,
+    });
     equipment.value = response.data;
     img_api.value = api_prefix + "/equipments/image/" + equipment.value.id;
     getMaintenances();
-  } catch (error) {
-    if (error.response.status === 403) {
-      router.push({ path: "/login" });
-    }
-  }
+  } catch (error) {}
 }
 
 async function getMaintenances() {
   try {
-    const response = await reqInstance.get(query_maintenances);
+    const response = await sendRequest({
+      method: "GET",
+      url: query_maintenances,
+    });
     maintenances.value = response.data;
-    getLastMaintenance();
-  } catch (error) {
-    if (error.response.status === 403) {
-      router.push({ path: "/login" });
-    }
-  }
+    //getLastMaintenance();
+  } catch (error) {}
 }
 
 async function getLastMaintenance() {
   try {
-    const response = await reqInstance.get(query_last_maintenance);
+    const response = await sendRequest({
+      method: "GET",
+      url: query_last_maintenance,
+    });
     last_maintenance.value = response.data;
     createNextMaintenance();
-  } catch (error) {
-    if (error.response.status === 403) {
-      router.push({ path: "/login" });
-    }
-  }
+  } catch (error) {}
 }
 
 function addFunction() {
@@ -358,16 +355,13 @@ function addFunction() {
       };
 
       try {
-        const response = await reqInstance.post(
-          api_prefix + "/maintenances",
-          maintenance_data
-        );
+        const response = await sendRequest({
+          method: "POST",
+          url: api_prefix + "/maintenances",
+          data: maintenance_data,
+        });
         getMaintenances();
-      } catch (error) {
-        if (error.response.status === 403) {
-          router.push({ path: "/login" });
-        }
-      }
+      } catch (error) {}
     })
     .onCancel(() => {});
 }
@@ -497,9 +491,10 @@ function removeMaintenance(maintenance) {
     .onOk(async () => {
       const maintenance_id = maintenance.id;
       try {
-        const response = await reqInstance.delete(
-          api_prefix + "/maintenances/" + maintenance_id
-        );
+        const response = await sendRequest({
+          method: "DELETE",
+          url: api_prefix + "/maintenances/" + maintenance_id,
+        });
         getMaintenances();
       } catch (error) {
         if (error.response.status === 403) {

@@ -9,7 +9,6 @@ export const checkToken = async() => {
         const response = await axios.get(api_prefix + "/users/me/", value);
         return response;
     } catch (error) {
-        console.log(error)
     }
 }
 

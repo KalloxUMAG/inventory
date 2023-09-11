@@ -33,6 +33,7 @@
 import { useRoute } from "vue-router";
 import { computed, onMounted, ref } from "vue";
 import axios from "axios";
+import { sendRequest } from "src/axios/instance";
 import NoRedirectTable from "src/components/NoRedirectTable.vue";
 
 const route = useRoute();
@@ -41,10 +42,14 @@ const lot = ref({});
 
 const api_prefix = process.env.API_URL;
 
-const getLot = () => {
-  axios
-    .get(api_prefix + "/lots/" + id.value)
-    .then((response) => (lot.value = response.data));
+const getLot = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/lots/" + id.value,
+    });
+    lot.value = response.data;
+  } catch (error) {}
 };
 
 onMounted(() => {

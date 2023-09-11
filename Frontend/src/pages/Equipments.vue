@@ -17,7 +17,7 @@ import { onMounted, ref } from "vue";
 import { equipmentsColumns } from "../constants/columns.js";
 
 import { useRouter } from "vue-router";
-import { reqInstance } from "src/axios/instance";
+import { sendRequest } from "src/axios/instance";
 
 const router = useRouter();
 
@@ -27,12 +27,12 @@ const api_prefix = process.env.API_URL;
 
 const getEquipments = async () => {
   try {
-    const response = await reqInstance.get(api_prefix + "/equipments");
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/equipments",
+    });
     equipments.value = response.data;
   } catch (error) {
-    if (error.response.status === 403) {
-      router.push({ path: "/login" });
-    }
   }
 };
 

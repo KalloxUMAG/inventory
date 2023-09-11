@@ -6,9 +6,9 @@ from datetime import datetime
 class User(BaseModel):
     id: Optional[int]
     username: str
-    email: str | None = None
-    fullname: str | None = None
-    disable: bool | None = None
+    email: Optional[str] = None
+    fullname: Optional[str] = None
+    disable: Optional[bool] = None
 
     class Config:
         from_attributes = True

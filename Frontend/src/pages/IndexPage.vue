@@ -15,45 +15,36 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { suppliesColumns } from "../constants/columns.js";
-import { reqInstance, sendRequest } from "src/axios/instance.js";
+import { sendRequest } from "src/axios/instance.js";
 import RenderTable from "src/components/RenderTable.vue";
-
-import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 
 const api_prefix = process.env.API_URL;
 
 const supplies = ref([]);
-const router = useRouter();
+const $q = useQuasar();
 
-const getSupplies = async () => {
-  try {
-    const response = await reqInstance.get(api_prefix + "/supplies/critical");
-    supplies.value = response.data.map((supply) => {
-      supply.max_samples = supply.samples * supply.stock;
-      return supply;
-    });
-  } catch (error) {
-    if (error.response.status === 403) {
-      router.push({ path: "/login" });
-    }
-  }
-};
-/*
 const getSupplies = async () => {
   try {
     const response = await sendRequest({
       method: "GET",
       url: api_prefix + "/supplies/critical",
     });
-    console.log(response);
-    supplies.value = response.map((supply) => {
+    supplies.value = response.data.map((supply) => {
       supply.max_samples = supply.samples * supply.stock;
       return supply;
     });
   } catch (error) {
-    console.log(error);
+    if (error.respose.status === 403) {
+      $q.notify({
+        color: "red-3",
+        textColor: "white",
+        icon: "error",
+        message: "Sesion expirada, favor inciar sesion de nuevo",
+      });
+    }
   }
-};*/
+};
 
 onMounted(() => {
   getSupplies();

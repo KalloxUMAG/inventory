@@ -41,7 +41,7 @@ def get_supplies(db: Session = Depends(get_db)):
         .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
         .outerjoin(SupplyType, SupplyType.id == Supply.supplies_type_id)
         .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)
-        .filter(Supply.state is True)
+        .filter(Supply.state == True)
         .all()
     )
     return result
@@ -66,7 +66,7 @@ def get_supplies_critical(db: Session = Depends(get_db)):
         .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
         .outerjoin(SupplyType, SupplyType.id == Supply.supplies_type_id)
         .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)
-        .filter(and_(Supply.stock <= Supply.critical_stock, Supply.state is True))
+        .filter(and_(Supply.stock <= Supply.critical_stock, Supply.state == True))
         .all()
     )
     return result
@@ -114,7 +114,7 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
             SupplyType.name.label("supplies_type_name"),
             SupplyFormat.name.label("supplies_format_name"),
         )
-        .filter(and_(Supply.id == supply_id, Supply.state is True))
+        .filter(and_(Supply.id == supply_id, Supply.state == True))
         .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
         .outerjoin(SupplyType, SupplyType.id == Supply.supplies_type_id)
         .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)

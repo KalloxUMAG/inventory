@@ -64,6 +64,7 @@
 import axios from "axios";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import { onMounted, ref, toRefs } from "vue";
+import { sendRequest } from "src/axios/instance.js";
 import SelectForm from "src/components/SelectForm.vue";
 
 const $q = useQuasar();
@@ -86,43 +87,55 @@ const buildingOptions = ref([]);
 const EditEquipmentLocationForm = ref(null);
 const api_prefix = process.env.API_URL;
 
-const getBuildings = () => {
-  axios.get(api_prefix + "/buildings").then((response) => {
+const getBuildings = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/buildings",
+    });
     const buildings = response.data;
     buildingOptions.value = buildings.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getUnits = () => {
+const getUnits = async () => {
   if (building.value === null) {
     unitOptions.value = [];
     unit.value = null;
     roomOptions.value = [];
     room.value = null;
   } else {
-    axios.get(api_prefix + "/units/" + building.value).then((response) => {
+    try {
+      const response = await sendRequest({
+        method: "GET",
+        url: api_prefix + "/units/" + building.value,
+      });
       const units = response.data;
       unitOptions.value = units.map((x) => {
         return { id: x.id, name: x.name };
       });
-    });
+    } catch (error) {}
   }
 };
 
-const getRooms = () => {
+const getRooms = async () => {
   if (unit.value === null) {
     console.log("Entro aqui");
     roomOptions.value = [];
     room.value = null;
   } else {
-    axios.get(api_prefix + "/rooms/" + unit.value).then((response) => {
+    try {
+      const response = await sendRequest({
+        method: "GET",
+        url: api_prefix + "/rooms/" + unit.value,
+      });
       const rooms = response.data;
       roomOptions.value = rooms.map((x) => {
         return { id: x.id, name: x.name };
       });
-    });
+    } catch (error) {}
   }
 };
 
@@ -136,27 +149,19 @@ defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-// dialogRef      - Vue ref to be applied to QDialog
-// onDialogHide   - Function to be used as handler for @hide on QDialog
-// onDialogOK     - Function to call to settle dialog with "ok" outcome
-//                    example: onDialogOK() - no payload
-//                    example: onDialogOK({ /*...*/ }) - with payload
-// onDialogCancel - Function to call to settle dialog with "cancel" outcome
-
-// this is part of our example (so not required)
 async function onOKClick() {
-  // on OK, it is REQUIRED to
-  // call onDialogOK (with optional payload)
   EditEquipmentLocationForm.value.resetValidation();
   const data = {
     id: props.id,
     room_id: room.value,
   };
+
   try {
-    const response = await axios.put(
-      api_prefix + "/equipments/" + data.id,
-      data
-    );
+    const response = await sendRequest({
+      method: "PUT",
+      url: api_prefix + "/equipments/" + data.id,
+      data: data,
+    });
   } catch (error) {
     $q.notify({
       color: "red-3",
@@ -167,7 +172,5 @@ async function onOKClick() {
     return;
   }
   onDialogOK();
-  // or with payload: onDialogOK({ ... })
-  // ...and it will also hide the dialog automatically
 }
 </script>

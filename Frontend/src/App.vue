@@ -3,33 +3,18 @@
 </template>
 
 <script>
-import { createApp ,defineComponent } from 'vue'
-import { createStore} from 'vuex'
-
-
-const store = createStore({
-  state(){
-    return {
-      count: 0
-    }
-  },
-  mutations: {
-    increment(state){
-      state.count++
-    }
-  }
-})
+import { createApp, defineComponent } from "vue";
 
 const app = defineComponent({
-  name: 'App', 
-})
+  name: "App",
+});
 
-export default app
+export default app;
 </script>
 
 <style lang="scss">
-@import './css/quasar.variables.scss';
-body{
+@import "./css/quasar.variables.scss";
+body {
   background-color: #eef5f9;
 }
 </style>

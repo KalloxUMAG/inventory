@@ -87,6 +87,7 @@
 import axios from "axios";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import { onMounted, ref, toRefs } from "vue";
+import { sendRequest } from "src/axios/instance";
 import SelectForm from "src/components/SelectForm.vue";
 
 const $q = useQuasar();
@@ -124,51 +125,65 @@ const EditEquipmentPurchaseForm = ref(null);
 
 const api_prefix = process.env.API_URL;
 
-const getSuppliers = () => {
-  axios.get(api_prefix + "/suppliers").then((response) => {
+const getSuppliers = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/suppliers",
+    });
     const suppliers = response.data;
     supplierOptions.value = suppliers.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getInvoices = () => {
+const getInvoices = async () => {
   if (supplier.value === null) {
     invoiceOptions.value = [];
     invoice.value = null;
   } else {
-    axios
-      .get(api_prefix + "/invoices/supplier/" + supplier.value)
-      .then((response) => {
-        const invoices = response.data;
-        invoiceOptions.value = invoices.map((x) => {
-          return { id: x.id, name: x.number };
-        });
+    try {
+      const response = await sendRequest({
+        method: "GET",
+        url: api_prefix + "/invoices/supplier/" + supplier.value,
       });
+      const invoices = response.data;
+      invoiceOptions.value = invoices.map((x) => {
+        return { id: x.id, name: x.number };
+      });
+    } catch (error) {}
   }
 };
 
-const getProjects = () => {
-  axios.get(api_prefix + "/projects").then((response) => {
+const getProjects = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/projects",
+    });
     const projects = response.data;
     projectOptions.value = projects.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getStages = () => {
+const getStages = async () => {
   if (project.value === null) {
     stageOptions.value = [];
     stage.value = null;
   } else {
-    axios.get(api_prefix + "/stages/" + project.value).then((response) => {
+    try {
+      const response = await sendRequest({
+        method: "GET",
+        url: api_prefix + "/stages/" + project.value,
+      });
       const stages = response.data;
       stageOptions.value = stages.map((x) => {
         return { id: x.id, name: x.name };
       });
-    });
+    } catch (error) {}
   }
 };
 
@@ -183,17 +198,7 @@ defineEmits([...useDialogPluginComponent.emits]);
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-// dialogRef      - Vue ref to be applied to QDialog
-// onDialogHide   - Function to be used as handler for @hide on QDialog
-// onDialogOK     - Function to call to settle dialog with "ok" outcome
-//                    example: onDialogOK() - no payload
-//                    example: onDialogOK({ /*...*/ }) - with payload
-// onDialogCancel - Function to call to settle dialog with "cancel" outcome
-
-// this is part of our example (so not required)
 async function onOKClick() {
-  // on OK, it is REQUIRED to
-  // call onDialogOK (with optional payload)
   EditEquipmentPurchaseForm.value.resetValidation();
   const data = {
     id: props.id,
@@ -202,10 +207,11 @@ async function onOKClick() {
     invoice_id: invoice.value,
   };
   try {
-    const response = await axios.put(
-      api_prefix + "/equipments/" + data.id,
-      data
-    );
+    const response = await sendRequest({
+      method: "PUT",
+      url: api_prefix + "/equipments/" + data.id,
+      data: data,
+    });
   } catch (error) {
     $q.notify({
       color: "red-3",
@@ -216,7 +222,5 @@ async function onOKClick() {
     return;
   }
   onDialogOK();
-  // or with payload: onDialogOK({ ... })
-  // ...and it will also hide the dialog automatically
 }
 </script>
