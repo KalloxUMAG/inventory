@@ -49,6 +49,10 @@ class UserCreate(BaseModel):
     username: str
     email: str
     password: str
+    fullname: str
+
+    class Config:
+        from_attributes = True
 
 
 class requestdetails(BaseModel):

@@ -30,6 +30,10 @@ const routes = [
         component: () => import("src/pages/Lot.vue"),
       },
       { path: "/supplies", component: () => import("src/pages/Supplies.vue") },
+      {
+        path: "/createuser",
+        component: () => import("src/pages/CreateUser.vue"),
+      },
     ],
   },
   {

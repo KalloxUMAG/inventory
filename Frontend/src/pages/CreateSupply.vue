@@ -307,7 +307,7 @@ const api_prefix = process.env.API_URL;
 const getSuppliesBrands = async () => {
   try {
     const response = await sendRequest({
-      method: "POST",
+      method: "GET",
       url: api_prefix + "/supplies_brands",
     });
     const result = response.data;
