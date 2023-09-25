@@ -12,11 +12,11 @@ export const sendRequest = async (config) => {
     const response = await reqInstance(config);
     return response;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     if (error.response.status === 403) {
       LocalStorage.remove("CATGInventoryToken");
+      LocalStorage.remove("CATGInventoryFullname");
     }
     throw error;
   }
 };
-

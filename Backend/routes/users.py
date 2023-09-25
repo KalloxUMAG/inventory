@@ -136,10 +136,7 @@ def login(request: requestdetails, db: Session = Depends(get_db)):
     db.add(token_db)
     db.commit()
     db.refresh(token_db)
-    return {
-        "access_token": access,
-        "refresh_token": refresh,
-    }
+    return {"access_token": access, "refresh_token": refresh, "fullname": user.fullname}
 
 
 @users.get("/getusers", tags=["users"])

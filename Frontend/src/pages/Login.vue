@@ -58,6 +58,7 @@ const onSubmit = async () => {
   try {
     const response = await axios.post(api_prefix + "/users/login", data);
     $q.localStorage.set("CATGInventoryToken", response.data.access_token);
+    $q.localStorage.set("CATGInventoryFullname", response.data.fullname);
     router.push({ path: "/" });
   } catch (error) {
     $q.notify({
@@ -71,6 +72,7 @@ const onSubmit = async () => {
 
 async function clearToken() {
   $q.localStorage.remove("CATGInventoryToken");
+  $q.localStorage.remove("CATGInventoryFullname");
 }
 
 onMounted(() => {
