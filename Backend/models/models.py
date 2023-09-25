@@ -145,6 +145,9 @@ class Groups(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
     lots: Mapped[List["Lot"]] = relationship(backref="Groups")
+    supplies: Mapped[List["Supply"]] = relationship(
+        secondary="Groups_has_Supplies", back_populates="groups"
+    )
 
 
 # Tablas dependientes
@@ -280,6 +283,9 @@ class Supply(Base):
     suppliers: Mapped[List["Supplier"]] = relationship(
         secondary="Suppliers_has_Supplies", back_populates="supplies"
     )
+    groups: Mapped[List["Groups"]] = relationship(
+        secondary="Groups_has_Supplies", back_populates="supplies"
+    )
 
 
 class SupplyBrand(Base):
@@ -361,6 +367,18 @@ class Lot(Base):
     )
     project_id: Mapped[int] = mapped_column(Integer, ForeignKey("Projects.id"))
     group_id: Mapped[int] = mapped_column(Integer, ForeignKey("Groups.id"))
+
+
+class GroupsHasSupplies(Base):
+    __tablename__ = "Groups_has_Supplies"
+
+    group_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("Groups.id", ondelete="CASCADE"), primary_key=True
+    )
+    supply_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("Supplies.id", ondelete="CASCADE"), primary_key=True
+    )
+    quantity: Mapped[int] = mapped_column(Integer)
 
 
 class SuppliersHasSupplies(Base):

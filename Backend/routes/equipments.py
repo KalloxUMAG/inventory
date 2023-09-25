@@ -4,6 +4,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response, UploadFile
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
 from config.database import get_db
@@ -80,6 +81,7 @@ def get_equipments(db: Session = Depends(get_db)):
 @equipments.get("/nextmaintenances", response_model=List[NextMaintenanceSchema])
 def get_equipments_nextmaintenances(db: Session = Depends(get_db)):
     query = db.query(Equipment).all()
+    s = text(""" SELECT * FROM  """)
 
     return query
 

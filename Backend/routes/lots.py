@@ -11,6 +11,7 @@ from starlette.status import (
 from config.database import get_db
 from models.models import (
     Groups,
+    GroupsHasSupplies,
     Location,
     Lot,
     Project,

@@ -31,6 +31,7 @@ from routes.supplies_types import supplies_types
 from routes.units import units
 from routes.users import users
 from routes.groups import groups
+from routes.groups_supplies import groups_supplies
 
 
 def create_tables():
@@ -62,6 +63,7 @@ routes = [
     brands,
     equipments,
     groups,
+    groups_supplies,
     invoices,
     locations,
     lots,
