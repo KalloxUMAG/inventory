@@ -27,4 +27,11 @@ export const menuItems = [
     exact: true,
     separator: true,
   },
+  {
+    label: "Cerrar sesion",
+    icon: "logout",
+    to: "/login",
+    exact: true,
+    separator: true,
+  },
 ];

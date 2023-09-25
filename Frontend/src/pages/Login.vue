@@ -37,8 +37,7 @@
 import { onMounted, ref } from "vue";
 import axios from "axios";
 import { useQuasar } from "quasar";
-import { checkToken } from "../commons/checkToken";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 
 const $q = useQuasar();
 
@@ -70,12 +69,13 @@ const onSubmit = async () => {
   }
 };
 
-async function redirectIfLogin() {
-  const response = await checkToken();
-  console.log(response);
+async function clearToken() {
+  $q.localStorage.remove("CATGInventoryToken");
 }
 
-onMounted(() => {});
+onMounted(() => {
+  clearToken();
+});
 </script>
 
 <style lang="css" scoped></style>
