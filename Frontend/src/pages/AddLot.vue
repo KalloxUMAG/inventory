@@ -299,6 +299,26 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col">
+            <SelectForm
+              outlined
+              class="row"
+              :options="groupsOptions"
+              option_value="id"
+              option_label="name"
+              label="Grupo"
+              not_found_label="No hay grupos disponibles"
+              @updateModel="
+                (value) => {
+                  group = value;
+                }
+              "
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
+            />
+          </div>
+        </div>
         <!--Buttons-->
         <div class="q-mt-md row justify-end">
           <q-btn
@@ -330,6 +350,7 @@ const location = ref(null);
 const sublocation = ref(null);
 const project = ref(null);
 const projectOwner = ref(null);
+const group = ref(null);
 
 const newLocationState = ref(false);
 const disableLocation = ref(false);
@@ -344,6 +365,7 @@ const newSublocation = ref("");
 const newProject = ref("");
 const newProjectOwner = ref("");
 
+const groupsOptions = ref([]);
 const suppliersOptions = ref([]);
 const locationOptions = ref([]);
 const sublocationOptions = ref([]);
@@ -366,6 +388,16 @@ const getSuppliers = async () => {
       url: api_prefix + "/suppliers_supplies/" + props.supply_id,
     });
     suppliersOptions.value = response.data;
+  } catch (error) {}
+};
+
+const getGroups = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/groups",
+    });
+    groupsOptions.value = response.data;
   } catch (error) {}
 };
 
@@ -573,6 +605,7 @@ async function createNewProjectOwner() {
 }
 
 onMounted(() => {
+  getGroups();
   getSuppliers();
   getProjects();
   getProjectOwners();
@@ -595,6 +628,7 @@ async function onOKClick() {
     sub_location_id: sublocation.value,
     project_id: project.value,
     supplier_id: supplier.value.supplier_id,
+    group_id: group.value,
   };
 
   const project_owner_id = await createNewProjectOwner();

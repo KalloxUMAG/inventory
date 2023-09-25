@@ -111,6 +111,13 @@ export const lotsColumns = [
     sortable: true,
   },
   {
+    name: "group_name",
+    align: "left",
+    label: "Grupo",
+    field: "group_name",
+    sortable: true,
+  },
+  {
     name: "location",
     align: "left",
     label: "Localización",
@@ -175,8 +182,8 @@ export const suppliersColumns = [
     label: "Dirección",
     field: "city_address",
     sortable: false,
-  }
-]
+  },
+];
 
 export const suppliersSupplyColumns = [
   {
@@ -206,8 +213,8 @@ export const suppliersSupplyColumns = [
     label: "Costo",
     field: "cost",
     sortable: false,
-  }
-]
+  },
+];
 
 export const rolOptions = [
   {

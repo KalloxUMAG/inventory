@@ -140,6 +140,13 @@ class TokenTable(Base):
     created_date = mapped_column(DateTime, default=datetime.now)
 
 
+class Groups(Base):
+    __tablename__ = "Groups"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String)
+    lots: Mapped[List["Lot"]] = relationship(backref="Groups")
+
+
 # Tablas dependientes
 
 
@@ -353,6 +360,7 @@ class Lot(Base):
         Integer, ForeignKey("Sub_locations.id")
     )
     project_id: Mapped[int] = mapped_column(Integer, ForeignKey("Projects.id"))
+    group_id: Mapped[int] = mapped_column(Integer, ForeignKey("Groups.id"))
 
 
 class SuppliersHasSupplies(Base):

@@ -28,6 +28,13 @@ export const menuItems = [
     separator: true,
   },
   {
+    label: "Gestion",
+    icon: "settings",
+    to: "/settings",
+    exact: true,
+    separator: true,
+  },
+  {
     label: "Cerrar sesion",
     icon: "logout",
     to: "/login",

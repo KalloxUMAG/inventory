@@ -10,6 +10,7 @@ from starlette.status import (
 
 from config.database import get_db
 from models.models import (
+    Groups,
     Location,
     Lot,
     Project,
@@ -52,7 +53,7 @@ def get_lots(db: Session = Depends(get_db)):
 
 @lots.post("", status_code=HTTP_201_CREATED)
 def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
-    new_lot = lot(
+    new_lot = Lot(
         number=lot.number,
         due_date=lot.due_date,
         observations=lot.observations,
@@ -61,6 +62,7 @@ def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
         project_id=lot.project_id,
         supplier_id=lot.supplier_id,
         state=True,
+        group_id=lot.group_id,
     )
     db.add(new_lot)
     db.commit()
@@ -114,13 +116,16 @@ def get_lots_supply(supply_id: int, db: Session = Depends(get_db)):
             ProjectOwner.name.label("project_owner_name"),
             Lot.supplier_id,
             Supplier.name.label("supplier_name"),
+            Lot.group_id,
+            Groups.name.label("group_name"),
         )
-        .filter(Lot.supplies_id == supply_id, Lot.state is True)
+        .filter(Lot.supplies_id == supply_id, Lot.state == True)
         .outerjoin(SubLocation, SubLocation.id == Lot.sub_location_id)
         .outerjoin(Location, Location.id == SubLocation.id)
         .outerjoin(Project, Project.id == Lot.project_id)
         .outerjoin(ProjectOwner, ProjectOwner.id == Project.owner_id)
         .outerjoin(Supplier, Supplier.id == Lot.supplier_id)
+        .outerjoin(Groups, Groups.id == Lot.group_id)
         .all()
     )
     return result
