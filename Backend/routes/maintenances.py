@@ -1,4 +1,5 @@
 from typing import List
+from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
@@ -12,6 +13,8 @@ from schemas.maintenance_schema import (
     MaintenanceFromEquipment,
     MaintenanceSchema,
 )
+
+from routes.equipments import update_equipment, get_equipment
 
 from auth.auth_bearer import JWTBearer
 
@@ -41,6 +44,15 @@ def add_maintenances(maintenance: MaintenanceSchema, db: Session = Depends(get_d
     db.add(new_maintenance)
     db.commit()
     db.refresh(new_maintenance)
+    last_maintenance = get_last_maintenance_equipment(maintenance.equiptment_id, db)
+    if last_maintenance.id == new_maintenance.id:
+        next_maintenance = last_maintenance.date + timedelta(
+            days=db_equipment.maintenance_period * 30
+        )
+        setattr(db_equipment, "next_maintenance", next_maintenance)
+        db.add(db_equipment)
+        db.commit()
+        db.refresh(db_equipment)
     return Response(status_code=HTTP_201_CREATED)
 
 
@@ -103,6 +115,16 @@ def update_maintenance(
     db.add(db_maintenance)
     db.commit()
     db.refresh(db_maintenance)
+    last_maintenance = get_last_maintenance_equipment(db_maintenance.equiptment_id, db)
+    if last_maintenance.id == db_maintenance.id:
+        db_equipment = get_equipment_exist(db_maintenance.equiptment_id, db)
+        next_maintenance = last_maintenance.date + timedelta(
+            days=db_equipment.maintenance_period * 30
+        )
+        setattr(db_equipment, "next_maintenance", next_maintenance)
+        db.add(db_equipment)
+        db.commit()
+        db.refresh(db_equipment)
     return db_maintenance
 
 

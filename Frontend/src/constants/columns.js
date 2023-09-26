@@ -264,3 +264,34 @@ export const columns_maintenances = [
     sortable: false,
   },
 ];
+
+export const criticEquipmentsColumns = [
+  {
+    name: "name",
+    align: "left",
+    label: "Nombre",
+    field: "name",
+    sortable: false,
+  },
+  {
+    name: "serial_number",
+    align: "left",
+    label: "Nro. serie",
+    field: "serial_number",
+    sortable: false,
+  },
+  {
+    name: "umag_inventory_code",
+    align: "left",
+    label: "Inventariado",
+    field: "umag_inventory_code",
+    sortable: true,
+  },
+  {
+    name: "reception_date",
+    align: "left",
+    label: "Fecha",
+    field: "reception_date",
+    sortable: false,
+  },
+];

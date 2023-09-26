@@ -163,6 +163,7 @@ class Equipment(Base):
     reception_date = mapped_column(Date, nullable=True)
     maintenance_period: Mapped[Optional[int]] = mapped_column(Integer)
     observation: Mapped[Optional[str]] = mapped_column(String)
+    next_maintenance: Mapped[Optional[Date]] = mapped_column(Date)
 
     supplier_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("Suppliers.id", ondelete="SET NULL"), nullable=True

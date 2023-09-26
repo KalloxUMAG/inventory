@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 from typing import List
+from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, Response, UploadFile
 from sqlalchemy.orm import Session
@@ -78,11 +79,12 @@ def get_equipments(db: Session = Depends(get_db)):
     return result
 
 
-@equipments.get("/nextmaintenances", response_model=List[NextMaintenanceSchema])
+@equipments.get("/nextmaintenances", response_model=List[EquipmentSchema])
 def get_equipments_nextmaintenances(db: Session = Depends(get_db)):
-    query = db.query(Equipment).all()
-    s = text(""" SELECT * FROM  """)
-
+    s = text(
+        """ SELECT * FROM "Equipments" WHERE next_maintenance <= (CURRENT_DATE + interval '8 month');"""
+    )
+    query = db.execute(s).all()
     return query
 
 
@@ -110,6 +112,15 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
         if not db_stage:
             return Response(status_code=HTTP_404_NOT_FOUND)
 
+    if equipment.maintenance_period != None:
+        reception_date = equipment.reception_date
+        next_maintenance = reception_date + timedelta(
+            days=equipment.maintenance_period * 30
+        )
+        next_maintenance = next_maintenance.strftime("%Y-%m-%d")
+    else:
+        next_maintenance = None
+
     new_equipment = Equipment(
         name=equipment.name,
         serial_number=equipment.serial_number,
@@ -118,6 +129,7 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
         maintenance_period=equipment.maintenance_period,
         observation=equipment.observation,
         last_preventive_mainteinance=equipment.last_preventive_mainteinance,
+        next_maintenance=next_maintenance,
         supplier_id=equipment.supplier_id,
         invoice_id=equipment.invoice_id,
         model_number_id=equipment.model_number_id,
