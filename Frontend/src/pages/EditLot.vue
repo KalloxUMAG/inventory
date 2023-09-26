@@ -41,6 +41,20 @@
             <q-input
               outlined
               class="col"
+              v-model="reception_date"
+              type="date"
+              label="Fecha de recepcion*"
+              stack-label
+              lazy-rules
+              :rules="[
+                (val) => (val && val != null) || 'Este campo es obligatorio',
+              ]"
+            />
+          </div>
+          <div class="row q-my-sm">
+            <q-input
+              outlined
+              class="col"
               v-model="due_date"
               type="date"
               label="Fecha de vencimiento*"
@@ -332,6 +346,7 @@ const props = defineProps({
   number: String,
   supplier: Object,
   observation: String,
+  reception_date: String,
   due_date: String,
   location: Object,
   sublocation: Object,
@@ -341,6 +356,7 @@ const props = defineProps({
 const number = ref(props.number);
 const supplier = ref(props.supplier.id);
 const observation = ref(props.observation);
+const reception_date = ref(props.reception_date);
 const due_date = ref(props.due_date);
 const location = ref(props.location.id);
 const sublocation = ref(props.sublocation.id);
@@ -577,6 +593,7 @@ async function onOKClick() {
 
   const data = {
     number: number.value,
+    reception_date: reception_date.value,
     due_date: due_date.value,
     observations: observation.value,
     sub_location_id: sublocation.value,

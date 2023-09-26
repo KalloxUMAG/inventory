@@ -281,7 +281,7 @@ async function getMaintenances() {
       url: query_maintenances,
     });
     maintenances.value = response.data;
-    //getLastMaintenance();
+    getLastMaintenance();
   } catch (error) {}
 }
 

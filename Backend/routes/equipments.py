@@ -63,6 +63,8 @@ def get_equipments(db: Session = Depends(get_db)):
             Invoice.number.label("invoice_number"),
             Equipment.model_number_id,
             ModelNumber.number.label("model_number"),
+            Model.id.label("model_id"),
+            Model.name.label("model_name"),
             Equipment.stage_id,
             Stage.name.label("stage_name"),
             Project.id.label("project_id"),
@@ -72,6 +74,7 @@ def get_equipments(db: Session = Depends(get_db)):
         .outerjoin(Supplier, Supplier.id == Equipment.supplier_id)
         .outerjoin(Invoice, Invoice.id == Equipment.invoice_id)
         .outerjoin(ModelNumber, ModelNumber.id == Equipment.model_number_id)
+        .outerjoin(Model, Model.id == ModelNumber.model_id)
         .outerjoin(Stage, Stage.id == Equipment.stage_id)
         .outerjoin(Project, Project.id == Stage.project_id)
         .all()

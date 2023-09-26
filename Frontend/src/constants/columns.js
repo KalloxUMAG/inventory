@@ -14,6 +14,13 @@ export const equipmentsColumns = [
     sortable: false,
   },
   {
+    name: "model_name",
+    align: "left",
+    label: "Modelo",
+    field: "model_name",
+    sortable: false,
+  },
+  {
     name: "invoice_number",
     align: "left",
     label: "Factura",
@@ -102,6 +109,13 @@ export const lotsColumns = [
     label: "Lote",
     field: "number",
     sortable: false,
+  },
+  {
+    name: "reception_date",
+    align: "left",
+    label: "Fecha de recepcion",
+    field: "reception_date",
+    sortable: true,
   },
   {
     name: "due_date",

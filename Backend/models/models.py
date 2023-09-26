@@ -353,6 +353,7 @@ class Lot(Base):
     number: Mapped[str] = mapped_column(
         String
     )  # Numero unico por cada lote (puede tener letras)
+    reception_date = mapped_column(Date)
     due_date = mapped_column(Date)
     observations: Mapped[str] = mapped_column(String)
     state: Mapped[bool] = mapped_column(Boolean)

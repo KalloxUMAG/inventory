@@ -35,6 +35,7 @@ def get_lots(db: Session = Depends(get_db)):
         db.query(
             Lot.id,
             Lot.number,
+            Lot.reception_date,
             Lot.due_date,
             Lot.observations,
             Supply.name.label("supply_name"),
@@ -56,6 +57,7 @@ def get_lots(db: Session = Depends(get_db)):
 def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
     new_lot = Lot(
         number=lot.number,
+        reception_date=lot.reception_date,
         due_date=lot.due_date,
         observations=lot.observations,
         supplies_id=lot.supply_id,
@@ -78,6 +80,7 @@ def get_lot(lot_id: int, db: Session = Depends(get_db)):
         db.query(
             Lot.id,
             Lot.number,
+            Lot.reception_date,
             Lot.due_date,
             Lot.observations,
             Supply.name.label("supply_name"),
@@ -105,6 +108,7 @@ def get_lots_supply(supply_id: int, db: Session = Depends(get_db)):
         db.query(
             Lot.id,
             Lot.number,
+            Lot.reception_date,
             Lot.due_date,
             Lot.observations,
             Location.id.label("location_id"),

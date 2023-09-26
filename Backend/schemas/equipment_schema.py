@@ -40,6 +40,8 @@ class EquipmentListSchema(BaseModel):
     invoice_number: Optional[int] = None
     model_number_id: Optional[int] = None
     model_number: Optional[str] = None
+    model_id: Optional[int] = None
+    model_name: Optional[str] = None
     project_id: Optional[int] = None
     project_name: Optional[str] = None
     stage_id: Optional[int] = None

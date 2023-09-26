@@ -23,6 +23,7 @@ class LotSchema(BaseModel):
 class LotListSchema(BaseModel):
     id: int
     number: str
+    reception_date: Optional[date] = None
     due_date: Optional[date] = None
     observations: Optional[str] = None
     state: Optional[bool] = None
@@ -45,6 +46,7 @@ class LotListSchema(BaseModel):
 
 class CreateLotSchema(BaseModel):
     number: str
+    reception_date: Optional[date] = None
     due_date: Optional[date] = None
     observations: Optional[str] = None
     state: Optional[bool] = None

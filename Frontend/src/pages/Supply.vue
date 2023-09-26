@@ -279,6 +279,7 @@ function editLot(lot) {
       number: lot.number,
       supplier: { id: lot.supplier_id, name: lot.supplier_name },
       observation: lot.observations,
+      reception_date: lot.reception_date,
       due_date: lot.due_date,
       location: { id: lot.location_id, name: lot.location },
       sublocation: { id: lot.sub_location_id, name: lot.sub_location },
