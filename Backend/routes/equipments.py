@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 from typing import List
 from datetime import datetime, timedelta
+import re
 
 from fastapi import APIRouter, Depends, Response, UploadFile
 from sqlalchemy.orm import Session
@@ -151,7 +152,20 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
 async def add_image(equipment_id: int, file: UploadFile):
     image_path = Path(settings.image_directory, "equipments", str(equipment_id))
     image_path.mkdir(parents=True, exist_ok=True)
-    with open(image_path / file.filename, "wb") as buffer:
+    extension = file.filename.split(".")[-1].lower()
+    format_filename = file.filename[: -len(extension)].lower()
+    format_filename = re.sub("[^A-Za-z0-9]", "", format_filename, 0, re.IGNORECASE)
+    date_now = datetime.now()
+    date_now = date_now.strftime("%d%m%Y_%H%M%S")
+    with open(
+        str(image_path)
+        + "/"
+        + str(date_now)
+        + str(format_filename)
+        + "."
+        + str(extension),
+        "wb",
+    ) as buffer:
         buffer.write(await file.read())
     return Response(status_code=HTTP_201_CREATED)
 
@@ -163,7 +177,7 @@ async def get_images(equipment_id: int):
     if not image_path.exists():
         return Response(status_code=HTTP_404_NOT_FOUND)
 
-    image_base_url = settings.base_url.replace("/api", "/images")
+    image_base_url = settings.base_url.path.replace("/api", "/images")
     return [
         {
             "id": i,

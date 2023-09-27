@@ -241,20 +241,12 @@
         <!--Imagenes equipamiento equipmentImages-->
         <div class="row">
           <div class="col">
-            <q-file
-              outlined
-              v-model="equipmentimages"
-              label="Selecciona imagenes para el equipo"
-              counter
-              max-files="5"
-              multiple
-              accept=".jpg, image/*"
-              clearable
-            >
-              <template v-slot:prepend>
-                <q-icon name="cloud_upload" />
-              </template>
-            </q-file>
+            <UploadImages
+              label="Imagenes equipamiento"
+              :max_files="5"
+              :handleAddImages="handleAddImages"
+              :handleRemoveImages="handleRemoveImages"
+            />
           </div>
         </div>
 
@@ -867,7 +859,6 @@
             "
           />
         </div>
-
         <!--Form button-->
         <div class="row justify-end q-mt-mx">
           <q-btn label="Crear" type="submit" color="positive" />
@@ -889,6 +880,7 @@ import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { sendRequest } from "src/axios/instance.js";
 import SelectForm from "src/components/SelectForm.vue";
+import UploadImages from "src/components/UploadImages.vue";
 
 const maintenanceOptions = [
   {
@@ -931,7 +923,7 @@ const disableLocation = ref(false);
 const disableProject = ref(false);
 const disableProjectOwner = ref(false);
 const disableSupplier = ref(false);
-const equipmentimages = ref(null);
+const equipmentimages = ref([]);
 const invoiceimage = ref(null);
 const name = ref(null);
 const serial = ref(null);
@@ -995,6 +987,20 @@ const workerphone2 = ref(null);
 const $q = useQuasar();
 const router = useRouter();
 const api_prefix = process.env.API_URL;
+
+const handleAddImages = (files) => {
+  console.log("Agregar");
+  equipmentimages.value.push(files[0]);
+  console.log(equipmentimages.value);
+};
+
+const handleRemoveImages = (files) => {
+  console.log("Quitar");
+  equipmentimages.value = equipmentimages.value.filter((value) => {
+    return value != files[0];
+  });
+  console.log(equipmentimages.value);
+};
 
 const getBrands = async () => {
   try {
