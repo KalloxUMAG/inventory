@@ -2,19 +2,20 @@ from typing import Annotated, Union, Any
 from datetime import datetime, timedelta
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
-from jose import jwt, JWTError
+from jose import jwt
 
 from passlib.context import CryptContext
 
 from fastapi import Depends, APIRouter, HTTPException, status, Response
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from schemas.user_schema import (
-    UserInDB,
     TokenSchema,
     requestdetails,
     changepassword,
     UserCreate,
 )
+
+from config.settings import settings
 
 from config.database import get_db
 from sqlalchemy.orm import Session
@@ -29,10 +30,10 @@ users = APIRouter(tags=["users"], prefix="/api/users")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = "32375e2ab7aded81e59257233f4c014b94ea0498206a0e2754e3b2221d58f272"
+SECRET_KEY = settings.secret_key
 REFRESH_SECRET_KEY = "13ugfdfgh@#$%^@&jkl45678902"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 1  # 1 dia
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 5  # 5 dia
 REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 3
 
 
