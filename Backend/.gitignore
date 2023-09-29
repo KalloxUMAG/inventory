@@ -11,4 +11,4 @@ venv/
 
 # project stuff
 .env
-/images/*
+./images/*
