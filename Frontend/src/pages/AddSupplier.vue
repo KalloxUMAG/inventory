@@ -14,11 +14,11 @@
             not_found_label="No hay proveedores disponibles"
             @updateModel="
               (value) => {
-                (supplier = value);
+                supplier = value;
               }
             "
-            :rules="[val => !!val || 'Campo obligatorio']"
-              lazy-rules
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
           />
           <div class="row justify-end q-mt-md">
             <q-btn
@@ -38,7 +38,7 @@
               label="Nombre proveedor"
               class="col q-my-sm"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -51,7 +51,7 @@
               unmasked-value
               class="row q-my-sm"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -62,7 +62,7 @@
               label="Dirección"
               class="col q-my-sm"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -73,7 +73,7 @@
               label="Nombre trabajador"
               class="col q-my-sm"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -88,7 +88,7 @@
               not_found_label="No hay roles disponibles"
               @updateModel="(value) => (workerrol1 = value)"
               class="col q-my-sm"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -100,7 +100,7 @@
               label="Correo trabajador"
               class="col q-my-sm"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -112,7 +112,7 @@
               mask="(+##) #####-####"
               class="col q-my-sm"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -129,7 +129,7 @@
               v-else
               label="Guardar"
               color="amber"
-              @click="notEmptyFields() ? disableSupplier = true : ''"
+              @click="notEmptyFields() ? (disableSupplier = true) : ''"
               class="q-mr-sm"
             />
             <q-btn
@@ -144,14 +144,14 @@
         </div>
         <div class="row">
           <q-input
-              outlined
-              v-model="cost"
-              type="number"
-              label="Costo"
-              class="col q-my-sm"
-              :rules="[val => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
+            outlined
+            v-model="cost"
+            type="number"
+            label="Costo"
+            class="col q-my-sm"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
         </div>
         <!--Buttons-->
         <div class="q-mt-sm row justify-end">
@@ -170,27 +170,28 @@
 
 <script setup>
 import axios from "axios";
+import { sendRequest } from "src/axios/instance.js";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import { onMounted, ref, toRefs } from "vue";
 import SelectForm from "src/components/SelectForm.vue";
-import {rolOptions} from "src/constants/columns.js";
+import { rolOptions } from "src/constants/columns.js";
 
 const cost = ref(0);
 
 const disableSupplier = ref(false);
 
-const newsuppliername = ref('');
-const newsupplierrut = ref('');
-const newsupplieraddress = ref('');
+const newsuppliername = ref("");
+const newsupplierrut = ref("");
+const newsupplieraddress = ref("");
 
 const supplier = ref(null);
 const suppliersOptions = ref([]);
 const newsupplierstate = ref(false);
 
-const workername1 = ref('');
-const workerrol1 = ref('');
-const workermail1 = ref('');
-const workerphone1 = ref('');
+const workername1 = ref("");
+const workerrol1 = ref("");
+const workermail1 = ref("");
+const workerphone1 = ref("");
 
 const $q = useQuasar();
 
@@ -202,17 +203,29 @@ const { supply_id } = toRefs(props);
 const AddSupplierForm = ref(null);
 const api_prefix = process.env.API_URL;
 
-const getSuppliers = () => {
-  axios.get(api_prefix + "/suppliers").then((response) => {
+const getSuppliers = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/suppliers",
+    });
     const suppliers = response.data;
     suppliersOptions.value = suppliers.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-function notEmptyFields(){
-  return newsuppliername.value != '' && newsupplierrut.value != '' && newsupplieraddress.value != '' && workername1.value != '' && workerrol1.value != '' && workermail1.value != '' && workerphone1.value != '' 
+function notEmptyFields() {
+  return (
+    newsuppliername.value != "" &&
+    newsupplierrut.value != "" &&
+    newsupplieraddress.value != "" &&
+    workername1.value != "" &&
+    workerrol1.value != "" &&
+    workermail1.value != "" &&
+    workerphone1.value != ""
+  );
 }
 
 async function createNewSupplier() {
@@ -225,7 +238,11 @@ async function createNewSupplier() {
     city_address: newsupplieraddress.value,
   };
   try {
-    const response = await axios.post(api_prefix + "/suppliers", supplierdata);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/suppliers",
+      data: supplierdata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -250,10 +267,11 @@ async function createNewWorker(supplier_id) {
       supplier_id: supplier_id,
     };
     try {
-      const response = await axios.post(
-        api_prefix + "/suppliers_contacts",
-        workerdata
-      );
+      const response = await sendRequest({
+        method: "POST",
+        url: api_prefix + "/suppliers_contacts",
+        data: workerdata,
+      });
     } catch (error) {
       $q.notify({
         color: "red-3",
@@ -267,7 +285,6 @@ async function createNewWorker(supplier_id) {
 
 onMounted(() => {
   getSuppliers();
-
 });
 
 defineEmits([...useDialogPluginComponent.emits]);
@@ -282,10 +299,14 @@ async function onOKClick() {
   const data = {
     supplier_id: supplier_id,
     supply_id: props.supply_id,
-    cost: cost.value
+    cost: cost.value,
   };
   try {
-    const response = await axios.post(api_prefix + "/suppliers_supplies", data);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/suppliers_supplies",
+      data: data,
+    });
   } catch (error) {
     $q.notify({
       color: "red-3",

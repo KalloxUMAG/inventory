@@ -10,4 +10,4 @@ class SupplierSchema(BaseModel):
     city_address: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True

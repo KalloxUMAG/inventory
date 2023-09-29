@@ -41,7 +41,9 @@
               type="number"
               step="any"
               class="col q-mr-md"
-              :rules="[(val) => (val.length > 0 && val != null) || 'Campo obligatorio']"
+              :rules="[
+                (val) => (val.length > 0 && val != null) || 'Campo obligatorio',
+              ]"
             />
             <q-input
               outlined
@@ -50,7 +52,9 @@
               type="number"
               step="any"
               class="col"
-              :rules="[(val) => (val.length > 0 && val != null) || 'Campo obligatorio']"
+              :rules="[
+                (val) => (val.length > 0 && val != null) || 'Campo obligatorio',
+              ]"
             />
           </div>
         </div>
@@ -62,7 +66,7 @@
               label="Stock crítico*"
               type="number"
               class="col"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -81,7 +85,7 @@
                 supply.brand = value;
               }
             "
-            :rules="[val => !!val || 'Campo obligatorio']"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
             lazy-rules
           />
           <div class="row justify-end q-pt-md">
@@ -100,7 +104,7 @@
               class="col"
               label="Marca*"
               :disable="flags.disableBrand"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -109,7 +113,9 @@
               :label="flags.disableBrand ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="newBrand != '' ? flags.disableBrand = !flags.disableBrand : ''"
+              @click="
+                newBrand != '' ? (flags.disableBrand = !flags.disableBrand) : ''
+              "
             />
             <q-btn
               label="Ver lista"
@@ -133,7 +139,7 @@
                 supply.type = value;
               }
             "
-            :rules="[val => !!val || 'Campo obligatorio']"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
             lazy-rules
           />
           <div class="row justify-end q-pt-md">
@@ -152,7 +158,7 @@
               class="col"
               label="Tipo de insumo*"
               :disable="flags.disableType"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -161,7 +167,9 @@
               :label="flags.disableType ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="newType != '' ? flags.disableType = !flags.disableType : ''"
+              @click="
+                newType != '' ? (flags.disableType = !flags.disableType) : ''
+              "
             />
             <q-btn
               label="Ver lista"
@@ -185,7 +193,7 @@
                 supply.format = value;
               }
             "
-            :rules="[val => !!val || 'Campo obligatorio']"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
             lazy-rules
           />
           <div class="row justify-end q-pt-md">
@@ -204,7 +212,7 @@
               class="col"
               label="Tipo de insumo*"
               :disable="flags.disableFormat"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -213,7 +221,11 @@
               :label="flags.disableFormat ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="newFormat != '' ? flags.disableFormat = !flags.disableFormat : ''"
+              @click="
+                newFormat != ''
+                  ? (flags.disableFormat = !flags.disableFormat)
+                  : ''
+              "
             />
             <q-btn
               label="Ver lista"
@@ -227,7 +239,7 @@
           v-model="supply.observation"
           type="textarea"
           label="Observación"
-          :rules="[val => !!val || 'Campo obligatorio']"
+          :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
         <!--Form button-->
@@ -249,6 +261,7 @@
 import { useQuasar } from "quasar";
 import { useRoute, useRouter } from "vue-router";
 import { ref, reactive, onMounted } from "vue";
+import { sendRequest } from "src/axios/instance.js";
 import axios from "axios";
 import SelectForm from "src/components/SelectForm.vue";
 
@@ -291,31 +304,43 @@ const router = useRouter();
 const $q = useQuasar();
 const api_prefix = process.env.API_URL;
 
-const getSuppliesBrands = () => {
-  axios.get(api_prefix + "/supplies_brands").then((response) => {
+const getSuppliesBrands = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/supplies_brands",
+    });
     const result = response.data;
     brandOptions.value = result.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getSuppliesFormats = () => {
-  axios.get(api_prefix + "/supplies_formats").then((response) => {
+const getSuppliesFormats = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/supplies_formats",
+    });
     const result = response.data;
     formatOptions.value = result.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getSuppliesTypes = () => {
-  axios.get(api_prefix + "/supplies_types").then((response) => {
+const getSuppliesTypes = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/supplies_types",
+    });
     const result = response.data;
     typeOptions.value = result.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
 //Create functions
@@ -329,10 +354,11 @@ async function createNewBrand() {
   };
 
   try {
-    const response = await axios.post(
-      api_prefix + "/supplies_brands",
-      brandData
-    );
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/supplies_brands",
+      data: brandData,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -353,10 +379,11 @@ async function createNewFormat() {
   };
 
   try {
-    const response = await axios.post(
-      api_prefix + "/supplies_formats",
-      formatData
-    );
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/supplies_formats",
+      data: formatData,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -377,7 +404,11 @@ async function createNewType() {
   };
 
   try {
-    const response = await axios.post(api_prefix + "/supplies_types", typeData);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/supplies_types",
+      data: typeData,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -391,7 +422,11 @@ async function createNewType() {
 
 async function createNewSupply(supplyData) {
   try {
-    const response = await axios.post(api_prefix + "/supplies", supplyData);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/supplies",
+      data: supplyData,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -415,7 +450,7 @@ async function onSubmit() {
     observation: supply.observation,
     supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,
-    supplies_format_id: supply.format
+    supplies_format_id: supply.format,
   };
 
   loading.value = true;

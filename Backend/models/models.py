@@ -140,6 +140,16 @@ class TokenTable(Base):
     created_date = mapped_column(DateTime, default=datetime.now)
 
 
+class Groups(Base):
+    __tablename__ = "Groups"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String)
+    lots: Mapped[List["Lot"]] = relationship(backref="Groups")
+    supplies: Mapped[List["Supply"]] = relationship(
+        secondary="Groups_has_Supplies", back_populates="groups"
+    )
+
+
 # Tablas dependientes
 
 
@@ -153,6 +163,7 @@ class Equipment(Base):
     reception_date = mapped_column(Date, nullable=True)
     maintenance_period: Mapped[Optional[int]] = mapped_column(Integer)
     observation: Mapped[Optional[str]] = mapped_column(String)
+    next_maintenance: Mapped[Optional[Date]] = mapped_column(Date)
 
     supplier_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("Suppliers.id", ondelete="SET NULL"), nullable=True
@@ -273,6 +284,9 @@ class Supply(Base):
     suppliers: Mapped[List["Supplier"]] = relationship(
         secondary="Suppliers_has_Supplies", back_populates="supplies"
     )
+    groups: Mapped[List["Groups"]] = relationship(
+        secondary="Groups_has_Supplies", back_populates="supplies"
+    )
 
 
 class SupplyBrand(Base):
@@ -339,6 +353,7 @@ class Lot(Base):
     number: Mapped[str] = mapped_column(
         String
     )  # Numero unico por cada lote (puede tener letras)
+    reception_date = mapped_column(Date)
     due_date = mapped_column(Date)
     observations: Mapped[str] = mapped_column(String)
     state: Mapped[bool] = mapped_column(Boolean)
@@ -353,6 +368,19 @@ class Lot(Base):
         Integer, ForeignKey("Sub_locations.id")
     )
     project_id: Mapped[int] = mapped_column(Integer, ForeignKey("Projects.id"))
+    group_id: Mapped[int] = mapped_column(Integer, ForeignKey("Groups.id"))
+
+
+class GroupsHasSupplies(Base):
+    __tablename__ = "Groups_has_Supplies"
+
+    group_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("Groups.id", ondelete="CASCADE"), primary_key=True
+    )
+    supply_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("Supplies.id", ondelete="CASCADE"), primary_key=True
+    )
+    quantity: Mapped[int] = mapped_column(Integer)
 
 
 class SuppliersHasSupplies(Base):

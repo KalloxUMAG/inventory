@@ -8,16 +8,18 @@ from config.database import get_db
 from models.models import Brand
 from schemas.brand_schema import BrandSchema
 
-brands = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+brands = APIRouter(dependencies=[Depends(JWTBearer())], prefix="/api/brands")
 
 
-@brands.get("/api/brands", response_model=List[BrandSchema])
+@brands.get("", response_model=List[BrandSchema])
 def get_brands(db: Session = Depends(get_db)):
     result = db.query(Brand).all()
     return result
 
 
-@brands.post("/api/brands", status_code=HTTP_201_CREATED)
+@brands.post("", status_code=HTTP_201_CREATED)
 def add_brand(brand: BrandSchema, db: Session = Depends(get_db)):
     new_brand = Brand(name=brand.name)
     db.add(new_brand)
@@ -27,13 +29,15 @@ def add_brand(brand: BrandSchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@brands.get("/api/brands/{brand_id}", response_model=BrandSchema)
+@brands.get("/{brand_id}", response_model=BrandSchema)
 def get_brand(brand_id: int, db: Session = Depends(get_db)):
     return db.query(Brand).filter(Brand.id == brand_id).first()
 
 
-@brands.put("/api/brands/{brand_id}", response_model=BrandSchema)
-def update_brand(data_update: BrandSchema, brand_id: int, db: Session = Depends(get_db)):
+@brands.put("/{brand_id}", response_model=BrandSchema)
+def update_brand(
+    data_update: BrandSchema, brand_id: int, db: Session = Depends(get_db)
+):
     db_brand = db.query(Brand).filter(Brand.id == brand_id).first()
     if not db_brand:
         return Response(status_code=HTTP_404_NOT_FOUND)
@@ -45,7 +49,7 @@ def update_brand(data_update: BrandSchema, brand_id: int, db: Session = Depends(
     return db_brand
 
 
-@brands.delete("/api/brands/{brand_id}", status_code=HTTP_204_NO_CONTENT)
+@brands.delete("/{brand_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_brand(brand_id: int, db: Session = Depends(get_db)):
     db_brand = db.query(Brand).filter(Brand.id == brand_id).first()
     if not db_brand:

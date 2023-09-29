@@ -4,13 +4,15 @@
       <div class="flex col">
         <q-card class="my-card fit" flat bordered>
           <q-item class="row justify-center">
-            <div class="text-h5 text-weight-bold">Datos insumo 
+            <div class="text-h5 text-weight-bold">
+              Datos insumo
               <q-btn
                 class="q-ml-md glossy"
                 icon="edit"
                 color="positive"
                 @click="editSupply"
-              /></div>
+              />
+            </div>
           </q-item>
           <q-separator />
           <!--Datos producto-->
@@ -41,7 +43,9 @@
               </div>
               <q-separator />
               <div class="row q-my-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">Formato</div>
+                <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                  Formato
+                </div>
                 <div class="col text-h6 text-grey-8">
                   {{ supply.supplies_format_name }}
                 </div>
@@ -134,15 +138,19 @@
       </div>
     </div>
     <div class="row q-mt-md justify-end">
-      <q-btn label="Eliminar" color="negative" class="text-h6" @click="removeSupply"/>
+      <q-btn
+        label="Eliminar"
+        color="negative"
+        class="text-h6"
+        @click="removeSupply"
+      />
     </div>
   </q-page>
 </template>
 
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { computed, onMounted, ref, getCurrentInstance} from "vue";
-import axios from "axios";
+import { computed, onMounted, ref, getCurrentInstance } from "vue";
 import NoRedirectTable from "src/components/NoRedirectTable.vue";
 import AddSupplier from "./AddSupplier.vue";
 import AddLot from "./AddLot.vue";
@@ -150,7 +158,8 @@ import EditLot from "./EditLot.vue";
 import EditSupply from "./EditSupply.vue";
 import { suppliersSupplyColumns, lotsColumns } from "../constants/columns.js";
 import { useQuasar } from "quasar";
-
+import { sendRequest } from "src/axios/instance";
+import { api } from "src/boot/axios";
 
 const route = useRoute();
 const id = computed(() => route.params.id);
@@ -163,22 +172,34 @@ const router = useRouter();
 
 const api_prefix = process.env.API_URL;
 
-const getSupply = () => {
-  axios
-    .get(api_prefix + "/supplies/" + id.value)
-    .then((response) => (supply.value = response.data));
+const getSupply = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/supplies/" + id.value,
+    });
+    supply.value = response.data;
+  } catch (error) {}
 };
 
-const getSuppliers = () => {
-  axios
-    .get(api_prefix + "/suppliers_supplies/" + id.value)
-    .then((response) => (suppliers.value = response.data));
+const getSuppliers = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/suppliers_supplies/" + id.value,
+    });
+    suppliers.value = response.data;
+  } catch (error) {}
 };
 
-const getLots = () => {
-  axios
-    .get(api_prefix + "/lots/supply/" + id.value)
-    .then((response) => (lots.value = response.data));
+const getLots = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/lots/supply/" + id.value,
+    });
+    lots.value = response.data;
+  } catch (error) {}
 };
 
 function addSupplier() {
@@ -187,10 +208,10 @@ function addSupplier() {
     componentProps: {
       supply_id: supply.value.id,
     },
-  }).onOk((data) => {getSuppliers()});
+  }).onOk((data) => {
+    getSuppliers();
+  });
 }
-
-
 
 function addLot() {
   $q.dialog({
@@ -199,7 +220,10 @@ function addLot() {
       supply_id: supply.value.id,
       stock: supply.value.lot_stock,
     },
-  }).onOk((data) => {getLots(); getSupply()});
+  }).onOk((data) => {
+    getLots();
+    getSupply();
+  });
 }
 
 function removeLot(lot) {
@@ -215,19 +239,28 @@ function removeLot(lot) {
       label: "Cancelar y mantener",
     },
   })
-    .onOk(() => {
+    .onOk(async () => {
       const lot_id = lot.id;
       const lot_stock = supply.value.lot_stock * -1;
-      axios
-        .put(api_prefix + "/lots/deactive/" + lot_id)
-        .then((response) => getLots());
+      try {
+        const response = await sendRequest({
+          method: "PUT",
+          url: api_prefix + "/lots/deactivate" + lot_id,
+        });
+        getLots();
+      } catch (error) {}
 
       const data = {
         stock: lot_stock,
       };
-      axios
-        .put(api_prefix + "/supplies/stock/" + id.value, data)
-        .then((response) => getSupply());
+      try {
+        const response = await sendRequest({
+          method: "PUT",
+          url: api_prefix + "/supplies/stock/" + id.value,
+          data: data,
+        });
+        getSupply();
+      } catch (error) {}
     })
     .onCancel(() => {
       // console.log('Cancel')
@@ -244,15 +277,19 @@ function editLot(lot) {
       supply_id: supply.value.id,
       lot_id: lot.id,
       number: lot.number,
-      supplier: {id: lot.supplier_id, name: lot.supplier_name},
+      supplier: { id: lot.supplier_id, name: lot.supplier_name },
       observation: lot.observations,
+      reception_date: lot.reception_date,
       due_date: lot.due_date,
-      location: {id: lot.location_id, name: lot.location},
-      sublocation: {id: lot.sub_location_id, name:lot.sub_location},
-      project: {id: lot.project_id, name: lot.project}
+      location: { id: lot.location_id, name: lot.location },
+      sublocation: { id: lot.sub_location_id, name: lot.sub_location },
+      project: { id: lot.project_id, name: lot.project },
     },
   })
-    .onOk((data) => {getLots(); getSupply()})
+    .onOk((data) => {
+      getLots();
+      getSupply();
+    })
     .onCancel(() => {
       // console.log('Cancel')
     })
@@ -261,35 +298,43 @@ function editLot(lot) {
     });
 }
 
-function editSupply(){
+function editSupply() {
   $q.dialog({
     component: EditSupply,
     componentProps: {
       supply_id: supply.value.id,
-      brand: {id: supply.value.supplies_brand_id, name: supply.value.supplies_brand_name},
-      type: {id: supply.value.supplies_type_id, name: supply.value.supplies_type_name},
+      brand: {
+        id: supply.value.supplies_brand_id,
+        name: supply.value.supplies_brand_name,
+      },
+      type: {
+        id: supply.value.supplies_type_id,
+        name: supply.value.supplies_type_name,
+      },
       name: supply.value.name,
       code: supply.value.code,
-      format: {id: supply.value.supplies_format_id, name: supply.value.supplies_format_name},
+      format: {
+        id: supply.value.supplies_format_id,
+        name: supply.value.supplies_format_name,
+      },
       samples: supply.value.samples,
       stock: supply.value.stock,
       lot_stock: supply.value.lot_stock,
       observation: supply.value.observation,
       critical_stock: supply.value.critical_stock,
-    }
+    },
   })
-  .onOk((data) => {
-    getSupply()
-  })
-  .onCancel(() => {
-
-  })
+    .onOk((data) => {
+      getSupply();
+    })
+    .onCancel(() => {});
 }
 
-function removeSupply(){
+function removeSupply() {
   $q.dialog({
     title: "Eliminar insumo",
-    message: "El insumo sera archivado y solo podra ser recuperado por un administrador",
+    message:
+      "El insumo sera archivado y solo podra ser recuperado por un administrador",
     ok: {
       color: "negative",
       label: "Aceptar y eliminar",
@@ -299,10 +344,14 @@ function removeSupply(){
       label: "Cancelar y mantener",
     },
   })
-    .onOk(() => {
-      axios
-        .delete(api_prefix + "/supplies/" + id.value)
-        .then((response) => redirectToSupplies());
+    .onOk(async () => {
+      try {
+        const response = await sendRequest({
+          method: "DELETE",
+          url: api_prefix + "/supplies/" + id.value,
+        });
+        redirectToSupplies();
+      } catch (error) {}
     })
     .onCancel(() => {
       // console.log('Cancel')
@@ -313,7 +362,7 @@ function removeSupply(){
 }
 
 function redirectToSupplies() {
-  router.push({ path: '../supplies' });
+  router.push({ path: "../supplies" });
 }
 
 onMounted(() => {

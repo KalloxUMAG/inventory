@@ -9,4 +9,4 @@ class ProjectSchema(BaseModel):
     owner_id: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True

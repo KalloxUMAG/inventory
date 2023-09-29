@@ -1,9 +1,12 @@
 import logging
 from pathlib import Path
 from typing import List
+from datetime import datetime, timedelta
+import re
 
 from fastapi import APIRouter, Depends, Response, UploadFile
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
 from config.database import get_db
@@ -35,10 +38,14 @@ from schemas.equipment_schema import (
     UpdateEquipmentSchema,
 )
 
-equipments = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+equipments = APIRouter(
+    dependencies=[Depends(JWTBearer())], tags=["equipments"], prefix="/api/equipments"
+)
 
 
-@equipments.get("/api/equipments", response_model=List[EquipmentListSchema], tags=["equipments"])
+@equipments.get("", response_model=List[EquipmentListSchema])
 def get_equipments(db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -57,6 +64,8 @@ def get_equipments(db: Session = Depends(get_db)):
             Invoice.number.label("invoice_number"),
             Equipment.model_number_id,
             ModelNumber.number.label("model_number"),
+            Model.id.label("model_id"),
+            Model.name.label("model_name"),
             Equipment.stage_id,
             Stage.name.label("stage_name"),
             Project.id.label("project_id"),
@@ -66,6 +75,7 @@ def get_equipments(db: Session = Depends(get_db)):
         .outerjoin(Supplier, Supplier.id == Equipment.supplier_id)
         .outerjoin(Invoice, Invoice.id == Equipment.invoice_id)
         .outerjoin(ModelNumber, ModelNumber.id == Equipment.model_number_id)
+        .outerjoin(Model, Model.id == ModelNumber.model_id)
         .outerjoin(Stage, Stage.id == Equipment.stage_id)
         .outerjoin(Project, Project.id == Stage.project_id)
         .all()
@@ -73,18 +83,16 @@ def get_equipments(db: Session = Depends(get_db)):
     return result
 
 
-@equipments.get(
-    "/api/equipments/nextmaintenances",
-    response_model=List[NextMaintenanceSchema],
-    tags=["equipments"],
-)
+@equipments.get("/nextmaintenances", response_model=List[EquipmentSchema])
 def get_equipments_nextmaintenances(db: Session = Depends(get_db)):
-    query = db.query(Equipment).all()
-
+    s = text(
+        """ SELECT * FROM "Equipments" WHERE next_maintenance <= (CURRENT_DATE + interval '8 month');"""
+    )
+    query = db.execute(s).all()
     return query
 
 
-@equipments.post("/api/equipments", status_code=HTTP_201_CREATED, tags=["equipments"])
+@equipments.post("", status_code=HTTP_201_CREATED)
 def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
     if equipment.supplier_id is not None:
         db_supplier = get_supplier(equipment.supplier_id, db=db)
@@ -108,6 +116,15 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
         if not db_stage:
             return Response(status_code=HTTP_404_NOT_FOUND)
 
+    if equipment.maintenance_period != None:
+        reception_date = equipment.reception_date
+        next_maintenance = reception_date + timedelta(
+            days=equipment.maintenance_period * 30
+        )
+        next_maintenance = next_maintenance.strftime("%Y-%m-%d")
+    else:
+        next_maintenance = None
+
     new_equipment = Equipment(
         name=equipment.name,
         serial_number=equipment.serial_number,
@@ -116,6 +133,7 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
         maintenance_period=equipment.maintenance_period,
         observation=equipment.observation,
         last_preventive_mainteinance=equipment.last_preventive_mainteinance,
+        next_maintenance=next_maintenance,
         supplier_id=equipment.supplier_id,
         invoice_id=equipment.invoice_id,
         model_number_id=equipment.model_number_id,
@@ -130,25 +148,36 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
 
 
 # Upload image to equipments folder using invoice id
-@equipments.post(
-    "/api/equipments/{equipment_id}", status_code=HTTP_201_CREATED, tags=["equipments"]
-)
+@equipments.post("/{equipment_id}", status_code=HTTP_201_CREATED)
 async def add_image(equipment_id: int, file: UploadFile):
     image_path = Path(settings.image_directory, "equipments", str(equipment_id))
     image_path.mkdir(parents=True, exist_ok=True)
-    with open(image_path / file.filename, "wb") as buffer:
+    extension = file.filename.split(".")[-1].lower()
+    format_filename = file.filename[: -len(extension)].lower()
+    format_filename = re.sub("[^A-Za-z0-9]", "", format_filename, 0, re.IGNORECASE)
+    date_now = datetime.now()
+    date_now = date_now.strftime("%d%m%Y_%H%M%S")
+    with open(
+        str(image_path)
+        + "/"
+        + str(date_now)
+        + str(format_filename)
+        + "."
+        + str(extension),
+        "wb",
+    ) as buffer:
         buffer.write(await file.read())
     return Response(status_code=HTTP_201_CREATED)
 
 
 # Get images from equipments folder
-@equipments.get("/api/equipments/image/{equipment_id}", tags=["equipments"])
+@equipments.get("/image/{equipment_id}")
 async def get_images(equipment_id: int):
     image_path = Path(settings.image_directory, "equipments", str(equipment_id))
     if not image_path.exists():
         return Response(status_code=HTTP_404_NOT_FOUND)
 
-    image_base_url = settings.base_url.replace("/api", "/images")
+    image_base_url = settings.base_url.path.replace("/api", "/images")
     return [
         {
             "id": i,
@@ -159,9 +188,7 @@ async def get_images(equipment_id: int):
     ]
 
 
-@equipments.get(
-    "/api/equipments/{equipment_id}", response_model=EquipmentFullSchema, tags=["equipments"]
-)
+@equipments.get("/{equipment_id}", response_model=EquipmentFullSchema)
 def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -213,16 +240,12 @@ def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
     return result
 
 
-@equipments.get(
-    "/api/equipment/{equipment_id}", response_model=EquipmentSchema, tags=["equipments"]
-)
+@equipments.get("/equipment/{equipment_id}", response_model=EquipmentSchema)
 def get_equipment_exist(equipment_id: int, db: Session = Depends(get_db)):
     return db.query(Equipment).filter(Equipment.id == equipment_id).first()
 
 
-@equipments.delete(
-    "/api/equipments/{equipment_id}", status_code=HTTP_204_NO_CONTENT, tags=["equipments"]
-)
+@equipments.delete("/{equipment_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_equipment(equipment_id: int, db: Session = Depends(get_db)):
     db_equipment = db.query(Equipment).filter(Equipment.id == equipment_id).first()
     if not db_equipment:
@@ -232,9 +255,7 @@ def delete_equipment(equipment_id: int, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@equipments.put(
-    "/api/equipments/{equipment_id}", response_model=UpdateEquipmentSchema, tags=["equipments"]
-)
+@equipments.put("/{equipment_id}", response_model=UpdateEquipmentSchema)
 def update_equipment(
     data_update: UpdateEquipmentSchema, equipment_id: int, db: Session = Depends(get_db)
 ):

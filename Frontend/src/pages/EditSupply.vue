@@ -37,7 +37,8 @@
               step="any"
               class="col q-mr-md"
               :rules="[
-                (val) => (val.length != 0 && val != null) || 'Campo obligatorio',
+                (val) =>
+                  (val.length != 0 && val != null) || 'Campo obligatorio',
               ]"
             />
             <q-input
@@ -48,7 +49,8 @@
               step="any"
               class="col"
               :rules="[
-                (val) => (val.length != 0 && val != null) || 'Campo obligatorio',
+                (val) =>
+                  (val.length != 0 && val != null) || 'Campo obligatorio',
               ]"
             />
           </div>
@@ -62,7 +64,8 @@
               type="number"
               class="col q-mr-md"
               :rules="[
-                (val) => (val.length != 0 && val != null) || 'Campo obligatorio',
+                (val) =>
+                  (val.length != 0 && val != null) || 'Campo obligatorio',
               ]"
             />
             <q-input
@@ -119,7 +122,9 @@
               :label="flags.disableBrand ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="newBrand != '' ? flags.disableBrand = !flags.disableBrand : ''"
+              @click="
+                newBrand != '' ? (flags.disableBrand = !flags.disableBrand) : ''
+              "
             />
             <q-btn
               label="Ver lista"
@@ -172,7 +177,9 @@
               :label="flags.disableType ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="newType != '' ? flags.disableType = !flags.disableType : ''"
+              @click="
+                newType != '' ? (flags.disableType = !flags.disableType) : ''
+              "
             />
             <q-btn
               label="Ver lista"
@@ -225,7 +232,11 @@
               :label="flags.disableFormat ? 'Editar' : 'Guardar'"
               color="amber"
               class="q-mr-sm"
-              @click="newFormat != '' ? flags.disableFormat = !flags.disableFormat : ''"
+              @click="
+                newFormat != ''
+                  ? (flags.disableFormat = !flags.disableFormat)
+                  : ''
+              "
             />
             <q-btn
               label="Ver lista"
@@ -254,11 +265,11 @@
         </div>
       </q-form>
       <q-inner-loading
-          :showing="loading"
-          label="Creando insumo"
-          label-class="text-deep-orange"
-          label-style="font-size: 1.6em"
-        />
+        :showing="loading"
+        label="Creando insumo"
+        label-class="text-deep-orange"
+        label-style="font-size: 1.6em"
+      />
     </q-card>
   </q-dialog>
 </template>
@@ -267,6 +278,7 @@
 import axios from "axios";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import { onMounted, reactive, ref, toRefs } from "vue";
+import { sendRequest } from "src/axios/instance";
 import SelectForm from "src/components/SelectForm.vue";
 const api_prefix = process.env.API_URL;
 
@@ -306,9 +318,9 @@ const supply = reactive({
   observation: props.observation,
   critical_stock: props.critical_stock,
 });
-const newBrand = ref('');
-const newFormat = ref('');
-const newType = ref('');
+const newBrand = ref("");
+const newFormat = ref("");
+const newType = ref("");
 
 //Flags
 const flags = reactive({
@@ -322,33 +334,44 @@ const flags = reactive({
 
 const loading = ref(false);
 
-const getSuppliesBrands = () => {
-  axios.get(api_prefix + "/supplies_brands").then((response) => {
+const getSuppliesBrands = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/supplies_brands",
+    });
     const result = response.data;
     brandOptions.value = result.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getSuppliesFormats = () => {
-  axios.get(api_prefix + "/supplies_formats").then((response) => {
+const getSuppliesFormats = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/supplies_formats",
+    });
     const result = response.data;
     formatOptions.value = result.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getSuppliesTypes = () => {
-  axios.get(api_prefix + "/supplies_types").then((response) => {
+const getSuppliesTypes = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/supplies_types",
+    });
     const result = response.data;
     typeOptions.value = result.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
-
 
 //Create functions
 
@@ -361,10 +384,11 @@ async function createNewBrand() {
   };
 
   try {
-    const response = await axios.post(
-      api_prefix + "/supplies_brands",
-      brandData
-    );
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/supplies_brands",
+      data: brandData,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -385,10 +409,11 @@ async function createNewFormat() {
   };
 
   try {
-    const response = await axios.post(
-      api_prefix + "/supplies_formats",
-      formatData
-    );
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/supplies_formats",
+      data: formatData,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -409,7 +434,11 @@ async function createNewType() {
   };
 
   try {
-    const response = await axios.post(api_prefix + "/supplies_types", typeData);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/supplies_types",
+      data: typeData,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -421,20 +450,24 @@ async function createNewType() {
   }
 }
 
-async function editSupply(data){
-    try {
-      const response = await axios.put(api_prefix + "/supplies/" + props.supply_id, data);
-      return response.data;
-    } catch (error) {
-      $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "No se pudo editar el insumo: " + error,
-      });
-      return -1
-    }
+async function editSupply(data) {
+  try {
+    const response = await sendRequest({
+      method: "PUT",
+      url: api_prefix + "/supplies/" + props.supply_id,
+      data: data,
+    });
+    return response.data;
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo editar el insumo: " + error,
+    });
+    return -1;
   }
+}
 
 onMounted(() => {
   getSuppliesBrands();
@@ -461,7 +494,7 @@ async function onOKClick() {
     observation: supply.observation,
     supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,
-    supplies_format_id: supply.format
+    supplies_format_id: supply.format,
   };
 
   loading.value = true;

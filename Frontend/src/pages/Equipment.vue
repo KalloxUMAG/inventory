@@ -174,24 +174,26 @@
           </q-card-section>
         </q-card-section>
       </q-card>
-      <div v-if="equipment.maintenance_period != null" class="q-mt-md maintenance-table">
+      <div
+        v-if="equipment.maintenance_period != null"
+        class="q-mt-md maintenance-table"
+      >
         <NoRedirectTable
-            title="Mantenimientos"
-            :columns="columns_maintenances"
-            :rows="maintenances"
-            :addFunction="addFunction"
-            :deleteFunction="removeMaintenance"
-            :editFunction="editMaintenance"
-          />
+          title="Mantenimientos"
+          :columns="columns_maintenances"
+          :rows="maintenances"
+          :addFunction="addFunction"
+          :deleteFunction="removeMaintenance"
+          :editFunction="editMaintenance"
+        />
       </div>
     </div>
   </q-page>
 </template>
 
 <script setup>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { computed, onMounted, ref } from "vue";
-import axios from "axios";
 import Carousel from "src/components/Carousel.vue";
 import NoRedirectTable from "src/components/NoRedirectTable.vue";
 import FormModal from "src/components/FormModal.vue";
@@ -201,6 +203,7 @@ import EditEquipmentPurchase from "./EditEquipmentPurchase.vue";
 import EditMaintenance from "./EditMaintenance.vue";
 import { useQuasar } from "quasar";
 import { columns_maintenances } from "src/constants/columns.js";
+import { sendRequest } from "src/axios/instance.js";
 
 const $q = useQuasar();
 
@@ -215,13 +218,15 @@ const project = ref(null);
 const api_prefix = process.env.API_URL;
 
 const route = useRoute();
+const router = useRouter();
 const id = computed(() => route.params.id);
 const query_equipment = api_prefix + "/equipments/" + id.value;
 const query_maintenances = api_prefix + "/maintenances/" + id.value;
-const query_last_maintenance = api_prefix + "/maintenances/last_maintenance/" + id.value;
+const query_last_maintenance =
+  api_prefix + "/maintenances/last_maintenance/" + id.value;
 
 function padTo2Digits(num) {
-  return num.toString().padStart(2, '0');
+  return num.toString().padStart(2, "0");
 }
 
 function formatDate(date) {
@@ -229,53 +234,66 @@ function formatDate(date) {
     date.getFullYear(),
     padTo2Digits(date.getMonth() + 1),
     padTo2Digits(date.getDate()),
-  ].join('-');
+  ].join("-");
 }
 
-function createNextMaintenance(){
-  const dateString = last_maintenance.value.date+"T00:00:00"
-  const months = equipment.value.maintenance_period
+function createNextMaintenance() {
+  const dateString = last_maintenance.value.date + "T00:00:00";
+  const months = equipment.value.maintenance_period;
   let date = new Date(dateString);
-  date.setDate(date.getDate()+months*30)
-  date = formatDate(date)
+  date.setDate(date.getDate() + months * 30);
+  date = formatDate(date);
   const data = {
     id: null,
     date: date,
     observations: "Próxima mantención programada",
     state: null,
     maintenance_type: "Programada",
-    equiptment_id: equipment.value.id
-  }
-  maintenances.value.unshift(data)
-  maintenances.value.sort((x,y) => {
-    const date1 = new Date(x.date+"T00:00:00");
-    const date2 = new Date(y.date+"T00:00:00");
-    if(date1 < date2){
-      return -1
+    equiptment_id: equipment.value.id,
+  };
+  maintenances.value.unshift(data);
+  maintenances.value.sort((x, y) => {
+    const date1 = new Date(x.date + "T00:00:00");
+    const date2 = new Date(y.date + "T00:00:00");
+    if (date1 < date2) {
+      return -1;
     }
-    return 1
-  })
+    return 1;
+  });
 }
 
-function getEquipment() {
-  axios.get(query_equipment).then((response) => {
+async function getEquipment() {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: query_equipment,
+    });
     equipment.value = response.data;
     img_api.value = api_prefix + "/equipments/image/" + equipment.value.id;
     getMaintenances();
-  });
-}
-function getMaintenances() {
-  axios.get(query_maintenances).then((response) => {
-    maintenances.value = response.data;
-    getLastMaintenance();
-  });
+  } catch (error) {}
 }
 
-function getLastMaintenance(){
-  axios.get(query_last_maintenance).then((response) => {
+async function getMaintenances() {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: query_maintenances,
+    });
+    maintenances.value = response.data;
+    getLastMaintenance();
+  } catch (error) {}
+}
+
+async function getLastMaintenance() {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: query_last_maintenance,
+    });
     last_maintenance.value = response.data;
     createNextMaintenance();
-  });
+  } catch (error) {}
 }
 
 function addFunction() {
@@ -326,8 +344,8 @@ function addFunction() {
       ],
     },
   })
-    .onOk((data) => {
-      const state = data[2] == 1 ? true : (data[2] == 0 ? false : null);
+    .onOk(async (data) => {
+      const state = data[2] == 1 ? true : data[2] == 0 ? false : null;
       const maintenance_data = {
         date: data[0],
         observations: data[3],
@@ -336,13 +354,14 @@ function addFunction() {
         equiptment_id: equipment.value.id,
       };
 
-      axios
-        .post(api_prefix + "/maintenances", maintenance_data, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => getMaintenances());
+      try {
+        const response = await sendRequest({
+          method: "POST",
+          url: api_prefix + "/maintenances",
+          data: maintenance_data,
+        });
+        getMaintenances();
+      } catch (error) {}
     })
     .onCancel(() => {});
 }
@@ -449,12 +468,11 @@ function editMaintenance(maintenance) {
         { id: "1", name: "Realizado" },
       ],
       observation_value: maintenance.observations,
-      equiptment_id: maintenance.equiptment_id
+      equiptment_id: maintenance.equiptment_id,
     },
-  })
-  .onOk(() => {
+  }).onOk(() => {
     getMaintenances();
-  })
+  });
 }
 
 function removeMaintenance(maintenance) {
@@ -470,11 +488,19 @@ function removeMaintenance(maintenance) {
       label: "Cancelar y mantener",
     },
   })
-    .onOk(() => {
+    .onOk(async () => {
       const maintenance_id = maintenance.id;
-      axios
-        .delete(api_prefix + "/maintenances/" + maintenance_id)
-        .then((response) => getMaintenances());
+      try {
+        const response = await sendRequest({
+          method: "DELETE",
+          url: api_prefix + "/maintenances/" + maintenance_id,
+        });
+        getMaintenances();
+      } catch (error) {
+        if (error.response.status === 403) {
+          router.push({ path: "/login" });
+        }
+      }
     })
     .onCancel(() => {
       // console.log('Cancel')
@@ -495,7 +521,7 @@ onMounted(() => {
   width: 100%;
 }
 
-.maintenance-table{
+.maintenance-table {
   width: 100%;
 }
 .field-label {

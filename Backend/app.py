@@ -30,6 +30,8 @@ from routes.supplies_formats import supplies_formats
 from routes.supplies_types import supplies_types
 from routes.units import units
 from routes.users import users
+from routes.groups import groups
+from routes.groups_supplies import groups_supplies
 
 
 def create_tables():
@@ -38,7 +40,7 @@ def create_tables():
         Base.metadata.create_all(bind=engine)
 
 
-create_tables()
+# create_tables()
 
 app = FastAPI(
     title=fm.title,
@@ -60,6 +62,8 @@ routes = [
     buildings,
     brands,
     equipments,
+    groups,
+    groups_supplies,
     invoices,
     locations,
     lots,

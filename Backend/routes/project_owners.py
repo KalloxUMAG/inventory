@@ -8,16 +8,20 @@ from config.database import get_db
 from models.models import ProjectOwner
 from schemas.project_owner_schema import ProjectOwnerSchema
 
-project_owners = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+project_owners = APIRouter(
+    dependencies=[Depends(JWTBearer())], tags=["projects"], prefix="/api/project_owners"
+)
 
 
-@project_owners.get("/api/project_owners", response_model=List[ProjectOwnerSchema])
+@project_owners.get("", response_model=List[ProjectOwnerSchema])
 def get_project_owners(db: Session = Depends(get_db)):
     result = db.query(ProjectOwner).all()
     return result
 
 
-@project_owners.post("/api/project_owners", status_code=HTTP_201_CREATED)
+@project_owners.post("", status_code=HTTP_201_CREATED)
 def add_project_owner(project_owner: ProjectOwnerSchema, db: Session = Depends(get_db)):
     new_project_owner = ProjectOwner(name=project_owner.name)
     db.add(new_project_owner)
@@ -27,14 +31,16 @@ def add_project_owner(project_owner: ProjectOwnerSchema, db: Session = Depends(g
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@project_owners.get("/api/project_owners/{project_owner_id}", response_model=ProjectOwnerSchema)
+@project_owners.get("/{project_owner_id}", response_model=ProjectOwnerSchema)
 def get_project_owner(project_owner_id: int, db: Session = Depends(get_db)):
     return db.query(ProjectOwner).filter(ProjectOwner.id == project_owner_id).first()
 
 
-@project_owners.put("/api/project_owners/{project_owner_id}", response_model=ProjectOwnerSchema)
+@project_owners.put("/{project_owner_id}", response_model=ProjectOwnerSchema)
 def update_project_owner(
-    data_update: ProjectOwnerSchema, project_owner_id: int, db: Session = Depends(get_db)
+    data_update: ProjectOwnerSchema,
+    project_owner_id: int,
+    db: Session = Depends(get_db),
 ):
     db_project_owner = get_project_owner(project_owner_id, db=db)
     if not db_project_owner:
@@ -47,7 +53,7 @@ def update_project_owner(
     return db_project_owner
 
 
-@project_owners.delete("/api/project_owners/{project_owner_id}", status_code=HTTP_204_NO_CONTENT)
+@project_owners.delete("/{project_owner_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_project_owner(project_owner_id: int, db: Session = Depends(get_db)):
     db_project_owner = get_project_owner(project_owner_id, db=db)
     if not db_project_owner:

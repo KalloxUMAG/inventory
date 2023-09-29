@@ -14,6 +14,13 @@ export const equipmentsColumns = [
     sortable: false,
   },
   {
+    name: "model_name",
+    align: "left",
+    label: "Modelo",
+    field: "model_name",
+    sortable: false,
+  },
+  {
     name: "invoice_number",
     align: "left",
     label: "Factura",
@@ -104,10 +111,24 @@ export const lotsColumns = [
     sortable: false,
   },
   {
+    name: "reception_date",
+    align: "left",
+    label: "Fecha de recepcion",
+    field: "reception_date",
+    sortable: true,
+  },
+  {
     name: "due_date",
     align: "left",
     label: "Fecha de vencimiento",
     field: "due_date",
+    sortable: true,
+  },
+  {
+    name: "group_name",
+    align: "left",
+    label: "Grupo",
+    field: "group_name",
     sortable: true,
   },
   {
@@ -175,8 +196,8 @@ export const suppliersColumns = [
     label: "Dirección",
     field: "city_address",
     sortable: false,
-  }
-]
+  },
+];
 
 export const suppliersSupplyColumns = [
   {
@@ -206,8 +227,8 @@ export const suppliersSupplyColumns = [
     label: "Costo",
     field: "cost",
     sortable: false,
-  }
-]
+  },
+];
 
 export const rolOptions = [
   {
@@ -254,6 +275,37 @@ export const columns_maintenances = [
     align: "left",
     label: "Acciones",
     field: "actions",
+    sortable: false,
+  },
+];
+
+export const criticEquipmentsColumns = [
+  {
+    name: "name",
+    align: "left",
+    label: "Nombre",
+    field: "name",
+    sortable: false,
+  },
+  {
+    name: "serial_number",
+    align: "left",
+    label: "Nro. serie",
+    field: "serial_number",
+    sortable: false,
+  },
+  {
+    name: "umag_inventory_code",
+    align: "left",
+    label: "Inventariado",
+    field: "umag_inventory_code",
+    sortable: true,
+  },
+  {
+    name: "reception_date",
+    align: "left",
+    label: "Fecha",
+    field: "reception_date",
     sortable: false,
   },
 ];

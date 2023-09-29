@@ -7,7 +7,7 @@ class SupplierSupplySchema(BaseModel):
     cost: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class GetSupplierSupplySchema(BaseModel):
@@ -19,4 +19,4 @@ class GetSupplierSupplySchema(BaseModel):
     city_address: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True

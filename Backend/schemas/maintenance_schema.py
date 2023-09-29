@@ -13,7 +13,7 @@ class MaintenanceSchema(BaseModel):
     equiptment_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class MaintenanceFromEquipment(BaseModel):
@@ -25,7 +25,7 @@ class MaintenanceFromEquipment(BaseModel):
     equiptment_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class EditMaintenanceSchema(BaseModel):
@@ -35,4 +35,4 @@ class EditMaintenanceSchema(BaseModel):
     maintenance_type: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True

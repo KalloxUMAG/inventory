@@ -3,16 +3,18 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { createApp, defineComponent } from "vue";
 
-export default defineComponent({
-  name: 'App'
-})
+const app = defineComponent({
+  name: "App",
+});
+
+export default app;
 </script>
 
 <style lang="scss">
-@import './css/quasar.variables.scss';
-body{
+@import "./css/quasar.variables.scss";
+body {
   background-color: #eef5f9;
 }
 </style>

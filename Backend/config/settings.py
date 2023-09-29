@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     db_name: str
     image_directory: str
     base_url: AnyHttpUrl
+    secret_key: str
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

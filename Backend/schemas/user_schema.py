@@ -6,19 +6,19 @@ from datetime import datetime
 class User(BaseModel):
     id: Optional[int]
     username: str
-    email: str | None = None
-    fullname: str | None = None
-    disable: bool | None = None
+    email: Optional[str] = None
+    fullname: Optional[str] = None
+    disable: Optional[bool] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserInDB(User):
     hashed_password: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class requestdetails(BaseModel):
@@ -49,6 +49,10 @@ class UserCreate(BaseModel):
     username: str
     email: str
     password: str
+    fullname: str
+
+    class Config:
+        from_attributes = True
 
 
 class requestdetails(BaseModel):
@@ -59,6 +63,7 @@ class requestdetails(BaseModel):
 class TokenSchema(BaseModel):
     access_token: str
     refresh_token: str
+    fullname: str
 
 
 class changepassword(BaseModel):

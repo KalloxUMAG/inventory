@@ -70,7 +70,7 @@
                   getModels();
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -90,7 +90,7 @@
                 label="Nombre marca"
                 class="col"
                 :disable="disableBrand"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -111,7 +111,7 @@
                   getModelNumbers();
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -131,7 +131,7 @@
                 label="Nombre modelo"
                 class="col"
                 :disable="disableBrand"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -154,7 +154,7 @@
                   modelNumber = value;
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -174,7 +174,7 @@
                 label="Número modelo"
                 class="col"
                 :disable="disableBrand"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -225,7 +225,7 @@
           label="Periodo de mantención"
           not_found_label="No hay periodos disponibles"
           @updateModel="(value) => (maintenance = value)"
-          :rules="[val => !!val || 'Campo obligatorio']"
+          :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
         <!--Observacion-->
@@ -234,27 +234,19 @@
           v-model="observation"
           type="textarea"
           label="Observación"
-          :rules="[val => !!val || 'Campo obligatorio']"
+          :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
 
         <!--Imagenes equipamiento equipmentImages-->
         <div class="row">
           <div class="col">
-            <q-file
-              outlined
-              v-model="equipmentimages"
-              label="Selecciona imagenes para el equipo"
-              counter
-              max-files="5"
-              multiple
-              accept=".jpg, image/*"
-              clearable
-            >
-              <template v-slot:prepend>
-                <q-icon name="cloud_upload" />
-              </template>
-            </q-file>
+            <UploadImages
+              label="Imagenes equipamiento"
+              :max_files="5"
+              :handleAddImages="handleAddImages"
+              :handleRemoveImages="handleRemoveImages"
+            />
           </div>
         </div>
 
@@ -277,7 +269,9 @@
                 (supplier = value), getInvoicesSupplier(value);
               }
             "
-            :rules="[/*[val => !!val || 'Campo obligatorio']*/]"
+            :rules="[
+              /*[val => !!val || 'Campo obligatorio']*/
+            ]"
             lazy-rules
           />
           <div class="row justify-end q-mt-md">
@@ -298,7 +292,7 @@
               label="Nombre proveedor"
               class="col"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
@@ -308,7 +302,7 @@
               mask="##.###.###-X"
               class="col q-ml-md"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
@@ -317,7 +311,7 @@
               label="Dirección"
               class="col q-ml-md"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -328,7 +322,7 @@
               label="Nombre trabajador"
               class="col"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <SelectForm
@@ -341,7 +335,7 @@
               not_found_label="No hay roles disponibles"
               @updateModel="(value) => (workerrol1 = value)"
               class="col q-ml-md"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
@@ -351,7 +345,7 @@
               label="Correo trabajador"
               class="col q-ml-md"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
@@ -361,7 +355,7 @@
               mask="(+##) #####-####"
               class="col q-ml-md"
               :disable="disableSupplier"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -449,7 +443,9 @@
             label="Facturas"
             not_found_label="No hay facturas disponibles"
             @updateModel="(value) => (invoice = value)"
-            :rules="[/*val => !!val || 'Campo obligatorio'*/]"
+            :rules="[
+              /*val => !!val || 'Campo obligatorio'*/
+            ]"
             lazy-rules
           />
           <div class="row justify-end q-mt-md">
@@ -471,7 +467,7 @@
               type="number"
               class="col"
               :disable="disableInvoice"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
@@ -482,7 +478,7 @@
               stack-label
               class="col q-ml-md"
               :disable="disableInvoice"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
@@ -545,7 +541,9 @@
                   getStages();
                 }
               "
-              :rules="[/*val => !!val || 'Campo obligatorio'*/]"
+              :rules="[
+                /*val => !!val || 'Campo obligatorio'*/
+              ]"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -565,7 +563,7 @@
                 label="Nombre proyeto"
                 class="col"
                 :disable="disableProject"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -582,7 +580,9 @@
               label="Etapas"
               not_found_label="No hay etapas disponibles"
               @updateModel="(value) => (stage = value)"
-              :rules="[/*val => !!val || 'Campo obligatorio'*/]"
+              :rules="[
+                /*val => !!val || 'Campo obligatorio'*/
+              ]"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -602,7 +602,7 @@
                 label="Nombre etapa"
                 class="col"
                 :disable="disableProject"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -649,7 +649,7 @@
                   projectowner = value;
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-mt-md">
@@ -668,7 +668,7 @@
               v-model="newprojectownername"
               label="Nombre dueño"
               :disable="disableProjectOwner"
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-mt-md">
@@ -719,7 +719,7 @@
                   getUnits();
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -739,7 +739,7 @@
                 label="Nombre edificio"
                 class="col"
                 :disable="disableLocation"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -760,7 +760,7 @@
                   getRooms();
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -781,7 +781,7 @@
                 label="Nombre unidad"
                 class="col"
                 :disable="disableLocation"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -804,7 +804,7 @@
                   room = value;
                 }
               "
-              :rules="[val => !!val || 'Campo obligatorio']"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <div class="row justify-end q-pt-md">
@@ -824,7 +824,7 @@
                 label="Nombre sala"
                 class="col"
                 :disable="disableLocation"
-                :rules="[val => !!val || 'Campo obligatorio']"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
               />
             </div>
@@ -859,7 +859,6 @@
             "
           />
         </div>
-
         <!--Form button-->
         <div class="row justify-end q-mt-mx">
           <q-btn label="Crear" type="submit" color="positive" />
@@ -877,10 +876,11 @@
 
 <script setup>
 import { useQuasar } from "quasar";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import { sendRequest } from "src/axios/instance.js";
 import SelectForm from "src/components/SelectForm.vue";
+import UploadImages from "src/components/UploadImages.vue";
 
 const maintenanceOptions = [
   {
@@ -923,7 +923,7 @@ const disableLocation = ref(false);
 const disableProject = ref(false);
 const disableProjectOwner = ref(false);
 const disableSupplier = ref(false);
-const equipmentimages = ref(null);
+const equipmentimages = ref([]);
 const invoiceimage = ref(null);
 const name = ref(null);
 const serial = ref(null);
@@ -988,114 +988,174 @@ const $q = useQuasar();
 const router = useRouter();
 const api_prefix = process.env.API_URL;
 
-const getBrands = () => {
-  axios.get(api_prefix + "/brands").then((response) => {
+const handleAddImages = (files) => {
+  console.log("Agregar");
+  equipmentimages.value.push(files[0]);
+  console.log(equipmentimages.value);
+};
+
+const handleRemoveImages = (files) => {
+  console.log("Quitar");
+  equipmentimages.value = equipmentimages.value.filter((value) => {
+    return value != files[0];
+  });
+  console.log(equipmentimages.value);
+};
+
+const getBrands = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/brands",
+    });
     const brands = response.data;
     brandOptions.value = brands.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getBuildings = () => {
-  axios.get(api_prefix + "/buildings").then((response) => {
+const getBuildings = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/buildings",
+    });
     const buildings = response.data;
     buildingOptions.value = buildings.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getInvoices = () => {
-  axios.get(api_prefix + "/invoices").then((response) => {
+const getInvoices = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/invoices",
+    });
     const invoices = response.data;
     invoicesOptions.value = invoices.map((x) => {
       return { id: x.id, name: x.number.toString() };
     });
-  });
+  } catch (error) {}
 };
 
-const getInvoicesSupplier = (supplier_id) => {
-  axios
-    .get(api_prefix + "/invoices/supplier/" + supplier_id)
-    .then((response) => {
-      const invoices = response.data;
-      invoicesOptions.value = invoices.map((x) => {
-        return { id: x.id, name: x.number.toString() };
-      });
+const getInvoicesSupplier = async (supplier_id) => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/invoices/supplier/" + supplier_id,
     });
+    const invoices = response.data;
+    invoicesOptions.value = invoices.map((x) => {
+      return { id: x.id, name: x.number.toString() };
+    });
+  } catch (error) {}
 };
 
-const getModels = () => {
-  axios.get(api_prefix + "/models/" + brand.value).then((response) => {
+const getModels = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/models/" + brand.value,
+    });
     const models = response.data;
     modelOptions.value = models.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getModelNumbers = () => {
-  axios.get(api_prefix + "/model_numbers/" + model.value).then((response) => {
+const getModelNumbers = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/model_numbers/" + model.value,
+    });
     const modelnumbers = response.data;
     modelNumberOptions.value = modelnumbers.map((x) => {
       return { id: x.id, name: x.number };
     });
-  });
+  } catch (error) {}
 };
 
-const getProjects = () => {
-  axios.get(api_prefix + "/projects").then((response) => {
+const getProjects = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/projects",
+    });
     const projects = response.data;
     projectOptions.value = projects.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getProjectOwners = () => {
-  axios.get(api_prefix + "/project_owners").then((response) => {
+const getProjectOwners = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/project_owners",
+    });
     const projectsowners = response.data;
     projectOwnersOptions.value = projectsowners.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getRooms = () => {
+const getRooms = async () => {
   const api_url = api_prefix + "/rooms/" + unit.value;
-  axios.get(api_url).then((response) => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_url,
+    });
     room.value = null;
     const rooms = response.data;
     roomOptions.value = rooms.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getStages = () => {
+const getStages = async () => {
   const api_url = api_prefix + "/stages/" + project.value;
-  axios.get(api_url).then((response) => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_url,
+    });
     stage.value = null;
     const stages = response.data;
     stagesOptions.value = stages.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getSuppliers = () => {
-  axios.get(api_prefix + "/suppliers").then((response) => {
+const getSuppliers = async () => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_prefix + "/suppliers",
+    });
     const suppliers = response.data;
     suppliersOptions.value = suppliers.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
-const getUnits = () => {
+const getUnits = async () => {
   const api_url = api_prefix + "/units/" + building.value;
-  axios.get(api_url).then((response) => {
+  try {
+    const response = await sendRequest({
+      method: "GET",
+      url: api_url,
+    });
     unit.value = null;
     room.value = null;
     roomOptions.value = [];
@@ -1103,7 +1163,7 @@ const getUnits = () => {
     unitOptions.value = units.map((x) => {
       return { id: x.id, name: x.name };
     });
-  });
+  } catch (error) {}
 };
 
 const onReset = () => {
@@ -1126,7 +1186,11 @@ async function createNewBrand() {
   };
 
   try {
-    const response = await axios.post(api_prefix + "/brands", branddata);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/brands",
+      data: branddata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1148,7 +1212,11 @@ async function createNewBuilding() {
   };
 
   try {
-    const response = await axios.post(api_prefix + "/buildings", buildingdata);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/buildings",
+      data: buildingdata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1172,7 +1240,11 @@ async function createNewInvoice(supplier_id) {
   };
 
   try {
-    const response = await axios.post(api_prefix + "/invoices", invoicedata);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/invoices",
+      data: invoicedata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1195,7 +1267,11 @@ async function createNewModel(brand_id) {
   };
 
   try {
-    const response = await axios.post(api_prefix + "/models", newmodeldata);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/models",
+      data: newmodeldata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1219,10 +1295,11 @@ async function createNewModelnumber(model_id) {
   };
 
   try {
-    const response = await axios.post(
-      api_prefix + "/model_numbers",
-      newmodelnumberdata
-    );
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/model_numbers",
+      data: newmodelnumberdata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1255,7 +1332,11 @@ async function createNewProject(project_owner_id) {
   };
 
   try {
-    const response = await axios.post(api_prefix + "/projects", projectdata);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/projects",
+      data: projectdata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1283,11 +1364,11 @@ async function createNewProjectOwner() {
   };
 
   try {
-    const response = await axios.post(
-      api_prefix + "/project_owners",
-      projectownerdata
-    );
-    return response.data;
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/project_owners",
+      data: projectownerdata,
+    });
   } catch (error) {
     $q.notify({
       color: "red-3",
@@ -1309,7 +1390,11 @@ async function createNewUnit(building_id) {
   };
 
   try {
-    const response = await axios.post(api_prefix + "/units", unitdata);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/units",
+      data: unitdata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1331,7 +1416,11 @@ async function createNewRoom(unit_id) {
   };
 
   try {
-    const response = await axios.post(api_prefix + "/rooms", roomdata);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/rooms",
+      data: roomdata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1352,8 +1441,13 @@ async function createNewSupplier() {
     rut: newsupplierrut.value,
     city_address: newsupplieraddress.value,
   };
+
   try {
-    const response = await axios.post(api_prefix + "/suppliers", supplierdata);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/suppliers",
+      data: supplierdata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1377,11 +1471,13 @@ async function createNewWorker(supplier_id) {
       email: workermail1.value,
       supplier_id: supplier_id,
     };
+
     try {
-      const response = await axios.post(
-        api_prefix + "/suppliers_contacts",
-        workerdata1
-      );
+      const response = await sendRequest({
+        method: "POSTT",
+        url: api_prefix + "/suppliers_contacts",
+        data: workerdata1,
+      });
     } catch (error) {
       $q.notify({
         color: "red-3",
@@ -1400,10 +1496,11 @@ async function createNewWorker(supplier_id) {
       supplier_id: supplier_id,
     };
     try {
-      const response = await axios.post(
-        api_prefix + "/suppliers_contacts",
-        workerdata2
-      );
+      const response = await sendRequest({
+        method: "POST",
+        url: api_prefix + "/suppliers_contacts",
+        data: workerdata2,
+      });
     } catch (error) {
       $q.notify({
         color: "red-3",
@@ -1432,7 +1529,11 @@ async function createNewStage(project_id) {
   };
 
   try {
-    const response = await axios.post(api_prefix + "/stages", stagedata);
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/stages",
+      data: stagedata,
+    });
     return response.data;
   } catch (error) {
     $q.notify({
@@ -1446,10 +1547,11 @@ async function createNewStage(project_id) {
 
 async function createNewEquipment(equipmentdata) {
   try {
-    const response = await axios.post(
-      api_prefix + "/equipments",
-      equipmentdata
-    );
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/equipments",
+      data: equipmentdata,
+    });
     if (response.status == 201) {
       $q.notify({
         color: "green-4",
@@ -1476,10 +1578,11 @@ async function uploadInvoiceImage(equipment_id) {
   const formData = new FormData();
   formData.append("file", invoiceimage.value);
   try {
-    const response = await axios.post(
-      api_prefix + "/invoices/" + equipment_id,
-      formData
-    );
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/invoices" + equipment_id,
+      data: formData,
+    });
   } catch (error) {
     $q.notify({
       color: "red-3",
@@ -1503,10 +1606,11 @@ async function uploadEquipmentImage(equipment_id) {
 
 async function uploadEquipmentImage2(equipment_id, formData) {
   try {
-    const response = await axios.post(
-      api_prefix + "/equipments/" + equipment_id,
-      formData
-    );
+    const response = await sendRequest({
+      method: "POST",
+      url: api_prefix + "/equipments/" + equipment_id,
+      data: formData,
+    });
   } catch (error) {
     $q.notify({
       color: "red-3",
@@ -1530,7 +1634,7 @@ async function onSubmit() {
     invoice_id: invoice.value,
     room_id: room.value,
     stage_id: stage.value,
-    last_preventive_mainteinance: reception_date.value
+    last_preventive_mainteinance: reception_date.value,
   };
 
   loading.value = true;
@@ -1589,11 +1693,11 @@ async function onSubmit() {
   const project_owner_id = await createNewProjectOwner();
   const project_id = await createNewProject(project_owner_id);
   const stage_id = await createNewStage(project_id);
-  if(stage_id == -1){
+  if (stage_id == -1) {
     loading.value = false;
     return;
   }
-  equipmentdata['stage_id'] = stage_id
+  equipmentdata["stage_id"] = stage_id;
   const equipment_id = await createNewEquipment(equipmentdata);
   await uploadEquipmentImage(equipment_id);
   await uploadInvoiceImage(equipment_id);
@@ -1618,7 +1722,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;

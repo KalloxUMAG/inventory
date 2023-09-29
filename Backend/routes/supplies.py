@@ -14,10 +14,14 @@ from schemas.supply_schema import (
     UpdateStockSchema,
 )
 
-supplies = APIRouter()
+from auth.auth_bearer import JWTBearer
+
+supplies = APIRouter(
+    dependencies=[Depends(JWTBearer())], tags=["supplies"], prefix="/api/supplies"
+)
 
 
-@supplies.get("/api/supplies", response_model=List[SupplyListSchema], tags=["supplies"])
+@supplies.get("", response_model=List[SupplyListSchema])
 def get_supplies(db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -37,13 +41,13 @@ def get_supplies(db: Session = Depends(get_db)):
         .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
         .outerjoin(SupplyType, SupplyType.id == Supply.supplies_type_id)
         .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)
-        .filter(Supply.state is True)
+        .filter(Supply.state == True)
         .all()
     )
     return result
 
 
-@supplies.get("/api/supplies/critical", response_model=List[SupplyListSchema], tags=["supplies"])
+@supplies.get("/critical", response_model=List[SupplyListSchema])
 def get_supplies_critical(db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -62,13 +66,13 @@ def get_supplies_critical(db: Session = Depends(get_db)):
         .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
         .outerjoin(SupplyType, SupplyType.id == Supply.supplies_type_id)
         .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)
-        .filter(and_(Supply.stock <= Supply.critical_stock, Supply.state is True))
+        .filter(and_(Supply.stock <= Supply.critical_stock, Supply.state == True))
         .all()
     )
     return result
 
 
-@supplies.post("/api/supplies", status_code=HTTP_201_CREATED, tags=["supplies"])
+@supplies.post("", status_code=HTTP_201_CREATED)
 def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
     new_supply = Supply(
         name=supply.name,
@@ -90,7 +94,7 @@ def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@supplies.get("/api/supplies/{supply_id}", response_model=SupplySchemaFull, tags=["supplies"])
+@supplies.get("/{supply_id}", response_model=SupplySchemaFull)
 def get_supply(supply_id: int, db: Session = Depends(get_db)):
     result = (
         db.query(
@@ -110,7 +114,7 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
             SupplyType.name.label("supplies_type_name"),
             SupplyFormat.name.label("supplies_format_name"),
         )
-        .filter(and_(Supply.id == supply_id, Supply.state is True))
+        .filter(and_(Supply.id == supply_id, Supply.state == True))
         .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
         .outerjoin(SupplyType, SupplyType.id == Supply.supplies_type_id)
         .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)
@@ -121,8 +125,10 @@ def get_supply(supply_id: int, db: Session = Depends(get_db)):
     return result
 
 
-@supplies.put("/api/supplies/stock/{supply_id}", response_model=SupplySchema, tags=["supplies"])
-def update_stock(data_update: UpdateStockSchema, supply_id: int, db: Session = Depends(get_db)):
+@supplies.put("/stock/{supply_id}", response_model=SupplySchema)
+def update_stock(
+    data_update: UpdateStockSchema, supply_id: int, db: Session = Depends(get_db)
+):
     db_supply = db.query(Supply).filter(Supply.id == supply_id).first()
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
@@ -133,8 +139,10 @@ def update_stock(data_update: UpdateStockSchema, supply_id: int, db: Session = D
     return db_supply
 
 
-@supplies.put("/api/supplies/{supply_id}", response_model=SupplySchema, tags=["supplies"])
-def update_supply(data_update: SupplySchema, supply_id: int, db: Session = Depends(get_db)):
+@supplies.put("/{supply_id}", response_model=SupplySchema)
+def update_supply(
+    data_update: SupplySchema, supply_id: int, db: Session = Depends(get_db)
+):
     db_supply = db.query(Supply).filter(Supply.id == supply_id).first()
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
@@ -146,7 +154,7 @@ def update_supply(data_update: SupplySchema, supply_id: int, db: Session = Depen
     return db_supply
 
 
-@supplies.delete("/api/supplies/{supply_id}", status_code=HTTP_204_NO_CONTENT, tags=["supplies"])
+@supplies.delete("/{supply_id}", status_code=HTTP_204_NO_CONTENT)
 def delete_supply(supply_id: int, db: Session = Depends(get_db)):
     db_supply = db.query(Supply).filter(Supply.id == supply_id).first()
     if not db_supply:
