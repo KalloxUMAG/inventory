@@ -2,10 +2,12 @@ from jose import jwt, JWTError
 from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
+from config.settings import settings
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 30  # 30 minutes
 REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 ALGORITHM = "HS256"
-SECRET_KEY = "32375e2ab7aded81e59257233f4c014b94ea0498206a0e2754e3b2221d58f272"
+SECRET_KEY = settings.secret_key
 REFRESH_SECRET_KEY = "13ugfdfgh@#$%^@&jkl45678902"
 
 
