@@ -3,6 +3,11 @@
     <q-form ref="loginForm" @submit.prevent="onSubmit">
       <q-card class="q-pa-md shadow-2 my_card" bordered>
         <q-card-section class="text-center">
+          <div class="text-h4 text-weight-bold">
+            Sistema de Gestion de Inventario CADI
+          </div>
+        </q-card-section>
+        <q-card-section class="text-center">
           <div class="text-grey-9 text-h5 text-weight-bold">Iniciar sesion</div>
         </q-card-section>
         <q-card-section>
@@ -65,7 +70,8 @@ const onSubmit = async () => {
       color: "red-3",
       textColor: "white",
       icon: "error",
-      message: "No se pudo inicar sesion: " + error,
+      message: "No se pudo inicar sesion: " + error.response.data.detail,
+      progress: true,
     });
   }
 };

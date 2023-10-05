@@ -53,7 +53,9 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .q-carousel__slide {
-  background-size: 100% 100%;
+  max-width: 100%;
+  background-size: contain;
+  background-position: center;
   background-repeat: no-repeat;
 }
 </style>

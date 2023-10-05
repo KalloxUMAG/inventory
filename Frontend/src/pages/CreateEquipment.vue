@@ -424,14 +424,29 @@
         <q-input
           outlined
           v-model="reception_date"
-          type="date"
           label="Fecha de recepción"
           stack-label
           lazy-rules
           :rules="[
             /*(val) => (val && val != null) || 'Este campo es obligatorio',*/
           ]"
-        />
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="reception_date">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
 
         <!--Invoices-->
         <div v-if="!newinvoicestate">
