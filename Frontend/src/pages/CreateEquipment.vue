@@ -1004,17 +1004,13 @@ const router = useRouter();
 const api_prefix = process.env.API_URL;
 
 const handleAddImages = (files) => {
-  console.log("Agregar");
   equipmentimages.value.push(files[0]);
-  console.log(equipmentimages.value);
 };
 
 const handleRemoveImages = (files) => {
-  console.log("Quitar");
   equipmentimages.value = equipmentimages.value.filter((value) => {
     return value != files[0];
   });
-  console.log(equipmentimages.value);
 };
 
 const getBrands = async () => {
