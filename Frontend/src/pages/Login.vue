@@ -11,15 +11,24 @@
           <div class="text-grey-9 text-h5 text-weight-bold">Iniciar sesion</div>
         </q-card-section>
         <q-card-section>
-          <q-input dense outlined v-model="email" label="Correo"></q-input>
+          <q-input dense outlined v-model="email" label="Correo">
+            <template v-slot:prepend>
+              <q-icon name="mail" />
+            </template>
+          </q-input>
           <q-input
             dense
             outlined
+            icon
             class="q-mt-md"
             v-model="password"
             type="password"
             label="Contrasena"
-          ></q-input>
+          >
+            <template v-slot:prepend>
+              <q-icon name="key" />
+            </template>
+          </q-input>
         </q-card-section>
         <q-card-section>
           <q-btn
