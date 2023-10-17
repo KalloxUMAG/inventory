@@ -25,7 +25,10 @@ from models.models import Users, TokenTable
 from auth.auth_bearer import JWTBearer
 from functools import wraps
 
-users = APIRouter(tags=["users"], prefix="/api/users")
+users = APIRouter(
+    tags=["users"], prefix="/api/users", dependencies=[Depends(JWTBearer())]
+)
+login = APIRouter(tags=["users"], prefix="/api/users")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -115,8 +118,12 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED)
 
 
-@users.post("/login", response_model=TokenSchema, tags=["users"])
-def login(request: requestdetails, db: Session = Depends(get_db)):
+@login.post("/login", response_model=TokenSchema, tags=["users"])
+def loginuser(
+    request: requestdetails,
+    dependencies=[Depends(JWTBearer())],
+    db: Session = Depends(get_db),
+):
     user = db.query(Users).filter(Users.email == request.email).first()
     if user is None:
         raise HTTPException(
@@ -141,13 +148,16 @@ def login(request: requestdetails, db: Session = Depends(get_db)):
 
 
 @users.get("/getusers", tags=["users"])
-def getusers(dependencies=Depends(JWTBearer()), session: Session = Depends(get_db)):
+def getusers(session: Session = Depends(get_db)):
     user = session.query(Users).all()
     return user
 
 
 @users.post("/change-password", tags=["users"])
-def change_password(request: changepassword, db: Session = Depends(get_db)):
+def change_password(
+    request: changepassword,
+    db: Session = Depends(get_db),
+):
     user = db.query(Users).filter(Users.email == request.email).first()
     if user is None:
         raise HTTPException(

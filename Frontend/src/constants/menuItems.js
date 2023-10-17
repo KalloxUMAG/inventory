@@ -1,10 +1,15 @@
 export const menuItems = [
   {
+    label: "Dashboard",
+    type: "label",
+  },
+  {
     label: "Inicio",
     icon: "home",
     to: "/",
     exact: true,
     separator: true,
+    type: "nav",
   },
   {
     label: "Equipamiento",
@@ -12,6 +17,7 @@ export const menuItems = [
     to: "/equipments",
     exact: false,
     separator: true,
+    type: "nav",
   },
   {
     label: "Insumos",
@@ -19,6 +25,11 @@ export const menuItems = [
     to: "/supplies",
     exact: false,
     separator: true,
+    type: "nav",
+  },
+  {
+    label: "Administracion",
+    type: "label",
   },
   {
     label: "Agregar usuario",
@@ -26,19 +37,6 @@ export const menuItems = [
     to: "/createuser",
     exact: true,
     separator: true,
-  },
-  {
-    label: "Gestion",
-    icon: "settings",
-    to: "/settings",
-    exact: true,
-    separator: true,
-  },
-  {
-    label: "Cerrar sesion",
-    icon: "logout",
-    to: "/login",
-    exact: true,
-    separator: true,
+    type: "nav",
   },
 ];
