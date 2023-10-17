@@ -2,7 +2,13 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from sqlalchemy.sql.expression import func
+from starlette.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND,
+)
 
 from config.database import get_db
 from models.models import Stage
@@ -27,6 +33,17 @@ def add_stage(stage: StageSchema, db: Session = Depends(get_db)):
     db_project = get_project(stage.project_id, db=db)
     if not db_project:
         return Response(status_code=HTTP_404_NOT_FOUND)
+    db_stage = (
+        db.query(Stage)
+        .filter(
+            func.lower(Stage.name) == stage.name.lower(),
+            Stage.project_id == stage.project_id,
+        )
+        .first()
+    )
+    if db_stage:
+        content = str(db_stage.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_stage = Stage(name=stage.name, project_id=stage.project_id)
     db.add(new_stage)
     db.commit()

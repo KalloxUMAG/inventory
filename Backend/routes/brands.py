@@ -2,7 +2,13 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from sqlalchemy.sql.expression import func
+from starlette.status import (
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND,
+    HTTP_200_OK,
+)
 
 from config.database import get_db
 from models.models import Brand
@@ -21,6 +27,12 @@ def get_brands(db: Session = Depends(get_db)):
 
 @brands.post("", status_code=HTTP_201_CREATED)
 def add_brand(brand: BrandSchema, db: Session = Depends(get_db)):
+    db_brand = (
+        db.query(Brand).filter(func.lower(Brand.name) == brand.name.lower()).first()
+    )
+    if db_brand:
+        content = str(db_brand.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_brand = Brand(name=brand.name)
     db.add(new_brand)
     db.commit()

@@ -2,7 +2,13 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from sqlalchemy.sql.expression import func
+from starlette.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND,
+)
 
 from config.database import get_db
 from models.models import Room
@@ -27,6 +33,16 @@ def add_room(room: RoomSchema, db: Session = Depends(get_db)):
     db_unit = get_unit(room.unit_id, db=db)
     if not db_unit:
         return Response(status_code=HTTP_404_NOT_FOUND)
+    db_room = (
+        db.query(Room)
+        .filter(
+            func.lower(Room.name) == room.name.lower(), Room.unit_id == room.unit_id
+        )
+        .first()
+    )
+    if db_room:
+        content = str(db_room.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_room = Room(name=room.name, unit_id=room.unit_id)
     db.add(new_room)
     db.commit()

@@ -2,7 +2,8 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
+from sqlalchemy.sql.expression import func
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_404_NOT_FOUND
 
 from config.database import get_db
 from models.models import Location, SubLocation
@@ -28,6 +29,17 @@ def add_sub_location(sub_location: SubLocationSchema, db: Session = Depends(get_
     )
     if not db_location:
         return Response(status_code=HTTP_404_NOT_FOUND)
+    db_sub_location = (
+        db.query(SubLocation)
+        .filter(
+            func.lower(SubLocation.name) == sub_location.name,
+            SubLocation.location_id == sub_location.location_id,
+        )
+        .first()
+    )
+    if db_sub_location:
+        content = str(db_sub_location.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_sub_location = SubLocation(
         name=sub_location.name, location_id=sub_location.location_id
     )

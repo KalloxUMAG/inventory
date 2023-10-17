@@ -2,7 +2,13 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from sqlalchemy.sql.expression import func
+from starlette.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND,
+)
 
 from config.database import get_db
 from models.models import Supplier
@@ -23,6 +29,18 @@ def get_suppliers(db: Session = Depends(get_db)):
 
 @suppliers.post("", status_code=HTTP_201_CREATED)
 def add_supplier(supplier: SupplierSchema, db: Session = Depends(get_db)):
+    db_supplier = (
+        db.query(Supplier)
+        .filter(
+            func.lower(Supplier.name) == supplier.name.lower(),
+            func.lower(Supplier.rut) == supplier.rut.lower(),
+            func.lower(Supplier.city_address) == supplier.city_address.lower(),
+        )
+        .first()
+    )
+    if db_supplier:
+        content = str(db_supplier.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_supplier = Supplier(
         name=supplier.name, rut=supplier.rut, city_address=supplier.city_address
     )

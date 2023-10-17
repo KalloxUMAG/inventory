@@ -2,7 +2,13 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from sqlalchemy.sql.expression import func
+from starlette.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND,
+)
 
 from config.database import get_db
 from models.models import Building
@@ -23,10 +29,14 @@ def get_buildings(db: Session = Depends(get_db)):
 
 @buildings.post("", status_code=HTTP_201_CREATED)
 def add_building(building: BuildingSchema, db: Session = Depends(get_db)):
-    building_id = db.query(Building.id).filter(Building.name == building.name).first()
-    if building_id != None:
-        print("ya existia")
-    print(building_id)
+    db_building = (
+        db.query(Building)
+        .filter(func.lower(Building.name) == building.name.lower())
+        .first()
+    )
+    if db_building:
+        content = str(db_building.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_building = Building(name=building.name)
     db.add(new_building)
     db.commit()

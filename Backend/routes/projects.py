@@ -2,10 +2,16 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from sqlalchemy.sql.expression import func
+from starlette.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND,
+)
 
 from config.database import get_db
-from models.models import Project
+from models.models import Project, ProjectOwner
 from schemas.project_schema import ProjectSchema
 
 from auth.auth_bearer import JWTBearer
@@ -23,6 +29,22 @@ def get_projects(db: Session = Depends(get_db)):
 
 @projects.post("", status_code=HTTP_201_CREATED)
 def add_project(project: ProjectSchema, db: Session = Depends(get_db)):
+    db_project_owner = (
+        db.query(ProjectOwner).filter(ProjectOwner.id == project.owner_id).first()
+    )
+    if not db_project_owner:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    db_project = (
+        db.query(Project)
+        .filter(
+            func.lower(Project.name) == project.name.lower(),
+            Project.owner_id == project.owner_id,
+        )
+        .first()
+    )
+    if db_project:
+        content = str(db_project.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_project = Project(name=project.name, owner_id=project.owner_id)
     db.add(new_project)
     db.commit()
