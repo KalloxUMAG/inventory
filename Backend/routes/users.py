@@ -170,8 +170,11 @@ def change_password(
         )
 
     encrypted_password = get_hashed_password(request.new_password)
-    user.password = encrypted_password
+    user.hashed_password = encrypted_password
+    db.add(user)
     db.commit()
+    db.refresh(user)
+    print(user.hashed_password)
 
     return {"message": "Password changed successfully"}
 
