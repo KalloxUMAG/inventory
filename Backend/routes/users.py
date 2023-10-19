@@ -156,9 +156,16 @@ def getusers(session: Session = Depends(get_db)):
 @users.post("/change-password", tags=["users"])
 def change_password(
     request: changepassword,
+    dependencies=Depends(JWTBearer()),
     db: Session = Depends(get_db),
 ):
-    user = db.query(Users).filter(Users.email == request.email).first()
+    token = dependencies
+    payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
+    user_id = payload["sub"]
+    if not request.email:
+        user = db.query(Users).filter(Users.id == user_id).first()
+    else:
+        user = db.query(Users).filter(Users.email == request.email).first()
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="User not found"
@@ -174,7 +181,6 @@ def change_password(
     db.add(user)
     db.commit()
     db.refresh(user)
-    print(user.hashed_password)
 
     return {"message": "Password changed successfully"}
 

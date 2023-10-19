@@ -67,7 +67,7 @@ class TokenSchema(BaseModel):
 
 
 class changepassword(BaseModel):
-    email: str
+    email: Optional[str] = None
     old_password: str
     new_password: str
 

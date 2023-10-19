@@ -34,6 +34,10 @@ const routes = [
         path: "/createuser",
         component: () => import("src/pages/CreateUser.vue"),
       },
+      {
+        path: "/changepassword",
+        component: () => import("src/pages/ChangePassword.vue"),
+      },
     ],
   },
   {

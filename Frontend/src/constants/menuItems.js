@@ -32,9 +32,9 @@ export const menuItems = [
     type: "label",
   },
   {
-    label: "Agregar usuario",
-    icon: "person",
-    to: "/createuser",
+    label: "Cambiar contraseña",
+    icon: "key",
+    to: "/changepassword",
     exact: true,
     separator: true,
     type: "nav",
