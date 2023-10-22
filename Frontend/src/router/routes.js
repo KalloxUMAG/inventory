@@ -38,6 +38,10 @@ const routes = [
         path: "/changepassword",
         component: () => import("src/pages/ChangePassword.vue"),
       },
+      {
+        path: "/inventory-maintainer",
+        component: () => import("src/pages/InventoryMaintainer.vue"),
+      },
     ],
   },
   {

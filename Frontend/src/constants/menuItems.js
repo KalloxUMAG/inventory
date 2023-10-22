@@ -28,6 +28,14 @@ export const menuItems = [
     type: "nav",
   },
   {
+    label: "Mantenedor de Inventario",
+    icon: "science",
+    to: "/inventory-maintainer",
+    exact: false,
+    separator: true,
+    type: "nav",
+  },
+  {
     label: "Administracion",
     type: "label",
   },
