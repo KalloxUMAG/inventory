@@ -1,6 +1,7 @@
 <template>
   <div class="panel no-margin" @click="showEventDetails">
     <div
+      v-if="event?.isStarter || event?.showExtend"
       class="alert event-title"
       :class="[getVariant(event?.status)]"
       role="alert"
@@ -45,13 +46,13 @@ const getVariant = (state) => {
     case 2:
       return "bg-info";
     case 3:
-      return "bg-positive";
+      return "bg-info";
     case 4:
       return "bg-negative";
     case 5:
       return "bg-warning";
     default:
-      return "bg-info";
+      return "bg-positive";
   }
 };
 </script>

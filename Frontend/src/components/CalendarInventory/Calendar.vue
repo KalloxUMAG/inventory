@@ -1,38 +1,30 @@
 <template>
-  <div class="row">
+  <div class="">
     <div v-if="loading">Loading...</div>
     <div v-if="error" class="error"></div>
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-sm-12">
-            <calendar-header
-              :current-month="currentMonth"
-              :locale="appLocale"
-              @change-month="changeMonth"
+    <div class="">
+      <div>
+        <calendar-header
+          :current-month="currentMonth"
+          :locale="appLocale"
+          @change-month="changeMonth"
+        />
+        <div class="full-calendar-body">
+          <div class="weeks">
+            <strong v-for="(dayIndex, index) in 7" :key="index" class="week">
+              {{ weekDayName(dayIndex - 1, firstDay, appLocale) }}
+            </strong>
+          </div>
+          <div ref="dates" class="dates">
+            <week
+              v-for="(week, index) in Weeks"
+              :key="index"
+              :week="week"
+              :selected-day="selectedDay"
+              :selected-week="selectedWeek"
+              @day-selected="handleSelectDay"
+              @week-selected="handleSelectWeek"
             />
-            <div class="full-calendar-body">
-              <div class="weeks">
-                <strong
-                  v-for="(dayIndex, index) in 7"
-                  :key="index"
-                  class="week"
-                >
-                  {{ weekDayName(dayIndex - 1, firstDay, appLocale) }}
-                </strong>
-              </div>
-              <div ref="dates" class="dates">
-                <week
-                  v-for="(week, index) in Weeks"
-                  :key="index"
-                  :week="week"
-                  :selected-day="selectedDay"
-                  :selected-week="selectedWeek"
-                  @day-selected="handleSelectDay"
-                  @week-selected="handleSelectWeek"
-                />
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -178,7 +170,7 @@ const getDayObject = (monthDayjsObject, dayIndex) => {
     isToday: monthDayjsObject.isSame(dayjs(), "day"),
     isCurrentMonth: monthDayjsObject.isSame(currentMonth.value, "month"),
     weekDay: dayIndex,
-    isWeekEnd: dayIndex === 6 || dayIndex === 0,
+    isWeekEnd: dayIndex === 6 || dayIndex === 5,
     date: monthDayjsObject,
     events: getEvents(monthDayjsObject),
   };

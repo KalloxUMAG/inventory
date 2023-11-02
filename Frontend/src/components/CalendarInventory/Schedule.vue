@@ -1,5 +1,16 @@
 <template>
   <div class="schedule">
+    <div>
+      <div class="text-right">
+        <q-btn
+          color="negative"
+          unelevated
+          dense
+          icon="close"
+          @click="closeSelectedDay"
+        />
+      </div>
+    </div>
     <section>
       <div class="q-pa-md">
         <div class="row q-gutter-md">
@@ -27,7 +38,11 @@
             :rows="loans"
             :columns="columns"
             class="bg-info text-white"
-            row-key="name"
+            :row-key="(row) => `${row.supply.name}-${row.supply.dni}`"
+            flat
+            bordered
+            selection="multiple"
+            v-model:selected="selectionTables"
           />
         </div>
         <div>
@@ -36,7 +51,24 @@
             :rows="returns"
             :columns="columns"
             class="bg-positive text-white"
-            row-key="name"
+            :row-key="(row) => `${row.supply.name}-${row.supply.dni}`"
+            flat
+            bordered
+            selection="multiple"
+            v-model:selected="selectionTables"
+          />
+        </div>
+        <div>
+          <h5>Instrumentos en Préstamo</h5>
+          <q-table
+            :rows="inLoans"
+            :columns="columns"
+            class="bg-warning text-white"
+            :row-key="(row) => `${row.supply.name}-${row.supply.dni}`"
+            flat
+            bordered
+            selection="multiple"
+            v-model:selected="selectionTables"
           />
         </div>
       </div>
@@ -57,6 +89,7 @@ const props = defineProps({
   },
 });
 
+const selectionTables = ref([]);
 const columns = [
   {
     name: "name",
@@ -80,26 +113,51 @@ const columns = [
     field: (row) => row.supply.consumables.label,
   },
   {
-    name: "date",
+    name: "dateStart",
     required: true,
-    label: "Fecha",
+    label: "Fecha Inicio",
     align: "left",
-    field: (row) => dayjs(row.date).format("DD/MM/YYYY"),
+    field: (row) => row.supply.date.from,
+  },
+  {
+    name: "dateEnd",
+    required: true,
+    label: "Fecha Termino",
+    align: "left",
+    field: (row) => row.supply.date.to,
   },
 ];
 
-const emit = defineEmits(["new", "show-modal"]);
+const closeSelectedDay = () => {
+  emit("close-selected-day");
+};
+
+const emit = defineEmits(["new", "show-modal", "close-selected-day"]);
+
+const selectedIds = computed(() => {
+  const combinedSelections = [...(selectionTables.value || [])];
+  return [...new Set(combinedSelections.map((event) => event.id))];
+});
 
 const loans = computed(() =>
   props.selectedDay.dayDate.events.length > 0
-    ? props.selectedDay.dayDate.events?.filter((event) => event.status === 6)
+    ? props.selectedDay.dayDate.events?.filter((event) => event.isStarter)
     : []
 );
 const returns = computed(() =>
   props.selectedDay.dayDate.events.length > 0
-    ? props.selectedDay.dayDate.events?.filter((event) => event.status === 3)
+    ? props.selectedDay.dayDate.events?.filter((event) => event.isEnd)
     : []
 );
+const inLoans = computed(() =>
+  props.selectedDay.dayDate.events?.length > 0
+    ? props.selectedDay.dayDate?.events
+    : []
+);
+
+watch(selectedIds, (newIds, oldIds) => {
+  emit("selected-ids-changed", newIds);
+});
 </script>
 
 <style scoped>
