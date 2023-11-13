@@ -78,3 +78,13 @@ class TokenCreate(BaseModel):
     refresh_token: str
     status: bool
     created_date: datetime
+
+
+class FilterUser(BaseModel):
+    id: Optional[int]
+    email: Optional[str] = None
+    fullname: Optional[str] = None
+    disable: Optional[bool] = None
+
+    class Config:
+        from_attributes = True
