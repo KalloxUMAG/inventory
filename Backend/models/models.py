@@ -130,6 +130,8 @@ class Users(Base):
     disable: Mapped[bool] = mapped_column(Boolean, default=False)
     hashed_password: Mapped[str] = mapped_column(String)
 
+    loans: Mapped[List["Loan"]] = relationship("Loan", back_populates="user")
+
 
 class TokenTable(Base):
     __tablename__ = "Token"
@@ -185,6 +187,8 @@ class Equipment(Base):
     maintenances: Mapped[List["Maintenance"]] = relationship(
         backref="Equipments", cascade="delete,merge"
     )
+
+    loans: Mapped[List["Loan"]] = relationship("Loan", back_populates="equipment")
 
 
 class Maintenance(Base):
@@ -393,3 +397,16 @@ class SuppliersHasSupplies(Base):
         Integer, ForeignKey("Supplies.id", ondelete="CASCADE"), primary_key=True
     )
     cost: Mapped[int] = mapped_column(Integer)
+
+
+class Loan(Base):
+    __tablename__ = "Loans"
+
+    loan_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("Users.id"))
+    equipment_id: Mapped[int] = mapped_column(Integer, ForeignKey("Equipments.id"))
+    loan_start_date = mapped_column(Date, nullable=False)
+    loan_end_date = mapped_column(Date, nullable=False)
+
+    user: Mapped[Users] = relationship("Users", back_populates="loans")
+    equipment: Mapped[Equipment] = relationship("Equipment", back_populates="loans")
