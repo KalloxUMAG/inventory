@@ -1,5 +1,6 @@
-from typing import Annotated, Union, Any
+from typing import Annotated, List, Union, Any
 from datetime import datetime, timedelta
+from sqlalchemy import false
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
 from jose import jwt
@@ -9,6 +10,7 @@ from passlib.context import CryptContext
 from fastapi import Depends, APIRouter, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer
 from schemas.user_schema import (
+    FilterUser,
     TokenSchema,
     requestdetails,
     changepassword,
@@ -213,3 +215,32 @@ def logout(dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
         db.commit()
         db.refresh(existing_token)
     return {"message": "Logout Successfully"}
+
+@users.get("/search_users", tags=["users"], response_model=List[FilterUser])
+def search_users(fullname: str = None, email: str = None, db: Session = Depends(get_db)):
+    query = db.query(Users)
+
+    if fullname is not None:
+        query = query.filter(Users.fullname.ilike(f"%{fullname}%"))
+
+    if email is not None:
+        query = query.filter(Users.email.ilike(f"%{email}%"))
+
+    query = query.filter(Users.disable.is_(False))
+
+    users = query.all()
+
+    result = []
+    for user in users:
+        filter_user = FilterUser(
+            id=user.id,
+            username=user.username,
+            fullname=user.fullname,
+            email=user.email,
+            # ... (otros campos)
+        )
+        result.append(filter_user)
+
+    return result
+
+    return users
