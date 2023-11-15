@@ -24,6 +24,7 @@
               :selected-week="selectedWeek"
               @day-selected="handleSelectDay"
               @week-selected="handleSelectWeek"
+              :selection="selection"
             />
           </div>
         </div>
@@ -73,6 +74,12 @@ const props = defineProps({
       return res >= 0 && res <= 6;
     },
     default: 0,
+  },
+  selection: {
+    type: Object,
+    default() {
+      return {};
+    },
   },
 });
 const { allEvents, firstDay } = toRefs(props);

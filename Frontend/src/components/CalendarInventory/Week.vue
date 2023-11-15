@@ -9,6 +9,7 @@
       :day="day"
       :selected-day="selectedDay"
       @day-selected="handleSelectDay"
+      :selection="selection"
     ></day>
   </div>
 </template>
@@ -30,6 +31,11 @@ const props = defineProps({
     default: () => ({}),
   },
   selectedWeek: {
+    type: Object,
+    required: false,
+    default: () => ({}),
+  },
+  selection: {
     type: Object,
     required: false,
     default: () => ({}),

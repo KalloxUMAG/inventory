@@ -13,12 +13,8 @@
               standout="bg-teal text-white"
               label="Nombre"
             />
-            <q-input
-              class="col-12 col-md-8"
-              v-model="card.dni"
-              standout="bg-teal text-white"
-              label="RUT"
-            />
+            <q-btn icon="search" @click="showModalSearch = true" />
+
             <q-select
               class="col-12 col-md-8"
               v-model="card.consumables"
@@ -63,10 +59,15 @@
       </q-card-section>
     </q-card>
   </q-dialog>
+  <modal-search-user
+    @close="showModalSearch = false"
+    :showModalSearch="showModalSearch"
+  />
 </template>
 
 <script setup>
 import { ref, watch, toRefs, onMounted, computed } from "vue";
+import ModalSearchUser from "../commons/ModalSearchUser.vue";
 
 const props = defineProps({
   showModal: {
@@ -98,6 +99,7 @@ const myLocale = ref({
   format24h: true,
   pluralDay: "dias",
 });
+const showModalSearch = ref(false);
 
 onMounted(() => {
   types.value = [

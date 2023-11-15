@@ -1,7 +1,19 @@
 <template>
   <div class="panel no-margin" @click="showEventDetails">
     <div
-      v-if="event?.isStarter || event?.showExtend"
+      v-if="
+        event?.isStarter &&
+        Object.values(selection).every((array) => array.length === 0)
+      "
+      class="alert event-title"
+      :class="[getVariant(event?.status)]"
+      role="alert"
+    >
+      <p class="no-margin">Insumo : {{ event?.supply.consumables.label }}</p>
+      <p>Rut : {{ event?.supply.dni }}</p>
+    </div>
+    <div
+      v-else-if="event?.showExtend"
       class="alert event-title"
       :class="[getVariant(event?.status)]"
       role="alert"
@@ -26,6 +38,11 @@ const props = defineProps({
   isList: {
     type: Boolean,
     default: false,
+  },
+  selection: {
+    type: Object,
+    required: false,
+    default: () => ({}),
   },
 });
 

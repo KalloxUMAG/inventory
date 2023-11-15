@@ -49,6 +49,7 @@
           :all-events="events"
           @day-selected="handleSelectDay"
           @change-month="handleChangeMonth"
+          :selection="selectionTables"
         />
       </div>
       <div v-if="selectDay" class="col-5 q-px-sm">

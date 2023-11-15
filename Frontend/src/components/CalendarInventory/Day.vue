@@ -14,13 +14,13 @@
     </div>
     <div class="event-grid">
       <event-card
-        v-for="(event, index) in day.events.slice(0, 3)"
+        v-for="event in day.events.slice(0, 3)"
         :key="event.code"
         :event="event"
         role="button"
         :day-date="day.date"
         :is-day-selected="isDaySelected"
-        :class="`event-space-${index + 1}`"
+        :selection="selection"
       >
       </event-card>
     </div>
@@ -44,6 +44,11 @@ const props = defineProps({
     default: () => ({}),
   },
   selectedDay: {
+    type: Object,
+    required: false,
+    default: () => ({}),
+  },
+  selection: {
     type: Object,
     required: false,
     default: () => ({}),
@@ -114,8 +119,8 @@ const showDayOptions = () => {
 }
 
 .event-grid {
-  display: grid;
-  grid-template-rows: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
 }
 
 .event-space-1 {
