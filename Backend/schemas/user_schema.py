@@ -84,7 +84,6 @@ class FilterUser(BaseModel):
     id: Optional[int]
     email: Optional[str] = None
     fullname: Optional[str] = None
-    disable: Optional[bool] = None
 
     class Config:
         from_attributes = True
