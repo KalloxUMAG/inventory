@@ -5,12 +5,18 @@
         event?.isStarter &&
         Object.values(selection).every((array) => array.length === 0)
       "
-      class="alert event-title"
+      class="alert event-title q-my-xs"
       :class="[getVariant(event?.status)]"
       role="alert"
     >
-      <p class="no-margin">Insumo : {{ event?.supply.consumables.label }}</p>
-      <p>Rut : {{ event?.supply.dni }}</p>
+      <p class="no-margin">
+        <span class="text-bold">Nombre :</span>
+        {{ event?.supply.user_fullname }}
+      </p>
+      <p class="no-margin">
+        <span class="text-bold">Equipo :</span
+        >{{ event?.supply.equipment_name }}
+      </p>
     </div>
     <div
       v-else-if="event?.showExtend"
@@ -18,8 +24,14 @@
       :class="[getVariant(event?.status)]"
       role="alert"
     >
-      <p class="no-margin">Insumo : {{ event?.supply.consumables.label }}</p>
-      <p>Rut : {{ event?.supply.dni }}</p>
+      <p>
+        <span class="text-bold">Nombre :</span>
+        {{ event?.supply.user_fullname }}
+      </p>
+      <p class="no-margin">
+        <span class="text-bold">Equipo :</span>
+        {{ event?.supply.equipment_name }}
+      </p>
     </div>
   </div>
 </template>
