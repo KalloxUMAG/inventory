@@ -3,12 +3,12 @@ from datetime import date, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy import and_, not_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
 from config.database import get_db
 from helpers.utils import format_equipment_data
-from models.models import Equipment, Loan, Maintenance
+from models.models import Equipment, Loan, Maintenance, Users
 from routes.equipments import get_equipment_exist
 from schemas.loans_scheme import LoanCreate, LoanSchema
 from schemas.equipment_schema import EquipmentAvailableSchema, EquipmentSchema
@@ -26,9 +26,23 @@ inventory = APIRouter(
 )
 
 
-@inventory.get("", response_model=List[LoanSchema])
+@inventory.get("/loans", response_model=List[LoanSchema])
 def get_loans(db: Session = Depends(get_db)):
-    result = db.query(Loan).all()
+    result = (
+        db.query(
+            Loan.loan_id,
+            Loan.loan_start_date,
+            Loan.loan_end_date,
+            Users.fullname.label("user_fullname"),
+            Users.email.label("user_email"),
+            Users.id.label("user_id"),
+            Equipment.id.label("equipment_id"),
+            Equipment.name.label("equipment_name"),
+        )
+        .join(Users, Users.id == Loan.user_id)
+        .join(Equipment, Equipment.id == Loan.equipment_id)
+        .all()
+    )
     return result
 
 
