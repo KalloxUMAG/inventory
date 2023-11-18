@@ -11,7 +11,7 @@
             <eventModal
               :show-modal="showModal"
               :event="event"
-              :title="event?.title ?? 'Insumo'"
+              :title="event?.title ?? 'Suministrar equipamiento'"
               @create="AddSupply"
               @close="hideModal"
             />
@@ -68,12 +68,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import calendar from "../components/CalendarInventory/Calendar.vue";
 import schedule from "../components/CalendarInventory/Schedule.vue";
 import eventModal from "../components/CalendarInventory/EventModal.vue";
+import { useLoanStore } from "../stores";
+import { useQuasar } from "quasar";
 import dayjs from "dayjs";
 dayjs.locale("es");
+
+const loanStore = useLoanStore();
+const $q = useQuasar();
 
 const selectDay = ref(null);
 const events = ref([]);
@@ -120,28 +125,56 @@ const hideModal = () => {
   showModal.value = false;
 };
 
-let localId = 1;
-const AddSupply = (supply) => {
-  const startDate = dayjs(supply.date.from, "DD-MM-YYYY");
-  const endDate = dayjs(supply.date.to, "DD-MM-YYYY");
-
-  for (
-    let date = startDate;
-    date.isBefore(endDate) || date.isSame(endDate);
-    date = date.add(1, "day")
-  ) {
-    events.value.push({
-      id: localId,
-      supply,
-      date: date.toDate(),
-      status: date.isSame(startDate) ? 6 : 3,
-      isStarter: date.isSame(startDate),
-      isEnd: date.isSame(endDate),
-      showExtend: false,
+const AddSupply = async (supply) => {
+  const body = {
+    user_id: supply.user.id,
+    equipment_id: supply.consumables.value,
+    loan_start_date: dayjs(supply.date.from, "DD-MM-YYYY")
+      .startOf("day")
+      .toISOString()
+      .split("T")[0],
+    loan_end_date: dayjs(supply.date.to, "DD-MM-YYYY")
+      .startOf("day")
+      .toISOString()
+      .split("T")[0],
+  };
+  try {
+    if (supply.consumables.available) {
+      const response = await loanStore.postLoanEquipment(body);
+      if (response && Array.isArray(response)) {
+        $q.notify({
+          color: "red-3",
+          textColor: "white",
+          icon: "error",
+          message: "Equipamiento Guardado",
+        });
+        fetchLoans();
+      } else {
+        $q.notify({
+          color: "red-3",
+          textColor: "white",
+          icon: "error",
+          message:
+            "No se encontraron equipamientos disponibles para este rango de fechas",
+        });
+        console.log("not founds");
+      }
+    } else {
+      $q.notify({
+        color: "red-3",
+        textColor: "white",
+        icon: "error",
+        message: "Este equipo no esta disponible para este rango de fechas",
+      });
+    }
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message: "No se pudo crear la marca: " + error,
     });
   }
-  localId++;
-  selectDay.value = null;
 };
 
 const hideSelectDay = () => {
@@ -175,4 +208,51 @@ const handleSelectedIdsChanged = (newSelectedIds) => {
 
   selectionTables.value[selectedDayKey] = newSelectedIds;
 };
+
+const fetchLoans = async () => {
+  try {
+    const response = await loanStore.fetchLoan();
+    if (response && Array.isArray(response)) {
+      events.value = [];
+      loadLoans(response);
+    }
+  } catch (error) {
+    $q.notify({
+      color: "red-3",
+      textColor: "white",
+      icon: "error",
+      message:
+        "No se pudieron obtener los equipamientos en prestamos: " + error,
+    });
+  }
+};
+
+const loadLoans = (loans) => {
+  loans.forEach((loan) => {
+    const startDate = dayjs(loan.loan_start_date);
+    const endDate = dayjs(loan.loan_end_date);
+
+    for (
+      let date = startDate;
+      date.isBefore(endDate) || date.isSame(endDate);
+      date = date.add(1, "day")
+    ) {
+      console.log(loan);
+      events.value.push({
+        id: loan.loan_id,
+        supply: loan,
+        date: date.toDate(),
+        status: date.isSame(startDate) ? 6 : 3,
+        isStarter: date.isSame(startDate),
+        isEnd: date.isSame(endDate),
+        showExtend: false,
+      });
+    }
+  });
+  selectDay.value = null;
+};
+
+onMounted(() => {
+  fetchLoans();
+});
 </script>

@@ -92,39 +92,39 @@ const props = defineProps({
 const selectionTables = ref([]);
 const columns = [
   {
-    name: "name",
+    name: "user_fullname",
     required: true,
     label: "Nombre",
     align: "left",
-    field: (row) => row.supply.name,
+    field: (row) => row.supply.user_fullname,
   },
   {
-    name: "dni",
+    name: "user_email",
     required: true,
-    label: "Rut",
+    label: "Email",
     align: "left",
-    field: (row) => row.supply.dni,
+    field: (row) => row.supply.user_email,
   },
   {
-    name: "consumables",
+    name: "equipment_name",
     required: true,
-    label: "Insumo",
+    label: "Equipo",
     align: "left",
-    field: (row) => row.supply.consumables.label,
+    field: (row) => row.supply.equipment_name,
   },
   {
-    name: "dateStart",
+    name: "loan_start_date",
     required: true,
     label: "Fecha Inicio",
     align: "left",
-    field: (row) => row.supply.date.from,
+    field: (row) => row.supply.loan_start_date,
   },
   {
-    name: "dateEnd",
+    name: "loan_end_date",
     required: true,
     label: "Fecha Termino",
     align: "left",
-    field: (row) => row.supply.date.to,
+    field: (row) => row.supply.loan_end_date,
   },
 ];
 
