@@ -34,24 +34,31 @@
                   'Debes ingresar al menos un nombre o email',
               ]"
             />
-            <div class="col-12 q-mb-md q-mt-none text-right">
+            <div class="col-12 q-my-sm q-mt-lg">
               <q-btn
                 label="Buscar"
                 color="primary"
-                icon-right="fa-solid fa-magnifying-glass"
+                icon-right="search"
                 type="submit"
+                size="lg"
+                class="full-width"
               />
             </div>
           </q-form>
 
-          <q-table
-            :rows="users"
-            :columns="columns"
-            row-key="email"
-            selection="single"
-            no-data-label="No hay registros para mostrar"
-            v-model:selected="selectedUser"
-          />
+          <div>
+            <h5 class="q-mb-sm">Seleccione un usuario</h5>
+            <q-table
+              :rows="users"
+              :columns="columns"
+              row-key="email"
+              no-data-label="No hay registros para mostrar"
+              @row-click="
+                (evt, row, index) => handleSelectedUser(evt, row, index)
+              "
+              v-model:selected="selectedUser"
+            />
+          </div>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -61,7 +68,7 @@
 <script setup>
 import { ref, defineProps, watch, defineEmits, computed } from "vue";
 import { useQuasar } from "quasar";
-import { useUserStore } from "stores/user";
+import { useUserStore } from "stores";
 
 const $q = useQuasar();
 const userStore = useUserStore();
@@ -72,7 +79,7 @@ const users = ref([]);
 const selectedUser = ref([]);
 const show = ref(false);
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "selectedUser"]);
 
 const emitCloseEvent = () => {
   emit("close", false);
@@ -130,5 +137,12 @@ const submitForm = async () => {
 const onReset = () => {
   name.value = "";
   email.value = "";
+};
+
+const handleSelectedUser = (evt, row, index) => {
+  onReset();
+  users.value = [];
+
+  emit("selectedUser", row);
 };
 </script>
