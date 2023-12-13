@@ -13,19 +13,19 @@ roles = APIRouter(dependencies=[], tags=["roles"], prefix="/api/roles")
 
 @roles.get("", response_model=List[RoleSchema])
 def get_roles(db: Session = Depends(get_db)):
-    result = db.get(Role).all()
+    result = db.query(Role).all()
     return result
 
 
 @roles.get("/{role_id}", response_model=RoleSchema)
 def get_role(role_id: int, db: Session = Depends(get_db)):
-    result = db.get(Role).filter(Role.id == role_id).first()
+    result = db.query(Role).filter(Role.id == role_id).first()
     return result
 
 
 @roles.post("", status_code=HTTP_201_CREATED)
 def add_role(role: RoleSchema, db: Session = Depends(get_db)):
-    new_role = Role(name=role.name)
+    new_role = Role(name=role.name, description=role.description)
     db.add(new_role)
     db.commit()
     db.refresh(new_role)
