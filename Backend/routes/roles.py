@@ -8,7 +8,7 @@ from config.database import get_db
 from models.models import Role
 from schemas.role_schema import RoleSchema
 
-roles = APIRouter(dependencies=[], tags=["roles"], prefix="/api/roless")
+roles = APIRouter(dependencies=[], tags=["roles"], prefix="/api/roles")
 
 
 @roles.get("", response_model=List[RoleSchema])
