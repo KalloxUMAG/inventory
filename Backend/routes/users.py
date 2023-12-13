@@ -14,16 +14,19 @@ from schemas.user_schema import (
     changepassword,
     UserCreate,
 )
+from schemas.role_schema import GrantRoleSchema
 
 from config.settings import settings
 
 from config.database import get_db
 from sqlalchemy.orm import Session
 
-from models.models import Users, TokenTable
+from models.models import Users, TokenTable, UserGroupRoleRelation
 
 from auth.auth_bearer import JWTBearer
 from functools import wraps
+
+from routes.groups import get_group
 
 users = APIRouter(tags=["users"], prefix="/api/users")
 
@@ -194,3 +197,24 @@ def logout(dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
         db.commit()
         db.refresh(existing_token)
     return {"message": "Logout Successfully"}
+
+@users.post("/roles", status_code=HTTP_201_CREATED)
+def grant_role_user(grant_role: GrantRoleSchema, db: Session = Depends(get_db)):
+    db_user = db.query(Users).filter(Users.id == grant_role.user_id).first()
+    if not db_user:
+        return Response(
+            status_code=HTTP_404_NOT_FOUND, content={"message": "User not found in database"}
+        )
+    db_group = get_group(grant_role.group_id, db=db)
+    if not db_group:
+        return Response(
+            status_code=HTTP_404_NOT_FOUND, content={"message": "Group not found in database"}
+        )
+    new_grant_role = UserGroupRoleRelation(
+        user_id=grant_role.user_id, role_id=grant_role.role_id, group_id=grant_role.group_id
+    )
+    db.add(new_grant_role)
+    db.commit()
+    db.refresh(new_grant_role)
+    content = str(new_grant_role)
+    return Response(status_code=HTTP_201_CREATED, content=content)

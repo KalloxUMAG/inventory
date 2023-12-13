@@ -16,9 +16,7 @@ class Building(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
 
-    units: Mapped[List["Unit"]] = relationship(
-        backref="Buildings", cascade="delete,merge"
-    )
+    units: Mapped[List["Unit"]] = relationship(backref="Buildings", cascade="delete,merge")
 
 
 class Invoice(Base):
@@ -40,9 +38,7 @@ class Brand(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
 
-    models: Mapped[List["Model"]] = relationship(
-        backref="Brands", cascade="all, delete"
-    )
+    models: Mapped[List["Model"]] = relationship(backref="Brands", cascade="all, delete")
 
 
 class Model(Base):
@@ -80,9 +76,7 @@ class Project(Base):
         Integer, ForeignKey("Project_owners.id", ondelete="CASCADE")
     )
 
-    stages: Mapped[List["Stage"]] = relationship(
-        backref="Projects", cascade="delete,merge"
-    )
+    stages: Mapped[List["Stage"]] = relationship(backref="Projects", cascade="delete,merge")
     lots: Mapped[List["Lot"]] = relationship(backref="Projects")
 
 
@@ -108,13 +102,9 @@ class Supplier(Base):
     supplier_contacts: Mapped[List["SupplierContact"]] = relationship(
         backref="Suppliers", cascade="delete,merge"
     )
-    invoices: Mapped[List["Invoice"]] = relationship(
-        backref="Suppliers", cascade="delete,merge"
-    )
+    invoices: Mapped[List["Invoice"]] = relationship(backref="Suppliers", cascade="delete,merge")
     equipments: Mapped[List["Equipment"]] = relationship(backref="Suppliers")
-    lots: Mapped[List["Lot"]] = relationship(
-        backref="Suppliers", cascade="delete,merge"
-    )
+    lots: Mapped[List["Lot"]] = relationship(backref="Suppliers", cascade="delete,merge")
     supplies: Mapped[List["Supply"]] = relationship(
         secondary="Suppliers_has_Supplies", back_populates="suppliers"
     )
@@ -206,11 +196,16 @@ class Room(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
 
-    unit_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("Units.id", ondelete="CASCADE")
-    )
+    unit_id: Mapped[int] = mapped_column(Integer, ForeignKey("Units.id", ondelete="CASCADE"))
 
     equipments: Mapped[List["Equipment"]] = relationship(backref="Rooms")
+
+
+class Role(Base):
+    __tablename__ = "Roles"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
 
 
 class Stage(Base):
@@ -219,9 +214,7 @@ class Stage(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
 
-    project_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("Projects.id", ondelete="CASCADE")
-    )
+    project_id: Mapped[int] = mapped_column(Integer, ForeignKey("Projects.id", ondelete="CASCADE"))
 
 
 class SupplierContact(Base):
@@ -350,23 +343,17 @@ class Lot(Base):
     __tablename__ = "Lots"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    number: Mapped[str] = mapped_column(
-        String
-    )  # Numero unico por cada lote (puede tener letras)
+    number: Mapped[str] = mapped_column(String)  # Numero unico por cada lote (puede tener letras)
     reception_date = mapped_column(Date)
     due_date = mapped_column(Date)
     observations: Mapped[str] = mapped_column(String)
     state: Mapped[bool] = mapped_column(Boolean)
 
-    supplies_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("Supplies.id", ondelete="CASCADE")
-    )
+    supplies_id: Mapped[int] = mapped_column(Integer, ForeignKey("Supplies.id", ondelete="CASCADE"))
     supplier_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Suppliers.id", ondelete="CASCADE")
     )
-    sub_location_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("Sub_locations.id")
-    )
+    sub_location_id: Mapped[int] = mapped_column(Integer, ForeignKey("Sub_locations.id"))
     project_id: Mapped[int] = mapped_column(Integer, ForeignKey("Projects.id"))
     group_id: Mapped[int] = mapped_column(Integer, ForeignKey("Groups.id"))
 
@@ -393,3 +380,11 @@ class SuppliersHasSupplies(Base):
         Integer, ForeignKey("Supplies.id", ondelete="CASCADE"), primary_key=True
     )
     cost: Mapped[int] = mapped_column(Integer)
+
+
+class UserGroupRoleRelation(Base):
+    __tablename__ = "User_Group_Role_Relation"
+
+    user_id = mapped_column(Integer, ForeignKey("Users.id", ondelete="CASCADE"), primary_key=True)
+    group_id = mapped_column(Integer, ForeignKey("Groups.id", ondelete="CASCADE"), primary_key=True)
+    role_id = mapped_column(Integer, ForeignKey("Roles.id", ondelete="CASCADE"), primary_key=True)

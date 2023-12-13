@@ -25,6 +25,11 @@ def get_groups(db: Session = Depends(get_db)):
     return result
 
 
+@groups.get("/{group_id}", response_model=GroupSchema)
+def get_group(group_id: int, db: Session = Depends(get_db)):
+    result = db.query(Groups).filter(Groups.id == group_id).first()
+    return result
+
 @groups.post("", status_code=HTTP_201_CREATED)
 def add_groups(group: CreateGroupSchema, db: Session = Depends(get_db)):
     new_group = Groups(name=group.name)
