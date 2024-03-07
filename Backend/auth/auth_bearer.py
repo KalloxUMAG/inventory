@@ -1,7 +1,6 @@
 from jose import jwt, JWTError
 from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
 from config.settings import settings
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30  # 30 minutes

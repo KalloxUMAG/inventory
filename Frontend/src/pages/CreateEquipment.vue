@@ -1004,6 +1004,7 @@ const router = useRouter();
 const api_prefix = process.env.API_URL;
 
 const handleAddImages = (files) => {
+
   equipmentimages.value.push(files[0]);
 };
 

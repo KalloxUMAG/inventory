@@ -96,6 +96,7 @@ function toggleLeftDrawer() {
 
 .menu-link {
   color: #dfdfdf;
+
 }
 
 .active-menu-link {

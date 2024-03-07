@@ -115,7 +115,6 @@ class NextMaintenanceSchema(BaseModel):
     class Config:
         from_attributes = True
 
-
 class EquipmentAvailableSchema(BaseModel):
     id: Optional[int] = None
     name: str

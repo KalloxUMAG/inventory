@@ -37,6 +37,7 @@ def add_building(building: BuildingSchema, db: Session = Depends(get_db)):
     if db_building:
         content = str(db_building.id)
         return Response(status_code=HTTP_200_OK, content=content)
+
     new_building = Building(name=building.name)
     db.add(new_building)
     db.commit()

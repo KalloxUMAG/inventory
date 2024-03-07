@@ -43,6 +43,7 @@ async def add_invoice(invoice: InvoiceSchema, db: Session = Depends(get_db)):
     if db_invoice:
         content = str(db_invoice.id)
         return Response(status_code=HTTP_200_OK, content=content)
+
     new_invoice = Invoice(
         number=invoice.number, date=invoice.date, supplier_id=invoice.supplier_id
     )
