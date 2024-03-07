@@ -6,6 +6,7 @@ from typing import List
 from fastapi import APIRouter, Depends, Response, UploadFile
 from sqlalchemy.orm import Session
 from starlette.status import (
+    HTTP_200_OK,
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
     HTTP_404_NOT_FOUND,
@@ -30,6 +31,19 @@ def get_inovices(db: Session = Depends(get_db)):
 
 @invoices.post("", status_code=HTTP_201_CREATED)
 async def add_invoice(invoice: InvoiceSchema, db: Session = Depends(get_db)):
+    db_invoice = (
+        db.query(Invoice)
+        .filter(
+            Invoice.number == invoice.number,
+            Invoice.date == invoice.date,
+            Invoice.supplier_id == invoice.supplier_id,
+        )
+        .first()
+    )
+    if db_invoice:
+        content = str(db_invoice.id)
+        return Response(status_code=HTTP_200_OK, content=content)
+
     new_invoice = Invoice(
         number=invoice.number, date=invoice.date, supplier_id=invoice.supplier_id
     )

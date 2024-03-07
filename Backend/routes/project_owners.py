@@ -2,7 +2,13 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from sqlalchemy.sql.expression import func
+from starlette.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND,
+)
 
 from config.database import get_db
 from models.models import ProjectOwner
@@ -23,6 +29,14 @@ def get_project_owners(db: Session = Depends(get_db)):
 
 @project_owners.post("", status_code=HTTP_201_CREATED)
 def add_project_owner(project_owner: ProjectOwnerSchema, db: Session = Depends(get_db)):
+    db_project_owner = (
+        db.query(ProjectOwner)
+        .filter(func.lower(ProjectOwner.name) == project_owner.name.lower())
+        .first()
+    )
+    if db_project_owner:
+        content = str(db_project_owner.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_project_owner = ProjectOwner(name=project_owner.name)
     db.add(new_project_owner)
     db.commit()

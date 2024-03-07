@@ -30,7 +30,7 @@ const props = defineProps({
   api_endpoint: String,
 });
 
-const api_prefix = process.env.API_URL.replace("/api", "");
+const api_prefix = process.env.API_URL.slice(0, -4);
 const { api_endpoint } = toRefs(props);
 
 const slide = ref(1);
@@ -53,7 +53,9 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .q-carousel__slide {
-  background-size: 100% 100%;
+  max-width: 100%;
+  background-size: contain;
+  background-position: center;
   background-repeat: no-repeat;
 }
 </style>

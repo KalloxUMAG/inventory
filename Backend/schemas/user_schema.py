@@ -67,7 +67,7 @@ class TokenSchema(BaseModel):
 
 
 class changepassword(BaseModel):
-    email: str
+    email: Optional[str] = None
     old_password: str
     new_password: str
 
@@ -78,3 +78,12 @@ class TokenCreate(BaseModel):
     refresh_token: str
     status: bool
     created_date: datetime
+
+
+class FilterUser(BaseModel):
+    id: Optional[int]
+    email: Optional[str] = None
+    fullname: Optional[str] = None
+
+    class Config:
+        from_attributes = True

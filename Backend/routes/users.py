@@ -1,5 +1,6 @@
-from typing import Annotated, Union, Any
+from typing import Annotated, List, Union, Any
 from datetime import datetime, timedelta
+from sqlalchemy import false
 from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
 from jose import jwt
@@ -9,6 +10,7 @@ from passlib.context import CryptContext
 from fastapi import Depends, APIRouter, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer
 from schemas.user_schema import (
+    FilterUser,
     TokenSchema,
     requestdetails,
     changepassword,
@@ -25,10 +27,15 @@ from models.models import Users, TokenTable, UserGroupRoleRelation
 
 from auth.auth_bearer import JWTBearer
 from functools import wraps
-
 from routes.groups import get_group
 
-users = APIRouter(tags=["users"], prefix="/api/users")
+from auth.auth_bearer import JWTBearer
+from functools import wraps
+
+users = APIRouter(
+    tags=["users"], prefix="/api/users", dependencies=[Depends(JWTBearer())]
+)
+login = APIRouter(tags=["users"], prefix="/api/users")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -118,8 +125,12 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_201_CREATED)
 
 
-@users.post("/login", response_model=TokenSchema, tags=["users"])
-def login(request: requestdetails, db: Session = Depends(get_db)):
+@login.post("/login", response_model=TokenSchema, tags=["users"])
+def loginuser(
+    request: requestdetails,
+    dependencies=[Depends(JWTBearer())],
+    db: Session = Depends(get_db),
+):
     user = db.query(Users).filter(Users.email == request.email).first()
     if user is None:
         raise HTTPException(
@@ -144,14 +155,24 @@ def login(request: requestdetails, db: Session = Depends(get_db)):
 
 
 @users.get("/getusers", tags=["users"])
-def getusers(dependencies=Depends(JWTBearer()), session: Session = Depends(get_db)):
+def getusers(session: Session = Depends(get_db)):
     user = session.query(Users).all()
     return user
 
 
 @users.post("/change-password", tags=["users"])
-def change_password(request: changepassword, db: Session = Depends(get_db)):
-    user = db.query(Users).filter(Users.email == request.email).first()
+def change_password(
+    request: changepassword,
+    dependencies=Depends(JWTBearer()),
+    db: Session = Depends(get_db),
+):
+    token = dependencies
+    payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
+    user_id = payload["sub"]
+    if not request.email:
+        user = db.query(Users).filter(Users.id == user_id).first()
+    else:
+        user = db.query(Users).filter(Users.email == request.email).first()
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="User not found"
@@ -163,8 +184,10 @@ def change_password(request: changepassword, db: Session = Depends(get_db)):
         )
 
     encrypted_password = get_hashed_password(request.new_password)
-    user.password = encrypted_password
+    user.hashed_password = encrypted_password
+    db.add(user)
     db.commit()
+    db.refresh(user)
 
     return {"message": "Password changed successfully"}
 
@@ -197,6 +220,35 @@ def logout(dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
         db.commit()
         db.refresh(existing_token)
     return {"message": "Logout Successfully"}
+
+@users.get("/search_users", tags=["users"], response_model=List[FilterUser])
+def search_users(fullname: str = None, email: str = None, db: Session = Depends(get_db)):
+    query = db.query(Users)
+
+    if fullname is not None:
+        query = query.filter(Users.fullname.ilike(f"%{fullname}%"))
+
+    if email is not None:
+        query = query.filter(Users.email.ilike(f"%{email}%"))
+
+    query = query.filter(Users.disable.is_(False))
+
+    users = query.all()
+
+    result = []
+    for user in users:
+        filter_user = FilterUser(
+            id=user.id,
+            username=user.username,
+            fullname=user.fullname,
+            email=user.email,
+            # ... (otros campos)
+        )
+        result.append(filter_user)
+
+    return result
+
+    return users
 
 @users.post("/roles", status_code=HTTP_201_CREATED)
 def grant_role_user(grant_role: GrantRoleSchema, db: Session = Depends(get_db)):

@@ -3,18 +3,32 @@
     <q-form ref="loginForm" @submit.prevent="onSubmit">
       <q-card class="q-pa-md shadow-2 my_card" bordered>
         <q-card-section class="text-center">
+          <div class="text-h4 text-weight-bold">
+            Sistema de Gestion de Inventario CADI
+          </div>
+        </q-card-section>
+        <q-card-section class="text-center">
           <div class="text-grey-9 text-h5 text-weight-bold">Iniciar sesion</div>
         </q-card-section>
         <q-card-section>
-          <q-input dense outlined v-model="email" label="Correo"></q-input>
+          <q-input dense outlined v-model="email" label="Correo">
+            <template v-slot:prepend>
+              <q-icon name="mail" />
+            </template>
+          </q-input>
           <q-input
             dense
             outlined
+            icon
             class="q-mt-md"
             v-model="password"
             type="password"
             label="Contrasena"
-          ></q-input>
+          >
+            <template v-slot:prepend>
+              <q-icon name="key" />
+            </template>
+          </q-input>
         </q-card-section>
         <q-card-section>
           <q-btn
@@ -65,7 +79,8 @@ const onSubmit = async () => {
       color: "red-3",
       textColor: "white",
       icon: "error",
-      message: "No se pudo inicar sesion: " + error,
+      message: "No se pudo inicar sesion: " + error.response.data.detail,
+      progress: true,
     });
   }
 };

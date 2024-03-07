@@ -4,43 +4,57 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
-          <div class="text-h4 q-ma-md text-uppercase">
+          <div class="text-h4 q-ma-md q-ml-md">
             Sistema de gestión de inventario CADI
           </div>
         </q-toolbar-title>
+        <q-btn
+          to="/login"
+          flat
+          align="between"
+          size="lg"
+          class="q-mr-md"
+          icon="logout"
+          label="Cerrar session"
+        />
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" elevated :width="400">
+    <q-drawer v-model="leftDrawerOpen" side="left" elevated :width="275">
       <q-scroll-area class="fit">
         <q-list>
           <q-item>
-            <div class="text-h4 q-my-sm text-center">
+            <div class="text-h5 text-white q-my-sm text-center">
               Sesion iniciada como
               <span class="text-bold">{{ fullname }}</span>
             </div>
           </q-item>
           <template v-for="(menuItem, index) in menuItems" :key="index">
+            <q-item v-if="menuItem.type == 'label'" class="menu-label">
+              {{ menuItem.label }}
+            </q-item>
             <q-item
+              v-if="menuItem.type == 'nav'"
               clickable
               :to="menuItem.to"
               v-ripple
-              active-class="my-menu-link"
+              class="menu-link"
+              active-class="active-menu-link"
               :exact="menuItem.exact"
-              class=""
             >
               <q-item-section avatar>
-                <q-icon :name="menuItem.icon" />
+                <q-icon :name="menuItem.icon" size="2.5rem" />
               </q-item-section>
-              <q-item-section class="text-weight-bold text-h5">
+              <q-item-section class="text-subtitle1">
                 {{ menuItem.label }}
               </q-item-section>
             </q-item>
             <q-separator :key="'sep' + index" v-if="menuItem.separator" />
           </template>
         </q-list>
-        <footer class="absolute-bottom">
-          <small>Fecha de actualización: 16-08-2023</small>
+        <q-img src="/src/assets/cadi.png" width="90%" class="q-ml-md q-mt-lg" />
+        <footer class="fixed-bottom text-white">
+          <small>Fecha de actualización: 17-10-2023</small>
         </footer>
       </q-scroll-area>
     </q-drawer>
@@ -67,15 +81,26 @@ function toggleLeftDrawer() {
 
 <style lang="scss">
 .q-header {
-  background-color: #2196f3;
+  background-color: rgb(109, 86, 160);
+  background-color: #5e3bbf;
+  background-color: #324580;
 }
 
 .q-drawer {
-  background-color: #ffffff;
+  background-color: #022140;
 }
 
-.my-menu-link {
-  color: #fff;
-  background: rgba(0, 0, 0, 0.9);
+.menu-label {
+  color: #d5d2d2;
+}
+
+.menu-link {
+  color: #dfdfdf;
+
+}
+
+.active-menu-link {
+  color: #ffffff;
+  background: rgba(100, 76, 152, 0.659);
 }
 </style>

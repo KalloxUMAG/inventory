@@ -68,17 +68,27 @@
 import { useQuasar } from "quasar";
 import { ref } from "vue";
 import { sendRequest } from "src/axios/instance.js";
+import UploadImages from "src/components/UploadImages.vue";
 
 const fullname = ref("");
 const username = ref("");
 const email = ref("");
 const password = ref("");
+const images = ref(null);
 
 const loading = ref(false);
 
 const createUserForm = ref(null);
 const api_prefix = process.env.API_URL;
 const $q = useQuasar();
+
+const handleAddImages = (files) => {
+  images.value = files[0];
+};
+
+const handleRemoveImages = (files) => {
+  images.value = null;
+};
 
 const createNewUser = async (data) => {
   try {
@@ -87,13 +97,23 @@ const createNewUser = async (data) => {
       url: api_prefix + "/users",
       data: data,
     });
+    $q.notify({
+      color: "green-3",
+      textColor: "white",
+      icon: "check",
+      message: "Usuario creado con exito ",
+    });
+    fullname.value = "";
+    username.value = "";
+    email.value = "";
+    password.value = "";
     return response.status;
   } catch (error) {
     $q.notify({
       color: "red-3",
       textColor: "white",
       icon: "error",
-      message: "No se pudo crear el usuario: " + error,
+      message: "No se pudo crear el usuario: " + error.response.data.detail,
     });
   }
 };

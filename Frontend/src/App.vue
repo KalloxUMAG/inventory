@@ -15,6 +15,8 @@ export default app;
 <style lang="scss">
 @import "./css/quasar.variables.scss";
 body {
-  background-color: #eef5f9;
+  background-color: #e7eae7da;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 </style>

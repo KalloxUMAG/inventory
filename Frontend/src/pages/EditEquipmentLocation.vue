@@ -122,7 +122,6 @@ const getUnits = async () => {
 
 const getRooms = async () => {
   if (unit.value === null) {
-    console.log("Entro aqui");
     roomOptions.value = [];
     room.value = null;
   } else {

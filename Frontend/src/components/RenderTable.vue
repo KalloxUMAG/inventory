@@ -5,6 +5,7 @@
     :columns="columns"
     :rows="rows"
     no-data-label="No hay registros para mostrar"
+    rows-per-page-label="Registros por pagina"
     :filter="filter"
     v-model:pagination="pagination"
     @row-click="rowClicker"
@@ -34,7 +35,13 @@
       </q-input>
     </template>
     <template v-slot:body-cell="props">
-      <q-td :props="props" :class="(props.row.critical) && 'bg-amber-2' || (!props.row.stage_id || !props.row.invoice_id) && 'bg-red-3'">
+      <q-td
+        :props="props"
+        :class="
+          (props.row.critical && 'bg-amber-2') ||
+          ((!props.row.stage_id || !props.row.invoice_id) && 'bg-red-3')
+        "
+      >
         {{ props.value }}
       </q-td>
     </template>

@@ -1,10 +1,15 @@
 export const menuItems = [
   {
+    label: "Dashboard",
+    type: "label",
+  },
+  {
     label: "Inicio",
     icon: "home",
     to: "/",
     exact: true,
     separator: true,
+    type: "nav",
   },
   {
     label: "Equipamiento",
@@ -12,6 +17,7 @@ export const menuItems = [
     to: "/equipments",
     exact: false,
     separator: true,
+    type: "nav",
   },
   {
     label: "Insumos",
@@ -19,26 +25,26 @@ export const menuItems = [
     to: "/supplies",
     exact: false,
     separator: true,
+    type: "nav",
   },
   {
-    label: "Agregar usuario",
-    icon: "person",
-    to: "/createuser",
-    exact: true,
+    label: "Mantenedor de Inventario",
+    icon: "science",
+    to: "/inventory-maintainer",
+    exact: false,
     separator: true,
+    type: "nav",
   },
   {
-    label: "Gestion",
-    icon: "settings",
-    to: "/settings",
-    exact: true,
-    separator: true,
+    label: "Administracion",
+    type: "label",
   },
   {
-    label: "Cerrar sesion",
-    icon: "logout",
-    to: "/login",
+    label: "Cambiar contraseña",
+    icon: "key",
+    to: "/changepassword",
     exact: true,
     separator: true,
+    type: "nav",
   },
 ];

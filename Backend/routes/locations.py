@@ -2,7 +2,8 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED
+from sqlalchemy.sql.expression import func
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED
 
 from config.database import get_db
 from models.models import Location
@@ -23,6 +24,14 @@ def get_locations(db: Session = Depends(get_db)):
 
 @locations.post("", status_code=HTTP_201_CREATED)
 def add_location(location: LocationSchema, db: Session = Depends(get_db)):
+    db_location = (
+        db.query(Location)
+        .filter(func.lower(Location.name) == location.name.lower())
+        .first()
+    )
+    if db_location:
+        content = str(db_location.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_location = Location(name=location.name)
     db.add(new_location)
     db.commit()

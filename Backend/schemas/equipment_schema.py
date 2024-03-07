@@ -114,3 +114,23 @@ class NextMaintenanceSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class EquipmentAvailableSchema(BaseModel):
+    id: Optional[int] = None
+    name: str
+    serial_number: Optional[str] = None
+    umag_inventory_code: Optional[str] = None
+    reception_date: Optional[date] = None
+    maintenance_period: Optional[int] = None
+    last_preventive_mainteinance: Optional[date] = None
+    observation: Optional[str] = None
+    supplier_id: Optional[int] = None
+    invoice_id: Optional[int] = None
+    model_number_id: Optional[int] = None
+    room_id: Optional[int] = None
+    stage_id: Optional[int] = None
+    available: Optional[bool]
+    dateEnd: Optional[date] = None
+
+    class Config:
+        from_attributes = True

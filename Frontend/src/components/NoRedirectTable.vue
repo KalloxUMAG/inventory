@@ -5,6 +5,7 @@
     :columns="columns"
     :rows="rows"
     no-data-label="No hay registros para mostrar"
+    rows-per-page-label="Registros por pagina"
     :filter="filter"
   >
     <template v-slot:top>
@@ -31,20 +32,57 @@
     </template>
     <template v-slot:body-cell-action="props">
       <q-td :props="props">
-        <q-btn flat dense icon="delete" color="negative" @click="deleteFunction(props.row)"/>
+        <q-btn
+          flat
+          dense
+          icon="delete"
+          color="negative"
+          @click="deleteFunction(props.row)"
+        />
       </q-td>
     </template>
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
-        <q-btn flat dense icon="edit" color="warning" @click="editFunction(props.row)"/>
-        <q-btn v-if="props.row.id != null" flat dense icon="delete" color="negative" @click="deleteFunction(props.row)"/>
+        <q-btn
+          flat
+          dense
+          icon="edit"
+          color="warning"
+          @click="editFunction(props.row)"
+        />
+        <q-btn
+          v-if="props.row.id != null"
+          flat
+          dense
+          icon="delete"
+          color="negative"
+          @click="deleteFunction(props.row)"
+        />
       </q-td>
     </template>
     <template v-slot:body-cell-state="props">
       <q-td :props="props">
-        <q-icon v-if="props.row.state == true" size="md" name="done_all" color="positive"><q-tooltip>Realizado</q-tooltip></q-icon>
-        <q-icon v-if="props.row.state == false" size="md" name="close" color="negative"><q-tooltip>No realizado</q-tooltip></q-icon>
-        <q-icon v-if="props.row.state == null" size="md" name="play_arrow" color="warning"><q-tooltip>Próximo</q-tooltip></q-icon>
+        <q-icon
+          v-if="props.row.state == true"
+          size="md"
+          name="done_all"
+          color="positive"
+          ><q-tooltip>Realizado</q-tooltip></q-icon
+        >
+        <q-icon
+          v-if="props.row.state == false"
+          size="md"
+          name="close"
+          color="negative"
+          ><q-tooltip>No realizado</q-tooltip></q-icon
+        >
+        <q-icon
+          v-if="props.row.state == null"
+          size="md"
+          name="play_arrow"
+          color="warning"
+          ><q-tooltip>Próximo</q-tooltip></q-icon
+        >
       </q-td>
     </template>
   </q-table>

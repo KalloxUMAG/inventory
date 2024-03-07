@@ -2,7 +2,13 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from sqlalchemy.sql.expression import func
+from starlette.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND,
+)
 
 from config.database import get_db
 from models.models import Model
@@ -27,6 +33,17 @@ def add_model(model: ModelSchema, db: Session = Depends(get_db)):
     db_brand = get_brand(model.brand_id, db=db)
     if not db_brand:
         return Response(status_code=HTTP_404_NOT_FOUND)
+    db_model = (
+        db.query(Model)
+        .filter(
+            func.lower(Model.name) == model.name.lower(),
+            Model.brand_id == model.brand_id,
+        )
+        .first()
+    )
+    if db_model:
+        content = str(db_model.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_model = Model(name=model.name, brand_id=model.brand_id)
     db.add(new_model)
     db.commit()

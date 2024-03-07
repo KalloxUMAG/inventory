@@ -2,7 +2,8 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED
+from sqlalchemy.sql.expression import func
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED
 
 from config.database import get_db
 from models.models import SupplyType
@@ -23,6 +24,14 @@ def get_supplies_types(db: Session = Depends(get_db)):
 
 @supplies_types.post("", status_code=HTTP_201_CREATED)
 def add_supplies_type(type: SuppliesTypesSchema, db: Session = Depends(get_db)):
+    db_supplies_type = (
+        db.query(SupplyType)
+        .filter(func.lower(SupplyType.name) == type.name.lower())
+        .first()
+    )
+    if db_supplies_type:
+        content = str(db_supplies_type.id)
+        return Response(status_code=HTTP_200_OK, content=content)
     new_supplies_type = SupplyType(name=type.name)
     db.add(new_supplies_type)
     db.commit()

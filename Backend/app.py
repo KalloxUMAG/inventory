@@ -29,9 +29,10 @@ from routes.supplies_brands import supplies_brands
 from routes.supplies_formats import supplies_formats
 from routes.supplies_types import supplies_types
 from routes.units import units
-from routes.users import users
+from routes.users import users, login
 from routes.groups import groups
 from routes.groups_supplies import groups_supplies
+from routes.inventory import inventory
 from routes.roles import roles
 
 
@@ -67,6 +68,7 @@ routes = [
     groups_supplies,
     invoices,
     locations,
+    login,
     lots,
     maintenances,
     models,
@@ -86,6 +88,7 @@ routes = [
     suppliers_contacts,
     suppliers_supplies,
     users,
+    inventory,
 ]
 
 for route in routes:
