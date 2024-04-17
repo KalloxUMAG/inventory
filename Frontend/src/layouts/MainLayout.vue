@@ -81,26 +81,24 @@ function toggleLeftDrawer() {
 
 <style lang="scss">
 .q-header {
-  background-color: rgb(109, 86, 160);
-  background-color: #5e3bbf;
-  background-color: #324580;
+  background-color: var(--header-bg-color);
 }
 
 .q-drawer {
-  background-color: #022140;
+  background-color: var(--drawer-bg-color);
 }
 
 .menu-label {
-  color: #d5d2d2;
+  color: var(--drawer-menu-label-text-color);
 }
 
 .menu-link {
-  color: #dfdfdf;
+  color: var(--drawer-menu-link-text-color);
 
 }
 
 .active-menu-link {
-  color: #ffffff;
-  background: rgba(100, 76, 152, 0.659);
+  color: var(--drawer-active-menu-link-color);
+  background: var(--drawer-active-menu-link-bg-color);
 }
 </style>
