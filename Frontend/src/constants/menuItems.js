@@ -1,6 +1,6 @@
 export const menuItems = [
   {
-    label: "Dashboard",
+    label: "Navegación",
     type: "label",
   },
   {
@@ -8,7 +8,7 @@ export const menuItems = [
     icon: "home",
     to: "/",
     exact: true,
-    separator: true,
+    separator: false,
     type: "nav",
   },
   {
@@ -16,7 +16,7 @@ export const menuItems = [
     icon: "biotech",
     to: "/equipments",
     exact: false,
-    separator: true,
+    separator: false,
     type: "nav",
   },
   {
@@ -24,19 +24,19 @@ export const menuItems = [
     icon: "science",
     to: "/supplies",
     exact: false,
-    separator: true,
+    separator: false,
     type: "nav",
   },
   {
     label: "Mantenedor de Inventario",
-    icon: "science",
+    icon: "calendar_month",
     to: "/inventory-maintainer",
     exact: false,
-    separator: true,
+    separator: false,
     type: "nav",
   },
   {
-    label: "Administracion",
+    label: "Administración",
     type: "label",
   },
   {
@@ -44,7 +44,7 @@ export const menuItems = [
     icon: "key",
     to: "/changepassword",
     exact: true,
-    separator: true,
+    separator: false,
     type: "nav",
   },
 ];
