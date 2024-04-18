@@ -1,32 +1,26 @@
 <template>
-  <q-layout view="hHh LpR fFf">
+  <q-layout view="Lhh lpR lFf">
     <q-header bordered class="text-white" height-hint="98">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
-        <q-toolbar-title>
-          <div class="text-h4 q-ma-md q-ml-md">
-            Sistema de gestión de inventario CADI
-          </div>
-        </q-toolbar-title>
+        <q-btn dense flat round icon="menu" class="hidden" @click="toggleLeftDrawer" />
         <q-btn
           to="/login"
           flat
           align="between"
           size="lg"
-          class="q-mr-md"
+          class="q-mr-md absolute-right text-black"
           icon="logout"
           label="Cerrar session"
         />
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" elevated :width="275">
+    <q-drawer v-model="leftDrawerOpen" side="left" show-if-above :width="300">
       <q-scroll-area class="fit">
         <q-list>
           <q-item>
-            <div class="text-h5 text-white q-my-sm text-center">
-              Sesion iniciada como
-              <span class="text-bold">{{ fullname }}</span>
+            <div class="drawer-message q-my-sm">
+              Inventario CADI
             </div>
           </q-item>
           <template v-for="(menuItem, index) in menuItems" :key="index">
@@ -43,16 +37,19 @@
               :exact="menuItem.exact"
             >
               <q-item-section avatar>
-                <q-icon :name="menuItem.icon" size="2.5rem" />
+                <q-icon :name="menuItem.icon" class="item-icon" />
               </q-item-section>
-              <q-item-section class="text-subtitle1">
+              <q-item-section class="item-text">
                 {{ menuItem.label }}
               </q-item-section>
             </q-item>
             <q-separator :key="'sep' + index" v-if="menuItem.separator" />
           </template>
         </q-list>
-        <q-img src="/src/assets/cadi.png" width="90%" class="q-ml-md q-mt-lg" />
+        <div class="image-container">
+          <q-img src="/src/assets/cadi.webp" width="100%"/>
+        </div>
+
         <footer class="fixed-bottom text-white">
           <small>Fecha de actualización: 17-10-2023</small>
         </footer>
@@ -80,6 +77,30 @@ function toggleLeftDrawer() {
 </script>
 
 <style lang="scss">
+.header-title {
+  font-size: 1.5rem;
+}
+
+.drawer-message {
+  font-size: 1.4rem;
+  color: var(--drawer-menu-label-text-color);
+  text-align: center;
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.item-icon {
+  font-size: 1.5rem;
+}
+
+.item-text {
+  font-size: 1rem;
+}
+
+.image-container {
+  padding: 10px;
+}
+
 .q-header {
   background-color: var(--header-bg-color);
 }
@@ -88,8 +109,14 @@ function toggleLeftDrawer() {
   background-color: var(--drawer-bg-color);
 }
 
+.q-item__section--avatar{
+  min-width: unset;
+}
+
 .menu-label {
   color: var(--drawer-menu-label-text-color);
+  flex-wrap: wrap;
+  align-content: end;
 }
 
 .menu-link {

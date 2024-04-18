@@ -13,7 +13,14 @@
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
 //$primary   : #0d4f92; #3a5084
-$primary   : #242A33;
+
+// CADI LOGO Colours
+$cadi-light-green: #23978a;
+$cadi-green: #48b06d;
+$cadi-blue: #104e95;
+$cadi-purple: #644d99;
+
+$primary   : $cadi-blue;
 $secondary : #26A69A;
 $accent    : #9C27B0;
 
