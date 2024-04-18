@@ -18,7 +18,7 @@
     <q-drawer v-model="leftDrawerOpen" side="left" show-if-above :width="300">
       <q-scroll-area class="fit">
         <q-list>
-          <q-item>
+          <q-item class="drawer-message-container">
             <div class="drawer-message q-my-sm">
               Inventario CADI
             </div>
@@ -87,6 +87,10 @@ function toggleLeftDrawer() {
   text-align: center;
   width: 100%;
   text-transform: uppercase;
+}
+
+.drawer-message-container {
+  background-color: var(--drawer-menu-label-bg-color);
 }
 
 .item-icon {

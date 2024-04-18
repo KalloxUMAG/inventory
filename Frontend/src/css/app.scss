@@ -11,9 +11,10 @@
     // Main Layout Drawer
     --drawer-bg-color: #{$cadi-blue};
     --drawer-menu-label-text-color: #ffffff;
+    --drawer-menu-label-bg-color: #{darken($cadi-blue, 10%)};
     --drawer-menu-link-text-color: #fff;
     --drawer-active-menu-link-color: #fff;
-    --drawer-active-menu-link-bg-color: #{darken($cadi-blue, 10%)};
+    --drawer-active-menu-link-bg-color: #{darken($cadi-blue, 5%)};
 
 }
 
