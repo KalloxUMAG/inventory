@@ -1,892 +1,890 @@
 <template>
-  <q-page class="q-ma-sm">
-    <div class="row justify-center">
-      <q-form
-        @submit.prevent="onSubmit"
-        @reset="onReset"
-        class="q-gutter-md col-xs-12 col-sm-12 col-md-6 q-pa-md relative-position"
-        ref="createEquipmentForm"
-      >
-        <!--Datos Producto-->
-        <h5>Agregar equipos</h5>
-        <div class="section-title">
-          Datos equipo
-          <hr />
+  <div class="row justify-center">
+    <q-form
+      @submit.prevent="onSubmit"
+      @reset="onReset"
+      class="q-gutter-md col-xs-12 col-sm-12 col-md-6 q-pa-md relative-position"
+      ref="createEquipmentForm"
+    >
+      <!--Datos Producto-->
+      <h5>Agregar equipos</h5>
+      <div class="section-title">
+        Datos equipo
+        <hr />
+      </div>
+      <q-input
+        outlined
+        v-model="name"
+        maxlength="49"
+        label="Nombre del equipo*"
+        lazy-rules
+        :rules="[
+          (val) => (val && val.length > 0) || 'Este campo es obligatorio',
+          (val) =>
+            (val && val.length < 50) ||
+            'El nombre debe contener menos de 50 caracteres',
+        ]"
+      />
+      <q-input
+        outlined
+        v-model="serial"
+        maxlength="30"
+        label="Código serial*"
+        lazy-rules
+        :rules="[
+          (val) => (val && val.length > 0) || 'Este campo es obligatorio',
+          (val) => (val && val.length < 256) || 'Máximo 255 caracteres',
+        ]"
+      />
+      <q-input
+        outlined
+        v-model="inventory"
+        maxlength="11"
+        type="number"
+        label="Inventario UMAG*"
+        lazy-rules
+        :rules="[
+          (val) =>
+            (val.length < 26 && val > 0) ||
+            'El valor debe ser mayor que 0 y tener un maximo de 25 dígitos',
+        ]"
+      />
+
+      <!--Brand Model Number-->
+
+      <div class="row justify-center">
+        <div v-if="!newbrandstate" class="col q-mr-md">
+          <SelectForm
+            outlined
+            class="row q-mr-md"
+            :disable="disableBrand"
+            :options="brandOptions"
+            option_value="id"
+            option_label="name"
+            label="Marca"
+            not_found_label="No hay marcas disponibles"
+            @updateModel="
+              (value) => {
+                brand = value;
+                getModels();
+              }
+            "
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <div class="row justify-end q-pt-md">
+            <q-btn
+              label="Añadir marca"
+              icon="add"
+              class="add-btn text-caption q-mr-md"
+              @click="newbrandstate = !newbrandstate"
+            />
+          </div>
         </div>
-        <q-input
-          outlined
-          v-model="name"
-          maxlength="49"
-          label="Nombre del equipo*"
-          lazy-rules
-          :rules="[
-            (val) => (val && val.length > 0) || 'Este campo es obligatorio',
-            (val) =>
-              (val && val.length < 50) ||
-              'El nombre debe contener menos de 50 caracteres',
-          ]"
-        />
-        <q-input
-          outlined
-          v-model="serial"
-          maxlength="30"
-          label="Código serial*"
-          lazy-rules
-          :rules="[
-            (val) => (val && val.length > 0) || 'Este campo es obligatorio',
-            (val) => (val && val.length < 256) || 'Máximo 255 caracteres',
-          ]"
-        />
-        <q-input
-          outlined
-          v-model="inventory"
-          maxlength="11"
-          type="number"
-          label="Inventario UMAG*"
-          lazy-rules
-          :rules="[
-            (val) =>
-              (val.length < 26 && val > 0) ||
-              'El valor debe ser mayor que 0 y tener un maximo de 25 dígitos',
-          ]"
-        />
-
-        <!--Brand Model Number-->
-
-        <div class="row justify-center">
-          <div v-if="!newbrandstate" class="col q-mr-md">
-            <SelectForm
+        <div v-else class="col">
+          <div class="row">
+            <q-input
               outlined
-              class="row q-mr-md"
+              v-model="newbrand"
+              label="Nombre marca"
+              class="col"
               :disable="disableBrand"
-              :options="brandOptions"
-              option_value="id"
-              option_label="name"
-              label="Marca"
-              not_found_label="No hay marcas disponibles"
-              @updateModel="
-                (value) => {
-                  brand = value;
-                  getModels();
-                }
-              "
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
-            <div class="row justify-end q-pt-md">
-              <q-btn
-                label="Añadir marca"
-                icon="add"
-                class="add-btn text-caption q-mr-md"
-                @click="newbrandstate = !newbrandstate"
-              />
-            </div>
           </div>
-          <div v-else class="col">
-            <div class="row">
-              <q-input
-                outlined
-                v-model="newbrand"
-                label="Nombre marca"
-                class="col"
-                :disable="disableBrand"
-                :rules="[(val) => !!val || 'Campo obligatorio']"
-                lazy-rules
-              />
-            </div>
+        </div>
+        <div v-if="!newbrandstate && !newmodelstate" class="col q-mr-md">
+          <SelectForm
+            outlined
+            class="row q-mr-md"
+            :disable="disableBrand"
+            :options="modelOptions"
+            option_value="id"
+            option_label="name"
+            label="Modelo"
+            not_found_label="No hay modelos disponibles"
+            @updateModel="
+              (value) => {
+                model = value;
+                getModelNumbers();
+              }
+            "
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <div class="row justify-end q-pt-md">
+            <q-btn
+              label="Añadir modelo"
+              icon="add"
+              class="add-btn text-caption q-mr-md"
+              @click="newmodelstate = !newmodelstate"
+            />
           </div>
-          <div v-if="!newbrandstate && !newmodelstate" class="col q-mr-md">
-            <SelectForm
+        </div>
+        <div v-else class="col q-pl-md">
+          <div class="row">
+            <q-input
               outlined
-              class="row q-mr-md"
+              v-model="newmodel"
+              label="Nombre modelo"
+              class="col"
               :disable="disableBrand"
-              :options="modelOptions"
-              option_value="id"
-              option_label="name"
-              label="Modelo"
-              not_found_label="No hay modelos disponibles"
-              @updateModel="
-                (value) => {
-                  model = value;
-                  getModelNumbers();
-                }
-              "
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
-            <div class="row justify-end q-pt-md">
-              <q-btn
-                label="Añadir modelo"
-                icon="add"
-                class="add-btn text-caption q-mr-md"
-                @click="newmodelstate = !newmodelstate"
-              />
-            </div>
-          </div>
-          <div v-else class="col q-pl-md">
-            <div class="row">
-              <q-input
-                outlined
-                v-model="newmodel"
-                label="Nombre modelo"
-                class="col"
-                :disable="disableBrand"
-                :rules="[(val) => !!val || 'Campo obligatorio']"
-                lazy-rules
-              />
-            </div>
-          </div>
-          <div
-            v-if="!newbrandstate && !newmodelstate && !newmodelnumberstate"
-            class="col"
-          >
-            <SelectForm
-              outlined
-              class="row"
-              :disable="disableBrand"
-              :options="modelNumberOptions"
-              option_value="id"
-              option_label="name"
-              label="Número modelo"
-              not_found_label="No hay número de modelo disponibles"
-              @updateModel="
-                (value) => {
-                  modelNumber = value;
-                }
-              "
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-            <div class="row justify-end q-pt-md">
-              <q-btn
-                label="Añadir nro. modelo"
-                icon="add"
-                class="add-btn text-caption"
-                @click="newmodelnumberstate = !newmodelnumberstate"
-              />
-            </div>
-          </div>
-          <div v-else class="col q-pl-md">
-            <div class="row">
-              <q-input
-                outlined
-                v-model="newmodelnumber"
-                label="Número modelo"
-                class="col"
-                :disable="disableBrand"
-                :rules="[(val) => !!val || 'Campo obligatorio']"
-                lazy-rules
-              />
-            </div>
           </div>
         </div>
         <div
-          v-if="newmodelstate || newmodelnumberstate || newbrandstate"
-          class="row justify-end q-pt-md"
+          v-if="!newbrandstate && !newmodelstate && !newmodelnumberstate"
+          class="col"
         >
+          <SelectForm
+            outlined
+            class="row"
+            :disable="disableBrand"
+            :options="modelNumberOptions"
+            option_value="id"
+            option_label="name"
+            label="Número modelo"
+            not_found_label="No hay número de modelo disponibles"
+            @updateModel="
+              (value) => {
+                modelNumber = value;
+              }
+            "
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <div class="row justify-end q-pt-md">
+            <q-btn
+              label="Añadir nro. modelo"
+              icon="add"
+              class="add-btn text-caption"
+              @click="newmodelnumberstate = !newmodelnumberstate"
+            />
+          </div>
+        </div>
+        <div v-else class="col q-pl-md">
+          <div class="row">
+            <q-input
+              outlined
+              v-model="newmodelnumber"
+              label="Número modelo"
+              class="col"
+              :disable="disableBrand"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        v-if="newmodelstate || newmodelnumberstate || newbrandstate"
+        class="row justify-end q-pt-md"
+      >
+        <q-btn
+          v-if="disableBrand"
+          label="Editar"
+          color="amber"
+          @click="disableBrand = false"
+          class="q-mr-sm"
+        />
+        <q-btn
+          v-else
+          label="Guardar"
+          color="amber"
+          @click="disableBrand = true"
+          class="q-mr-sm"
+        />
+        <q-btn
+          label="Ver lista"
+          color="amber"
+          @click="
+            (newmodelnumberstate = false),
+              (newmodelstate = false),
+              (newbrandstate = false),
+              (disableBrand = false)
+          "
+        />
+      </div>
+
+      <!--Mantenimiento-->
+      <q-checkbox
+        v-model="maintenanceApply"
+        val="lg"
+        label="Aplica para mantención"
+      />
+      <SelectForm
+        outlined
+        v-if="maintenanceApply"
+        :options="maintenanceOptions"
+        option_value="value"
+        option_label="name"
+        label="Periodo de mantención"
+        not_found_label="No hay periodos disponibles"
+        @updateModel="(value) => (maintenance = value)"
+        :rules="[(val) => !!val || 'Campo obligatorio']"
+        lazy-rules
+      />
+      <!--Observacion-->
+      <q-input
+        outlined
+        v-model="observation"
+        type="textarea"
+        label="Observación"
+        :rules="[(val) => !!val || 'Campo obligatorio']"
+        lazy-rules
+      />
+
+      <!--Imagenes equipamiento equipmentImages-->
+      <div class="row">
+        <div class="col">
+          <UploadImages
+            label="Imagenes equipamiento"
+            :max_files="5"
+            :handleAddImages="handleAddImages"
+            :handleRemoveImages="handleRemoveImages"
+          />
+        </div>
+      </div>
+
+      <!--Datos de compra-->
+      <div class="section-title q-mt-xl">
+        Datos compra
+        <hr />
+      </div>
+      <!--Datos de proveedor-->
+      <div v-if="!newsupplierstate">
+        <SelectForm
+          outlined
+          :options="suppliersOptions"
+          option_value="id"
+          option_label="name"
+          label="Proveedor"
+          not_found_label="No hay proveedores disponibles"
+          @updateModel="
+            (value) => {
+              (supplier = value), getInvoicesSupplier(value);
+            }
+          "
+          :rules="[
+            /*[val => !!val || 'Campo obligatorio']*/
+          ]"
+          lazy-rules
+        />
+        <div class="row justify-end q-mt-md">
           <q-btn
-            v-if="disableBrand"
+            label="Añadir proveedor"
+            icon="add"
+            class="add-btn text-caption"
+            @click="newsupplierstate = !newsupplierstate"
+          />
+        </div>
+      </div>
+
+      <div v-else>
+        <div class="row">
+          <q-input
+            outlined
+            v-model="newsuppliername"
+            label="Nombre proveedor"
+            class="col"
+            :disable="disableSupplier"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <q-input
+            outlined
+            v-model="newsupplierrut"
+            label="Rut"
+            mask="##.###.###-X"
+            class="col q-ml-md"
+            :disable="disableSupplier"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <q-input
+            outlined
+            v-model="newsupplieraddress"
+            label="Dirección"
+            class="col q-ml-md"
+            :disable="disableSupplier"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+        </div>
+        <div class="row q-mt-sm">
+          <q-input
+            outlined
+            v-model="workername1"
+            label="Nombre trabajador"
+            class="col"
+            :disable="disableSupplier"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <SelectForm
+            outlined
+            :disable="disableSupplier"
+            :options="rolOptions"
+            option_value="value"
+            option_label="name"
+            label="Roles"
+            not_found_label="No hay roles disponibles"
+            @updateModel="(value) => (workerrol1 = value)"
+            class="col q-ml-md"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <q-input
+            outlined
+            type="email"
+            v-model="workermail1"
+            label="Correo trabajador"
+            class="col q-ml-md"
+            :disable="disableSupplier"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <q-input
+            outlined
+            v-model="workerphone1"
+            label="Telefono trabajador"
+            mask="(+##) #####-####"
+            class="col q-ml-md"
+            :disable="disableSupplier"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+        </div>
+        <div class="row q-mt-sm">
+          <q-input
+            outlined
+            v-model="workername2"
+            label="Nombre trabajador"
+            class="col"
+            :disable="disableSupplier"
+          />
+          <SelectForm
+            outlined
+            :disable="disableSupplier"
+            :options="rolOptions"
+            option_value="value"
+            option_label="name"
+            label="Roles"
+            not_found_label="No hay roles disponibles"
+            @updateModel="(value) => (workerrol2 = value)"
+            class="col q-ml-md"
+          />
+          <q-input
+            outlined
+            type="email"
+            v-model="workermail2"
+            label="Correo trabajador"
+            class="col q-ml-md"
+            :disable="disableSupplier"
+          />
+          <q-input
+            outlined
+            v-model="workerphone2"
+            label="Telefono trabajador"
+            mask="(+##) #####-####"
+            class="col q-ml-md"
+            :disable="disableSupplier"
+          />
+        </div>
+        <div class="row justify-end q-mt-sm">
+          <q-btn
+            v-if="disableSupplier"
             label="Editar"
             color="amber"
-            @click="disableBrand = false"
+            @click="disableSupplier = false"
             class="q-mr-sm"
           />
           <q-btn
             v-else
             label="Guardar"
             color="amber"
-            @click="disableBrand = true"
+            @click="disableSupplier = true"
             class="q-mr-sm"
           />
           <q-btn
             label="Ver lista"
             color="amber"
             @click="
-              (newmodelnumberstate = false),
-                (newmodelstate = false),
-                (newbrandstate = false),
-                (disableBrand = false)
+              (newsupplierstate = !newsupplierstate),
+                (disableSupplier = false)
             "
           />
         </div>
+      </div>
 
-        <!--Mantenimiento-->
-        <q-checkbox
-          v-model="maintenanceApply"
-          val="lg"
-          label="Aplica para mantención"
-        />
+      <q-input
+        outlined
+        v-model="reception_date"
+        label="Fecha de recepción"
+        stack-label
+        lazy-rules
+        :rules="[
+          /*(val) => (val && val != null) || 'Este campo es obligatorio',*/
+        ]"
+      >
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy
+              cover
+              transition-show="scale"
+              transition-hide="scale"
+            >
+              <q-date v-model="reception_date">
+                <div class="row items-center justify-end">
+                  <q-btn v-close-popup label="Close" color="primary" flat />
+                </div>
+              </q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
+
+      <!--Invoices-->
+      <div v-if="!newinvoicestate">
         <SelectForm
           outlined
-          v-if="maintenanceApply"
-          :options="maintenanceOptions"
-          option_value="value"
+          :options="invoicesOptions"
+          option_value="id"
           option_label="name"
-          label="Periodo de mantención"
-          not_found_label="No hay periodos disponibles"
-          @updateModel="(value) => (maintenance = value)"
-          :rules="[(val) => !!val || 'Campo obligatorio']"
+          label="Facturas"
+          not_found_label="No hay facturas disponibles"
+          @updateModel="(value) => (invoice = value)"
+          :rules="[
+            /*val => !!val || 'Campo obligatorio'*/
+          ]"
           lazy-rules
         />
-        <!--Observacion-->
-        <q-input
-          outlined
-          v-model="observation"
-          type="textarea"
-          label="Observación"
-          :rules="[(val) => !!val || 'Campo obligatorio']"
-          lazy-rules
-        />
+        <div class="row justify-end q-mt-md">
+          <q-btn
+            label="Añadir factura"
+            icon="add"
+            class="add-btn text-caption"
+            @click="newinvoicestate = !newinvoicestate"
+          />
+        </div>
+      </div>
 
-        <!--Imagenes equipamiento equipmentImages-->
+      <div v-else>
         <div class="row">
-          <div class="col">
-            <UploadImages
-              label="Imagenes equipamiento"
-              :max_files="5"
-              :handleAddImages="handleAddImages"
-              :handleRemoveImages="handleRemoveImages"
-            />
-          </div>
-        </div>
-
-        <!--Datos de compra-->
-        <div class="section-title q-mt-xl">
-          Datos compra
-          <hr />
-        </div>
-        <!--Datos de proveedor-->
-        <div v-if="!newsupplierstate">
-          <SelectForm
+          <q-input
             outlined
-            :options="suppliersOptions"
-            option_value="id"
-            option_label="name"
-            label="Proveedor"
-            not_found_label="No hay proveedores disponibles"
-            @updateModel="
-              (value) => {
-                (supplier = value), getInvoicesSupplier(value);
-              }
-            "
-            :rules="[
-              /*[val => !!val || 'Campo obligatorio']*/
-            ]"
+            v-model="newinvoicenumber"
+            label="Numero"
+            type="number"
+            class="col"
+            :disable="disableInvoice"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
             lazy-rules
           />
-          <div class="row justify-end q-mt-md">
-            <q-btn
-              label="Añadir proveedor"
-              icon="add"
-              class="add-btn text-caption"
-              @click="newsupplierstate = !newsupplierstate"
-            />
-          </div>
+          <q-input
+            outlined
+            v-model="newinvoicedate"
+            label="Fecha"
+            type="date"
+            stack-label
+            class="col q-ml-md"
+            :disable="disableInvoice"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
         </div>
-
-        <div v-else>
-          <div class="row">
-            <q-input
-              outlined
-              v-model="newsuppliername"
-              label="Nombre proveedor"
-              class="col"
-              :disable="disableSupplier"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-            <q-input
-              outlined
-              v-model="newsupplierrut"
-              label="Rut"
-              mask="##.###.###-X"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-            <q-input
-              outlined
-              v-model="newsupplieraddress"
-              label="Dirección"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-          </div>
-          <div class="row q-mt-sm">
-            <q-input
-              outlined
-              v-model="workername1"
-              label="Nombre trabajador"
-              class="col"
-              :disable="disableSupplier"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-            <SelectForm
-              outlined
-              :disable="disableSupplier"
-              :options="rolOptions"
-              option_value="value"
-              option_label="name"
-              label="Roles"
-              not_found_label="No hay roles disponibles"
-              @updateModel="(value) => (workerrol1 = value)"
-              class="col q-ml-md"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-            <q-input
-              outlined
-              type="email"
-              v-model="workermail1"
-              label="Correo trabajador"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-            <q-input
-              outlined
-              v-model="workerphone1"
-              label="Telefono trabajador"
-              mask="(+##) #####-####"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-          </div>
-          <div class="row q-mt-sm">
-            <q-input
-              outlined
-              v-model="workername2"
-              label="Nombre trabajador"
-              class="col"
-              :disable="disableSupplier"
-            />
-            <SelectForm
-              outlined
-              :disable="disableSupplier"
-              :options="rolOptions"
-              option_value="value"
-              option_label="name"
-              label="Roles"
-              not_found_label="No hay roles disponibles"
-              @updateModel="(value) => (workerrol2 = value)"
-              class="col q-ml-md"
-            />
-            <q-input
-              outlined
-              type="email"
-              v-model="workermail2"
-              label="Correo trabajador"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-            />
-            <q-input
-              outlined
-              v-model="workerphone2"
-              label="Telefono trabajador"
-              mask="(+##) #####-####"
-              class="col q-ml-md"
-              :disable="disableSupplier"
-            />
-          </div>
-          <div class="row justify-end q-mt-sm">
-            <q-btn
-              v-if="disableSupplier"
-              label="Editar"
-              color="amber"
-              @click="disableSupplier = false"
-              class="q-mr-sm"
-            />
-            <q-btn
-              v-else
-              label="Guardar"
-              color="amber"
-              @click="disableSupplier = true"
-              class="q-mr-sm"
-            />
-            <q-btn
-              label="Ver lista"
-              color="amber"
-              @click="
-                (newsupplierstate = !newsupplierstate),
-                  (disableSupplier = false)
-              "
-            />
-          </div>
+        <div class="row q-mt-sm">
+          <q-file
+            outlined
+            class="col"
+            v-model="invoiceimage"
+            label="Foto de factura"
+            accept=".jpg, image/*"
+            :disable="disableInvoice"
+            clearable
+          >
+            <template v-slot:prepend>
+              <q-icon name="cloud_upload" />
+            </template>
+          </q-file>
         </div>
+        <div class="row justify-end q-mt-sm">
+          <q-btn
+            v-if="disableInvoice"
+            label="Editar"
+            color="amber"
+            @click="disableInvoice = false"
+            class="q-mr-sm"
+          />
+          <q-btn
+            v-else
+            label="Guardar"
+            color="amber"
+            @click="disableInvoice = true"
+            class="q-mr-sm"
+          />
+          <q-btn
+            label="Ver lista"
+            color="amber"
+            @click="
+              (newinvoicestate = !newinvoicestate), (disableInvoice = false)
+            "
+          />
+        </div>
+      </div>
 
-        <q-input
-          outlined
-          v-model="reception_date"
-          label="Fecha de recepción"
-          stack-label
-          lazy-rules
-          :rules="[
-            /*(val) => (val && val != null) || 'Este campo es obligatorio',*/
-          ]"
-        >
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-date v-model="reception_date">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
+      <!--Projects stages and owner-->
 
-        <!--Invoices-->
-        <div v-if="!newinvoicestate">
+      <div class="row justify-center">
+        <div v-if="!newprojectstate" class="col q-mr-md">
           <SelectForm
             outlined
-            :options="invoicesOptions"
+            class="row q-mr-md"
+            :disable="disableProject"
+            :options="projectOptions"
             option_value="id"
             option_label="name"
-            label="Facturas"
-            not_found_label="No hay facturas disponibles"
-            @updateModel="(value) => (invoice = value)"
+            label="Proyectos"
+            not_found_label="No hay proyectos disponibles"
+            @updateModel="
+              (value) => {
+                project = value;
+                getStages();
+              }
+            "
             :rules="[
               /*val => !!val || 'Campo obligatorio'*/
             ]"
             lazy-rules
           />
-          <div class="row justify-end q-mt-md">
+          <div class="row justify-end q-pt-md">
             <q-btn
-              label="Añadir factura"
+              label="Añadir Proyecto"
               icon="add"
-              class="add-btn text-caption"
-              @click="newinvoicestate = !newinvoicestate"
+              class="add-btn text-caption q-mr-md"
+              @click="newprojectstate = !newprojectstate"
+            />
+          </div>
+        </div>
+        <div v-else class="col q-mr-lg">
+          <div class="row">
+            <q-input
+              outlined
+              v-model="newprojectname"
+              label="Nombre proyeto"
+              class="col"
+              :disable="disableProject"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
             />
           </div>
         </div>
 
-        <div v-else>
+        <div v-if="!newstagestate && !newprojectstate" class="col q-ml-md">
+          <SelectForm
+            outlined
+            class="row"
+            :disable="disableProject"
+            :options="stagesOptions"
+            option_value="id"
+            option_label="name"
+            label="Etapas"
+            not_found_label="No hay etapas disponibles"
+            @updateModel="(value) => (stage = value)"
+            :rules="[
+              /*val => !!val || 'Campo obligatorio'*/
+            ]"
+            lazy-rules
+          />
+          <div class="row justify-end q-pt-md">
+            <q-btn
+              label="Añadir Etapa"
+              icon="add"
+              class="add-btn text-caption q-ml-md"
+              @click="newstagestate = !newstagestate"
+            />
+          </div>
+        </div>
+        <div v-else class="col">
           <div class="row">
             <q-input
               outlined
-              v-model="newinvoicenumber"
-              label="Numero"
-              type="number"
+              v-model="newstagename"
+              label="Nombre etapa"
               class="col"
-              :disable="disableInvoice"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-            <q-input
-              outlined
-              v-model="newinvoicedate"
-              label="Fecha"
-              type="date"
-              stack-label
-              class="col q-ml-md"
-              :disable="disableInvoice"
+              :disable="disableProject"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
           </div>
-          <div class="row q-mt-sm">
-            <q-file
-              outlined
-              class="col"
-              v-model="invoiceimage"
-              label="Foto de factura"
-              accept=".jpg, image/*"
-              :disable="disableInvoice"
-              clearable
-            >
-              <template v-slot:prepend>
-                <q-icon name="cloud_upload" />
-              </template>
-            </q-file>
-          </div>
-          <div class="row justify-end q-mt-sm">
+        </div>
+      </div>
+      <div v-if="newstagestate || newprojectstate" class="row justify-end">
+        <q-btn
+          v-if="disableProject"
+          label="Editar"
+          color="amber"
+          @click="disableProject = false"
+          class="q-mr-sm"
+        />
+        <q-btn
+          v-else
+          label="Guardar"
+          color="amber"
+          @click="disableProject = true"
+          class="q-mr-sm"
+        />
+        <q-btn
+          label="Ver lista"
+          color="amber"
+          @click="
+            (newstagestate = false),
+              (newprojectstate = false),
+              (disableProject = false)
+          "
+        />
+      </div>
+      <div v-if="newprojectstate" class="row">
+        <div v-if="!newProjectOwnerState" class="col">
+          <SelectForm
+            outlined
+            class="row"
+            :disable="disableProjectOwner"
+            :options="projectOwnersOptions"
+            option_value="id"
+            option_label="name"
+            label="Dueño proyecto"
+            not_found_label="No hay dueños disponibles"
+            @updateModel="
+              (value) => {
+                projectowner = value;
+              }
+            "
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <div class="row justify-end q-mt-md">
             <q-btn
-              v-if="disableInvoice"
+              label="Añadir dueño"
+              color="amber"
+              class="add-btn"
+              @click="newProjectOwnerState = true"
+            />
+          </div>
+        </div>
+        <div v-else class="col">
+          <q-input
+            outlined
+            class="row"
+            v-model="newprojectownername"
+            label="Nombre dueño"
+            :disable="disableProjectOwner"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <div class="row justify-end q-mt-md">
+            <q-btn
+              v-if="disableProjectOwner"
               label="Editar"
               color="amber"
-              @click="disableInvoice = false"
+              @click="disableProjectOwner = false"
               class="q-mr-sm"
             />
             <q-btn
               v-else
               label="Guardar"
               color="amber"
-              @click="disableInvoice = true"
+              @click="disableProjectOwner = true"
               class="q-mr-sm"
             />
             <q-btn
               label="Ver lista"
               color="amber"
               @click="
-                (newinvoicestate = !newinvoicestate), (disableInvoice = false)
+                (disableProjectOwner = false), (newProjectOwnerState = false)
               "
             />
           </div>
         </div>
+      </div>
 
-        <!--Projects stages and owner-->
-
-        <div class="row justify-center">
-          <div v-if="!newprojectstate" class="col q-mr-md">
-            <SelectForm
-              outlined
-              class="row q-mr-md"
-              :disable="disableProject"
-              :options="projectOptions"
-              option_value="id"
-              option_label="name"
-              label="Proyectos"
-              not_found_label="No hay proyectos disponibles"
-              @updateModel="
-                (value) => {
-                  project = value;
-                  getStages();
-                }
-              "
-              :rules="[
-                /*val => !!val || 'Campo obligatorio'*/
-              ]"
-              lazy-rules
-            />
-            <div class="row justify-end q-pt-md">
-              <q-btn
-                label="Añadir Proyecto"
-                icon="add"
-                class="add-btn text-caption q-mr-md"
-                @click="newprojectstate = !newprojectstate"
-              />
-            </div>
-          </div>
-          <div v-else class="col q-mr-lg">
-            <div class="row">
-              <q-input
-                outlined
-                v-model="newprojectname"
-                label="Nombre proyeto"
-                class="col"
-                :disable="disableProject"
-                :rules="[(val) => !!val || 'Campo obligatorio']"
-                lazy-rules
-              />
-            </div>
-          </div>
-
-          <div v-if="!newstagestate && !newprojectstate" class="col q-ml-md">
-            <SelectForm
-              outlined
-              class="row"
-              :disable="disableProject"
-              :options="stagesOptions"
-              option_value="id"
-              option_label="name"
-              label="Etapas"
-              not_found_label="No hay etapas disponibles"
-              @updateModel="(value) => (stage = value)"
-              :rules="[
-                /*val => !!val || 'Campo obligatorio'*/
-              ]"
-              lazy-rules
-            />
-            <div class="row justify-end q-pt-md">
-              <q-btn
-                label="Añadir Etapa"
-                icon="add"
-                class="add-btn text-caption q-ml-md"
-                @click="newstagestate = !newstagestate"
-              />
-            </div>
-          </div>
-          <div v-else class="col">
-            <div class="row">
-              <q-input
-                outlined
-                v-model="newstagename"
-                label="Nombre etapa"
-                class="col"
-                :disable="disableProject"
-                :rules="[(val) => !!val || 'Campo obligatorio']"
-                lazy-rules
-              />
-            </div>
-          </div>
-        </div>
-        <div v-if="newstagestate || newprojectstate" class="row justify-end">
-          <q-btn
-            v-if="disableProject"
-            label="Editar"
-            color="amber"
-            @click="disableProject = false"
-            class="q-mr-sm"
-          />
-          <q-btn
-            v-else
-            label="Guardar"
-            color="amber"
-            @click="disableProject = true"
-            class="q-mr-sm"
-          />
-          <q-btn
-            label="Ver lista"
-            color="amber"
-            @click="
-              (newstagestate = false),
-                (newprojectstate = false),
-                (disableProject = false)
+      <!--Location-->
+      <div class="section-title q-mt-xl">
+        Datos Ubicacion
+        <hr />
+      </div>
+      <div class="row justify-center">
+        <div v-if="!newbuildingstate" class="col q-mr-md">
+          <SelectForm
+            outlined
+            class="row q-mr-md"
+            :disable="disableLocation"
+            :options="buildingOptions"
+            option_value="id"
+            option_label="name"
+            label="Edificio"
+            not_found_label="No hay edificios disponibles"
+            @updateModel="
+              (value) => {
+                building = value;
+                getUnits();
+              }
             "
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
           />
-        </div>
-        <div v-if="newprojectstate" class="row">
-          <div v-if="!newProjectOwnerState" class="col">
-            <SelectForm
-              outlined
-              class="row"
-              :disable="disableProjectOwner"
-              :options="projectOwnersOptions"
-              option_value="id"
-              option_label="name"
-              label="Dueño proyecto"
-              not_found_label="No hay dueños disponibles"
-              @updateModel="
-                (value) => {
-                  projectowner = value;
-                }
-              "
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
+          <div class="row justify-end q-pt-md">
+            <q-btn
+              label="Añadir Edificio"
+              icon="add"
+              class="add-btn text-caption q-mr-md"
+              @click="newbuildingstate = !newbuildingstate"
             />
-            <div class="row justify-end q-mt-md">
-              <q-btn
-                label="Añadir dueño"
-                color="amber"
-                class="add-btn"
-                @click="newProjectOwnerState = true"
-              />
-            </div>
           </div>
-          <div v-else class="col">
+        </div>
+        <div v-else class="col">
+          <div class="row">
             <q-input
               outlined
-              class="row"
-              v-model="newprojectownername"
-              label="Nombre dueño"
-              :disable="disableProjectOwner"
+              v-model="newbuildingname"
+              label="Nombre edificio"
+              class="col"
+              :disable="disableLocation"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
-            <div class="row justify-end q-mt-md">
-              <q-btn
-                v-if="disableProjectOwner"
-                label="Editar"
-                color="amber"
-                @click="disableProjectOwner = false"
-                class="q-mr-sm"
-              />
-              <q-btn
-                v-else
-                label="Guardar"
-                color="amber"
-                @click="disableProjectOwner = true"
-                class="q-mr-sm"
-              />
-              <q-btn
-                label="Ver lista"
-                color="amber"
-                @click="
-                  (disableProjectOwner = false), (newProjectOwnerState = false)
-                "
-              />
-            </div>
           </div>
         </div>
-
-        <!--Location-->
-        <div class="section-title q-mt-xl">
-          Datos Ubicacion
-          <hr />
+        <div v-if="!newbuildingstate && !newunitstate" class="col q-mr-md">
+          <SelectForm
+            outlined
+            class="row q-mr-md"
+            :disable="disableLocation"
+            :options="unitOptions"
+            option_value="id"
+            option_label="name"
+            label="Unidad"
+            not_found_label="No hay una unidad disponible"
+            @updateModel="
+              (value) => {
+                unit = value;
+                getRooms();
+              }
+            "
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
+          <div class="row justify-end q-pt-md">
+            <q-btn
+              outlined
+              label="Añadir unidad"
+              icon="add"
+              class="add-btn text-caption q-mr-md"
+              @click="newunitstate = !newunitstate"
+            />
+          </div>
         </div>
-        <div class="row justify-center">
-          <div v-if="!newbuildingstate" class="col q-mr-md">
-            <SelectForm
+        <div v-else class="col q-pl-md">
+          <div class="row">
+            <q-input
               outlined
-              class="row q-mr-md"
+              v-model="newunitname"
+              label="Nombre unidad"
+              class="col"
               :disable="disableLocation"
-              :options="buildingOptions"
-              option_value="id"
-              option_label="name"
-              label="Edificio"
-              not_found_label="No hay edificios disponibles"
-              @updateModel="
-                (value) => {
-                  building = value;
-                  getUnits();
-                }
-              "
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
-            <div class="row justify-end q-pt-md">
-              <q-btn
-                label="Añadir Edificio"
-                icon="add"
-                class="add-btn text-caption q-mr-md"
-                @click="newbuildingstate = !newbuildingstate"
-              />
-            </div>
-          </div>
-          <div v-else class="col">
-            <div class="row">
-              <q-input
-                outlined
-                v-model="newbuildingname"
-                label="Nombre edificio"
-                class="col"
-                :disable="disableLocation"
-                :rules="[(val) => !!val || 'Campo obligatorio']"
-                lazy-rules
-              />
-            </div>
-          </div>
-          <div v-if="!newbuildingstate && !newunitstate" class="col q-mr-md">
-            <SelectForm
-              outlined
-              class="row q-mr-md"
-              :disable="disableLocation"
-              :options="unitOptions"
-              option_value="id"
-              option_label="name"
-              label="Unidad"
-              not_found_label="No hay una unidad disponible"
-              @updateModel="
-                (value) => {
-                  unit = value;
-                  getRooms();
-                }
-              "
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-            <div class="row justify-end q-pt-md">
-              <q-btn
-                outlined
-                label="Añadir unidad"
-                icon="add"
-                class="add-btn text-caption q-mr-md"
-                @click="newunitstate = !newunitstate"
-              />
-            </div>
-          </div>
-          <div v-else class="col q-pl-md">
-            <div class="row">
-              <q-input
-                outlined
-                v-model="newunitname"
-                label="Nombre unidad"
-                class="col"
-                :disable="disableLocation"
-                :rules="[(val) => !!val || 'Campo obligatorio']"
-                lazy-rules
-              />
-            </div>
-          </div>
-          <div
-            v-if="!newbuildingstate && !newunitstate && !newroomstate"
-            class="col"
-          >
-            <SelectForm
-              outlined
-              class="row"
-              :disable="disableLocation"
-              :options="roomOptions"
-              option_value="id"
-              option_label="name"
-              label="Sala"
-              not_found_label="No hay salas disponibles"
-              @updateModel="
-                (value) => {
-                  room = value;
-                }
-              "
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-            <div class="row justify-end q-pt-md">
-              <q-btn
-                label="Añadir sala"
-                icon="add"
-                class="add-btn text-caption"
-                @click="newroomstate = !newroomstate"
-              />
-            </div>
-          </div>
-          <div v-else class="col q-pl-md">
-            <div class="row">
-              <q-input
-                outlined
-                v-model="newroomname"
-                label="Nombre sala"
-                class="col"
-                :disable="disableLocation"
-                :rules="[(val) => !!val || 'Campo obligatorio']"
-                lazy-rules
-              />
-            </div>
           </div>
         </div>
         <div
-          v-if="newbuildingstate || newunitstate || newroomstate"
-          class="row justify-end"
+          v-if="!newbuildingstate && !newunitstate && !newroomstate"
+          class="col"
         >
-          <q-btn
-            v-if="disableLocation"
-            label="Editar"
-            color="amber"
-            @click="disableLocation = false"
-            class="q-mr-sm"
-          />
-          <q-btn
-            v-else
-            label="Guardar"
-            color="amber"
-            @click="disableLocation = true"
-            class="q-mr-sm"
-          />
-          <q-btn
-            label="Ver lista"
-            color="amber"
-            @click="
-              (newbuildingstate = false),
-                (newunitstate = false),
-                (newroomstate = false),
-                (disableLocation = false)
+          <SelectForm
+            outlined
+            class="row"
+            :disable="disableLocation"
+            :options="roomOptions"
+            option_value="id"
+            option_label="name"
+            label="Sala"
+            not_found_label="No hay salas disponibles"
+            @updateModel="
+              (value) => {
+                room = value;
+              }
             "
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
           />
+          <div class="row justify-end q-pt-md">
+            <q-btn
+              label="Añadir sala"
+              icon="add"
+              class="add-btn text-caption"
+              @click="newroomstate = !newroomstate"
+            />
+          </div>
         </div>
-        <!--Form button-->
-        <div class="row justify-end q-mt-mx">
-          <q-btn label="Crear" type="submit" color="positive" />
+        <div v-else class="col q-pl-md">
+          <div class="row">
+            <q-input
+              outlined
+              v-model="newroomname"
+              label="Nombre sala"
+              class="col"
+              :disable="disableLocation"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
+            />
+          </div>
         </div>
-        <q-inner-loading
-          :showing="loading"
-          label="Creando equipamiento"
-          label-class="text-deep-orange"
-          label-style="font-size: 1.6em"
+      </div>
+      <div
+        v-if="newbuildingstate || newunitstate || newroomstate"
+        class="row justify-end"
+      >
+        <q-btn
+          v-if="disableLocation"
+          label="Editar"
+          color="amber"
+          @click="disableLocation = false"
+          class="q-mr-sm"
         />
-      </q-form>
-    </div>
-  </q-page>
+        <q-btn
+          v-else
+          label="Guardar"
+          color="amber"
+          @click="disableLocation = true"
+          class="q-mr-sm"
+        />
+        <q-btn
+          label="Ver lista"
+          color="amber"
+          @click="
+            (newbuildingstate = false),
+              (newunitstate = false),
+              (newroomstate = false),
+              (disableLocation = false)
+          "
+        />
+      </div>
+      <!--Form button-->
+      <div class="row justify-end q-mt-mx">
+        <q-btn label="Crear" type="submit" color="positive" />
+      </div>
+      <q-inner-loading
+        :showing="loading"
+        label="Creando equipamiento"
+        label-class="text-deep-orange"
+        label-style="font-size: 1.6em"
+      />
+    </q-form>
+  </div>
 </template>
 
 <script setup>

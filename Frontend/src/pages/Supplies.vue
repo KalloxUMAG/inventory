@@ -1,16 +1,14 @@
 <template>
-  <q-page padding>
-    <div>
-      <RenderTable
-        :columns="suppliesColumns"
-        :rows="supplies"
-        title="Insumos"
-        detail_query="/supplies/"
-        row_key="id"
-        addTo="/supplies/new_supply"
-      />
-    </div>
-  </q-page>
+  <div>
+    <RenderTable
+      :columns="suppliesColumns"
+      :rows="supplies"
+      title="Insumos"
+      detail_query="/supplies/"
+      row_key="id"
+      addTo="/supplies/new_supply"
+    />
+  </div>
 </template>
 
 <script setup>

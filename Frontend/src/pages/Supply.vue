@@ -1,151 +1,149 @@
 <template>
-  <q-page padding>
-    <div class="row q-col-gutter-md">
-      <div class="flex col">
-        <q-card class="my-card fit" flat bordered>
-          <q-item class="row justify-center">
-            <div class="text-h5 text-weight-bold">
-              Datos insumo
-              <q-btn
-                class="q-ml-md glossy"
-                icon="edit"
-                color="positive"
-                @click="editSupply"
-              />
+  <div class="row q-col-gutter-md">
+    <div class="flex col">
+      <q-card class="my-card fit" flat bordered>
+        <q-item class="row justify-center">
+          <div class="text-h5 text-weight-bold">
+            Datos insumo
+            <q-btn
+              class="q-ml-md glossy"
+              icon="edit"
+              color="positive"
+              @click="editSupply"
+            />
+          </div>
+        </q-item>
+        <q-separator />
+        <!--Datos producto-->
+        <q-card-section>
+          <div class="col q-pa-sm">
+            <div class="row q-mb-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">Nombre</div>
+              <div class="col text-h6 text-grey-8">{{ supply.name }}</div>
             </div>
-          </q-item>
-          <q-separator />
+            <q-separator />
+            <div class="row q-my-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">Código</div>
+              <div class="col text-h6 text-grey-8">{{ supply.code }}</div>
+            </div>
+            <q-separator />
+            <div class="row q-my-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">Marca</div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.supplies_brand_name }}
+              </div>
+            </div>
+            <q-separator />
+            <div class="row q-my-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">Tipo</div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.supplies_type_name }}
+              </div>
+            </div>
+            <q-separator />
+            <div class="row q-my-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Formato
+              </div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.supplies_format_name }}
+              </div>
+            </div>
+            <q-separator />
+            <div class="row q-my-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Stock actual
+              </div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.stock }} unidades
+              </div>
+            </div>
+            <q-separator />
+            <div class="row q-my-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Stock por lote
+              </div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.lot_stock }} unidades por lote.
+              </div>
+            </div>
+            <q-separator />
+            <div class="row q-mt-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Stock crítico
+              </div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.critical_stock }}
+              </div>
+            </div>
+            <q-separator />
+            <div class="row q-mt-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Muestras por unidad
+              </div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.samples }}
+              </div>
+            </div>
+            <q-separator />
+            <div class="row q-mt-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Muestras totales
+              </div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.samples * supply.stock }}
+              </div>
+            </div>
+            <q-separator />
+            <div class="row q-mt-sm">
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Observación
+              </div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.observation }}
+              </div>
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </div>
+    <div class="flex col">
+      <q-card class="my-card fit" flat bordered>
+        <q-card-section horizontal>
+          <q-separator vertical />
           <!--Datos producto-->
-          <q-card-section>
-            <div class="col q-pa-sm">
-              <div class="row q-mb-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">Nombre</div>
-                <div class="col text-h6 text-grey-8">{{ supply.name }}</div>
-              </div>
-              <q-separator />
-              <div class="row q-my-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">Código</div>
-                <div class="col text-h6 text-grey-8">{{ supply.code }}</div>
-              </div>
-              <q-separator />
-              <div class="row q-my-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">Marca</div>
-                <div class="col text-h6 text-grey-8">
-                  {{ supply.supplies_brand_name }}
-                </div>
-              </div>
-              <q-separator />
-              <div class="row q-my-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">Tipo</div>
-                <div class="col text-h6 text-grey-8">
-                  {{ supply.supplies_type_name }}
-                </div>
-              </div>
-              <q-separator />
-              <div class="row q-my-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">
-                  Formato
-                </div>
-                <div class="col text-h6 text-grey-8">
-                  {{ supply.supplies_format_name }}
-                </div>
-              </div>
-              <q-separator />
-              <div class="row q-my-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">
-                  Stock actual
-                </div>
-                <div class="col text-h6 text-grey-8">
-                  {{ supply.stock }} unidades
-                </div>
-              </div>
-              <q-separator />
-              <div class="row q-my-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">
-                  Stock por lote
-                </div>
-                <div class="col text-h6 text-grey-8">
-                  {{ supply.lot_stock }} unidades por lote.
-                </div>
-              </div>
-              <q-separator />
-              <div class="row q-mt-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">
-                  Stock crítico
-                </div>
-                <div class="col text-h6 text-grey-8">
-                  {{ supply.critical_stock }}
-                </div>
-              </div>
-              <q-separator />
-              <div class="row q-mt-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">
-                  Muestras por unidad
-                </div>
-                <div class="col text-h6 text-grey-8">
-                  {{ supply.samples }}
-                </div>
-              </div>
-              <q-separator />
-              <div class="row q-mt-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">
-                  Muestras totales
-                </div>
-                <div class="col text-h6 text-grey-8">
-                  {{ supply.samples * supply.stock }}
-                </div>
-              </div>
-              <q-separator />
-              <div class="row q-mt-sm">
-                <div class="col-5 text-h6 text-weight-bold q-pl-md">
-                  Observación
-                </div>
-                <div class="col text-h6 text-grey-8">
-                  {{ supply.observation }}
-                </div>
-              </div>
-            </div>
-          </q-card-section>
-        </q-card>
-      </div>
-      <div class="flex col">
-        <q-card class="my-card fit" flat bordered>
-          <q-card-section horizontal>
-            <q-separator vertical />
-            <!--Datos producto-->
-            <div class="col">
-              <NoRedirectTable
-                title="Proveedores"
-                :columns="suppliersSupplyColumns"
-                :rows="suppliers"
-                :addFunction="addSupplier"
-              />
-            </div>
-          </q-card-section>
-        </q-card>
-      </div>
+          <div class="col">
+            <NoRedirectTable
+              title="Proveedores"
+              :columns="suppliersSupplyColumns"
+              :rows="suppliers"
+              :addFunction="addSupplier"
+            />
+          </div>
+        </q-card-section>
+      </q-card>
     </div>
-    <div class="row q-mt-md">
-      <div class="col">
-        <NoRedirectTable
-          title="Lotes"
-          :columns="lotsColumns"
-          :rows="lots"
-          :addFunction="addLot"
-          :editFunction="editLot"
-          :deleteFunction="removeLot"
-        />
-      </div>
-    </div>
-    <div class="row q-mt-md justify-end">
-      <q-btn
-        label="Eliminar"
-        color="negative"
-        class="text-h6"
-        @click="removeSupply"
+  </div>
+  <div class="row q-mt-md">
+    <div class="col">
+      <NoRedirectTable
+        title="Lotes"
+        :columns="lotsColumns"
+        :rows="lots"
+        :addFunction="addLot"
+        :editFunction="editLot"
+        :deleteFunction="removeLot"
       />
     </div>
-  </q-page>
+  </div>
+  <div class="row q-mt-md justify-end">
+    <q-btn
+      label="Eliminar"
+      color="negative"
+      class="text-h6"
+      @click="removeSupply"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -385,9 +383,5 @@ onMounted(() => {
 
 .col {
   height: 100%;
-}
-
-.q-page {
-  color: #262626;
 }
 </style>

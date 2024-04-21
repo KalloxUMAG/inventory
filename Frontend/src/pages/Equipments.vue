@@ -1,14 +1,12 @@
 <template>
-  <q-page padding>
-    <RenderTable
-      :columns="equipmentsColumns"
-      :rows="equipments"
-      title="Equipamiento"
-      detail_query="/equipments/"
-      row_key="id"
-      addTo="/equipments/new_equipment"
-    />
-  </q-page>
+  <RenderTable
+    :columns="equipmentsColumns"
+    :rows="equipments"
+    title="Equipamiento"
+    detail_query="/equipments/"
+    row_key="id"
+    addTo="/equipments/new_equipment"
+  />
 </template>
 
 <script setup>

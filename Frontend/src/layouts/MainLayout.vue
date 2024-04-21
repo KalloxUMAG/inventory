@@ -57,7 +57,9 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <q-page class="q-pa-lg">
+        <router-view />
+      </q-page>
     </q-page-container>
   </q-layout>
 </template>

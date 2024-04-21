@@ -1,50 +1,48 @@
 <template>
-  <q-page class="flex flex-center bg-grey-2">
-    <q-form ref="loginForm" @submit.prevent="onSubmit">
-      <q-card class="q-pa-md shadow-2 my_card" bordered>
-        <q-card-section class="text-center">
-          <div class="text-h4 text-weight-bold">
-            Sistema de Gestion de Inventario CADI
-          </div>
-        </q-card-section>
-        <q-card-section class="text-center">
-          <div class="text-grey-9 text-h5 text-weight-bold">Iniciar sesion</div>
-        </q-card-section>
-        <q-card-section>
-          <q-input dense outlined v-model="email" label="Correo">
-            <template v-slot:prepend>
-              <q-icon name="mail" />
-            </template>
-          </q-input>
-          <q-input
-            dense
-            outlined
-            icon
-            class="q-mt-md"
-            v-model="password"
-            type="password"
-            label="Contrasena"
-          >
-            <template v-slot:prepend>
-              <q-icon name="key" />
-            </template>
-          </q-input>
-        </q-card-section>
-        <q-card-section>
-          <q-btn
-            style="border-radius: 8px"
-            color="dark"
-            rounded
-            size="md"
-            label="Iniciar sesion"
-            no-caps
-            class="full-width"
-            type="submit"
-          ></q-btn>
-        </q-card-section>
-      </q-card>
-    </q-form>
-  </q-page>
+  <q-form ref="loginForm" @submit.prevent="onSubmit">
+    <q-card class="q-pa-md shadow-2 my_card" bordered>
+      <q-card-section class="text-center">
+        <div class="text-h4 text-weight-bold">
+          Sistema de Gestion de Inventario CADI
+        </div>
+      </q-card-section>
+      <q-card-section class="text-center">
+        <div class="text-grey-9 text-h5 text-weight-bold">Iniciar sesion</div>
+      </q-card-section>
+      <q-card-section>
+        <q-input dense outlined v-model="email" label="Correo">
+          <template v-slot:prepend>
+            <q-icon name="mail" />
+          </template>
+        </q-input>
+        <q-input
+          dense
+          outlined
+          icon
+          class="q-mt-md"
+          v-model="password"
+          type="password"
+          label="Contrasena"
+        >
+          <template v-slot:prepend>
+            <q-icon name="key" />
+          </template>
+        </q-input>
+      </q-card-section>
+      <q-card-section>
+        <q-btn
+          style="border-radius: 8px"
+          color="dark"
+          rounded
+          size="md"
+          label="Iniciar sesion"
+          no-caps
+          class="full-width"
+          type="submit"
+        ></q-btn>
+      </q-card-section>
+    </q-card>
+  </q-form>
 </template>
 
 <script setup>

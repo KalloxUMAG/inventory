@@ -1,24 +1,22 @@
 <template>
-  <q-page class="flex flex-center content-start">
-    <div class="critic-tables q-mt-md">
-      <RenderTable
-        :columns="suppliesColumns"
-        :rows="supplies"
-        title="Insumos criticos"
-        detail_query="/supplies/"
-        row_key="id"
-      />
-    </div>
-    <div class="critic-tables q-mt-md">
-      <RenderTable
-        :columns="criticEquipmentsColumns"
-        :rows="equipments"
-        title="Equipos criticos"
-        detail_query="/equipments/"
-        row_key="id"
-      />
-    </div>
-  </q-page>
+  <div class="critic-tables q-mt-md">
+    <RenderTable
+      :columns="suppliesColumns"
+      :rows="supplies"
+      title="Insumos criticos"
+      detail_query="/supplies/"
+      row_key="id"
+    />
+  </div>
+  <div class="critic-tables q-mt-md">
+    <RenderTable
+      :columns="criticEquipmentsColumns"
+      :rows="equipments"
+      title="Equipos criticos"
+      detail_query="/equipments/"
+      row_key="id"
+    />
+  </div>
 </template>
 
 <script setup>
