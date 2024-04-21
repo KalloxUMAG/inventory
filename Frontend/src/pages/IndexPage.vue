@@ -1,21 +1,40 @@
 <template>
-  <div class="critic-tables q-mt-md">
-    <RenderTable
-      :columns="suppliesColumns"
-      :rows="supplies"
-      title="Insumos criticos"
-      detail_query="/supplies/"
-      row_key="id"
-    />
-  </div>
-  <div class="critic-tables q-mt-md">
-    <RenderTable
-      :columns="criticEquipmentsColumns"
-      :rows="equipments"
-      title="Equipos criticos"
-      detail_query="/equipments/"
-      row_key="id"
-    />
+  <div class="row">
+    <div class="col">
+      <q-card class="no-shadow bg-transparent" >
+        <q-card-section class="q-pl-none col-12">
+          <div class="text-subtitle1 q-pl-md">
+            Insumos con bajo stock
+            <q-btn flat icon-right="arrow_forward" label="Ver todos" to="/supplies/" class="text-gray-8 non-selectable no-outline float-right"/>
+          </div>
+        </q-card-section>
+        <q-card-section class="q-pa-none">
+          <CriticTable
+            :columns="suppliesColumns"
+            :rows="supplies"
+            detail_query="/supplies/"
+            row_key="id"
+          />
+        </q-card-section>
+      </q-card>
+
+      <q-card class="no-shadow bg-transparent" >
+        <q-card-section class="q-pl-none col-12">
+          <div class="text-subtitle1 q-pl-md">
+            Equipos con mantenimiento proximo
+            <q-btn flat icon-right="arrow_forward" label="Ver todos" to="/equipments/" class="text-gray-8 non-selectable no-outline float-right"/>
+          </div>
+        </q-card-section>
+        <q-card-section class="q-pa-none">
+          <CriticTable
+            :columns="equipmentsColumns"
+            :rows="equipments"
+            detail_query="/equipments/"
+            row_key="id"
+          />
+        </q-card-section>
+      </q-card>
+    </div>
   </div>
 </template>
 
@@ -23,7 +42,7 @@
 import { onMounted, ref } from "vue";
 import { suppliesColumns, criticEquipmentsColumns, equipmentsColumns } from "../constants/columns.js";
 import { sendRequest } from "src/axios/instance.js";
-import RenderTable from "src/components/RenderTable.vue";
+import CriticTable from "src/components/CriticTable/CriticTable.vue";
 import { useQuasar } from "quasar";
 
 const api_prefix = process.env.API_URL;
@@ -78,9 +97,3 @@ onMounted(() => {
   getSupplies();
 });
 </script>
-
-<style>
-.critic-tables {
-  width: 90%;
-}
-</style>
