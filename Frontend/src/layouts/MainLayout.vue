@@ -3,6 +3,7 @@
     <q-header bordered class="text-white" height-hint="98">
       <q-toolbar>
         <q-btn dense flat round icon="menu" class="hidden" @click="toggleLeftDrawer" />
+        <BreadCrumb />
         <q-btn
           to="/login"
           flat
@@ -68,6 +69,7 @@
 import { ref } from "vue";
 import { menuItems } from "../constants/menuItems.js";
 import { useQuasar } from "quasar";
+import BreadCrumb from '../components/commons/BreadCrumb.vue';
 
 const $q = useQuasar();
 const fullname = $q.localStorage.getItem("CATGInventoryFullname");
