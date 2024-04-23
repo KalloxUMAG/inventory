@@ -17,7 +17,7 @@
               </q-input>
               <q-btn
                 class="add-btn q-mr-sm"
-                to="/supplies/new_supply"
+                to="/equipments/new_equipment"
                 icon="add"
                 label="Agregar"
                 flat
