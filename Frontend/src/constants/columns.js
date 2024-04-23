@@ -1,5 +1,11 @@
 export const equipmentsColumns = [
   {
+    name: "state",
+    align: "left",
+    label: "",
+    field: "state",
+  },
+  {
     name: "name",
     align: "left",
     label: "Nombre",
