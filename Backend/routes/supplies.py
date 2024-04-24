@@ -16,6 +16,8 @@ from schemas.supply_schema import (
 
 from auth.auth_bearer import JWTBearer
 
+from routes.lots import get_lots_supply
+
 supplies = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["supplies"], prefix="/api/supplies"
 )
@@ -23,7 +25,7 @@ supplies = APIRouter(
 
 @supplies.get("", response_model=List[SupplyListSchema])
 def get_supplies(db: Session = Depends(get_db)):
-    result = (
+    results_db = (
         db.query(
             Supply.id,
             Supply.name,
@@ -34,8 +36,11 @@ def get_supplies(db: Session = Depends(get_db)):
             Supply.samples,
             Supply.critical_stock,
             Supply.observation,
+            SupplyBrand.id.label("supplies_brand_id"),
             SupplyBrand.name.label("supplies_brand_name"),
+            SupplyType.id.label("supplies_type_id"),
             SupplyType.name.label("supplies_type_name"),
+            SupplyFormat.id.label("supplies_format_id"),
             SupplyFormat.name.label("supplies_format_name"),
         )
         .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
@@ -44,7 +49,28 @@ def get_supplies(db: Session = Depends(get_db)):
         .filter(Supply.state == True)
         .all()
     )
-    return result
+
+    # Append lots to supplies
+    results = [
+        SupplyListSchema(
+            id = result.id,
+            name = result.name,
+            code = result.code,
+            state = result.state,
+            stock = result.stock,
+            lot_stock = result.lot_stock,
+            samples = result.samples,
+            critical_stock = result.critical_stock,
+            observation = result.observation,
+            supplies_brand_id = result.supplies_brand_id,
+            supplies_brand_name = result.supplies_brand_name,
+            supplies_type_id = result.supplies_type_id,
+            supplies_type_name = result.supplies_type_name,
+            supplies_format_id = result.supplies_format_id,
+            supplies_format_name = result.supplies_format_name,
+            lots = get_lots_supply(Supply.id, db)
+            ) for result in results_db]
+    return results
 
 
 @supplies.get("/critical", response_model=List[SupplyListSchema])
