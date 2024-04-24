@@ -6,6 +6,7 @@
         <div class="actions-buttons">
           <q-input
             outlined
+            bg-color="white"
             dense
             debounce="300"
             placeholder="Buscar"
