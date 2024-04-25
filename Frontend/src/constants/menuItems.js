@@ -40,6 +40,14 @@ export const menuItems = [
     type: "label",
   },
   {
+    label: "Grupos",
+    icon: "groups",
+    to: "/groups",
+    exact: true,
+    separator: false,
+    type: "nav",
+  },
+  {
     label: "Cambiar contraseña",
     icon: "key",
     to: "/changepassword",

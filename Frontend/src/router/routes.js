@@ -13,12 +13,22 @@ const routes = [
       {
         path: "/equipments/new_equipment",
         component: () => import("src/pages/CreateEquipment.vue"),
-        meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Equipamiento', icon: 'biotech', to: '/equipments'}, {text: 'New Equipment'}]}
+        meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Equipamiento', icon: 'biotech', to: '/equipments'}, {text: 'Nuevo Equipo'}]}
       },
       {
         path: "/equipments",
         component: () => import("src/pages/Equipments.vue"),
         meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Equipamiento', icon: 'biotech'}]}
+      },
+      {
+        path: "/groups",
+        component: () => import("src/pages/groups/List.vue"),
+        meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Grupos', icon: 'groups'}]}
+      },
+      {
+        path: "/groups/new_group",
+        component: () => import("src/pages/groups/GroupForm.vue"),
+        meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Grupos', icon: 'groups', to: '/groups'}, {text: 'Nuevo Grupo'}]}
       },
       {
         path: "/supplies/new_supply",
