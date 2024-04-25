@@ -437,7 +437,7 @@
               transition-show="scale"
               transition-hide="scale"
             >
-              <q-date v-model="reception_date">
+              <q-date v-model="reception_date" mask="YYYY-MM-DD">
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup label="Close" color="primary" flat />
                 </div>
@@ -1646,7 +1646,6 @@ async function onSubmit() {
     stage_id: stage.value,
     last_preventive_mainteinance: reception_date.value,
   };
-
   loading.value = true;
   if (maintenanceApply.value) {
     equipmentdata["maintenance_period"] = maintenance.value;
