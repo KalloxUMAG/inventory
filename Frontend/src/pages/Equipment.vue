@@ -1,5 +1,10 @@
 <template>
   <div v-if="equipment != null" class="row justify-center">
+    <q-card class="my-card row q-pa-md q-mb-lg justify-between" flat bordered>
+      <div class="flex item-title"><q-icon name="biotech" size="24px"/><div class="text-subtitle1 text-bold text-uppercase">  {{ equipment.name  }} - {{ equipment.model_name }}</div></div>
+      <q-btn outline color="secondary" label="Editar" class="floar-right" @click="editEquipment"/>
+    </q-card>
+
     <q-card class="my-card row q-pa-md gap-lg" flat bordered>
       <div class="col-12 col-md-7 col-lg-6 container image-visor">
         <Carousel v-if="img_api" :api_endpoint="img_api" />
@@ -481,6 +486,10 @@ function editMaintenance(maintenance) {
   });
 }
 
+const editEquipment = () => {
+  console.log("Edit equipment " + equipment.value.id);
+};
+
 function removeMaintenance(maintenance) {
   $q.dialog({
     title: "Eliminar mantenimiento",
@@ -523,6 +532,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.item-title{
+  align-content: center;
+}
+
 .my-card {
   width: 100%;
   border-radius: 12px !important;
