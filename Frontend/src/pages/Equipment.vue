@@ -1,7 +1,7 @@
 <template>
   <div v-if="equipment != null" class="row justify-center">
     <q-card class="my-card row q-pa-md gap-lg" flat bordered>
-      <div class="col container image-visor">
+      <div class="col-12 col-md-7 col-lg-6 container image-visor">
         <Carousel v-if="img_api" :api_endpoint="img_api" />
       </div>
 
@@ -82,14 +82,114 @@
       v-if="equipment.maintenance_period === null"
       class="q-mt-md maintenance-table"
     >
-      <NoRedirectTable
-        title="Mantenimientos"
-        :columns="columns_maintenances"
-        :rows="maintenances"
-        :addFunction="addFunction"
-        :deleteFunction="removeMaintenance"
-        :editFunction="editMaintenance"
-      />
+      <q-card class="no-shadow bg-transparent" >
+        <q-card-section class="q-pl-none col-12">
+          <div class="text-subtitle1 q-pl-md space-between">
+            Lista de Mantenimientos
+            <div class="actions-buttons">
+              <q-input
+                outlined
+                bg-color="white"
+                dense
+                debounce="300"
+                placeholder="Buscar"
+                v-model="filter"
+              >
+                <template v-slot:append>
+                  <q-icon name="search" />
+                </template>
+              </q-input>
+              <q-btn
+                class="add-btn q-mr-sm"
+                @click="addFunction"
+                icon="add"
+                label="Agregar"
+                flat
+              />
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section class="q-pa-none">
+          <q-table
+            row-key="id"
+            :columns="columns_maintenances"
+            :rows="maintenances"
+            no-data-label="No hay registros para mostrar"
+            rows-per-page-label="Registros por pagina"
+            flat
+            bordered
+            no-wrap
+            :filter="filter"
+            class="card-style"
+          >
+            <template v-slot:header="props">
+              <q-tr :props="props">
+                <q-th
+                  v-for="col in props.cols"
+                  :key="col.name"
+                  :props="props"
+                  :class="['text-italic', 'table-header']"
+                >
+                  {{ col.label }}
+                </q-th>
+              </q-tr>
+            </template>
+            <template v-slot:body-cell="props">
+              <q-td
+                :props="props"
+              >
+                {{ props.value }}
+              </q-td>
+            </template>
+            <template v-slot:body-cell-state="props">
+              <q-td
+                :props="props"
+              >
+              <q-icon
+                v-if="props.row.state == true"
+                size="md"
+                name="done_all"
+                color="positive"
+                ><q-tooltip>Realizado</q-tooltip></q-icon
+              >
+              <q-icon
+                v-if="props.row.state == false"
+                size="md"
+                name="close"
+                color="negative"
+                ><q-tooltip>No realizado</q-tooltip></q-icon
+              >
+              <q-icon
+                v-if="props.row.state == null"
+                size="md"
+                name="play_arrow"
+                color="warning"
+                ><q-tooltip>Próximo</q-tooltip></q-icon
+              >
+              </q-td>
+            </template>
+            <template v-slot:body-cell-actions="props">
+              <q-td :props="props">
+                <q-btn
+                  flat
+                  dense
+                  icon="edit"
+                  color="warning"
+                  @click="editMaintenance(props.row)"
+                />
+                <q-btn
+                  v-if="props.row.id != null"
+                  flat
+                  dense
+                  icon="delete"
+                  color="negative"
+                  @click="removeMaintenance(props.row)"
+                />
+              </q-td>
+            </template>
+          </q-table>
+        </q-card-section>
+      </q-card>
     </div>
   </div>
 </template>
@@ -112,7 +212,7 @@ import InfoSection from "src/components/item-page/InfoSection.vue";
 const $q = useQuasar();
 
 const content_loaded = ref(false);
-
+const filter = ref("");
 const img_api = ref(null);
 const equipment = ref({});
 const maintenances = ref([]);
@@ -456,5 +556,21 @@ onMounted(() => {
 .field-content {
   font-size: 16px;
   font-weight: 500;
+}
+
+.card-style{
+  border-radius: 12px;
+}
+.space-between{
+  display: flex;
+  justify-content: space-between;
+}
+.actions-buttons{
+  display: inline-flex;
+  gap: 10px;
+  .add-btn{
+    background-color: var(--add-btn-bg-color);
+    color: var(--add-btn-text-color);
+  }
 }
 </style>
