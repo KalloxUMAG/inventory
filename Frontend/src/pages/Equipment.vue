@@ -1,180 +1,85 @@
 <template>
   <div v-if="equipment != null" class="row justify-center">
-    <q-card class="my-card" flat bordered>
-      <q-item class="row justify-center">
-        <div class="text-h5">
-          {{ equipment.name }} - {{ equipment.model_name }}
-        </div>
-      </q-item>
-      <q-separator />
-      <q-card-section horizontal>
-        <!--Datos carrucel-->
-        <q-card-section class="col-4">
-          <Carousel v-if="img_api != null" :api_endpoint="img_api" />
-        </q-card-section>
-        <q-separator vertical />
-        <!--Datos producto-->
-        <q-card-section class="col">
-          <div class="text-h5 q-mb-md text-center">
-            Datos producto<q-btn
-              class="q-ml-md glossy"
-              icon="edit"
-              color="positive"
-              @click="editProduct"
-            />
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">Nombre:</div>
-            <div class="col field-content q-ml-xs">{{ equipment.name }}</div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">
-              Codigo serial:
-            </div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.serial_number }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">
-              Inventario UMAG:
-            </div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.umag_inventory_code }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">Marca:</div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.brand_name }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">Modelo:</div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.model_name }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">
-              Número de modelo:
-            </div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.model_number }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">
-              Periodo de mantención:
-            </div>
-            <div
-              v-if="equipment.maintenance_period == null"
-              class="col field-content q-ml-xs"
-            >
-              No aplica
-            </div>
-            <div v-else class="col field-content q-ml-xs">
-              Cada {{ equipment.maintenance_period }} meses
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">
-              Observación:
-            </div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.observation }}
-            </div>
-          </div>
-        </q-card-section>
-      </q-card-section>
-      <q-separator horizontal />
-      <q-card-section horizontal class="row">
-        <q-card-section class="col-4">
-          <div class="text-h5 q-mb-md text-center">
-            Datos Ubicación<q-btn
-              class="q-ml-md glossy"
-              icon="edit"
-              color="positive"
-              @click="editLocation"
-            />
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">Sala:</div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.room_name }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">Unidad:</div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.unit_name }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">Edificio:</div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.building_name }}
-            </div>
-          </div>
-        </q-card-section>
-        <q-separator />
-        <!--Datos compra-->
-        <q-card-section class="col">
-          <div class="text-h5 q-mb-md text-center">
-            Datos compra<q-btn
-              class="q-ml-md glossy"
-              icon="edit"
-              color="positive"
-              @click="editPurchase"
-            />
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">Proveedor:</div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.supplier_name }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">
-              Fecha de recepción:
-            </div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.reception_date }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">
-              Número factura:
-            </div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.invoice_number }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">Proyecto:</div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.project_name }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">Etapa:</div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.stage_name }}
-            </div>
-          </div>
-          <div class="row q-mb-xs">
-            <div class="col-5 field-label text-right q-mr-md">
-              Dueño proyecto:
-            </div>
-            <div class="col field-content q-ml-xs">
-              {{ equipment.project_owner_name }}
-            </div>
-          </div>
-        </q-card-section>
-      </q-card-section>
+    <q-card class="my-card row q-pa-md gap-lg" flat bordered>
+      <div class="col container image-visor">
+        <Carousel v-if="img_api" :api_endpoint="img_api" />
+      </div>
+
+      <div class="col container">
+        <InfoSection title="Información general" :fields="[
+        {
+          label: 'Nombre',
+          value: equipment.name
+        },
+        {
+          label: 'Codigo serial',
+          value: equipment.serial_number
+        },
+        {
+          label: 'Inventario UMAG',
+          value: equipment.umag_inventory_code
+        },
+        {
+          label: 'Marca',
+          value: equipment.brand_name
+        },
+        {
+          label: 'Modelo',
+          value: equipment.model_name
+        },
+        {
+          label: 'Número de modelo',
+          value: equipment.model_number
+        },
+        {
+          label: 'Periodo de mantención',
+          value: maintenance_period
+        },
+        {
+          label: 'Observación',
+          value: equipment.observation
+        }
+      ]"/>
+      <InfoSection title="Ubicación" :fields="[
+        {
+          label: 'Edificio',
+          value: equipment.building_name
+        },
+        {
+          label: 'Unidad',
+          value: equipment.unit_name
+        },
+        {
+          label: 'Sala',
+          value: equipment.room_name
+        }
+      ]"/>
+      <InfoSection title="Compra" :fields="[
+        {
+          label: 'Proveedor',
+          value: equipment.supplier_name
+        },
+        {
+          label: 'Fecha de recepción',
+          value: equipment.reception_date
+        },
+        {
+          label: 'Factura',
+          value: equipment.invoice_number
+        },
+        {
+          label: 'Proyecto',
+          value: project ? project.project_name : null
+        },
+        {
+          label: 'Etapa',
+          value: project ? project.stage_name : null
+        }
+      ]"/>
+      </div>
     </q-card>
     <div
-      v-if="equipment.maintenance_period != null"
+      v-if="equipment.maintenance_period === null"
       class="q-mt-md maintenance-table"
     >
       <NoRedirectTable
@@ -202,6 +107,7 @@ import EditMaintenance from "./EditMaintenance.vue";
 import { useQuasar } from "quasar";
 import { columns_maintenances } from "src/constants/columns.js";
 import { sendRequest } from "src/axios/instance.js";
+import InfoSection from "src/components/item-page/InfoSection.vue";
 
 const $q = useQuasar();
 
@@ -212,6 +118,7 @@ const equipment = ref({});
 const maintenances = ref([]);
 const last_maintenance = ref({});
 const project = ref(null);
+const maintenance_period = ref(null);
 
 const api_prefix = process.env.API_URL;
 
@@ -268,6 +175,7 @@ async function getEquipment() {
     });
     equipment.value = response.data;
     img_api.value = api_prefix + "/equipments/image/" + equipment.value.id;
+    maintenance_period.value = equipment.value.maintenance_period ? "Cada " + equipment.value.maintenance_period + " meses" : "No aplica";
     getMaintenances();
   } catch (error) {}
 }
@@ -517,6 +425,24 @@ onMounted(() => {
 <style scoped>
 .my-card {
   width: 100%;
+  border-radius: 12px !important;
+}
+
+.container{
+  border: 1px solid #d1d1d1 !important;
+  border-radius: 12px !important;
+  padding: 8px;
+  overflow: visible;
+}
+
+.gap-lg{
+  gap: 24px;
+}
+
+.image-visor{
+  border: none !important;
+  max-height: 500px;
+  padding: 0;
 }
 
 .maintenance-table {
