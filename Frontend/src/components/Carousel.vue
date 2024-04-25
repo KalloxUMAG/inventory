@@ -6,7 +6,7 @@
     thumbnails
     infinite
     control-color="amber"
-    class="rounded-borders"
+    class="rounded-borders bg-primary"
   >
     <q-carousel-slide
       v-if="images.length == 0"
