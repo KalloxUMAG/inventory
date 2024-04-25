@@ -83,22 +83,20 @@ def get_maintenances_equipment(equipment_id: int, db: Session = Depends(get_db))
     response_model=MaintenanceFromEquipment,
 )
 def get_last_maintenance_equipment(equipment_id: int, db: Session = Depends(get_db)):
-    return (
-        db.query(
-            Maintenance.id,
-            Maintenance.date,
-            Maintenance.maintenance_type,
-            Maintenance.observations,
-            Maintenance.state,
-            Maintenance.equiptment_id,
-        )
-        .filter(
-            Maintenance.equiptment_id == equipment_id,
-            Maintenance.maintenance_type == "Programada",
-        )
-        .order_by(Maintenance.date.desc())
-        .first()
-    )
+    result = db.query(
+        Maintenance.id,
+        Maintenance.date,
+        Maintenance.maintenance_type,
+        Maintenance.observations,
+        Maintenance.state,
+        Maintenance.equiptment_id,
+    ).filter(
+        Maintenance.equiptment_id == equipment_id,
+        Maintenance.maintenance_type == "Programada",
+    ).order_by(Maintenance.date.desc()).first()
+    if not result:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    return result
 
 
 @maintenances.put("/{maintenance_id}", response_model=MaintenanceSchema)
