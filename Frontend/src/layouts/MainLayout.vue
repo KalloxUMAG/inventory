@@ -48,7 +48,7 @@
           </template>
         </q-list>
         <div class="image-container">
-          <q-img src="/src/assets/cadi.webp" width="100%"/>
+          <q-img src="/images/cadi.webp" width="100%"/>
         </div>
 
         <footer class="fixed-bottom text-white">
