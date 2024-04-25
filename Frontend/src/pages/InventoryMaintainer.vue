@@ -2,10 +2,7 @@
   <div class="row q-pa-md">
     <section class="col-12">
       <div class="row justify-between items-center">
-        <div class="row items-center">
-          <q-icon name="fas fa-calendar-days" size="2em" />
-          <h5 class="q-ma-sm">Mantenedor de inventario</h5>
-        </div>
+        <PageTitle title="Mantenedor de inventario" icon="calendar_month"/>
         <div>
           <div v-if="showModal">
             <eventModal
@@ -72,6 +69,7 @@ import { ref, onMounted } from "vue";
 import calendar from "../components/CalendarInventory/Calendar.vue";
 import schedule from "../components/CalendarInventory/Schedule.vue";
 import eventModal from "../components/CalendarInventory/EventModal.vue";
+import PageTitle from "src/components/commons/PageTitle.vue";
 import { useLoanStore } from "../stores";
 import { useQuasar } from "quasar";
 import dayjs from "dayjs";

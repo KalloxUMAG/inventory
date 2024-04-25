@@ -1,4 +1,5 @@
 <template>
+  <PageTitle title="Insumos" icon="science"/>
   <q-card class="no-shadow bg-transparent" >
     <q-card-section class="q-pl-none col-12">
       <div class="text-subtitle1 q-pl-md space-between">
@@ -92,6 +93,8 @@ import { onMounted, ref } from "vue";
 import { sendRequest } from "src/axios/instance";
 import { suppliesColumns, lotsColumns } from "../constants/columns.js";
 import { useRouter } from "vue-router";
+
+import PageTitle from "src/components/commons/PageTitle.vue";
 
 const supplies = ref([]);
 const api_prefix = process.env.API_URL;

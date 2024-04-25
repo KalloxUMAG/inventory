@@ -1,4 +1,5 @@
 <template>
+  <page-title title="Equipos" icon="biotech"/>
   <q-card class="no-shadow bg-transparent" >
         <q-card-section class="q-pl-none col-12">
           <div class="text-subtitle1 q-pl-md space-between">
@@ -77,12 +78,13 @@
 </template>
 
 <script setup>
-import RenderTable from "src/components/RenderTable.vue";
 import { onMounted, ref } from "vue";
 import { equipmentsColumns } from "../constants/columns.js";
 
 import { useRouter } from "vue-router";
 import { sendRequest } from "src/axios/instance";
+
+import PageTitle from "src/components/commons/PageTitle.vue";
 
 const router = useRouter();
 

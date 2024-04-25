@@ -1,4 +1,5 @@
 <template>
+  <PageTitle title="Inicio" icon="home"/>
   <div class="row">
     <div class="col">
       <q-card class="no-shadow bg-transparent" >
@@ -43,6 +44,7 @@ import { onMounted, ref } from "vue";
 import { suppliesColumns, criticEquipmentsColumns, equipmentsColumns } from "../constants/columns.js";
 import { sendRequest } from "src/axios/instance.js";
 import CriticTable from "src/components/CriticTable/CriticTable.vue";
+import PageTitle from "src/components/commons/PageTitle.vue";
 import { useQuasar } from "quasar";
 
 const api_prefix = process.env.API_URL;
