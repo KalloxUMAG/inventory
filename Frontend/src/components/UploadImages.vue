@@ -1,6 +1,8 @@
 <template>
   <q-uploader
+    bordered
     color="blue-6"
+    flat
     hide-upload-btn
     :max-files="max_files"
     multiple
@@ -54,7 +56,7 @@
           </q-item-section>
 
           <q-item-section v-if="file.__img" thumbnail class="gt-xs">
-            <img :src="file.__img.src" />
+            <img :src="file.__img.src" class="contain"/>
           </q-item-section>
 
           <q-item-section top side>
@@ -87,3 +89,9 @@ const props = defineProps({
 
 const { label, max_files, handleAddImages, handleRemoveImages } = toRefs(props);
 </script>
+
+<style scoped>
+  .contain{
+    object-fit: contain;
+  }
+</style>
