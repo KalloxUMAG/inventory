@@ -37,10 +37,30 @@
             @row-click="rowClicker"
             flat
             bordered
-            no-wrap
+            wrap-cells
             :filter="filter"
             class="card-style"
-        />
+        >
+          <template v-slot:header="props">
+            <q-tr :props="props">
+              <q-th
+                v-for="col in props.cols"
+                :key="col.name"
+                :props="props"
+                :class="['text-italic', 'table-header', col.additionalClass]"
+              >
+                {{ col.label }}
+              </q-th>
+            </q-tr>
+          </template>
+          <template v-slot:body-cell="props">
+            <q-td
+              :props="props"
+            >
+              {{ props.value }}
+            </q-td>
+          </template>
+        </q-table>
     </q-card-section>
   </q-card>
 </template>
@@ -52,6 +72,7 @@ import { useRouter } from "vue-router";
 import { sendRequest } from "src/axios/instance";
 
 import PageTitle from "src/components/commons/PageTitle.vue";
+import { groupsColumns } from "src/constants/columns";
 
 const router = useRouter();
 
@@ -68,6 +89,9 @@ const getGroups = async () => {
       url: api_prefix + "/groups",
     });
     groups.value = response.data;
+    groups.value.forEach((group) => {
+      group.other_names = group.other_names.join("; ");
+    });
   } catch (error) {}
 };
 
