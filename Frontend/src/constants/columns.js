@@ -315,3 +315,27 @@ export const criticEquipmentsColumns = [
     sortable: false,
   },
 ];
+
+export const groupsColumns = [
+  {
+    name: "name",
+    align: "left",
+    label: "Nombre",
+    field: "name",
+    sortable: true,
+  },
+  {
+    name: "description",
+    align: "left",
+    label: "Descripción",
+    field: "description",
+    sortable: false,
+  },
+  {
+    name: "other_names",
+    align: "left",
+    label: "Otros nombres",
+    field: "other_names",
+    sortable: false,
+  },
+]
