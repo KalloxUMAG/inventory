@@ -6,6 +6,7 @@
         {{ title }}
       </div>
     </div>
+    <slot></slot>
   </q-card>
 </template>
 
