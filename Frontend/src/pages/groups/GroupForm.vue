@@ -54,6 +54,8 @@
 </template>
 
 <script setup>
+import {useRouter} from 'vue-router';
+
 import PageTitle from "src/components/commons/PageTitle.vue";
 import FormSection from "src/components/Form/FormSection.vue";
 import UploadImages from "src/components/UploadImages.vue";
@@ -64,6 +66,7 @@ import { useQuasar } from "quasar";
 import { ref, reactive } from "vue";
 
 const $q = useQuasar();
+const router = useRouter();
 const api_prefix = process.env.API_URL;
 const createGroupForm = ref(null);
 const group = reactive({
@@ -96,6 +99,7 @@ const onSubmit = async() => {
   console.log(groupData);
   const groupId = await createNewGroup(groupData);
   await uploadGroupImage(groupId);
+  router.push({ path: groupId.toString()})
 };
 
 const createNewGroup = async(groupData) => {
