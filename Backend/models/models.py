@@ -136,11 +136,12 @@ class Groups(Base):
     __tablename__ = "Groups"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
+    description: Mapped[str] = mapped_column(String, nullable=True)
+    other_names: Mapped[List["GroupOtherNames"]] = relationship(backref="Groups")
     lots: Mapped[List["Lot"]] = relationship(backref="Groups")
     supplies: Mapped[List["Supply"]] = relationship(
         secondary="Groups_has_Supplies", back_populates="groups"
     )
-
 
 # Tablas dependientes
 
@@ -179,6 +180,14 @@ class Equipment(Base):
     )
 
     loans: Mapped[List["Loan"]] = relationship("Loan", back_populates="equipment")
+
+
+class GroupOtherNames(Base):
+    __tablename__ = "Group_Other_Names"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    group_id: Mapped[int] = mapped_column(Integer, ForeignKey("Groups.id", ondelete="CASCADE"))
+    name: Mapped[str] = mapped_column(String)
 
 
 class Maintenance(Base):
