@@ -2,7 +2,7 @@
   <div v-if="equipment != null" class="row justify-center">
     <q-card class="my-card row q-pa-md q-mb-lg justify-between" flat bordered>
       <div class="flex item-title"><q-icon name="biotech" size="24px"/><div class="text-subtitle1 text-bold text-uppercase">  {{ equipment.name  }} - {{ equipment.model_name }}</div></div>
-      <q-btn outline color="secondary" label="Editar" class="floar-right" @click="editEquipment"/>
+      <q-btn outline color="secondary" label="Editar" class="float-right" @click="editEquipment"/>
     </q-card>
 
     <q-card class="my-card row q-pa-md gap-lg" flat bordered>
