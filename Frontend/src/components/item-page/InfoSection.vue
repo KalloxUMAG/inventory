@@ -13,7 +13,10 @@
                     <q-item-section class="col-1">
                         <div class="text-caption">:</div>
                     </q-item-section>
-                    <q-item-section class="col-7">
+                    <q-item-section v-if="field?.type == 'list'" class="col-7">
+                        <div class="text-body2" :key="value" v-for="value in field.value">{{value}}</div>
+                    </q-item-section>
+                    <q-item-section v-else class="col-7">
                         <div class="text-body2">{{field.value}}</div>
                     </q-item-section>
                 </q-item>
