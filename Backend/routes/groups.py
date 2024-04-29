@@ -40,7 +40,13 @@ def get_groups(db: Session = Depends(get_db)):
 
 @groups.get("/{group_id}", response_model=GroupSchema)
 def get_group(group_id: int, db: Session = Depends(get_db)):
-    result = db.query(Groups).filter(Groups.id == group_id).first()
+    result_db = db.query(Groups).filter(Groups.id == group_id).first()
+    result = GroupSchema(
+        id = result_db.id,
+        name = result_db.name,
+        description = result_db.description,
+        other_names = get_other_names_supply(result_db.id, db),
+        )
     return result
   
 @groups.post("", status_code=HTTP_201_CREATED)
