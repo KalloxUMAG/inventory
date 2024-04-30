@@ -52,7 +52,7 @@
 
 <script setup>
 import { computed, onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { sendRequest } from "src/axios/instance.js";
 
 //Components
@@ -60,6 +60,7 @@ import InfoSection from "src/components/item-page/InfoSection.vue";
 import PageTitle from "src/components/commons/PageTitle.vue";
 
 const route = useRoute();
+const router = useRouter();
 const id = computed(() => route.params.id);
 const api_prefix = process.env.API_URL;
 const query_groups = api_prefix + "/groups/" + id.value;
@@ -70,7 +71,7 @@ const images = ref(null);
 
 //Functions
 const editGroup = () => {
-  console.log("Edit Group");
+  router.push('/groups/edit/'+id.value);
 };
 
 const getGroup = async () => {

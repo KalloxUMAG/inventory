@@ -31,6 +31,11 @@ const routes = [
         meta: {breadCrumb(route){ const param = route.currentRoute.value.params.id; return [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Grupos', icon: 'groups', to: '/groups'}, {text: param}]}},
       },
       {
+        path: "/groups/edit/:id",
+        component: () => import("src/pages/groups/GroupEditForm.vue"),
+        meta: {breadCrumb(route){ const param = route.currentRoute.value.params.id; return [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Grupos', icon: 'groups', to: '/groups'}, {text: 'Editar'}, {text: param}]}},
+      },
+      {
         path: "/groups/new_group",
         component: () => import("src/pages/groups/GroupForm.vue"),
         meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Grupos', icon: 'groups', to: '/groups'}, {text: 'Nuevo Grupo'}]}
