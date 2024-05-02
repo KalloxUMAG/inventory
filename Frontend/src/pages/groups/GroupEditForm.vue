@@ -43,6 +43,7 @@
           :max_files="1"
           :handleAddImages="handleAddImages"
           :handleRemoveImages="handleRemoveImages"
+          ref="uploaderComponent"
         />
       </div>
     </FormSection>
@@ -71,7 +72,7 @@ const router = useRouter();
 const api_prefix = process.env.API_URL;
 const id = computed(() => route.params.id);
 const query_groups = api_prefix + "/groups/" + id.value;
-const img_url = api_prefix + "/groups/image/test/";
+const img_url = api_prefix + "/groups/image/";
 const createGroupForm = ref(null);
 const group = reactive({
   name: null,
@@ -79,6 +80,7 @@ const group = reactive({
   otherNames: null,
   images: [],
 });
+const uploaderComponent = ref(null);
 
 onMounted(() => {
   getGroup();
@@ -107,14 +109,15 @@ const getImages = async () => {
     });
     const images = response.data;
     images.forEach(async(image) => {
-        const imageResponse = await sendRequest({
-            method: "GET",
-            url: api_prefix.slice(0, -4) + image.path,
-        });
-        group.images.push(imageResponse.data);
+      const imageResponse = await sendRequest({
+          method: "GET",
+          url: api_prefix.slice(0, -4) + image.path,
+          responseType: "blob",
+      });
+      const blob = await imageResponse.data;
+      const imageFile = new File([blob], image.name, {type: blob.type, __img: 'img', __key: image.name, __progress: 0, __progressLabel: '0.00%', __status: 'idle', __uploaded: 0});
+      uploaderComponent.value.addFiles([imageFile]);
     });
-    console.log(group.images)
-    
   } catch (error) {
     console.log(error);
   }
@@ -122,7 +125,6 @@ const getImages = async () => {
 
 const handleAddImages = (files) => {
   group.images.push(files[0]);
-  console.log(group.images)
 };
 
 const handleRemoveImages = (files) => {
