@@ -220,7 +220,7 @@ const uploadGroupImage = async (groupId) => {
       try {
         const response = await sendRequest({
           method: "DELETE",
-          url: api_prefix + "/groups/" + groupId,
+          url: api_prefix + "/groups/image/" + groupId,
           data: formData,
         });
       } catch (error) {

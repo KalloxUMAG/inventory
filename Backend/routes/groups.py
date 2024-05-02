@@ -1,5 +1,6 @@
 import re
 import os
+import shutil
 
 from typing import List
 from datetime import datetime
@@ -10,6 +11,7 @@ from sqlalchemy.sql.expression import func
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
     HTTP_409_CONFLICT,
     HTTP_404_NOT_FOUND,
 )
@@ -98,6 +100,21 @@ def update_group(data_update: GroupSchema, db: Session = Depends(get_db)):
             db.commit()
     return Response(status_code=HTTP_200_OK)
 
+@groups.delete("/{group_id}", response_model=List[str])
+def delete_group(group_id: int, db: Session = Depends(get_db)):
+    db_group = db.query(Groups).filter(Groups.id == group_id).first()
+    if not db_group:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    db_group_names = db.query(GroupOtherNames).filter(GroupOtherNames.group_id == group_id).all()
+    for group_name in db_group_names:
+        db.delete(group_name)
+        db.commit()
+    db.delete(db_group)
+    db.commit()
+    image_path = Path(settings.image_directory, "groups", str(group_id))
+    shutil.rmtree(image_path, ignore_errors=True)
+    return Response(status_code=HTTP_204_NO_CONTENT)
+
 # Upload image to groups folder
 @groups.post("/{group_id}", status_code=HTTP_201_CREATED)
 async def add_image(group_id: int, file: UploadFile):
@@ -139,7 +156,7 @@ async def get_images(group_id: int):
     ]
 
 # Delete images to groups folder
-@groups.delete("/{group_id}", status_code=HTTP_200_OK)
+@groups.delete("/image/{group_id}", status_code=HTTP_200_OK)
 async def delete_image(group_id: int, file: UploadFile):
     image_path = Path(settings.image_directory, "groups", str(group_id))
     image_path.mkdir(parents=True, exist_ok=True)
