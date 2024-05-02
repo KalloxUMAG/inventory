@@ -10,6 +10,7 @@
     class="full-width"
     @added="handleAddImages"
     @removed="handleRemoveImages"
+    ref="uploader"
   >
     <template v-slot:header="scope">
       <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
@@ -78,16 +79,27 @@
 </template>
 
 <script setup>
-import { toRefs } from "vue";
+import { ref, toRefs, defineExpose } from "vue";
+
+const uploader = ref(null);
 
 const props = defineProps({
   label: String,
   max_files: Number,
   handleAddImages: Function,
   handleRemoveImages: Function,
+  uploadImages: Function,
 });
 
-const { label, max_files, handleAddImages, handleRemoveImages } = toRefs(props);
+const { label, max_files, handleAddImages, handleRemoveImages, uploadImages } = toRefs(props);
+
+defineExpose({
+  addFiles(files) {
+    if (uploader.value) {
+      uploader.value.addFiles(files);
+    }
+  }
+});
 </script>
 
 <style scoped>
