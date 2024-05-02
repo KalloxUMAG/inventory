@@ -1,13 +1,21 @@
 <template>
   <div v-if="group != null" class="row justify-center">
     <PageTitle :title="group.name" icon="group">
-      <q-btn
-        outline
-        color="secondary"
-        label="Editar"
-        class="float-right"
-        @click="editGroup"
-      />
+      <div>
+        <q-btn
+          outline
+          color="secondary"
+          label="Editar"
+          @click="editGroup"
+        />
+        <q-btn
+          class="q-ml-sm"
+          color="negative"
+          label="Eliminar"
+          @click="deleteGroup"
+        />
+      </div>
+      
     </PageTitle>
 
     <q-card class="my-card row q-pa-md gap-lg" flat bordered>
@@ -54,8 +62,10 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { sendRequest } from "src/axios/instance.js";
+import { useQuasar } from "quasar";
 
 //Components
+import DeleteDialog from "src/components/item-page/DeleteDialog.vue";
 import InfoSection from "src/components/item-page/InfoSection.vue";
 import PageTitle from "src/components/commons/PageTitle.vue";
 
@@ -65,6 +75,7 @@ const id = computed(() => route.params.id);
 const api_prefix = process.env.API_URL;
 const query_groups = api_prefix + "/groups/" + id.value;
 const img_url = api_prefix + "/groups/image/";
+const $q = useQuasar();
 
 const group = ref(null);
 const images = ref(null);
@@ -72,6 +83,21 @@ const images = ref(null);
 //Functions
 const editGroup = () => {
   router.push('/groups/edit/'+id.value);
+};
+
+const deleteGroup = () => {
+  $q.dialog({
+    component: DeleteDialog,
+    componentProps: {
+      id: id.value,
+      title: "grupo: " + group.value.name,
+      type: "groups",
+    },
+  })
+    .onOk((data) => {
+      router.push("/groups");
+    })
+    .onCancel(() => {});
 };
 
 const getGroup = async () => {
