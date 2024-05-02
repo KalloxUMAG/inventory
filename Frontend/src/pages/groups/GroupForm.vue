@@ -50,6 +50,12 @@
     <div class="row justify-end q-mt-mx">
       <q-btn icon="add" label="Crear" type="submit" color="positive" />
     </div>
+    <q-inner-loading
+      :showing="loading"
+      label="Creando equipamiento"
+      label-class="text-deep-orange"
+      label-style="font-size: 1.6em"
+    />
   </q-form>
 </template>
 
@@ -66,6 +72,7 @@ import { useQuasar } from "quasar";
 import { ref, reactive } from "vue";
 
 const $q = useQuasar();
+const loading = ref(false);
 const router = useRouter();
 const api_prefix = process.env.API_URL;
 const createGroupForm = ref(null);
@@ -90,6 +97,7 @@ const handleRemoveImages = (files) => {
 
 const onSubmit = async() => {
   createGroupForm.value.resetValidation();
+  loading.value = true;
   let groupData = {
     name: group.name,
     description: group.description,
@@ -99,6 +107,7 @@ const onSubmit = async() => {
   console.log(groupData);
   const groupId = await createNewGroup(groupData);
   await uploadGroupImage(groupId);
+  loading.value = false;
   router.push({ path: groupId.toString()})
 };
 
