@@ -1,4 +1,5 @@
 import re
+import os
 
 from typing import List
 from datetime import datetime
@@ -9,7 +10,6 @@ from sqlalchemy.sql.expression import func
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
-    HTTP_205_RESET_CONTENT,
     HTTP_409_CONFLICT,
     HTTP_404_NOT_FOUND,
 )
@@ -74,6 +74,30 @@ def get_other_names_supply(group_id: int, db: Session = Depends(get_db)):
     results = [result.name for result in results_db]
     return results
 
+@groups.put("", status_code=HTTP_200_OK)
+def update_group(data_update: GroupSchema, db: Session = Depends(get_db)):
+    db_group = (
+        db.query(Groups)
+        .filter(
+            Groups.id == data_update.id,
+        )
+        .first()
+    )
+    if not db_group:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    for key, value in data_update.model_dump(exclude_unset=True).items():
+        if key != "other_names":
+            setattr(db_group, key, value)
+    db.add(db_group)
+    db.commit()
+    db.refresh(db_group)
+    if data_update.other_names:
+        db.query(GroupOtherNames).filter(GroupOtherNames.group_id == db_group.id).delete()
+        for name in data_update.other_names:
+            db.add(GroupOtherNames(group_id=db_group.id, name=name))
+            db.commit()
+    return Response(status_code=HTTP_200_OK)
+
 # Upload image to groups folder
 @groups.post("/{group_id}", status_code=HTTP_201_CREATED)
 async def add_image(group_id: int, file: UploadFile):
@@ -113,3 +137,14 @@ async def get_images(group_id: int):
         }
         for i, file in enumerate(image_path.iterdir(), start=1)
     ]
+
+# Delete images to groups folder
+@groups.delete("/{group_id}", status_code=HTTP_200_OK)
+async def delete_image(group_id: int, file: UploadFile):
+    image_path = Path(settings.image_directory, "groups", str(group_id))
+    image_path.mkdir(parents=True, exist_ok=True)
+    extension = file.filename.split(".")[-1].lower()
+    format_filename = file.filename[: -len(extension)].lower()
+    format_filename = re.sub("[^A-Za-z0-9_]", "", format_filename, 0, re.IGNORECASE)
+    os.remove(str(image_path) + "/" + str(format_filename) + "." + str(extension))
+    return Response(status_code=HTTP_200_OK)

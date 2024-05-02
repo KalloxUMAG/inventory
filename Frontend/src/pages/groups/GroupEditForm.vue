@@ -3,7 +3,7 @@
   <q-form
     @submit.prevent="onSubmit"
     class="q-gutter-md col-xs-12 col-sm-12 col-md-6 relative-position q-mr-md"
-    ref="createGroupForm"
+    ref="editGroupForm"
   >
     <FormSection title="Datos Generales">
       <div class="row">
@@ -51,6 +51,12 @@
     <div class="row justify-end q-mt-mx">
       <q-btn icon="add" label="Crear" type="submit" color="positive" />
     </div>
+    <q-inner-loading
+      :showing="loading"
+      label="Creando equipamiento"
+      label-class="text-deep-orange"
+      label-style="font-size: 1.6em"
+    />
   </q-form>
 </template>
 
@@ -69,11 +75,18 @@ import { ref, reactive, onMounted, computed } from "vue";
 const $q = useQuasar();
 const route = useRoute();
 const router = useRouter();
+const loading = ref(false);
 const api_prefix = process.env.API_URL;
 const id = computed(() => route.params.id);
 const query_groups = api_prefix + "/groups/" + id.value;
 const img_url = api_prefix + "/groups/image/";
-const createGroupForm = ref(null);
+const editGroupForm = ref(null);
+const originalGroup = reactive({
+  name: null,
+  description: null,
+  otherNames: null,
+  images: [],
+});
 const group = reactive({
   name: null,
   description: null,
@@ -95,6 +108,10 @@ const getGroup = async () => {
     group.name = response.data.name;
     group.description = response.data.description;
     group.otherNames = response.data.other_names.join("; ");
+    // Copy the original group data
+    originalGroup.name = group.name;
+    originalGroup.description = group.description;
+    originalGroup.otherNames = response.data.other_names;
     getImages();
   } catch (error) {
     console.log(error);
@@ -117,6 +134,7 @@ const getImages = async () => {
       const blob = await imageResponse.data;
       const imageFile = new File([blob], image.name, {type: blob.type, __img: 'img', __key: image.name, __progress: 0, __progressLabel: '0.00%', __status: 'idle', __uploaded: 0});
       uploaderComponent.value.addFiles([imageFile]);
+      originalGroup.images.push(imageFile);
     });
   } catch (error) {
     console.log(error);
@@ -136,24 +154,26 @@ const handleRemoveImages = (files) => {
 // Form validation
 
 const onSubmit = async () => {
-  createGroupForm.value.resetValidation();
+  editGroupForm.value.resetValidation();
+  loading.value = true;
   let groupData = {
+    id: id.value,
     name: group.name,
     description: group.description,
     other_names: group.otherNames
       ? group.otherNames.split(";").map((name) => name.trim())
       : [],
-    images: group.images,
   };
-  const groupId = await createNewGroup(groupData);
-  await uploadGroupImage(groupId);
-  router.push({ path: groupId.toString() });
+  await updateGroup(groupData);
+  await uploadGroupImage(id.value);
+  loading.value = false;
+  router.push({ path: '/groups/' + id.value.toString()});
 };
 
-const createNewGroup = async (groupData) => {
+const updateGroup = async (groupData) => {
   try {
     const response = await sendRequest({
-      method: "POST",
+      method: "PUT",
       url: api_prefix + "/groups",
       data: groupData,
     });
@@ -162,7 +182,7 @@ const createNewGroup = async (groupData) => {
         color: "green-4",
         textColor: "white",
         icon: "check",
-        message: "Grupo creado con éxito",
+        message: "Grupo editado con éxito",
       });
     }
     return response.data;
@@ -180,7 +200,7 @@ const createNewGroup = async (groupData) => {
         color: "red-3",
         textColor: "white",
         icon: "error",
-        message: "No se pudo crear el Grupo: " + error,
+        message: "No se pudo editar el Grupo: " + error,
         timeout: 10000,
       });
     }
@@ -188,27 +208,52 @@ const createNewGroup = async (groupData) => {
 };
 
 const uploadGroupImage = async (groupId) => {
-  if (group.images.length == 0) {
+  // Check if the images are the same
+  if ((group.images.length == 0 && originalGroup.images.length == 0) || group.images == originalGroup.images) {
     return;
   }
-  group.images.forEach(async (image) => {
-    const formData = new FormData();
-    formData.append("file", image);
-    try {
-      const response = await sendRequest({
-        method: "POST",
-        url: api_prefix + "/groups/" + groupId,
-        data: formData,
-      });
-    } catch (error) {
-      $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "No se pudo guardar la imagen del grupo: " + error,
-      });
-    }
-  });
+  // Delete the old images
+  if (originalGroup.images.length > 0) {
+    originalGroup.images.forEach(async (image) => {
+      const formData = new FormData();
+      formData.append("file", image); 
+      try {
+        const response = await sendRequest({
+          method: "DELETE",
+          url: api_prefix + "/groups/" + groupId,
+          data: formData,
+        });
+      } catch (error) {
+        $q.notify({
+          color: "red-3",
+          textColor: "white",
+          icon: "error",
+          message: "No se pudo eliminar la imagen del grupo: " + error,
+        });
+      }
+    });
+  }
+  // Upload the new images
+  if (group.images.length > 0) {
+    group.images.forEach(async (image) => {
+      const formData = new FormData();
+      formData.append("file", image);
+      try {
+        const response = await sendRequest({
+          method: "POST",
+          url: api_prefix + "/groups/" + groupId,
+          data: formData,
+        });
+      } catch (error) {
+        $q.notify({
+          color: "red-3",
+          textColor: "white",
+          icon: "error",
+          message: "No se pudo guardar la imagen del grupo: " + error,
+        });
+      }
+    });
+  }
 };
 </script>
 
