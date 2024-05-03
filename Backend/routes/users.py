@@ -1,13 +1,17 @@
-from typing import Annotated, List, Union, Any
+import re
+import os
+
+from typing import List, Union, Any
+from pathlib import Path
 from datetime import datetime, timedelta
 from sqlalchemy import false
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
 from jose import jwt
 
 from passlib.context import CryptContext
 
-from fastapi import Depends, APIRouter, HTTPException, status, Response
+from fastapi import Depends, APIRouter, HTTPException, status, Response, UploadFile
 from fastapi.security import OAuth2PasswordBearer
 from schemas.user_schema import (
     FilterUser,
@@ -154,7 +158,7 @@ def loginuser(
     return {"access_token": access, "refresh_token": refresh, "fullname": user.fullname}
 
 
-@users.get("/getusers", tags=["users"])
+@users.get("", tags=["users"])
 def getusers(session: Session = Depends(get_db)):
     user = session.query(Users).all()
     return user
@@ -270,3 +274,56 @@ def grant_role_user(grant_role: GrantRoleSchema, db: Session = Depends(get_db)):
     db.refresh(new_grant_role)
     content = str(new_grant_role)
     return Response(status_code=HTTP_201_CREATED, content=content)
+
+# images
+
+# Upload image to users folder
+@users.post("/images/{user_id}", status_code=HTTP_201_CREATED)
+async def add_image(user_id: int, file: UploadFile):
+    image_path = Path(settings.image_directory, "users", str(user_id))
+    image_path.mkdir(parents=True, exist_ok=True)
+    extension = file.filename.split(".")[-1].lower()
+    format_filename = file.filename[: -len(extension)].lower()
+    format_filename = re.sub("[^A-Za-z0-9]", "", format_filename, 0, re.IGNORECASE)
+    date_now = datetime.now()
+    date_now = date_now.strftime("%d%m%Y_%H%M%S")
+    with open(
+        str(image_path)
+        + "/"
+        + str(date_now)
+        + str(format_filename)
+        + "."
+        + str(extension),
+        "wb",
+    ) as buffer:
+        buffer.write(await file.read())
+    return Response(status_code=HTTP_201_CREATED)
+
+# Get images from users folder
+@users.get("/images/{user_id}")
+async def get_images(user_id: int):
+    image_path = Path(settings.image_directory, "users", str(user_id))
+    if not image_path.exists():
+        print("No images found")
+        return Response(status_code=HTTP_404_NOT_FOUND)
+
+    image_base_url = settings.base_url.path.replace("/api", "/images")
+    return [
+        {
+            "id": i,
+            "name": file.name,
+            "path": f"{image_base_url}/users/{user_id}/{file.name}",
+        }
+        for i, file in enumerate(image_path.iterdir(), start=1)
+    ]
+
+# Delete images to groups folder
+@users.delete("/images/{user_id}", status_code=HTTP_200_OK)
+async def delete_image(user_id: int, file: UploadFile):
+    image_path = Path(settings.image_directory, "users", str(user_id))
+    image_path.mkdir(parents=True, exist_ok=True)
+    extension = file.filename.split(".")[-1].lower()
+    format_filename = file.filename[: -len(extension)].lower()
+    format_filename = re.sub("[^A-Za-z0-9_]", "", format_filename, 0, re.IGNORECASE)
+    os.remove(str(image_path) + "/" + str(format_filename) + "." + str(extension))
+    return Response(status_code=HTTP_200_OK)
