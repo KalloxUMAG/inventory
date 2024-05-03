@@ -339,3 +339,35 @@ export const groupsColumns = [
     sortable: false,
   },
 ]
+
+export const usersColumns = [
+  {
+    name: "img",
+    align: "left",
+    label: "Imagen",
+    field: "img",
+    sortable: false,
+    additionalClass: "width-300"
+  },
+  {
+    name: "fullname",
+    align: "left",
+    label: "Nombre",
+    field: "fullname",
+    sortable: false,
+  },
+  {
+    name: "email",
+    align: "left",
+    label: "Correo",
+    field: "email",
+    sortable: false,
+  },
+  {
+    name: "username",
+    align: "left",
+    label: "Nombre de usuario",
+    field: "username",
+    sortable: false,
+  },
+]

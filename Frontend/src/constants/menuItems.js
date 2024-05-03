@@ -40,6 +40,14 @@ export const menuItems = [
     type: "label",
   },
   {
+    label: "Usuarios",
+    icon: "person",
+    to: "/users",
+    exact: true,
+    separator: false,
+    type: "nav",
+  },
+  {
     label: "Grupos",
     icon: "groups",
     to: "/groups",

@@ -61,6 +61,11 @@ const routes = [
         meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Insumos', icon: 'science'}]}
       },
       {
+        path: "/users",
+        component: () => import("src/pages/users/UserList.vue"),
+        meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Usuarios', icon: 'person'}]}
+      },
+      {
         path: "/createuser",
         component: () => import("src/pages/CreateUser.vue"),
         meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Create User'}]}
