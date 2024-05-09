@@ -163,6 +163,10 @@ def getusers(session: Session = Depends(get_db)):
     user = session.query(Users).all()
     return user
 
+@users.get("/{user_id}", tags=["users"], response_model=FilterUser)
+def get_user(user_id: int, session: Session = Depends(get_db)):
+    user = session.query(Users).filter(Users.id == user_id).first()
+    return user
 
 @users.post("/change-password", tags=["users"])
 def change_password(
