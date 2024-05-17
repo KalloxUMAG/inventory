@@ -19,7 +19,7 @@
           </q-input>
           <q-btn
             class="add-btn q-mr-sm"
-            to="/users/new_users"
+            to="/users/new_user"
             icon="person_add"
             label="Agregar"
             flat

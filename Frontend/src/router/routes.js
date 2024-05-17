@@ -71,9 +71,9 @@ const routes = [
         meta: {breadCrumb(route){ const param = route.currentRoute.value.params.id; return [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Usuarios', icon: 'person', to: '/users'}, {text: param}]}},
       },
       {
-        path: "/createuser",
-        component: () => import("src/pages/CreateUser.vue"),
-        meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Create User'}]}
+        path: "/users/new_user",
+        component: () => import("src/pages/users/UserForm.vue"),
+        meta: {breadCrumb: [{text: 'Inicio', icon: 'home',  to: '/'}, {text: 'Usuarios', icon: 'person', to: '/users'}, {text: 'Nuevo Usuario', icon: 'person_add'}]}
       },
       {
         path: "/changepassword",
