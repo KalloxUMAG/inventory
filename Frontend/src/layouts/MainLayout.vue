@@ -20,8 +20,8 @@
       <q-scroll-area class="fit">
         <q-list>
           <q-item class="drawer-message-container">
-            <div class="drawer-message q-my-sm">
-              Inventario CADI
+            <div class="image-container">
+              <img src="/images/cadi_inv.webp" width="100%"/>
             </div>
           </q-item>
           <template v-for="(menuItem, index) in menuItems" :key="index">
@@ -47,9 +47,6 @@
             <q-separator :key="'sep' + index" v-if="menuItem.separator" />
           </template>
         </q-list>
-        <div class="image-container">
-          <q-img src="/images/cadi.webp" width="100%"/>
-        </div>
 
         <footer class="fixed-bottom text-white">
           <small>Fecha de actualización: 17-10-2023</small>
@@ -95,6 +92,9 @@ function toggleLeftDrawer() {
 
 .drawer-message-container {
   background-color: var(--drawer-menu-label-bg-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .item-icon {
@@ -106,6 +106,7 @@ function toggleLeftDrawer() {
 }
 
 .image-container {
+  width: 100%;
   padding: 10px;
 }
 
