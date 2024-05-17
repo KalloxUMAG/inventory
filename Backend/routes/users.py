@@ -127,7 +127,8 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return Response(status_code=HTTP_201_CREATED)
+    content = str(new_user.id)
+    return Response(status_code=HTTP_201_CREATED, content=content)
 
 
 @users.put("", status_code=HTTP_200_OK)
