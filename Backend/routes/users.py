@@ -19,6 +19,7 @@ from schemas.user_schema import (
     requestdetails,
     changepassword,
     UserCreate,
+    UserEdit,
 )
 from schemas.role_schema import GrantRoleSchema
 
@@ -127,6 +128,25 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     return Response(status_code=HTTP_201_CREATED)
+
+
+@users.put("", status_code=HTTP_200_OK)
+def update_group(data_update: UserEdit, db: Session = Depends(get_db)):
+    db_user = (
+        db.query(Users)
+        .filter(
+            Users.id == data_update.id,
+        )
+        .first()
+    )
+    if not db_user:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    for key, value in data_update.model_dump(exclude_unset=True).items():
+        setattr(db_user, key, value)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return Response(status_code=HTTP_200_OK)
 
 
 @login.post("/login", response_model=TokenSchema, tags=["users"])

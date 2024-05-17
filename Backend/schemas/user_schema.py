@@ -54,6 +54,15 @@ class UserCreate(BaseModel):
     class Config:
         from_attributes = True
 
+class UserEdit(BaseModel):
+    id: int
+    username: str
+    email: str
+    fullname: str
+
+    class Config:
+        from_attributes = True
+
 
 class requestdetails(BaseModel):
     email: str
@@ -82,6 +91,7 @@ class TokenCreate(BaseModel):
 
 class FilterUser(BaseModel):
     id: Optional[int]
+    username: Optional[str] = None
     email: Optional[str] = None
     fullname: Optional[str] = None
 
