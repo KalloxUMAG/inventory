@@ -132,6 +132,7 @@ onMounted(() => {
 }
 
 .image-visor {
+  background-color: #f5f5f5;
   border: none !important;
   height: 250px;
   widows: 250px;
