@@ -104,7 +104,6 @@ const onSubmit = async() => {
     other_names: group.otherNames ? group.otherNames.split(";").map((name) => name.trim()) : [],
     images: group.images,
   };
-  console.log(groupData);
   const groupId = await createNewGroup(groupData);
   await uploadGroupImage(groupId);
   loading.value = false;
