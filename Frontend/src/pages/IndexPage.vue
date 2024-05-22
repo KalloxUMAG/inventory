@@ -1,5 +1,6 @@
 <template>
   <PageTitle title="Inicio" icon="home" />
+  <StatisticsSection />
   <div class="row">
     <div class="col">
       <q-card class="no-shadow bg-transparent">
@@ -44,6 +45,7 @@ import { onMounted, ref } from 'vue'
 import { sendRequest } from 'src/axios/instance.js'
 import CriticTable from 'src/components/CriticTable/CriticTable.vue'
 import PageTitle from 'src/components/commons/PageTitle.vue'
+import StatisticsSection from 'src/components/statistics/StatisticsSection.vue'
 import { useQuasar } from 'quasar'
 import { equipmentsColumns, suppliesColumns } from '../constants/columns.js'
 
