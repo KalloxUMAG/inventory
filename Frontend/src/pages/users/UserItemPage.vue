@@ -2,7 +2,7 @@
   <div v-if="user != null" class="row justify-center">
     <PageTitle :title="user.fullname" icon="person">
       <div>
-        <q-btn outline color="secondary" label="Editar" @click="editUser" />
+        <q-btn outline color="secondary" label="Editar" @click="editUser" disable/>
         <q-btn
           class="q-ml-sm"
           color="negative"
