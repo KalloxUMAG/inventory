@@ -1,16 +1,12 @@
 <template>
-  <div class="row justify-center">
-    <q-form
-      @submit.prevent="onSubmit"
-      class="q-gutter-md col-xs-12 col-sm-12 col-md-6 q-pa-md relative-position"
-      ref="createSupplyForm"
-    >
-      <!--Datos Producto-->
-      <h5>Agregar insumos</h5>
-      <div class="section-title">
-        Datos Insumo
-        <hr />
-      </div>
+  <PageTitle title="Nuevo insumo" />
+  <q-form
+    @submit.prevent="onSubmit"
+    class="q-gutter-md col-xs-12 col-sm-12 col-md-6 relative-position q-mr-md"
+    ref="createSupplyForm"
+  >
+    <!--Datos Producto-->
+    <FormSection title="Datos insumo">
       <div class="col">
         <div class="row">
           <q-input
@@ -241,27 +237,28 @@
         :rules="[(val) => !!val || 'Campo obligatorio']"
         lazy-rules
       />
-      <!--Form button-->
-      <div class="row justify-end q-mt-mx">
-        <q-btn label="Crear" type="submit" color="positive" />
-      </div>
-      <q-inner-loading
-        :showing="loading"
-        label="Creando insumo"
-        label-class="text-deep-orange"
-        label-style="font-size: 1.6em"
-      />
-    </q-form>
-  </div>
+    </FormSection>
+    <!--Form button-->
+    <div class="row justify-end q-mt-mx">
+      <q-btn label="Crear" type="submit" color="positive" />
+    </div>
+    <q-inner-loading
+      :showing="loading"
+      label="Creando insumo"
+      label-class="text-deep-orange"
+      label-style="font-size: 1.6em"
+    />
+  </q-form>
 </template>
 
 <script setup>
 import { useQuasar } from "quasar";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import { ref, reactive, onMounted } from "vue";
 import { sendRequest } from "src/axios/instance.js";
-import axios from "axios";
 import SelectForm from "src/components/SelectForm.vue";
+import FormSection from "src/components/Form/FormSection.vue";
+import PageTitle from "src/components/commons/PageTitle.vue";
 
 //Options Selects
 const brandOptions = ref([]);
@@ -512,14 +509,6 @@ hr {
   width: 20%;
   height: 2px;
   background-color: black;
-}
-
-.q-form {
-  margin-top: 10px;
-  background-color: #fffffe;
-  border-radius: 1%;
-  border-width: 1px;
-  border-style: solid;
 }
 
 .section-title {

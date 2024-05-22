@@ -1,17 +1,13 @@
 <template>
-  <div class="row justify-center">
-    <q-form
-      @submit.prevent="onSubmit"
-      @reset="onReset"
-      class="q-gutter-md col-xs-12 col-sm-12 col-md-6 q-pa-md relative-position"
-      ref="createEquipmentForm"
-    >
-      <!--Datos Producto-->
-      <h5>Agregar equipos</h5>
-      <div class="section-title">
-        Datos equipo
-        <hr />
-      </div>
+  <PageTitle title="Nuevo equipamiento" />
+  <q-form
+    @submit.prevent="onSubmit"
+    @reset="onReset"
+    class="q-gutter-md col-xs-12 col-sm-12 col-md-6 relative-position q-mr-md"
+    ref="createEquipmentForm"
+  >
+    <!--Datos Producto-->
+    <FormSection title="Datos equipo">
       <q-input
         outlined
         v-model="name"
@@ -248,12 +244,9 @@
           />
         </div>
       </div>
-
-      <!--Datos de compra-->
-      <div class="section-title q-mt-xl">
-        Datos compra
-        <hr />
-      </div>
+    </FormSection>
+    <!--Datos de compra-->
+    <FormSection title="Datos compra">
       <!--Datos de proveedor-->
       <div v-if="!newsupplierstate">
         <SelectForm
@@ -413,8 +406,7 @@
             label="Ver lista"
             color="amber"
             @click="
-              (newsupplierstate = !newsupplierstate),
-                (disableSupplier = false)
+              (newsupplierstate = !newsupplierstate), (disableSupplier = false)
             "
           />
         </div>
@@ -710,12 +702,9 @@
           </div>
         </div>
       </div>
-
-      <!--Location-->
-      <div class="section-title q-mt-xl">
-        Datos Ubicacion
-        <hr />
-      </div>
+    </FormSection>
+    <!--Location-->
+    <FormSection title="Datos ubicación">
       <div class="row justify-center">
         <div v-if="!newbuildingstate" class="col q-mr-md">
           <SelectForm
@@ -873,18 +862,18 @@
           "
         />
       </div>
-      <!--Form button-->
-      <div class="row justify-end q-mt-mx">
-        <q-btn label="Crear" type="submit" color="positive" />
-      </div>
-      <q-inner-loading
-        :showing="loading"
-        label="Creando equipamiento"
-        label-class="text-deep-orange"
-        label-style="font-size: 1.6em"
-      />
-    </q-form>
-  </div>
+    </FormSection>
+    <!--Form button-->
+    <div class="row justify-end q-mt-mx">
+      <q-btn label="Crear" type="submit" color="positive" />
+    </div>
+    <q-inner-loading
+      :showing="loading"
+      label="Creando equipamiento"
+      label-class="text-deep-orange"
+      label-style="font-size: 1.6em"
+    />
+  </q-form>
 </template>
 
 <script setup>
@@ -892,8 +881,11 @@ import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { sendRequest } from "src/axios/instance.js";
+
 import SelectForm from "src/components/SelectForm.vue";
 import UploadImages from "src/components/UploadImages.vue";
+import FormSection from "src/components/Form/FormSection.vue";
+import PageTitle from "src/components/commons/PageTitle.vue";
 
 const maintenanceOptions = [
   {
@@ -1002,7 +994,6 @@ const router = useRouter();
 const api_prefix = process.env.API_URL;
 
 const handleAddImages = (files) => {
-
   equipmentimages.value.push(files[0]);
 };
 
@@ -1484,7 +1475,7 @@ async function createNewWorker(supplier_id) {
 
     try {
       const response = await sendRequest({
-        method: "POSTT",
+        method: "POST",
         url: api_prefix + "/suppliers_contacts",
         data: workerdata1,
       });
@@ -1741,14 +1732,6 @@ input[type="number"]::-webkit-inner-spin-button {
   background-color: #7b7bd2 !important;
   color: #fff;
   border: 2px solid #7777cf;
-}
-
-.q-form {
-  margin-top: 10px;
-  background-color: #fffffe;
-  border-radius: 1%;
-  border-width: 1px;
-  border-style: solid;
 }
 
 .section-title {
