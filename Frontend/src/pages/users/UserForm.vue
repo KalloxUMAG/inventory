@@ -56,24 +56,24 @@
           :handleRemoveImages="handleRemoveImages"
         />
       </div>
-      <!--Form button-->
-      <div class="row justify-end q-mt-mx">
-        <q-btn label="Crear" type="submit" color="positive" />
-      </div>
-      <q-inner-loading
-        :showing="loading"
-        label="Creando usuario"
-        label-class="text-deep-orange"
-        label-style="font-size: 1.6em"
-      />
     </FormSection>
+    <!--Form button-->
+    <div class="row justify-end q-mt-mx">
+      <q-btn label="Crear" type="submit" color="positive" />
+    </div>
+    <q-inner-loading
+      :showing="loading"
+      label="Creando usuario"
+      label-class="text-deep-orange"
+      label-style="font-size: 1.6em"
+    />
   </q-form>
 </template>
 
 <script setup>
 import { useQuasar } from "quasar";
 import { reactive, ref } from "vue";
-import {useRouter} from 'vue-router';
+import { useRouter } from "vue-router";
 import { sendRequest } from "src/axios/instance.js";
 
 import PageTitle from "src/components/commons/PageTitle.vue";
@@ -138,11 +138,11 @@ const createNewUser = async (data) => {
   }
 };
 
-const uploadUserImage = async(userId) => {
+const uploadUserImage = async (userId) => {
   if (user.images.length == 0) {
     return;
   }
-  user.images.forEach(async(image) => {
+  user.images.forEach(async (image) => {
     const formData = new FormData();
     formData.append("file", image);
     try {
@@ -160,8 +160,7 @@ const uploadUserImage = async(userId) => {
       });
     }
   });
-}
-
+};
 
 const handleAddImages = (files) => {
   user.images.push(files[0]);
