@@ -1,21 +1,20 @@
 <template>
-    <div class="form-section__title">
-        {{ title }}
-    </div>
-    <q-card class="my-card q-gutter-md col-12 q-pa-md gap-lg" flat bordered>
-        <slot></slot>
-    </q-card>
+  <div class="form-section__title">
+    {{ title }}
+  </div>
+  <q-card class="my-card q-gutter-md col-12 q-pa-md gap-lg" flat bordered>
+    <slot />
+  </q-card>
 </template>
 
 <script setup>
-    const props = defineProps({
-        title: String
-    })
-    const { title } = props
+const props = defineProps({
+  title: String,
+})
+const { title } = props
 </script>
 
 <style scoped>
-
 .form-section__title {
     font-size: 1.5rem;
     font-weight: 500;

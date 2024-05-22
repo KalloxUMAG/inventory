@@ -6,14 +6,14 @@
         Lista de Grupos
         <div class="actions-buttons">
           <q-input
+            v-model="filter"
             outlined
             bg-color="white"
             dense
             debounce="300"
             placeholder="Buscar"
-            v-model="filter"
           >
-            <template v-slot:append>
+            <template #append>
               <q-icon name="search" />
             </template>
           </q-input>
@@ -28,81 +28,82 @@
       </div>
     </q-card-section>
     <q-card-section class="q-pa-none">
-        <q-table
-            row-key="id"
-            :columns="groupsColumns"
-            :rows="groups"
-            no-data-label="No hay registros para mostrar"
-            rows-per-page-label="Registros por pagina"
-            @row-click="rowClicker"
-            flat
-            bordered
-            wrap-cells
-            :filter="filter"
-            class="card-style"
-        >
-          <template v-slot:header="props">
-            <q-tr :props="props">
-              <q-th
-                v-for="col in props.cols"
-                :key="col.name"
-                :props="props"
-                :class="['text-italic', 'table-header', col.additionalClass]"
-              >
-                {{ col.label }}
-              </q-th>
-            </q-tr>
-          </template>
-          <template v-slot:body-cell="props">
-            <q-td
+      <q-table
+        row-key="id"
+        :columns="groupsColumns"
+        :rows="groups"
+        no-data-label="No hay registros para mostrar"
+        rows-per-page-label="Registros por pagina"
+        flat
+        bordered
+        wrap-cells
+        :filter="filter"
+        class="card-style"
+        @row-click="rowClicker"
+      >
+        <template #header="props">
+          <q-tr :props="props">
+            <q-th
+              v-for="col in props.cols"
+              :key="col.name"
               :props="props"
+              class="text-italic table-header" :class="[col.additionalClass]"
             >
-              {{ props.value }}
-            </q-td>
-          </template>
-        </q-table>
+              {{ col.label }}
+            </q-th>
+          </q-tr>
+        </template>
+        <template #body-cell="props">
+          <q-td
+            :props="props"
+          >
+            {{ props.value }}
+          </q-td>
+        </template>
+      </q-table>
     </q-card-section>
   </q-card>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref } from 'vue'
 
-import { useRouter } from "vue-router";
-import { sendRequest } from "src/axios/instance";
+import { useRouter } from 'vue-router'
+import { sendRequest } from 'src/axios/instance'
 
-import PageTitle from "src/components/commons/PageTitle.vue";
-import { groupsColumns } from "src/constants/columns";
+import PageTitle from 'src/components/commons/PageTitle.vue'
+import { groupsColumns } from 'src/constants/columns'
 
-const router = useRouter();
+const router = useRouter()
 
-const groups = ref([]);
-const filter = ref("");
+const groups = ref([])
+const filter = ref('')
 
-const api_prefix = process.env.API_URL;
-const detail_query = "/groups/";
+const api_prefix = process.env.API_URL
+const detail_query = '/groups/'
 
-const getGroups = async () => {
+async function getGroups() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/groups",
-    });
-    groups.value = response.data;
+      method: 'GET',
+      url: `${api_prefix}/groups`,
+    })
+    groups.value = response.data
     groups.value.forEach((group) => {
-      group.other_names = group.other_names.join("; ");
-    });
-  } catch (error) {}
-};
+      group.other_names = group.other_names.join('; ')
+    })
+  }
+  catch (error) {}
+}
 
-const rowClicker = (e, row) => {
-  const item = row.id;
-  router.push(detail_query + item);
-};
+function rowClicker(e, row) {
+  const item = row.id
+  router.push(detail_query + item)
+}
 
 onMounted(() => {
-  getGroups();
-});
+  getGroups()
+})
 </script>
 
 <style scoped>

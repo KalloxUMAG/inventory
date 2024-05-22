@@ -15,22 +15,20 @@
           @click="deleteGroup"
         />
       </div>
-      
     </PageTitle>
 
     <q-card class="my-card row q-pa-md gap-lg" flat bordered>
       <div class="col-12 col-sm-3 container image-visor">
         <q-img
-            v-if="images != null"
-            class="rounded-borders"
-            :src="api_prefix.slice(0, -4) + images[0].path"
-            spinner-color="white"
-            style="height: 100%;"
-            fit="contain"
+          v-if="images != null"
+          class="rounded-borders"
+          :src="api_prefix.slice(0, -4) + images[0].path"
+          spinner-color="white"
+          style="height: 100%;"
+          fit="contain"
         />
-        <div class="rounded-borders no-image" v-else>
-
-            No hay imagen disponible
+        <div v-else class="rounded-borders no-image">
+          No hay imagen disponible
         </div>
       </div>
 
@@ -59,77 +57,78 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { sendRequest } from "src/axios/instance.js";
-import { useQuasar } from "quasar";
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { sendRequest } from 'src/axios/instance.js'
+import { useQuasar } from 'quasar'
 
-//Components
-import DeleteDialog from "src/components/item-page/DeleteDialog.vue";
-import InfoSection from "src/components/item-page/InfoSection.vue";
-import PageTitle from "src/components/commons/PageTitle.vue";
+// Components
+import DeleteDialog from 'src/components/item-page/DeleteDialog.vue'
+import InfoSection from 'src/components/item-page/InfoSection.vue'
+import PageTitle from 'src/components/commons/PageTitle.vue'
 
-const route = useRoute();
-const router = useRouter();
-const id = computed(() => route.params.id);
-const api_prefix = process.env.API_URL;
-const query_groups = api_prefix + "/groups/" + id.value;
-const img_url = api_prefix + "/groups/image/";
-const $q = useQuasar();
+const route = useRoute()
+const router = useRouter()
+const id = computed(() => route.params.id)
+const api_prefix = process.env.API_URL
+const query_groups = `${api_prefix}/groups/${id.value}`
+const img_url = `${api_prefix}/groups/image/`
+const $q = useQuasar()
 
-const group = ref(null);
-const images = ref(null);
+const group = ref(null)
+const images = ref(null)
 
-//Functions
-const editGroup = () => {
-  router.push('/groups/edit/'+id.value);
-};
+// Functions
+function editGroup() {
+  router.push(`/groups/edit/${id.value}`)
+}
 
-const deleteGroup = () => {
+function deleteGroup() {
   $q.dialog({
     component: DeleteDialog,
     componentProps: {
       id: id.value,
-      title: "grupo: " + group.value.name,
-      type: "groups",
+      title: `grupo: ${group.value.name}`,
+      type: 'groups',
     },
   })
     .onOk((data) => {
-      router.push("/groups");
+      router.push('/groups')
     })
-    .onCancel(() => {});
-};
+    .onCancel(() => {})
+}
 
-const getGroup = async () => {
+async function getGroup() {
   try {
     const response = await sendRequest({
-      method: "GET",
+      method: 'GET',
       url: query_groups,
-    });
-    group.value = response.data;
-    getImages();
-  } catch (error) {
-    console.log(error);
+    })
+    group.value = response.data
+    getImages()
   }
+  catch (error) {
+    console.log(error)
+  }
+}
 
-};
-
-const getImages = async () => {
+async function getImages() {
   try {
     const response = await sendRequest({
-      method: "GET",
+      method: 'GET',
       url: img_url + id.value,
-    });
-    images.value = response.data;
+    })
+    images.value = response.data
     console.log(api_prefix + images.value[0].path)
-  } catch (error) {
-    console.log(error);
   }
-};
+  catch (error) {
+    console.log(error)
+  }
+}
 
 onMounted(() => {
-  getGroup();
-});
+  getGroup()
+})
 </script>
 
 <style scoped>

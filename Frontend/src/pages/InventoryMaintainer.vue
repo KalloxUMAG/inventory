@@ -2,7 +2,7 @@
   <div class="row q-pa-md">
     <section class="col-12">
       <div class="row justify-between items-center">
-        <PageTitle title="Mantenedor de inventario" icon="calendar_month"/>
+        <PageTitle title="Mantenedor de inventario" icon="calendar_month" />
         <div>
           <div v-if="showModal">
             <eventModal
@@ -25,8 +25,7 @@
           outline
           label="Agregar"
           @click="handleShowModal"
-        >
-        </q-btn>
+        />
       </div>
     </div>
     <div class="col-12 row">
@@ -44,9 +43,9 @@
         <calendar
           :first-day="1"
           :all-events="events"
+          :selection="selectionTables"
           @day-selected="handleSelectDay"
           @change-month="handleChangeMonth"
-          :selection="selectionTables"
         />
       </div>
       <div v-if="selectDay" class="col-5 q-px-sm">
@@ -65,177 +64,180 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import calendar from "../components/CalendarInventory/Calendar.vue";
-import schedule from "../components/CalendarInventory/Schedule.vue";
-import eventModal from "../components/CalendarInventory/EventModal.vue";
-import PageTitle from "src/components/commons/PageTitle.vue";
-import { useLoanStore } from "../stores";
-import { useQuasar } from "quasar";
-import dayjs from "dayjs";
-dayjs.locale("es");
+import { onMounted, ref } from 'vue'
+import PageTitle from 'src/components/commons/PageTitle.vue'
+import { useQuasar } from 'quasar'
+import dayjs from 'dayjs'
+import calendar from '../components/CalendarInventory/Calendar.vue'
+import schedule from '../components/CalendarInventory/Schedule.vue'
+import eventModal from '../components/CalendarInventory/EventModal.vue'
+import { useLoanStore } from '../stores'
 
-const loanStore = useLoanStore();
-const $q = useQuasar();
+dayjs.locale('es')
 
-const selectDay = ref(null);
-const events = ref([]);
-const event = ref(null);
-const previousMonth = ref(null);
-const nextMonth = ref(null);
-const showModal = ref(false);
+const loanStore = useLoanStore()
+const $q = useQuasar()
+
+const selectDay = ref(null)
+const events = ref([])
+const event = ref(null)
+const previousMonth = ref(null)
+const nextMonth = ref(null)
+const showModal = ref(false)
 const filterType = ref([
   {
-    label: "Prestamos",
+    label: 'Prestamos',
     value: 1,
-    description: "Ver Dias de Prestamos",
-    category: "1",
+    description: 'Ver Dias de Prestamos',
+    category: '1',
   },
   {
-    label: "Devoluciones",
+    label: 'Devoluciones',
     value: 2,
-    description: "Ver Dias de devoluciones",
-    category: "2",
+    description: 'Ver Dias de devoluciones',
+    category: '2',
   },
   {
-    label: "Equipamientos en préstamo ",
+    label: 'Equipamientos en préstamo ',
     value: 3,
-    description: "Ver equipamiento prestado",
-    category: "3",
+    description: 'Ver equipamiento prestado',
+    category: '3',
   },
-]);
-const selectionTables = ref({});
+])
+const selectionTables = ref({})
 
-const handleSelectDay = (day) => {
-  selectDay.value = day;
-};
+function handleSelectDay(day) {
+  selectDay.value = day
+}
 
-const handleChangeMonth = (month) => {
-  nextMonth.value = month.clone().add(5, "week").format("DD/MM/YYYY");
-  previousMonth.value = month.clone().subtract(3, "week").format("DD/MM/YYYY");
-};
+function handleChangeMonth(month) {
+  nextMonth.value = month.clone().add(5, 'week').format('DD/MM/YYYY')
+  previousMonth.value = month.clone().subtract(3, 'week').format('DD/MM/YYYY')
+}
 
-const handleShowModal = () => {
-  showModal.value = true;
-};
+function handleShowModal() {
+  showModal.value = true
+}
 
-const hideModal = () => {
-  showModal.value = false;
-};
+function hideModal() {
+  showModal.value = false
+}
 
-const AddSupply = async (supply) => {
+async function AddSupply(supply) {
   const body = {
     user_id: supply.user.id,
     equipment_id: supply.consumables.value,
-    loan_start_date: dayjs(supply.date.from, "DD-MM-YYYY")
-      .startOf("day")
+    loan_start_date: dayjs(supply.date.from, 'DD-MM-YYYY')
+      .startOf('day')
       .toISOString()
-      .split("T")[0],
-    loan_end_date: dayjs(supply.date.to, "DD-MM-YYYY")
-      .startOf("day")
+      .split('T')[0],
+    loan_end_date: dayjs(supply.date.to, 'DD-MM-YYYY')
+      .startOf('day')
       .toISOString()
-      .split("T")[0],
-  };
+      .split('T')[0],
+  }
   try {
     if (supply.consumables.available) {
-      const response = await loanStore.postLoanEquipment(body);
+      const response = await loanStore.postLoanEquipment(body)
       if (response && Array.isArray(response)) {
         $q.notify({
-          color: "red-3",
-          textColor: "white",
-          icon: "error",
-          message: "Equipamiento Guardado",
-        });
-        fetchLoans();
-      } else {
-        $q.notify({
-          color: "red-3",
-          textColor: "white",
-          icon: "error",
-          message:
-            "No se encontraron equipamientos disponibles para este rango de fechas",
-        });
-        console.log("not founds");
+          color: 'red-3',
+          textColor: 'white',
+          icon: 'error',
+          message: 'Equipamiento Guardado',
+        })
+        fetchLoans()
       }
-    } else {
+      else {
+        $q.notify({
+          color: 'red-3',
+          textColor: 'white',
+          icon: 'error',
+          message:
+            'No se encontraron equipamientos disponibles para este rango de fechas',
+        })
+        console.log('not founds')
+      }
+    }
+    else {
       $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "Este equipo no esta disponible para este rango de fechas",
-      });
+        color: 'red-3',
+        textColor: 'white',
+        icon: 'error',
+        message: 'Este equipo no esta disponible para este rango de fechas',
+      })
     }
-  } catch (error) {
-    $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la marca: " + error,
-    });
   }
-};
+  catch (error) {
+    $q.notify({
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la marca: ${error}`,
+    })
+  }
+}
 
-const hideSelectDay = () => {
-  selectDay.value = null;
-};
+function hideSelectDay() {
+  selectDay.value = null
+}
 
-const handleSelectedIdsChanged = (newSelectedIds) => {
-  const selectedDayKey = selectDay.value.dayDate.weekDay;
+function handleSelectedIdsChanged(newSelectedIds) {
+  const selectedDayKey = selectDay.value.dayDate.weekDay
 
-  const deselectedIds =
-    selectionTables.value[selectedDayKey]?.filter(
-      (id) => !newSelectedIds.includes(id)
-    ) || [];
-
-  events.value.forEach((event) => {
-    if (deselectedIds.includes(event.id)) {
-      event.showExtend = false;
-    }
-  });
-
-  const selectedIds =
-    newSelectedIds.filter(
-      (id) => !selectionTables.value[selectedDayKey]?.includes(id)
-    ) || [];
+  const deselectedIds
+    = selectionTables.value[selectedDayKey]?.filter(
+      id => !newSelectedIds.includes(id),
+    ) || []
 
   events.value.forEach((event) => {
-    if (selectedIds.includes(event.id)) {
-      event.showExtend = true;
-    }
-  });
+    if (deselectedIds.includes(event.id))
+      event.showExtend = false
+  })
 
-  selectionTables.value[selectedDayKey] = newSelectedIds;
-};
+  const selectedIds
+    = newSelectedIds.filter(
+      id => !selectionTables.value[selectedDayKey]?.includes(id),
+    ) || []
 
-const fetchLoans = async () => {
+  events.value.forEach((event) => {
+    if (selectedIds.includes(event.id))
+      event.showExtend = true
+  })
+
+  selectionTables.value[selectedDayKey] = newSelectedIds
+}
+
+async function fetchLoans() {
   try {
-    const response = await loanStore.fetchLoan();
+    const response = await loanStore.fetchLoan()
     if (response && Array.isArray(response)) {
-      events.value = [];
-      loadLoans(response);
+      events.value = []
+      loadLoans(response)
     }
-  } catch (error) {
-    $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message:
-        "No se pudieron obtener los equipamientos en prestamos: " + error,
-    });
   }
-};
+  catch (error) {
+    $q.notify({
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message:
+        `No se pudieron obtener los equipamientos en prestamos: ${error}`,
+    })
+  }
+}
 
-const loadLoans = (loans) => {
+function loadLoans(loans) {
   loans.forEach((loan) => {
-    const startDate = dayjs(loan.loan_start_date);
-    const endDate = dayjs(loan.loan_end_date);
+    const startDate = dayjs(loan.loan_start_date)
+    const endDate = dayjs(loan.loan_end_date)
 
     for (
       let date = startDate;
       date.isBefore(endDate) || date.isSame(endDate);
-      date = date.add(1, "day")
+      date = date.add(1, 'day')
     ) {
-      console.log(loan);
+      console.log(loan)
       events.value.push({
         id: loan.loan_id,
         supply: loan,
@@ -244,13 +246,13 @@ const loadLoans = (loans) => {
         isStarter: date.isSame(startDate),
         isEnd: date.isSame(endDate),
         showExtend: false,
-      });
+      })
     }
-  });
-  selectDay.value = null;
-};
+  })
+  selectDay.value = null
+}
 
 onMounted(() => {
-  fetchLoans();
-});
+  fetchLoans()
+})
 </script>

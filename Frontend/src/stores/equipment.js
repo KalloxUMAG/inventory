@@ -1,7 +1,7 @@
-import { defineStore } from "pinia";
-import { api } from "src/boot/axios";
+import { defineStore } from 'pinia'
+import { api } from 'src/boot/axios'
 
-export const useEquipmentStore = defineStore("equipment", {
+export const useEquipmentStore = defineStore('equipment', {
   actions: {
     async fetchEquipmentAvailable({ start_date = null, end_date = null }) {
       try {
@@ -12,13 +12,14 @@ export const useEquipmentStore = defineStore("equipment", {
               start_date,
               end_date,
             },
-          }
-        );
-        return data;
-      } catch (error) {
-        console.log(error);
-        return [];
+          },
+        )
+        return data
+      }
+      catch (error) {
+        console.log(error)
+        return []
       }
     },
   },
-});
+})

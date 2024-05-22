@@ -1,24 +1,26 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin q-pa-md">
-      <q-form @submit="onOKClick" ref="EditEquipmentProductForm">
-        <div class="text-bold text-subtitle1">Datos producto</div>
-        <!--Fields-->
+      <q-form ref="EditEquipmentProductForm" @submit="onOKClick">
+        <div class="text-bold text-subtitle1">
+          Datos producto
+        </div>
+        <!-- Fields -->
         <q-input
+          v-model="name"
           type="text"
           stack-label
           label="Nombre"
-          v-model="name"
           :rules="[
             (val) => (val && val != null) || 'Este campo es obligatorio',
           ]"
           lazy-rules
         />
         <q-input
+          v-model="serial_number"
           type="text"
           stack-label
           label="Codigo serial"
-          v-model="serial_number"
           :rules="[
             (val) => (val && val.length > 0) || 'Este campo es obligatorio',
             (val) => (val && val.length < 256) || 'Máximo 255 caracteres',
@@ -26,14 +28,14 @@
           lazy-rules
         />
         <q-input
+          v-model="umag_inventory_code"
           type="number"
           stack-label
           label="Inventario UMAG"
-          v-model="umag_inventory_code"
           :rules="[
             (val) =>
-              (val.length < 26 && val > 0) ||
-              'El valor debe ser mayor que 0 y tener un maximo de 25 dígitos',
+              (val.length < 26 && val > 0)
+              || 'El valor debe ser mayor que 0 y tener un maximo de 25 dígitos',
           ]"
           lazy-rules
         />
@@ -44,7 +46,7 @@
           label="Marca"
           not_found_label="No hay marcas disponibles"
           :default_value="brand_value"
-          @updateModel="
+          @update-model="
             (value) => {
               brand = value;
               getModels();
@@ -58,7 +60,7 @@
           label="Modelo"
           not_found_label="No hay modelos disponibles"
           :default_value="model_value"
-          @updateModel="
+          @update-model="
             (value) => {
               model = value;
               getModelNumbers();
@@ -72,19 +74,19 @@
           label="Numero Modelo"
           not_found_label="No hay numeros de modelo disponibles"
           :default_value="model_number_value"
-          @updateModel="
+          @update-model="
             (value) => {
               model_number = value;
             }
           "
         />
         <q-input
+          v-model="observation"
           type="text"
           stack-label
           label="Observacion"
-          v-model="observation"
         />
-        <!--Buttons-->
+        <!-- Buttons -->
         <div class="q-mt-sm row justify-end">
           <q-btn
             color="primary"
@@ -100,13 +102,10 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { useDialogPluginComponent, useQuasar } from "quasar";
-import { onMounted, ref, toRefs } from "vue";
-import { sendRequest } from "src/axios/instance.js";
-import SelectForm from "src/components/SelectForm.vue";
-
-const $q = useQuasar();
+import { useDialogPluginComponent, useQuasar } from 'quasar'
+import { onMounted, ref, toRefs } from 'vue'
+import { sendRequest } from 'src/axios/instance.js'
+import SelectForm from 'src/components/SelectForm.vue'
 
 const props = defineProps({
   id: Number,
@@ -118,29 +117,34 @@ const props = defineProps({
   model_number_value: String,
   maintenance_period_value: Number,
   observation_value: String,
-});
+})
+
+defineEmits([...useDialogPluginComponent.emits])
+
+const $q = useQuasar()
+
 const maintenanceOptions = [
   {
     id: 1,
-    name: "Mensual",
+    name: 'Mensual',
   },
   {
     id: 3,
-    name: "Trimestral",
+    name: 'Trimestral',
   },
   {
     id: 6,
-    name: "Semestral",
+    name: 'Semestral',
   },
   {
     id: 12,
-    name: "Anual",
+    name: 'Anual',
   },
   {
     id: null,
-    name: "No aplica",
+    name: 'No aplica',
   },
-];
+]
 
 const {
   id,
@@ -152,86 +156,89 @@ const {
   model_number_value,
   maintenance_period_value,
   observation_value,
-} = toRefs(props);
+} = toRefs(props)
 
-const name = ref(name_value.value);
-const serial_number = ref(serial_number_value.value);
-const umag_inventory_code = ref(umag_inventory_code_value.value);
-const brand = ref(brand_value.value.id);
-const model = ref(model_value.value.id);
-const modelOptions = ref([]);
-const brandOptions = ref([]);
-const model_number = ref(model_number_value.value.id);
-const modelNumberOptions = ref([]);
-const maintenance_period = ref(maintenance_period_value.value);
-const observation = ref(observation_value.value);
-const EditEquipmentProductForm = ref(null);
-const api_prefix = process.env.API_URL;
+const name = ref(name_value.value)
+const serial_number = ref(serial_number_value.value)
+const umag_inventory_code = ref(umag_inventory_code_value.value)
+const brand = ref(brand_value.value.id)
+const model = ref(model_value.value.id)
+const modelOptions = ref([])
+const brandOptions = ref([])
+const model_number = ref(model_number_value.value.id)
+const modelNumberOptions = ref([])
+const maintenance_period = ref(maintenance_period_value.value)
+const observation = ref(observation_value.value)
+const EditEquipmentProductForm = ref(null)
+const api_prefix = process.env.API_URL
 
-const getBrands = async () => {
+async function getBrands() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/brands",
-    });
-    const brands = response.data;
+      method: 'GET',
+      url: `${api_prefix}/brands`,
+    })
+    const brands = response.data
     brandOptions.value = brands.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getModels = async () => {
+async function getModels() {
   if (brand.value === null) {
-    modelOptions.value = [];
-    model.value = null;
-    modelNumberOptions.value = [];
-    model_number.value = null;
-  } else {
+    modelOptions.value = []
+    model.value = null
+    modelNumberOptions.value = []
+    model_number.value = null
+  }
+  else {
     try {
       const response = await sendRequest({
-        method: "GET",
-        url: api_prefix + "/models/" + brand.value,
-      });
-      const models = response.data;
+        method: 'GET',
+        url: `${api_prefix}/models/${brand.value}`,
+      })
+      const models = response.data
       modelOptions.value = models.map((x) => {
-        return { id: x.id, name: x.name };
-      });
-    } catch (error) {}
+        return { id: x.id, name: x.name }
+      })
+    }
+    catch (error) {}
   }
-};
+}
 
-const getModelNumbers = async () => {
+async function getModelNumbers() {
   if (model.value === null) {
-    modelNumberOptions.value = [];
-    model_number.value = null;
-  } else {
+    modelNumberOptions.value = []
+    model_number.value = null
+  }
+  else {
     try {
       const response = await sendRequest({
-        method: "GET",
-        url: api_prefix + "/model_numbers/" + model.value,
-      });
-      const modelnumbers = response.data;
+        method: 'GET',
+        url: `${api_prefix}/model_numbers/${model.value}`,
+      })
+      const modelnumbers = response.data
       modelNumberOptions.value = modelnumbers.map((x) => {
-        return { id: x.id, name: x.number };
-      });
-    } catch (error) {}
+        return { id: x.id, name: x.number }
+      })
+    }
+    catch (error) {}
   }
-};
+}
 
 onMounted(() => {
-  getBrands();
-  getModels();
-  getModelNumbers();
-});
+  getBrands()
+  getModels()
+  getModelNumbers()
+})
 
-defineEmits([...useDialogPluginComponent.emits]);
-
-const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
-  useDialogPluginComponent();
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel }
+  = useDialogPluginComponent()
 
 async function onOKClick() {
-  EditEquipmentProductForm.value.resetValidation();
+  EditEquipmentProductForm.value.resetValidation()
   const data = {
     id: props.id,
     name: name.value,
@@ -239,22 +246,23 @@ async function onOKClick() {
     umag_inventory_code: umag_inventory_code.value,
     observation: observation.value,
     model_number_id: model_number.value,
-  };
+  }
   try {
     const response = await sendRequest({
-      method: "PUT",
-      url: api_prefix + "/equipments/" + data.id,
-      data: data,
-    });
-  } catch (error) {
-    $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo guardar los cambios: " + error,
-    });
-    return;
+      method: 'PUT',
+      url: `${api_prefix}/equipments/${data.id}`,
+      data,
+    })
   }
-  onDialogOK();
+  catch (error) {
+    $q.notify({
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo guardar los cambios: ${error}`,
+    })
+    return
+  }
+  onDialogOK()
 }
 </script>

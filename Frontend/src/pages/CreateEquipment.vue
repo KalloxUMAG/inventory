@@ -1,29 +1,29 @@
 <template>
   <PageTitle title="Nuevo equipamiento" />
   <q-form
+    ref="createEquipmentForm"
+    class="q-gutter-md col-xs-12 col-sm-12 col-md-6 relative-position q-mr-md"
     @submit.prevent="onSubmit"
     @reset="onReset"
-    class="q-gutter-md col-xs-12 col-sm-12 col-md-6 relative-position q-mr-md"
-    ref="createEquipmentForm"
   >
-    <!--Datos Producto-->
+    <!-- Datos Producto -->
     <FormSection title="Datos equipo">
       <q-input
-        outlined
         v-model="name"
+        outlined
         maxlength="49"
         label="Nombre del equipo*"
         lazy-rules
         :rules="[
           (val) => (val && val.length > 0) || 'Este campo es obligatorio',
           (val) =>
-            (val && val.length < 50) ||
-            'El nombre debe contener menos de 50 caracteres',
+            (val && val.length < 50)
+            || 'El nombre debe contener menos de 50 caracteres',
         ]"
       />
       <q-input
-        outlined
         v-model="serial"
+        outlined
         maxlength="30"
         label="Código serial*"
         lazy-rules
@@ -33,20 +33,20 @@
         ]"
       />
       <q-input
-        outlined
         v-model="inventory"
+        outlined
         maxlength="11"
         type="number"
         label="Inventario UMAG*"
         lazy-rules
         :rules="[
           (val) =>
-            (val.length < 26 && val > 0) ||
-            'El valor debe ser mayor que 0 y tener un maximo de 25 dígitos',
+            (val.length < 26 && val > 0)
+            || 'El valor debe ser mayor que 0 y tener un maximo de 25 dígitos',
         ]"
       />
 
-      <!--Brand Model Number-->
+      <!-- Brand Model Number -->
 
       <div class="row justify-center">
         <div v-if="!newbrandstate" class="col q-mr-md">
@@ -59,14 +59,14 @@
             option_label="name"
             label="Marca"
             not_found_label="No hay marcas disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 brand = value;
                 getModels();
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -80,8 +80,8 @@
         <div v-else class="col">
           <div class="row">
             <q-input
-              outlined
               v-model="newbrand"
+              outlined
               label="Nombre marca"
               class="col"
               :disable="disableBrand"
@@ -100,14 +100,14 @@
             option_label="name"
             label="Modelo"
             not_found_label="No hay modelos disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 model = value;
                 getModelNumbers();
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -121,8 +121,8 @@
         <div v-else class="col q-pl-md">
           <div class="row">
             <q-input
-              outlined
               v-model="newmodel"
+              outlined
               label="Nombre modelo"
               class="col"
               :disable="disableBrand"
@@ -144,13 +144,13 @@
             option_label="name"
             label="Número modelo"
             not_found_label="No hay número de modelo disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 modelNumber = value;
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -164,8 +164,8 @@
         <div v-else class="col q-pl-md">
           <div class="row">
             <q-input
-              outlined
               v-model="newmodelnumber"
+              outlined
               label="Número modelo"
               class="col"
               :disable="disableBrand"
@@ -183,71 +183,71 @@
           v-if="disableBrand"
           label="Editar"
           color="amber"
-          @click="disableBrand = false"
           class="q-mr-sm"
+          @click="disableBrand = false"
         />
         <q-btn
           v-else
           label="Guardar"
           color="amber"
-          @click="disableBrand = true"
           class="q-mr-sm"
+          @click="disableBrand = true"
         />
         <q-btn
           label="Ver lista"
           color="amber"
           @click="
             (newmodelnumberstate = false),
-              (newmodelstate = false),
-              (newbrandstate = false),
-              (disableBrand = false)
+            (newmodelstate = false),
+            (newbrandstate = false),
+            (disableBrand = false)
           "
         />
       </div>
 
-      <!--Mantenimiento-->
+      <!-- Mantenimiento -->
       <q-checkbox
         v-model="maintenanceApply"
         val="lg"
         label="Aplica para mantención"
       />
       <SelectForm
-        outlined
         v-if="maintenanceApply"
+        outlined
         :options="maintenanceOptions"
         option_value="value"
         option_label="name"
         label="Periodo de mantención"
         not_found_label="No hay periodos disponibles"
-        @updateModel="(value) => (maintenance = value)"
         :rules="[(val) => !!val || 'Campo obligatorio']"
         lazy-rules
+        @update-model="(value) => (maintenance = value)"
       />
-      <!--Observacion-->
+      <!-- Observacion -->
       <q-input
-        outlined
         v-model="observation"
+        outlined
         type="textarea"
         label="Observación"
         :rules="[(val) => !!val || 'Campo obligatorio']"
         lazy-rules
       />
 
-      <!--Imagenes equipamiento equipmentImages-->
+      <!-- Imagenes equipamiento equipmentImages -->
       <div class="row">
         <div class="col">
           <UploadImages
             label="Imagenes equipamiento"
             :max_files="5"
-            :handleAddImages="handleAddImages"
-            :handleRemoveImages="handleRemoveImages"
+            :handle-add-images="handleAddImages"
+            :handle-remove-images="handleRemoveImages"
           />
         </div>
       </div>
     </FormSection>
-    <!--Datos de compra-->
+    <!-- Datos de compra -->
     <FormSection title="Datos compra">
-      <!--Datos de proveedor-->
+      <!-- Datos de proveedor -->
       <div v-if="!newsupplierstate">
         <SelectForm
           outlined
@@ -256,15 +256,15 @@
           option_label="name"
           label="Proveedor"
           not_found_label="No hay proveedores disponibles"
-          @updateModel="
-            (value) => {
-              (supplier = value), getInvoicesSupplier(value);
-            }
-          "
           :rules="[
             /*[val => !!val || 'Campo obligatorio']*/
           ]"
           lazy-rules
+          @update-model="
+            (value) => {
+              (supplier = value), getInvoicesSupplier(value);
+            }
+          "
         />
         <div class="row justify-end q-mt-md">
           <q-btn
@@ -279,8 +279,8 @@
       <div v-else>
         <div class="row">
           <q-input
-            outlined
             v-model="newsuppliername"
+            outlined
             label="Nombre proveedor"
             class="col"
             :disable="disableSupplier"
@@ -288,8 +288,8 @@
             lazy-rules
           />
           <q-input
-            outlined
             v-model="newsupplierrut"
+            outlined
             label="Rut"
             mask="##.###.###-X"
             class="col q-ml-md"
@@ -298,8 +298,8 @@
             lazy-rules
           />
           <q-input
-            outlined
             v-model="newsupplieraddress"
+            outlined
             label="Dirección"
             class="col q-ml-md"
             :disable="disableSupplier"
@@ -309,8 +309,8 @@
         </div>
         <div class="row q-mt-sm">
           <q-input
-            outlined
             v-model="workername1"
+            outlined
             label="Nombre trabajador"
             class="col"
             :disable="disableSupplier"
@@ -325,15 +325,15 @@
             option_label="name"
             label="Roles"
             not_found_label="No hay roles disponibles"
-            @updateModel="(value) => (workerrol1 = value)"
             class="col q-ml-md"
             :rules="[(val) => !!val || 'Campo obligatorio']"
             lazy-rules
+            @update-model="(value) => (workerrol1 = value)"
           />
           <q-input
+            v-model="workermail1"
             outlined
             type="email"
-            v-model="workermail1"
             label="Correo trabajador"
             class="col q-ml-md"
             :disable="disableSupplier"
@@ -341,8 +341,8 @@
             lazy-rules
           />
           <q-input
-            outlined
             v-model="workerphone1"
+            outlined
             label="Telefono trabajador"
             mask="(+##) #####-####"
             class="col q-ml-md"
@@ -353,8 +353,8 @@
         </div>
         <div class="row q-mt-sm">
           <q-input
-            outlined
             v-model="workername2"
+            outlined
             label="Nombre trabajador"
             class="col"
             :disable="disableSupplier"
@@ -367,20 +367,20 @@
             option_label="name"
             label="Roles"
             not_found_label="No hay roles disponibles"
-            @updateModel="(value) => (workerrol2 = value)"
             class="col q-ml-md"
+            @update-model="(value) => (workerrol2 = value)"
           />
           <q-input
+            v-model="workermail2"
             outlined
             type="email"
-            v-model="workermail2"
             label="Correo trabajador"
             class="col q-ml-md"
             :disable="disableSupplier"
           />
           <q-input
-            outlined
             v-model="workerphone2"
+            outlined
             label="Telefono trabajador"
             mask="(+##) #####-####"
             class="col q-ml-md"
@@ -392,15 +392,15 @@
             v-if="disableSupplier"
             label="Editar"
             color="amber"
-            @click="disableSupplier = false"
             class="q-mr-sm"
+            @click="disableSupplier = false"
           />
           <q-btn
             v-else
             label="Guardar"
             color="amber"
-            @click="disableSupplier = true"
             class="q-mr-sm"
+            @click="disableSupplier = true"
           />
           <q-btn
             label="Ver lista"
@@ -413,8 +413,8 @@
       </div>
 
       <q-input
-        outlined
         v-model="reception_date"
+        outlined
         label="Fecha de recepción"
         stack-label
         lazy-rules
@@ -422,7 +422,7 @@
           /*(val) => (val && val != null) || 'Este campo es obligatorio',*/
         ]"
       >
-        <template v-slot:append>
+        <template #append>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy
               cover
@@ -439,7 +439,7 @@
         </template>
       </q-input>
 
-      <!--Invoices-->
+      <!-- Invoices -->
       <div v-if="!newinvoicestate">
         <SelectForm
           outlined
@@ -448,11 +448,11 @@
           option_label="name"
           label="Facturas"
           not_found_label="No hay facturas disponibles"
-          @updateModel="(value) => (invoice = value)"
           :rules="[
             /*val => !!val || 'Campo obligatorio'*/
           ]"
           lazy-rules
+          @update-model="(value) => (invoice = value)"
         />
         <div class="row justify-end q-mt-md">
           <q-btn
@@ -467,8 +467,8 @@
       <div v-else>
         <div class="row">
           <q-input
-            outlined
             v-model="newinvoicenumber"
+            outlined
             label="Numero"
             type="number"
             class="col"
@@ -477,8 +477,8 @@
             lazy-rules
           />
           <q-input
-            outlined
             v-model="newinvoicedate"
+            outlined
             label="Fecha"
             type="date"
             stack-label
@@ -490,15 +490,15 @@
         </div>
         <div class="row q-mt-sm">
           <q-file
+            v-model="invoiceimage"
             outlined
             class="col"
-            v-model="invoiceimage"
             label="Foto de factura"
             accept=".jpg, image/*"
             :disable="disableInvoice"
             clearable
           >
-            <template v-slot:prepend>
+            <template #prepend>
               <q-icon name="cloud_upload" />
             </template>
           </q-file>
@@ -508,15 +508,15 @@
             v-if="disableInvoice"
             label="Editar"
             color="amber"
-            @click="disableInvoice = false"
             class="q-mr-sm"
+            @click="disableInvoice = false"
           />
           <q-btn
             v-else
             label="Guardar"
             color="amber"
-            @click="disableInvoice = true"
             class="q-mr-sm"
+            @click="disableInvoice = true"
           />
           <q-btn
             label="Ver lista"
@@ -528,7 +528,7 @@
         </div>
       </div>
 
-      <!--Projects stages and owner-->
+      <!-- Projects stages and owner -->
 
       <div class="row justify-center">
         <div v-if="!newprojectstate" class="col q-mr-md">
@@ -541,16 +541,16 @@
             option_label="name"
             label="Proyectos"
             not_found_label="No hay proyectos disponibles"
-            @updateModel="
+            :rules="[
+              /*val => !!val || 'Campo obligatorio'*/
+            ]"
+            lazy-rules
+            @update-model="
               (value) => {
                 project = value;
                 getStages();
               }
             "
-            :rules="[
-              /*val => !!val || 'Campo obligatorio'*/
-            ]"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -564,8 +564,8 @@
         <div v-else class="col q-mr-lg">
           <div class="row">
             <q-input
-              outlined
               v-model="newprojectname"
+              outlined
               label="Nombre proyeto"
               class="col"
               :disable="disableProject"
@@ -585,11 +585,11 @@
             option_label="name"
             label="Etapas"
             not_found_label="No hay etapas disponibles"
-            @updateModel="(value) => (stage = value)"
             :rules="[
               /*val => !!val || 'Campo obligatorio'*/
             ]"
             lazy-rules
+            @update-model="(value) => (stage = value)"
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -603,8 +603,8 @@
         <div v-else class="col">
           <div class="row">
             <q-input
-              outlined
               v-model="newstagename"
+              outlined
               label="Nombre etapa"
               class="col"
               :disable="disableProject"
@@ -619,23 +619,23 @@
           v-if="disableProject"
           label="Editar"
           color="amber"
-          @click="disableProject = false"
           class="q-mr-sm"
+          @click="disableProject = false"
         />
         <q-btn
           v-else
           label="Guardar"
           color="amber"
-          @click="disableProject = true"
           class="q-mr-sm"
+          @click="disableProject = true"
         />
         <q-btn
           label="Ver lista"
           color="amber"
           @click="
             (newstagestate = false),
-              (newprojectstate = false),
-              (disableProject = false)
+            (newprojectstate = false),
+            (disableProject = false)
           "
         />
       </div>
@@ -650,13 +650,13 @@
             option_label="name"
             label="Dueño proyecto"
             not_found_label="No hay dueños disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 projectowner = value;
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-mt-md">
             <q-btn
@@ -669,9 +669,9 @@
         </div>
         <div v-else class="col">
           <q-input
+            v-model="newprojectownername"
             outlined
             class="row"
-            v-model="newprojectownername"
             label="Nombre dueño"
             :disable="disableProjectOwner"
             :rules="[(val) => !!val || 'Campo obligatorio']"
@@ -682,15 +682,15 @@
               v-if="disableProjectOwner"
               label="Editar"
               color="amber"
-              @click="disableProjectOwner = false"
               class="q-mr-sm"
+              @click="disableProjectOwner = false"
             />
             <q-btn
               v-else
               label="Guardar"
               color="amber"
-              @click="disableProjectOwner = true"
               class="q-mr-sm"
+              @click="disableProjectOwner = true"
             />
             <q-btn
               label="Ver lista"
@@ -703,7 +703,7 @@
         </div>
       </div>
     </FormSection>
-    <!--Location-->
+    <!-- Location -->
     <FormSection title="Datos ubicación">
       <div class="row justify-center">
         <div v-if="!newbuildingstate" class="col q-mr-md">
@@ -716,14 +716,14 @@
             option_label="name"
             label="Edificio"
             not_found_label="No hay edificios disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 building = value;
                 getUnits();
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -737,8 +737,8 @@
         <div v-else class="col">
           <div class="row">
             <q-input
-              outlined
               v-model="newbuildingname"
+              outlined
               label="Nombre edificio"
               class="col"
               :disable="disableLocation"
@@ -757,14 +757,14 @@
             option_label="name"
             label="Unidad"
             not_found_label="No hay una unidad disponible"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 unit = value;
                 getRooms();
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -779,8 +779,8 @@
         <div v-else class="col q-pl-md">
           <div class="row">
             <q-input
-              outlined
               v-model="newunitname"
+              outlined
               label="Nombre unidad"
               class="col"
               :disable="disableLocation"
@@ -802,13 +802,13 @@
             option_label="name"
             label="Sala"
             not_found_label="No hay salas disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 room = value;
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -822,8 +822,8 @@
         <div v-else class="col q-pl-md">
           <div class="row">
             <q-input
-              outlined
               v-model="newroomname"
+              outlined
               label="Nombre sala"
               class="col"
               :disable="disableLocation"
@@ -841,29 +841,29 @@
           v-if="disableLocation"
           label="Editar"
           color="amber"
-          @click="disableLocation = false"
           class="q-mr-sm"
+          @click="disableLocation = false"
         />
         <q-btn
           v-else
           label="Guardar"
           color="amber"
-          @click="disableLocation = true"
           class="q-mr-sm"
+          @click="disableLocation = true"
         />
         <q-btn
           label="Ver lista"
           color="amber"
           @click="
             (newbuildingstate = false),
-              (newunitstate = false),
-              (newroomstate = false),
-              (disableLocation = false)
+            (newunitstate = false),
+            (newroomstate = false),
+            (disableLocation = false)
           "
         />
       </div>
     </FormSection>
-    <!--Form button-->
+    <!-- Form button -->
     <div class="row justify-end q-mt-mx">
       <q-btn label="Crear" type="submit" color="positive" />
     </div>
@@ -877,615 +877,627 @@
 </template>
 
 <script setup>
-import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
-import { sendRequest } from "src/axios/instance.js";
+import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { sendRequest } from 'src/axios/instance.js'
 
-import SelectForm from "src/components/SelectForm.vue";
-import UploadImages from "src/components/UploadImages.vue";
-import FormSection from "src/components/Form/FormSection.vue";
-import PageTitle from "src/components/commons/PageTitle.vue";
+import SelectForm from 'src/components/SelectForm.vue'
+import UploadImages from 'src/components/UploadImages.vue'
+import FormSection from 'src/components/Form/FormSection.vue'
+import PageTitle from 'src/components/commons/PageTitle.vue'
 
 const maintenanceOptions = [
   {
     value: 1,
-    name: "Mensual",
+    name: 'Mensual',
   },
   {
     value: 3,
-    name: "Trimestral",
+    name: 'Trimestral',
   },
   {
     value: 6,
-    name: "Semestral",
+    name: 'Semestral',
   },
   {
     value: 12,
-    name: "Anual",
+    name: 'Anual',
   },
-];
+]
 
 const rolOptions = [
   {
-    value: "Vendedor",
-    name: "Vendedor",
+    value: 'Vendedor',
+    name: 'Vendedor',
   },
   {
-    value: "Tecnico",
-    name: "Tecnico",
+    value: 'Tecnico',
+    name: 'Tecnico',
   },
-];
+]
 
-const brand = ref(null);
-const brandOptions = ref([]);
-const building = ref(null);
-const buildingOptions = ref([]);
-const createEquipmentForm = ref(null);
-const disableBrand = ref(false);
-const disableInvoice = ref(false);
-const disableLocation = ref(false);
-const disableProject = ref(false);
-const disableProjectOwner = ref(false);
-const disableSupplier = ref(false);
-const equipmentimages = ref([]);
-const invoiceimage = ref(null);
-const name = ref(null);
-const serial = ref(null);
-const inventory = ref(0);
-const invoice = ref(null);
-const invoicesOptions = ref([]);
-const loading = ref(false);
-const model = ref(null);
-const modelOptions = ref([]);
-const modelNumber = ref(null);
-const modelNumberOptions = ref([]);
-const maintenance = ref(null);
-const observation = ref(null);
-const newbrandstate = ref(false);
-const newbuildingname = ref(null);
-const newbuildingstate = ref(false);
-const newinvoicestate = ref(false);
-const newmodelstate = ref(null);
-const newmodelnumberstate = ref(false);
-const newmodel = ref(null);
-const newmodelnumber = ref(null);
-const newbrand = ref(null);
-const newinvoicenumber = ref(null);
-const newinvoicedate = ref(null);
-const newprojectstate = ref(null);
-const newprojectname = ref(null);
-const newProjectOwnerState = ref(false);
-const newprojectownername = ref(null);
-const newroomname = ref(null);
-const newroomstate = ref(null);
-const newstagestate = ref(null);
-const newstagename = ref(null);
-const newsupplierstate = ref(false);
-const newsuppliername = ref(null);
-const newsupplierrut = ref(null);
-const newsupplieraddress = ref(null);
-const newunitname = ref(null);
-const newunitstate = ref(false);
-const project = ref(null);
-const projectowner = ref(null);
-const projectOptions = ref([]);
-const projectOwnersOptions = ref([]);
-const reception_date = ref(null);
-const stage = ref(null);
-const stagesOptions = ref([]);
-const room = ref(null);
-const roomOptions = ref([]);
-const maintenanceApply = ref(false);
-const supplier = ref(null);
-const suppliersOptions = ref([]);
-const unit = ref(null);
-const unitOptions = ref([]);
-const workername1 = ref(null);
-const workerrol1 = ref(null);
-const workermail1 = ref(null);
-const workerphone1 = ref(null);
-const workername2 = ref(null);
-const workerrol2 = ref(null);
-const workermail2 = ref(null);
-const workerphone2 = ref(null);
-const $q = useQuasar();
-const router = useRouter();
-const api_prefix = process.env.API_URL;
+const brand = ref(null)
+const brandOptions = ref([])
+const building = ref(null)
+const buildingOptions = ref([])
+const createEquipmentForm = ref(null)
+const disableBrand = ref(false)
+const disableInvoice = ref(false)
+const disableLocation = ref(false)
+const disableProject = ref(false)
+const disableProjectOwner = ref(false)
+const disableSupplier = ref(false)
+const equipmentimages = ref([])
+const invoiceimage = ref(null)
+const name = ref(null)
+const serial = ref(null)
+const inventory = ref(0)
+const invoice = ref(null)
+const invoicesOptions = ref([])
+const loading = ref(false)
+const model = ref(null)
+const modelOptions = ref([])
+const modelNumber = ref(null)
+const modelNumberOptions = ref([])
+const maintenance = ref(null)
+const observation = ref(null)
+const newbrandstate = ref(false)
+const newbuildingname = ref(null)
+const newbuildingstate = ref(false)
+const newinvoicestate = ref(false)
+const newmodelstate = ref(null)
+const newmodelnumberstate = ref(false)
+const newmodel = ref(null)
+const newmodelnumber = ref(null)
+const newbrand = ref(null)
+const newinvoicenumber = ref(null)
+const newinvoicedate = ref(null)
+const newprojectstate = ref(null)
+const newprojectname = ref(null)
+const newProjectOwnerState = ref(false)
+const newprojectownername = ref(null)
+const newroomname = ref(null)
+const newroomstate = ref(null)
+const newstagestate = ref(null)
+const newstagename = ref(null)
+const newsupplierstate = ref(false)
+const newsuppliername = ref(null)
+const newsupplierrut = ref(null)
+const newsupplieraddress = ref(null)
+const newunitname = ref(null)
+const newunitstate = ref(false)
+const project = ref(null)
+const projectowner = ref(null)
+const projectOptions = ref([])
+const projectOwnersOptions = ref([])
+const reception_date = ref(null)
+const stage = ref(null)
+const stagesOptions = ref([])
+const room = ref(null)
+const roomOptions = ref([])
+const maintenanceApply = ref(false)
+const supplier = ref(null)
+const suppliersOptions = ref([])
+const unit = ref(null)
+const unitOptions = ref([])
+const workername1 = ref(null)
+const workerrol1 = ref(null)
+const workermail1 = ref(null)
+const workerphone1 = ref(null)
+const workername2 = ref(null)
+const workerrol2 = ref(null)
+const workermail2 = ref(null)
+const workerphone2 = ref(null)
+const $q = useQuasar()
+const router = useRouter()
+const api_prefix = process.env.API_URL
 
-const handleAddImages = (files) => {
-  equipmentimages.value.push(files[0]);
-};
+function handleAddImages(files) {
+  equipmentimages.value.push(files[0])
+}
 
-const handleRemoveImages = (files) => {
+function handleRemoveImages(files) {
   equipmentimages.value = equipmentimages.value.filter((value) => {
-    return value != files[0];
-  });
-};
+    return value != files[0]
+  })
+}
 
-const getBrands = async () => {
+async function getBrands() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/brands",
-    });
-    const brands = response.data;
+      method: 'GET',
+      url: `${api_prefix}/brands`,
+    })
+    const brands = response.data
     brandOptions.value = brands.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getBuildings = async () => {
+async function getBuildings() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/buildings",
-    });
-    const buildings = response.data;
+      method: 'GET',
+      url: `${api_prefix}/buildings`,
+    })
+    const buildings = response.data
     buildingOptions.value = buildings.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getInvoices = async () => {
+async function getInvoices() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/invoices",
-    });
-    const invoices = response.data;
+      method: 'GET',
+      url: `${api_prefix}/invoices`,
+    })
+    const invoices = response.data
     invoicesOptions.value = invoices.map((x) => {
-      return { id: x.id, name: x.number.toString() };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.number.toString() }
+    })
+  }
+  catch (error) {}
+}
 
-const getInvoicesSupplier = async (supplier_id) => {
+async function getInvoicesSupplier(supplier_id) {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/invoices/supplier/" + supplier_id,
-    });
-    const invoices = response.data;
+      method: 'GET',
+      url: `${api_prefix}/invoices/supplier/${supplier_id}`,
+    })
+    const invoices = response.data
     invoicesOptions.value = invoices.map((x) => {
-      return { id: x.id, name: x.number.toString() };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.number.toString() }
+    })
+  }
+  catch (error) {}
+}
 
-const getModels = async () => {
+async function getModels() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/models/" + brand.value,
-    });
-    const models = response.data;
+      method: 'GET',
+      url: `${api_prefix}/models/${brand.value}`,
+    })
+    const models = response.data
     modelOptions.value = models.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getModelNumbers = async () => {
+async function getModelNumbers() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/model_numbers/" + model.value,
-    });
-    const modelnumbers = response.data;
+      method: 'GET',
+      url: `${api_prefix}/model_numbers/${model.value}`,
+    })
+    const modelnumbers = response.data
     modelNumberOptions.value = modelnumbers.map((x) => {
-      return { id: x.id, name: x.number };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.number }
+    })
+  }
+  catch (error) {}
+}
 
-const getProjects = async () => {
+async function getProjects() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/projects",
-    });
-    const projects = response.data;
+      method: 'GET',
+      url: `${api_prefix}/projects`,
+    })
+    const projects = response.data
     projectOptions.value = projects.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getProjectOwners = async () => {
+async function getProjectOwners() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/project_owners",
-    });
-    const projectsowners = response.data;
+      method: 'GET',
+      url: `${api_prefix}/project_owners`,
+    })
+    const projectsowners = response.data
     projectOwnersOptions.value = projectsowners.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getRooms = async () => {
-  const api_url = api_prefix + "/rooms/" + unit.value;
+async function getRooms() {
+  const api_url = `${api_prefix}/rooms/${unit.value}`
   try {
     const response = await sendRequest({
-      method: "GET",
+      method: 'GET',
       url: api_url,
-    });
-    room.value = null;
-    const rooms = response.data;
+    })
+    room.value = null
+    const rooms = response.data
     roomOptions.value = rooms.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getStages = async () => {
-  const api_url = api_prefix + "/stages/" + project.value;
+async function getStages() {
+  const api_url = `${api_prefix}/stages/${project.value}`
   try {
     const response = await sendRequest({
-      method: "GET",
+      method: 'GET',
       url: api_url,
-    });
-    stage.value = null;
-    const stages = response.data;
+    })
+    stage.value = null
+    const stages = response.data
     stagesOptions.value = stages.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getSuppliers = async () => {
+async function getSuppliers() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/suppliers",
-    });
-    const suppliers = response.data;
+      method: 'GET',
+      url: `${api_prefix}/suppliers`,
+    })
+    const suppliers = response.data
     suppliersOptions.value = suppliers.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getUnits = async () => {
-  const api_url = api_prefix + "/units/" + building.value;
+async function getUnits() {
+  const api_url = `${api_prefix}/units/${building.value}`
   try {
     const response = await sendRequest({
-      method: "GET",
+      method: 'GET',
       url: api_url,
-    });
-    unit.value = null;
-    room.value = null;
-    roomOptions.value = [];
-    const units = response.data;
+    })
+    unit.value = null
+    room.value = null
+    roomOptions.value = []
+    const units = response.data
     unitOptions.value = units.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const onReset = () => {
-  name.value = null;
-  serial.value = null;
-  inventory.value = null;
-  model.value = null;
-  maintenance.value = null;
-  observation.value = null;
-  reception_date.value = null;
-};
+function onReset() {
+  name.value = null
+  serial.value = null
+  inventory.value = null
+  model.value = null
+  maintenance.value = null
+  observation.value = null
+  reception_date.value = null
+}
 
 async function createNewBrand() {
-  if (!newbrandstate.value) {
-    return brand.value;
-  }
+  if (!newbrandstate.value)
+    return brand.value
 
   const branddata = {
     name: newbrand.value,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/brands",
+      method: 'POST',
+      url: `${api_prefix}/brands`,
       data: branddata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la marca: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la marca: ${error}`,
+    })
   }
 }
 
 async function createNewBuilding() {
-  if (!newbuildingstate.value) {
-    return building.value;
-  }
+  if (!newbuildingstate.value)
+    return building.value
 
   const buildingdata = {
     name: newbuildingname.value,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/buildings",
+      method: 'POST',
+      url: `${api_prefix}/buildings`,
       data: buildingdata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el edificio: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el edificio: ${error}`,
+    })
   }
 }
 
 async function createNewInvoice(supplier_id) {
-  if (!newinvoicestate.value) {
-    return invoice.value;
-  }
+  if (!newinvoicestate.value)
+    return invoice.value
 
   const invoicedata = {
     number: newinvoicenumber.value,
     date: newinvoicedate.value,
-    supplier_id: supplier_id,
-  };
+    supplier_id,
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/invoices",
+      method: 'POST',
+      url: `${api_prefix}/invoices`,
       data: invoicedata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la factura: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la factura: ${error}`,
+    })
   }
 }
 
 async function createNewModel(brand_id) {
-  if (!newbrandstate.value && !newmodelstate.value) {
-    return model.value;
-  }
+  if (!newbrandstate.value && !newmodelstate.value)
+    return model.value
 
   const newmodeldata = {
     name: newmodel.value,
-    brand_id: brand_id,
-  };
+    brand_id,
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/models",
+      method: 'POST',
+      url: `${api_prefix}/models`,
       data: newmodeldata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el modelo: " + error,
-    });
-    return -1;
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el modelo: ${error}`,
+    })
+    return -1
   }
 }
 
 async function createNewModelnumber(model_id) {
-  if (!newbrandstate.value && !newmodelstate.value && !newmodelnumber.value) {
-    return modelNumber.value;
-  }
+  if (!newbrandstate.value && !newmodelstate.value && !newmodelnumber.value)
+    return modelNumber.value
 
   const newmodelnumberdata = {
     number: newmodelnumber.value,
-    model_id: model_id,
-  };
+    model_id,
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/model_numbers",
+      method: 'POST',
+      url: `${api_prefix}/model_numbers`,
       data: newmodelnumberdata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el número de modelo: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el número de modelo: ${error}`,
+    })
   }
 }
 
 async function createNewProject(project_owner_id) {
-  if (!newprojectstate.value) {
-    return project.value;
-  }
+  if (!newprojectstate.value)
+    return project.value
 
-  const projectname = newprojectname.value;
+  const projectname = newprojectname.value
 
-  if (projectname.trim().length == 0) {
-    return -1;
-  }
+  if (projectname.trim().length == 0)
+    return -1
 
-  if (project_owner_id == -1) {
-    project_owner_id = null;
-  }
+  if (project_owner_id == -1)
+    project_owner_id = null
 
   const projectdata = {
     name: projectname,
     owner_id: project_owner_id,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/projects",
+      method: 'POST',
+      url: `${api_prefix}/projects`,
       data: projectdata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el proyecto: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el proyecto: ${error}`,
+    })
   }
 }
 
 async function createNewProjectOwner() {
-  if (!newProjectOwnerState.value) {
-    return projectowner.value;
-  }
+  if (!newProjectOwnerState.value)
+    return projectowner.value
 
-  const projectownername = newprojectownername.value;
+  const projectownername = newprojectownername.value
 
-  if (projectownername.trim().length == 0) {
-    return -1;
-  }
+  if (projectownername.trim().length == 0)
+    return -1
 
   const projectownerdata = {
     name: projectownername,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/project_owners",
+      method: 'POST',
+      url: `${api_prefix}/project_owners`,
       data: projectownerdata,
-    });
-  } catch (error) {
+    })
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el dueño: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el dueño: ${error}`,
+    })
   }
 }
 
 async function createNewUnit(building_id) {
-  if (!newbuildingstate.value && !newunitstate.value) {
-    return unit.value;
-  }
+  if (!newbuildingstate.value && !newunitstate.value)
+    return unit.value
 
   const unitdata = {
     name: newunitname.value,
-    building_id: building_id,
-  };
+    building_id,
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/units",
+      method: 'POST',
+      url: `${api_prefix}/units`,
       data: unitdata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la unidad: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la unidad: ${error}`,
+    })
   }
 }
 
 async function createNewRoom(unit_id) {
-  if (!newbuildingstate.value && !newunitstate.value && !newroomstate.value) {
-    return room.value;
-  }
+  if (!newbuildingstate.value && !newunitstate.value && !newroomstate.value)
+    return room.value
+
   const roomdata = {
     name: newroomname.value,
-    unit_id: unit_id,
-  };
+    unit_id,
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/rooms",
+      method: 'POST',
+      url: `${api_prefix}/rooms`,
       data: roomdata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la sala: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la sala: ${error}`,
+    })
   }
 }
 
 async function createNewSupplier() {
-  if (!newsupplierstate.value) {
-    return supplier.value;
-  }
+  if (!newsupplierstate.value)
+    return supplier.value
+
   const supplierdata = {
     name: newsuppliername.value,
     rut: newsupplierrut.value,
     city_address: newsupplieraddress.value,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/suppliers",
+      method: 'POST',
+      url: `${api_prefix}/suppliers`,
       data: supplierdata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el proveedor: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el proveedor: ${error}`,
+    })
   }
 }
 
 async function createNewWorker(supplier_id) {
-  if (!newsupplierstate.value) {
-    return;
-  }
+  if (!newsupplierstate.value)
+    return
+
   if (workername1.value != null) {
     const workerdata1 = {
       name: workername1.value,
       position: workerrol1.value,
       phone: workerphone1.value,
       email: workermail1.value,
-      supplier_id: supplier_id,
-    };
+      supplier_id,
+    }
 
     try {
       const response = await sendRequest({
-        method: "POST",
-        url: api_prefix + "/suppliers_contacts",
+        method: 'POST',
+        url: `${api_prefix}/suppliers_contacts`,
         data: workerdata1,
-      });
-    } catch (error) {
+      })
+    }
+    catch (error) {
       $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "No se pudo crear el contacto 1: " + error,
-      });
+        color: 'red-3',
+        textColor: 'white',
+        icon: 'error',
+        message: `No se pudo crear el contacto 1: ${error}`,
+      })
     }
   }
   if (workername2.value != null) {
@@ -1494,137 +1506,140 @@ async function createNewWorker(supplier_id) {
       position: workerrol2.value,
       phone: workerphone2.value,
       email: workermail2.value,
-      supplier_id: supplier_id,
-    };
+      supplier_id,
+    }
     try {
       const response = await sendRequest({
-        method: "POST",
-        url: api_prefix + "/suppliers_contacts",
+        method: 'POST',
+        url: `${api_prefix}/suppliers_contacts`,
         data: workerdata2,
-      });
-    } catch (error) {
+      })
+    }
+    catch (error) {
       $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "No se pudo crear el contacto 2: " + error,
-      });
+        color: 'red-3',
+        textColor: 'white',
+        icon: 'error',
+        message: `No se pudo crear el contacto 2: ${error}`,
+      })
     }
   }
 }
 
 async function createNewStage(project_id) {
-  if (!newstagestate.value && !newprojectstate.value) {
-    return stage.value;
-  }
+  if (!newstagestate.value && !newprojectstate.value)
+    return stage.value
 
-  const stagename = newstagename.value;
+  const stagename = newstagename.value
 
-  if (stagename.trim().length == 0) {
-    return -1;
-  }
+  if (stagename.trim().length == 0)
+    return -1
 
   const stagedata = {
     name: newstagename.value,
-    project_id: project_id,
-  };
+    project_id,
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/stages",
+      method: 'POST',
+      url: `${api_prefix}/stages`,
       data: stagedata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la etapa: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la etapa: ${error}`,
+    })
   }
 }
 
 async function createNewEquipment(equipmentdata) {
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/equipments",
+      method: 'POST',
+      url: `${api_prefix}/equipments`,
       data: equipmentdata,
-    });
+    })
     if (response.status == 201) {
       $q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "check",
-        message: "Equipo creado con éxito",
-      });
+        color: 'green-4',
+        textColor: 'white',
+        icon: 'check',
+        message: 'Equipo creado con éxito',
+      })
     }
-    return response.data;
-  } catch (error) {
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el equipo: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el equipo: ${error}`,
+    })
   }
 }
 
 async function uploadInvoiceImage(equipment_id) {
-  if (!newinvoicestate.value || invoiceimage.value == null) {
-    return;
-  }
-  const formData = new FormData();
-  formData.append("file", invoiceimage.value);
+  if (!newinvoicestate.value || invoiceimage.value == null)
+    return
+
+  const formData = new FormData()
+  formData.append('file', invoiceimage.value)
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/invoices" + equipment_id,
+      method: 'POST',
+      url: `${api_prefix}/invoices${equipment_id}`,
       data: formData,
-    });
-  } catch (error) {
+    })
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo guardar la imagen de factura: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo guardar la imagen de factura: ${error}`,
+    })
   }
 }
 
 async function uploadEquipmentImage(equipment_id) {
-  if (equipmentimages.value == null) {
-    return;
-  }
+  if (equipmentimages.value == null)
+    return
+
   equipmentimages.value.forEach((image) => {
-    const formData = new FormData();
-    formData.append("file", image);
-    uploadEquipmentImage2(equipment_id, formData);
-  });
+    const formData = new FormData()
+    formData.append('file', image)
+    uploadEquipmentImage2(equipment_id, formData)
+  })
 }
 
 async function uploadEquipmentImage2(equipment_id, formData) {
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/equipments/" + equipment_id,
+      method: 'POST',
+      url: `${api_prefix}/equipments/${equipment_id}`,
       data: formData,
-    });
-  } catch (error) {
+    })
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo guardar la imagen del equipo: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo guardar la imagen del equipo: ${error}`,
+    })
   }
 }
 
 async function onSubmit() {
-  createEquipmentForm.value.resetValidation();
-  let equipmentdata = {
+  createEquipmentForm.value.resetValidation()
+  const equipmentdata = {
     name: name.value,
     serial_number: serial.value,
     umag_inventory_code: inventory.value,
@@ -1636,89 +1651,89 @@ async function onSubmit() {
     room_id: room.value,
     stage_id: stage.value,
     last_preventive_mainteinance: reception_date.value,
-  };
-  loading.value = true;
-  if (maintenanceApply.value) {
-    equipmentdata["maintenance_period"] = maintenance.value;
   }
-  const building_id = await createNewBuilding();
+  loading.value = true
+  if (maintenanceApply.value)
+    equipmentdata.maintenance_period = maintenance.value
+
+  const building_id = await createNewBuilding()
   if (building_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  const unit_id = await createNewUnit(building_id);
+  const unit_id = await createNewUnit(building_id)
   if (unit_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  const room_id = await createNewRoom(unit_id);
+  const room_id = await createNewRoom(unit_id)
   if (room_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  equipmentdata["room_id"] = room_id;
+  equipmentdata.room_id = room_id
 
-  const brand_id = await createNewBrand();
+  const brand_id = await createNewBrand()
   if (brand_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  const model_id = await createNewModel(brand_id);
+  const model_id = await createNewModel(brand_id)
   if (model_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  const model_number_id = await createNewModelnumber(model_id);
+  const model_number_id = await createNewModelnumber(model_id)
   if (model_number_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
 
-  equipmentdata["model_number_id"] = model_number_id;
+  equipmentdata.model_number_id = model_number_id
 
-  const supplier_id = await createNewSupplier();
+  const supplier_id = await createNewSupplier()
   if (supplier_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  equipmentdata["supplier_id"] = supplier_id;
-  await createNewWorker(supplier_id);
-  const invoice_id = await createNewInvoice(supplier_id);
+  equipmentdata.supplier_id = supplier_id
+  await createNewWorker(supplier_id)
+  const invoice_id = await createNewInvoice(supplier_id)
   if (invoice_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  equipmentdata["invoice_id"] = invoice_id;
+  equipmentdata.invoice_id = invoice_id
 
-  const project_owner_id = await createNewProjectOwner();
-  const project_id = await createNewProject(project_owner_id);
-  const stage_id = await createNewStage(project_id);
+  const project_owner_id = await createNewProjectOwner()
+  const project_id = await createNewProject(project_owner_id)
+  const stage_id = await createNewStage(project_id)
   if (stage_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  equipmentdata["stage_id"] = stage_id;
-  const equipment_id = await createNewEquipment(equipmentdata);
-  await uploadEquipmentImage(equipment_id);
-  await uploadInvoiceImage(equipment_id);
-  loading.value = false;
-  //onReset()
+  equipmentdata.stage_id = stage_id
+  const equipment_id = await createNewEquipment(equipmentdata)
+  await uploadEquipmentImage(equipment_id)
+  await uploadInvoiceImage(equipment_id)
+  loading.value = false
+  // onReset()
 
-  redirectToEquipment(equipment_id.toString());
+  redirectToEquipment(equipment_id.toString())
 }
 
 function redirectToEquipment(equipment_id) {
-  router.push({ path: equipment_id });
+  router.push({ path: equipment_id })
 }
 
 onMounted(() => {
-  getBrands();
-  getInvoices();
-  getProjects();
-  getProjectOwners();
-  getSuppliers();
-  getBuildings();
-});
+  getBrands()
+  getInvoices()
+  getProjects()
+  getProjectOwners()
+  getSuppliers()
+  getBuildings()
+})
 </script>
 
 <style scoped>

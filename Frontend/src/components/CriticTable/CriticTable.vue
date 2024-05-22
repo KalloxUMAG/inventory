@@ -5,14 +5,14 @@
     :rows="rows"
     no-data-label="No hay registros para mostrar"
     rows-per-page-label="Registros por pagina"
-    @row-click="rowClicker"
     hide-bottom
     flat
     bordered
     no-wrap
     class="card-style"
+    @row-click="rowClicker"
   >
-    <template v-slot:body-cell="props">
+    <template #body-cell="props">
       <q-td
         :props="props"
       >
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import { ref } from "vue";
 export default {
   props: {
     columns: Array,
@@ -33,11 +32,11 @@ export default {
   },
   methods: {
     rowClicker(e, row) {
-      const item = row.id;
-      this.$router.push(this.detail_query + item);
+      const item = row.id
+      this.$router.push(this.detail_query + item)
     },
   },
-};
+}
 </script>
 
 <style scoped>

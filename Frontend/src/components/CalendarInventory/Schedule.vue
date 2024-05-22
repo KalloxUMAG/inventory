@@ -35,6 +35,7 @@
         <div class="q-mb-md">
           <h5>Prestamos</h5>
           <q-table
+            v-model:selected="selectionTables"
             :rows="loans"
             :columns="columns"
             class="bg-info text-white"
@@ -42,12 +43,12 @@
             flat
             bordered
             selection="multiple"
-            v-model:selected="selectionTables"
           />
         </div>
         <div>
           <h5>Devoluciones</h5>
           <q-table
+            v-model:selected="selectionTables"
             :rows="returns"
             :columns="columns"
             class="bg-positive text-white"
@@ -55,12 +56,12 @@
             flat
             bordered
             selection="multiple"
-            v-model:selected="selectionTables"
           />
         </div>
         <div>
           <h5>Instrumentos en Préstamo</h5>
           <q-table
+            v-model:selected="selectionTables"
             :rows="inLoans"
             :columns="columns"
             class="bg-warning text-white"
@@ -68,7 +69,6 @@
             flat
             bordered
             selection="multiple"
-            v-model:selected="selectionTables"
           />
         </div>
       </div>
@@ -77,9 +77,8 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits, computed } from "vue";
-import dayjs from "dayjs";
-dayjs.locale("es");
+import { computed, defineEmits, defineProps, ref, watch } from 'vue'
+import dayjs from 'dayjs'
 
 const props = defineProps({
   selectedDay: {
@@ -87,77 +86,79 @@ const props = defineProps({
     required: false,
     default: () => ({}),
   },
-});
+})
 
-const selectionTables = ref([]);
+const emit = defineEmits(['new', 'show-modal', 'close-selected-day'])
+
+dayjs.locale('es')
+
+const selectionTables = ref([])
 const columns = [
   {
-    name: "user_fullname",
+    name: 'user_fullname',
     required: true,
-    label: "Nombre",
-    align: "left",
-    field: (row) => row.supply.user_fullname,
+    label: 'Nombre',
+    align: 'left',
+    field: row => row.supply.user_fullname,
   },
   {
-    name: "user_email",
+    name: 'user_email',
     required: true,
-    label: "Email",
-    align: "left",
-    field: (row) => row.supply.user_email,
+    label: 'Email',
+    align: 'left',
+    field: row => row.supply.user_email,
   },
   {
-    name: "equipment_name",
+    name: 'equipment_name',
     required: true,
-    label: "Equipo",
-    align: "left",
-    field: (row) => row.supply.equipment_name,
+    label: 'Equipo',
+    align: 'left',
+    field: row => row.supply.equipment_name,
   },
   {
-    name: "loan_start_date",
+    name: 'loan_start_date',
     required: true,
-    label: "Fecha Inicio",
-    align: "left",
-    field: (row) => row.supply.loan_start_date,
+    label: 'Fecha Inicio',
+    align: 'left',
+    field: row => row.supply.loan_start_date,
   },
   {
-    name: "loan_end_date",
+    name: 'loan_end_date',
     required: true,
-    label: "Fecha Termino",
-    align: "left",
-    field: (row) => row.supply.loan_end_date,
+    label: 'Fecha Termino',
+    align: 'left',
+    field: row => row.supply.loan_end_date,
   },
-];
+]
 
-const closeSelectedDay = () => {
-  emit("close-selected-day");
-};
-
-const emit = defineEmits(["new", "show-modal", "close-selected-day"]);
+function closeSelectedDay() {
+  emit('close-selected-day')
+}
 
 const selectedIds = computed(() => {
-  const combinedSelections = [...(selectionTables.value || [])];
-  return [...new Set(combinedSelections.map((event) => event.id))];
-});
+  const combinedSelections = [...(selectionTables.value || [])]
+  return [...new Set(combinedSelections.map(event => event.id))]
+})
 
 const loans = computed(() =>
   props.selectedDay.dayDate.events.length > 0
-    ? props.selectedDay.dayDate.events?.filter((event) => event.isStarter)
-    : []
-);
+    ? props.selectedDay.dayDate.events?.filter(event => event.isStarter)
+    : [],
+)
 const returns = computed(() =>
   props.selectedDay.dayDate.events.length > 0
-    ? props.selectedDay.dayDate.events?.filter((event) => event.isEnd)
-    : []
-);
+    ? props.selectedDay.dayDate.events?.filter(event => event.isEnd)
+    : [],
+)
 const inLoans = computed(() =>
   props.selectedDay.dayDate.events?.length > 0
     ? props.selectedDay.dayDate?.events
-    : []
-);
+    : [],
+)
 
 watch(selectedIds, (newIds, oldIds) => {
-  emit("selected-ids-changed", newIds);
-});
+  emit('selected-ids-changed', newIds)
+})
 </script>
 
 <style scoped>

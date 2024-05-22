@@ -2,16 +2,20 @@
   <q-dialog v-model="showModal">
     <q-card style="width: 700px; max-width: 80vw">
       <q-card-section>
-        <div class="text-h5 text-weight-bold">{{ title }}</div>
+        <div class="text-h5 text-weight-bold">
+          {{ title }}
+        </div>
       </q-card-section>
       <q-card-section>
         <q-form ref="formEquipmentRef" @submit="handleSendNewForm">
           <div class="row justify-between q-mx-auto">
-            <p class="col-12 text-h6 q-mb-md">Usuario a realizar préstamo</p>
+            <p class="col-12 text-h6 q-mb-md">
+              Usuario a realizar préstamo
+            </p>
             <div class="row col-12 justify-between q-mb-md">
               <q-input
-                class="col-12 col-md-8 q-pb-none"
                 v-model="card.user.fullname"
+                class="col-12 col-md-8 q-pb-none"
                 standout="bg-teal text-white"
                 label="Nombre"
                 readonly
@@ -19,14 +23,14 @@
               />
               <q-btn
                 icon="search"
-                @click="showModalSearch = true"
                 class="col-12 col-md-3"
+                @click="showModalSearch = true"
               >
-                Buscar Usuario</q-btn
-              >
+                Buscar Usuario
+              </q-btn>
             </div>
 
-            <div @click="toggleDatePopup" class="col-12 row q-pt-md">
+            <div class="col-12 row q-pt-md" @click="toggleDatePopup">
               <p class="col-12 text-h6 q-mb-md">
                 Ingrese el rango de fechas para el préstamo
               </p>
@@ -46,14 +50,14 @@
                   <q-popup-proxy
                     cover
                     :breakpoint="600"
-                    @before-show="updateProxy"
                     transition-show="scale"
                     transition-hide="scale"
+                    @before-show="updateProxy"
                   >
                     <q-date
+                      v-model="card.date"
                       placeholder="DD-MM-AAAA"
                       title="Ingrese rango"
-                      v-model="card.date"
                       range
                       today-btn
                       :locale="myLocale"
@@ -63,17 +67,17 @@
                     >
                       <div class="row items-center justify-end q-gutter-sm">
                         <q-btn
+                          v-close-popup
                           label="Cancel"
                           color="primary"
                           flat
-                          v-close-popup
                         />
                         <q-btn
+                          v-close-popup
                           label="OK"
                           color="primary"
                           flat
                           @click="save"
-                          v-close-popup
                         />
                       </div>
                     </q-date>
@@ -89,15 +93,15 @@
                   color="primary"
                 >
                   <q-popup-proxy
-                    @before-show="updateProxy"
                     cover
                     transition-show="scale"
                     transition-hide="scale"
+                    @before-show="updateProxy"
                   >
                     <q-date
+                      v-model="card.date"
                       placeholder="DD-MM-AAAA"
                       title="Ingrese rango"
-                      v-model="card.date"
                       range
                       today-btn
                       :locale="myLocale"
@@ -107,17 +111,17 @@
                     >
                       <div class="row items-center justify-end q-gutter-sm">
                         <q-btn
+                          v-close-popup
                           label="Cancel"
                           color="primary"
                           flat
-                          v-close-popup
                         />
                         <q-btn
+                          v-close-popup
                           label="OK"
                           color="primary"
                           flat
                           @click="save"
-                          v-close-popup
                         />
                       </div>
                     </q-date>
@@ -127,11 +131,13 @@
             </div>
 
             <div class="col-12 row q-pt-md">
-              <p class="col-12 text-h6 q-mb-md">Ingrese el equipo a prestar</p>
+              <p class="col-12 text-h6 q-mb-md">
+                Ingrese el equipo a prestar
+              </p>
               <div class="col-12 text-h6 q-mb-md">
                 <q-select
-                  class="col-12 col-md-12 q-mb-md"
                   v-model="card.consumables"
+                  class="col-12 col-md-12 q-mb-md"
                   standout="bg-teal text-white"
                   :options="types"
                   label="Equipos Disponibles"
@@ -166,24 +172,20 @@
       </q-card-section>
     </q-card>
   </q-dialog>
-  <modal-search-user
+  <ModalSearchUser
+    :show-modal-search="showModalSearch"
     @close="showModalSearch = false"
-    :showModalSearch="showModalSearch"
-    @selectedUser="handleSelectedUser"
+    @selected-user="handleSelectedUser"
   />
 </template>
 
 <script setup>
-import { ref, watch, toRefs, onMounted, computed } from "vue";
-import ModalSearchUser from "../commons/ModalSearchUser.vue";
-import { useEquipmentStore } from "stores";
-import { useQuasar } from "quasar";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
-dayjs.locale("es");
-
-const equipmentStore = useEquipmentStore();
-const $q = useQuasar();
+import { ref, toRefs, watch } from 'vue'
+import { useEquipmentStore } from 'stores'
+import { useQuasar } from 'quasar'
+import dayjs from 'dayjs'
+import ModalSearchUser from '../commons/ModalSearchUser.vue'
+import 'dayjs/locale/es'
 
 const props = defineProps({
   showModal: {
@@ -193,90 +195,96 @@ const props = defineProps({
   },
   title: String,
   event: Object,
-});
+})
 
-const { showModal, uniqueKey, title, event } = toRefs(props);
+const emit = defineEmits(['close', 'create'])
 
-const emit = defineEmits(["close", "create"]);
+dayjs.locale('es')
 
-const show = ref(true);
+const equipmentStore = useEquipmentStore()
+const $q = useQuasar()
+
+const { showModal, uniqueKey, title, event } = toRefs(props)
+
+const show = ref(true)
 const card = ref({
   user: {
-    id: "",
-    email: "",
-    fullname: "",
+    id: '',
+    email: '',
+    fullname: '',
   },
-  consumables: "",
+  consumables: '',
   quantity: 0,
   date: null,
-});
-const types = ref([]);
+})
+const types = ref([])
 const myLocale = ref({
   /* starting with Sunday */
-  days: "Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado".split("_"),
-  daysShort: "Dom_Lun_Mar_Mié_Jue_Vie_Sáb".split("_"),
+  days: 'Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado'.split('_'),
+  daysShort: 'Dom_Lun_Mar_Mié_Jue_Vie_Sáb'.split('_'),
   months:
-    "Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre".split(
-      "_"
+    'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split(
+      '_',
     ),
-  monthsShort: "Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic".split("_"),
+  monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic'.split('_'),
   firstDayOfWeek: 1,
   format24h: true,
-  pluralDay: "dias",
-});
-const showModalSearch = ref(false);
+  pluralDay: 'dias',
+})
+const showModalSearch = ref(false)
 
-const datePopupRef = ref(null);
-const formEquipmentRef = ref(null);
+const datePopupRef = ref(null)
+const formEquipmentRef = ref(null)
 
 watch(
   () => props.showModal,
   (newVal) => {
-    show.value = newVal;
-  }
-);
+    show.value = newVal
+  },
+)
 
 watch(
   () => props.event,
   (newVal) => {
-    if (newVal) card.value = { ...newVal };
+    if (newVal)
+      card.value = { ...newVal }
   },
-  { immediate: true, deep: true }
-);
+  { immediate: true, deep: true },
+)
 
 watch(
   () => card.value.date,
   (newVal) => {
     if (newVal) {
-      card.value.consumables = "";
-      formEquipmentRef.value.resetValidation();
-      availableEquipment();
+      card.value.consumables = ''
+      formEquipmentRef.value.resetValidation()
+      availableEquipment()
     }
   },
-  { immediate: false, deep: true }
-);
+  { immediate: false, deep: true },
+)
 
-const handleSendNewForm = async () => {
-  const { name, dni, consumables, quantity, date, user, ...rest } = card.value;
+async function handleSendNewForm() {
+  const { name, dni, consumables, quantity, date, user, ...rest } = card.value
 
-  emit("create", {
+  emit('create', {
     name,
     dni,
     consumables,
     quantity,
     date,
     user,
-  });
+  })
 
-  cancel();
-};
+  cancel()
+}
 
-const cancel = () => {
-  emit("close");
-};
+function cancel() {
+  emit('close')
+}
 
-const handleSelectedUser = (selectedUser) => {
-  showModalSearch.value = false;
+function handleSelectedUser(selectedUser) {
+  showModalSearch.value = false
   card.value = {
     ...card.value,
     user: {
@@ -284,50 +292,51 @@ const handleSelectedUser = (selectedUser) => {
       email: selectedUser.email,
       fullname: selectedUser.fullname,
     },
-  };
-};
-
-const toggleDatePopup = () => {
-  if (datePopupRef.value) {
-    datePopupRef.value.click();
   }
-};
+}
 
-const availableEquipment = async () => {
+function toggleDatePopup() {
+  if (datePopupRef.value)
+    datePopupRef.value.click()
+}
+
+async function availableEquipment() {
   try {
     const response = await equipmentStore.fetchEquipmentAvailable({
-      start_date: dayjs(card.value.date.from, "DD-MM-YYYY").format(
-        "YYYY-MM-DD"
+      start_date: dayjs(card.value.date.from, 'DD-MM-YYYY').format(
+        'YYYY-MM-DD',
       ),
-      end_date: dayjs(card.value.date.to, "DD-MM-YYYY").format("YYYY-MM-DD"),
-    });
+      end_date: dayjs(card.value.date.to, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+    })
     if (response && Array.isArray(response)) {
-      types.value = response.map((equip) => ({
+      types.value = response.map(equip => ({
         label: equip.name,
         value: equip.id,
-        description: equip.observation || "Sin descripción",
+        description: equip.observation || 'Sin descripción',
         category: equip.stage_id,
         available: equip.available,
         dateEnd: equip.dateEnd || null,
-      }));
-    } else {
-      $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message:
-          "No se encontraron equipamientos disponibles para este rango de fechas",
-      });
+      }))
     }
-  } catch (error) {
-    $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la marca: " + error,
-    });
+    else {
+      $q.notify({
+        color: 'red-3',
+        textColor: 'white',
+        icon: 'error',
+        message:
+          'No se encontraron equipamientos disponibles para este rango de fechas',
+      })
+    }
   }
-};
+  catch (error) {
+    $q.notify({
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la marca: ${error}`,
+    })
+  }
+}
 </script>
 
 <style scoped></style>

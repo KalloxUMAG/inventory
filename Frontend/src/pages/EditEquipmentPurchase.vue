@@ -1,9 +1,11 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin q-pa-md">
-      <q-form @submit="onOKClick" ref="EditEquipmentPurchaseForm">
-        <div class="text-bold text-subtitle1">Datos compra</div>
-        <!--Fields-->
+      <q-form ref="EditEquipmentPurchaseForm" @submit="onOKClick">
+        <div class="text-bold text-subtitle1">
+          Datos compra
+        </div>
+        <!-- Fields -->
         <SelectForm
           :options="supplierOptions"
           option_value="id"
@@ -11,7 +13,7 @@
           label="Proveedor"
           not_found_label="No hay proveedores disponibles"
           :default_value="supplier_value"
-          @updateModel="
+          @update-model="
             (value) => {
               supplier = value;
               getInvoices();
@@ -35,7 +37,7 @@
           label="Número de factura"
           not_found_label="No hay facturas disponibles"
           :default_value="invoice_value"
-          @updateModel="
+          @update-model="
             (value) => {
               invoice = value;
             }
@@ -48,7 +50,7 @@
           label="Proyecto"
           not_found_label="No hay proyectos disponibles"
           :default_value="project_value"
-          @updateModel="
+          @update-model="
             (value) => {
               project = value;
               getStages();
@@ -62,13 +64,13 @@
           label="Etapa"
           not_found_label="No hay etapas disponibles"
           :default_value="stage_value"
-          @updateModel="
+          @update-model="
             (value) => {
               stage = value;
             }
           "
         />
-        <!--Buttons-->
+        <!-- Buttons -->
         <div class="q-mt-sm row justify-end">
           <q-btn
             color="primary"
@@ -84,13 +86,10 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { useDialogPluginComponent, useQuasar } from "quasar";
-import { onMounted, ref, toRefs } from "vue";
-import { sendRequest } from "src/axios/instance";
-import SelectForm from "src/components/SelectForm.vue";
-
-const $q = useQuasar();
+import { useDialogPluginComponent, useQuasar } from 'quasar'
+import { onMounted, ref, toRefs } from 'vue'
+import { sendRequest } from 'src/axios/instance'
+import SelectForm from 'src/components/SelectForm.vue'
 
 const props = defineProps({
   id: Number,
@@ -99,7 +98,11 @@ const props = defineProps({
   invoice_value: Object,
   project_value: Object,
   stage_value: Object,
-});
+})
+
+defineEmits([...useDialogPluginComponent.emits])
+
+const $q = useQuasar()
 
 const {
   id,
@@ -108,119 +111,124 @@ const {
   invoice_value,
   project_value,
   stage_value,
-} = toRefs(props);
+} = toRefs(props)
 
-const supplier = ref(supplier_value.value.id);
-const reception_date = ref(reception_date_value.value);
-const invoice = ref(invoice_value.value.id);
-const project = ref(project_value.value.id);
-const stage = ref(stage_value.value.id);
+const supplier = ref(supplier_value.value.id)
+const reception_date = ref(reception_date_value.value)
+const invoice = ref(invoice_value.value.id)
+const project = ref(project_value.value.id)
+const stage = ref(stage_value.value.id)
 
-const supplierOptions = ref([]);
-const invoiceOptions = ref([]);
-const projectOptions = ref([]);
-const stageOptions = ref([]);
+const supplierOptions = ref([])
+const invoiceOptions = ref([])
+const projectOptions = ref([])
+const stageOptions = ref([])
 
-const EditEquipmentPurchaseForm = ref(null);
+const EditEquipmentPurchaseForm = ref(null)
 
-const api_prefix = process.env.API_URL;
+const api_prefix = process.env.API_URL
 
-const getSuppliers = async () => {
+async function getSuppliers() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/suppliers",
-    });
-    const suppliers = response.data;
+      method: 'GET',
+      url: `${api_prefix}/suppliers`,
+    })
+    const suppliers = response.data
     supplierOptions.value = suppliers.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getInvoices = async () => {
+async function getInvoices() {
   if (supplier.value === null) {
-    invoiceOptions.value = [];
-    invoice.value = null;
-  } else {
+    invoiceOptions.value = []
+    invoice.value = null
+  }
+  else {
     try {
       const response = await sendRequest({
-        method: "GET",
-        url: api_prefix + "/invoices/supplier/" + supplier.value,
-      });
-      const invoices = response.data;
+        method: 'GET',
+        url: `${api_prefix}/invoices/supplier/${supplier.value}`,
+      })
+      const invoices = response.data
       invoiceOptions.value = invoices.map((x) => {
-        return { id: x.id, name: x.number };
-      });
-    } catch (error) {}
+        return { id: x.id, name: x.number }
+      })
+    }
+    catch (error) {}
   }
-};
+}
 
-const getProjects = async () => {
+async function getProjects() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/projects",
-    });
-    const projects = response.data;
+      method: 'GET',
+      url: `${api_prefix}/projects`,
+    })
+    const projects = response.data
     projectOptions.value = projects.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getStages = async () => {
+async function getStages() {
   if (project.value === null) {
-    stageOptions.value = [];
-    stage.value = null;
-  } else {
+    stageOptions.value = []
+    stage.value = null
+  }
+  else {
     try {
       const response = await sendRequest({
-        method: "GET",
-        url: api_prefix + "/stages/" + project.value,
-      });
-      const stages = response.data;
+        method: 'GET',
+        url: `${api_prefix}/stages/${project.value}`,
+      })
+      const stages = response.data
       stageOptions.value = stages.map((x) => {
-        return { id: x.id, name: x.name };
-      });
-    } catch (error) {}
+        return { id: x.id, name: x.name }
+      })
+    }
+    catch (error) {}
   }
-};
+}
 
 onMounted(() => {
-  getSuppliers();
-  getInvoices();
-  getProjects();
-  getStages();
-});
+  getSuppliers()
+  getInvoices()
+  getProjects()
+  getStages()
+})
 
-defineEmits([...useDialogPluginComponent.emits]);
-
-const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
-  useDialogPluginComponent();
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel }
+  = useDialogPluginComponent()
 async function onOKClick() {
-  EditEquipmentPurchaseForm.value.resetValidation();
+  EditEquipmentPurchaseForm.value.resetValidation()
   const data = {
     id: props.id,
     supplier_id: supplier.value,
     reception_date: reception_date.value,
     invoice_id: invoice.value,
-  };
+  }
   try {
     const response = await sendRequest({
-      method: "PUT",
-      url: api_prefix + "/equipments/" + data.id,
-      data: data,
-    });
-  } catch (error) {
-    $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo guardar los cambios: " + error,
-    });
-    return;
+      method: 'PUT',
+      url: `${api_prefix}/equipments/${data.id}`,
+      data,
+    })
   }
-  onDialogOK();
+  catch (error) {
+    $q.notify({
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo guardar los cambios: ${error}`,
+    })
+    return
+  }
+  onDialogOK()
 }
 </script>

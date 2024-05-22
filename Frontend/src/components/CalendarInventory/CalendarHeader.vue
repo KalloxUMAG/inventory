@@ -21,10 +21,9 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps, defineEmits, toRefs } from "vue";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
-dayjs.locale("es");
+import { computed, defineEmits, defineProps, toRefs } from 'vue'
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
 
 const props = defineProps({
   currentMonth: {
@@ -33,45 +32,48 @@ const props = defineProps({
   },
   locale: {
     type: String,
-    default: "es",
+    default: 'es',
   },
-});
+})
 
-const { currentMonth, locale } = toRefs(props);
-const emit = defineEmits(["change-month"]);
+const emit = defineEmits(['change-month'])
 
+dayjs.locale('es')
+
+const { currentMonth, locale } = toRefs(props)
 const title = computed(() => {
-  if (!currentMonth.value) return;
-  return currentMonth.value.locale(locale.value).format("MMMM YYYY");
-});
+  if (!currentMonth.value)
+    return
+  return currentMonth.value.locale(locale.value).format('MMMM YYYY')
+})
 
-const goPrev = () => {
+function goPrev() {
   const payload = dayjs(currentMonth.value)
-    .subtract(1, "months")
-    .startOf("month");
-  emit("change-month", payload);
-};
+    .subtract(1, 'months')
+    .startOf('month')
+  emit('change-month', payload)
+}
 
-const goNext = () => {
-  const payload = dayjs(currentMonth.value).add(1, "months").startOf("month");
-  emit("change-month", payload);
-};
+function goNext() {
+  const payload = dayjs(currentMonth.value).add(1, 'months').startOf('month')
+  emit('change-month', payload)
+}
 
-const goNextYear = () => {
-  const payload = dayjs(currentMonth.value).add(12, "months").startOf("month");
-  emit("change-month", payload);
-};
+function goNextYear() {
+  const payload = dayjs(currentMonth.value).add(12, 'months').startOf('month')
+  emit('change-month', payload)
+}
 
-const goPrevYear = () => {
+function goPrevYear() {
   const payload = dayjs(currentMonth.value)
-    .subtract(12, "months")
-    .startOf("month");
-  emit("change-month", payload);
-};
+    .subtract(12, 'months')
+    .startOf('month')
+  emit('change-month', payload)
+}
 
-const goToday = () => {
-  emit("change-month", dayjs());
-};
+function goToday() {
+  emit('change-month', dayjs())
+}
 </script>
 
 <style scoped>

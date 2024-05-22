@@ -6,14 +6,14 @@
         Lista de Usuarios
         <div class="actions-buttons">
           <q-input
+            v-model="filter"
             outlined
             bg-color="white"
             dense
             debounce="300"
             placeholder="Buscar"
-            v-model="filter"
           >
-            <template v-slot:append>
+            <template #append>
               <q-icon name="search" />
             </template>
           </q-input>
@@ -34,31 +34,31 @@
         :rows="users"
         no-data-label="No hay registros para mostrar"
         rows-per-page-label="Registros por pagina"
-        @row-click="rowClicker"
         flat
         bordered
         wrap-cells
         :filter="filter"
         class="card-style"
+        @row-click="rowClicker"
       >
-        <template v-slot:header="props">
+        <template #header="props">
           <q-tr :props="props">
             <q-th
               v-for="col in props.cols"
               :key="col.name"
               :props="props"
-              :class="['text-italic', 'table-header', col.additionalClass]"
+              class="text-italic table-header" :class="[col.additionalClass]"
             >
               {{ col.label }}
             </q-th>
           </q-tr>
         </template>
-        <template v-slot:body-cell="props">
+        <template #body-cell="props">
           <q-td :props="props">
             {{ props.value }}
           </q-td>
         </template>
-        <template v-slot:body-cell-img="props">
+        <template #body-cell-img="props">
           <q-td>
             <q-avatar square text-color="white" size="56px">
               <q-img
@@ -76,56 +76,58 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref } from 'vue'
 
-import { useRouter } from "vue-router";
-import { sendRequest } from "src/axios/instance";
+import { useRouter } from 'vue-router'
+import { sendRequest } from 'src/axios/instance'
 
-import PageTitle from "src/components/commons/PageTitle.vue";
-import { usersColumns } from "src/constants/columns";
+import PageTitle from 'src/components/commons/PageTitle.vue'
+import { usersColumns } from 'src/constants/columns'
 
-const router = useRouter();
+const router = useRouter()
 
-const users = ref([]);
-const filter = ref("");
+const users = ref([])
+const filter = ref('')
 
-const api_prefix = process.env.API_URL;
-const img_url = api_prefix + "/users/images/";
-const detail_query = "/users/";
+const api_prefix = process.env.API_URL
+const img_url = `${api_prefix}/users/images/`
+const detail_query = '/users/'
 
-const getUsers = async () => {
+async function getUsers() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/users",
-    });
-    users.value = response.data;
+      method: 'GET',
+      url: `${api_prefix}/users`,
+    })
+    users.value = response.data
     users.value.forEach(async (user) => {
-      user.img = await getUserImage(user.id);
-    });
-  } catch (error) {}
-};
+      user.img = await getUserImage(user.id)
+    })
+  }
+  catch (error) {}
+}
 
-const getUserImage = async (user_id) => {
+async function getUserImage(user_id) {
   try {
     const response = await sendRequest({
-      method: "GET",
+      method: 'GET',
       url: img_url + user_id,
-    });
-    return response.data[0].path;
-  } catch (error) {
-    return null;
+    })
+    return response.data[0].path
   }
-};
+  catch (error) {
+    return null
+  }
+}
 
-const rowClicker = (e, row) => {
-  const item = row.id;
-  router.push(detail_query + item);
-};
+function rowClicker(e, row) {
+  const item = row.id
+  router.push(detail_query + item)
+}
 
 onMounted(() => {
-  getUsers();
-});
+  getUsers()
+})
 </script>
 
 <style scoped>

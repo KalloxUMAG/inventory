@@ -2,18 +2,20 @@
   <div
     class="day-cell q-pa-0"
     :class="{
-      today: day.isToday,
+      'today': day.isToday,
       'current-month': day.isCurrentMonth,
-      weekend: day.isWeekEnd,
+      'weekend': day.isWeekEnd,
       'selected-day': isDaySelected,
     }"
     @click="showDayOptions"
   >
     <div class="d-flex justify-content-start">
-      <p class="day-number">{{ day.date.format("D") }}</p>
+      <p class="day-number">
+        {{ day.date.format("D") }}
+      </p>
     </div>
     <div class="event-grid">
-      <event-card
+      <EventCard
         v-for="event in day.events.slice(0, 3)"
         :key="event.code"
         :event="event"
@@ -21,21 +23,20 @@
         :day-date="day.date"
         :is-day-selected="isDaySelected"
         :selection="selection"
-      >
-      </event-card>
+      />
     </div>
     <div v-if="day.events.length > 3" class="float-right">
       ...
-      <q-badge color="info">{{ day.events.length - 3 }} +</q-badge>
+      <q-badge color="info">
+        {{ day.events.length - 3 }} +
+      </q-badge>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, defineEmits, toRefs } from "vue";
-import EventCard from "./EventCard.vue";
-
-const isDaySelected = ref(false);
+import { defineEmits, ref, toRefs, watch } from 'vue'
+import EventCard from './EventCard.vue'
 
 const props = defineProps({
   day: {
@@ -53,24 +54,26 @@ const props = defineProps({
     required: false,
     default: () => ({}),
   },
-});
+})
 
-const { day, selectedDay } = toRefs(props);
+const emit = defineEmits(['day-selected'])
 
-const emit = defineEmits(["day-selected"]);
+const isDaySelected = ref(false)
+
+const { day, selectedDay } = toRefs(props)
 
 watch(
   selectedDay,
   (value) => {
-    isDaySelected.value = value?.dayDate.date === day.value.date;
+    isDaySelected.value = value?.dayDate.date === day.value.date
   },
-  { immediate: true, deep: true }
-);
+  { immediate: true, deep: true },
+)
 
-const showDayOptions = () => {
-  isDaySelected.value = true;
-  emit("day-selected", { dayDate: day.value });
-};
+function showDayOptions() {
+  isDaySelected.value = true
+  emit('day-selected', { dayDate: day.value })
+}
 </script>
 
 <style scoped>

@@ -2,8 +2,8 @@
   <div class="panel no-margin" @click="showEventDetails">
     <div
       v-if="
-        event?.isStarter &&
-        Object.values(selection).every((array) => array.length === 0)
+        event?.isStarter
+          && Object.values(selection).every((array) => array.length === 0)
       "
       class="alert event-title q-my-xs"
       :class="[getVariant(event?.status)]"
@@ -14,8 +14,7 @@
         {{ event?.supply.user_fullname }}
       </p>
       <p class="no-margin">
-        <span class="text-bold">Equipo :</span
-        >{{ event?.supply.equipment_name }}
+        <span class="text-bold">Equipo :</span>{{ event?.supply.equipment_name }}
       </p>
     </div>
     <div
@@ -37,7 +36,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, defineEmits, toRefs } from "vue";
+import { defineEmits, defineProps, toRefs } from 'vue'
 
 const props = defineProps({
   event: {
@@ -56,34 +55,33 @@ const props = defineProps({
     required: false,
     default: () => ({}),
   },
-});
+})
 
-const emit = defineEmits(["show-modal"]);
+const emit = defineEmits(['show-modal'])
 
-const { event, isDaySelected, isList } = toRefs(props);
+const { event, isDaySelected, isList } = toRefs(props)
 
-const showEventDetails = () => {
-  if (isDaySelected.value) {
-    emit("show-modal", event.value);
-  }
-};
+function showEventDetails() {
+  if (isDaySelected.value)
+    emit('show-modal', event.value)
+}
 
-const getVariant = (state) => {
+function getVariant(state) {
   switch (state) {
     case 1:
-      return "bg-grey-3";
+      return 'bg-grey-3'
     case 2:
-      return "bg-info";
+      return 'bg-info'
     case 3:
-      return "bg-info";
+      return 'bg-info'
     case 4:
-      return "bg-negative";
+      return 'bg-negative'
     case 5:
-      return "bg-warning";
+      return 'bg-warning'
     default:
-      return "bg-positive";
+      return 'bg-positive'
   }
-};
+}
 </script>
 
 <style scoped>

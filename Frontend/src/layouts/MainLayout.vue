@@ -21,7 +21,7 @@
         <q-list>
           <q-item class="drawer-message-container">
             <div class="image-container">
-              <img src="/images/cadi_inv.webp" width="100%"/>
+              <img src="/images/cadi_inv.webp" width="100%">
             </div>
           </q-item>
           <template v-for="(menuItem, index) in menuItems" :key="index">
@@ -30,9 +30,9 @@
             </q-item>
             <q-item
               v-if="menuItem.type == 'nav'"
+              v-ripple
               clickable
               :to="menuItem.to"
-              v-ripple
               class="menu-link"
               active-class="active-menu-link"
               :exact="menuItem.exact"
@@ -44,7 +44,7 @@
                 {{ menuItem.label }}
               </q-item-section>
             </q-item>
-            <q-separator :key="'sep' + index" v-if="menuItem.separator" />
+            <q-separator v-if="menuItem.separator" :key="`sep${index}`" />
           </template>
         </q-list>
 
@@ -63,17 +63,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { menuItems } from "../constants/menuItems.js";
-import { useQuasar } from "quasar";
-import BreadCrumb from '../components/commons/BreadCrumb.vue';
+import { ref } from 'vue'
+import { useQuasar } from 'quasar'
+import { menuItems } from '../constants/menuItems.js'
+import BreadCrumb from '../components/commons/BreadCrumb.vue'
 
-const $q = useQuasar();
-const fullname = $q.localStorage.getItem("CATGInventoryFullname");
-const leftDrawerOpen = ref(true);
+const $q = useQuasar()
+const fullname = $q.localStorage.getItem('CATGInventoryFullname')
+const leftDrawerOpen = ref(true)
 
 function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
+  leftDrawerOpen.value = !leftDrawerOpen.value
 }
 </script>
 

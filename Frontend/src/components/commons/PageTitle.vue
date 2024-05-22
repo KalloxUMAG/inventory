@@ -6,16 +6,16 @@
         {{ title }}
       </div>
     </div>
-    <slot></slot>
+    <slot />
   </q-card>
 </template>
 
 <script setup>
-    const props = defineProps({
-        title: String,
-        icon: String,
-    })
-    const { title } = props;
+const props = defineProps({
+  title: String,
+  icon: String,
+})
+const { title } = props
 </script>
 
 <style scoped>

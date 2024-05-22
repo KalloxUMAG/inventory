@@ -3,22 +3,20 @@
     <div v-if="showWeekNumberFlag" class="week-number">
       Semana {{ week[0].date.format("w") }}
     </div>
-    <day
+    <Day
       v-for="(day, index) in week"
       :key="index"
       :day="day"
       :selected-day="selectedDay"
-      @day-selected="handleSelectDay"
       :selection="selection"
-    ></day>
+      @day-selected="handleSelectDay"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, watch, defineEmits, toRefs } from "vue";
-import Day from "./Day.vue";
-
-const showWeekNumberFlag = ref(false);
+import { defineEmits, ref, toRefs, watch } from 'vue'
+import Day from './Day.vue'
 
 const props = defineProps({
   week: {
@@ -40,26 +38,29 @@ const props = defineProps({
     required: false,
     default: () => ({}),
   },
-});
-const { week, selectedDay, selectedWeek } = toRefs(props);
+})
 
-const emit = defineEmits(["day-selected", "week-selected"]);
+const emit = defineEmits(['day-selected', 'week-selected'])
+
+const showWeekNumberFlag = ref(false)
+
+const { week, selectedDay, selectedWeek } = toRefs(props)
 
 watch(
   selectedWeek,
   (value) => {
-    showWeekNumberFlag.value = value?.weekDate === week.value[0].date;
+    showWeekNumberFlag.value = value?.weekDate === week.value[0].date
   },
-  { immediate: true }
-);
+  { immediate: true },
+)
 
-const handleSelectDay = (payload) => {
-  emit("day-selected", payload);
-};
+function handleSelectDay(payload) {
+  emit('day-selected', payload)
+}
 
-const showWeekNumber = () => {
-  emit("week-selected", { weekDate: week.value[0].date });
-};
+function showWeekNumber() {
+  emit('week-selected', { weekDate: week.value[0].date })
+}
 </script>
 
 <style scoped>

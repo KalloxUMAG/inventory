@@ -8,8 +8,10 @@
     rows-per-page-label="Registros por pagina"
     :filter="filter"
   >
-    <template v-slot:top>
-      <h1 class="text-h5">{{ title }}</h1>
+    <template #top>
+      <h1 class="text-h5">
+        {{ title }}
+      </h1>
       <q-space />
       <q-btn
         color="positive"
@@ -18,19 +20,19 @@
         @click="addFunction"
       />
       <q-input
+        v-model="filter"
         outlined
         dense
         debounce="300"
         placeholder="Buscar"
         color="primary"
-        v-model="filter"
       >
-        <template v-slot:append>
+        <template #append>
           <q-icon name="search" />
         </template>
       </q-input>
     </template>
-    <template v-slot:body-cell-action="props">
+    <template #body-cell-action="props">
       <q-td :props="props">
         <q-btn
           flat
@@ -41,7 +43,7 @@
         />
       </q-td>
     </template>
-    <template v-slot:body-cell-actions="props">
+    <template #body-cell-actions="props">
       <q-td :props="props">
         <q-btn
           flat
@@ -60,37 +62,41 @@
         />
       </q-td>
     </template>
-    <template v-slot:body-cell-state="props">
+    <template #body-cell-state="props">
       <q-td :props="props">
         <q-icon
           v-if="props.row.state == true"
           size="md"
           name="done_all"
           color="positive"
-          ><q-tooltip>Realizado</q-tooltip></q-icon
         >
+          <q-tooltip>Realizado</q-tooltip>
+        </q-icon>
         <q-icon
           v-if="props.row.state == false"
           size="md"
           name="close"
           color="negative"
-          ><q-tooltip>No realizado</q-tooltip></q-icon
         >
+          <q-tooltip>No realizado</q-tooltip>
+        </q-icon>
         <q-icon
           v-if="props.row.state == null"
           size="md"
           name="play_arrow"
           color="warning"
-          ><q-tooltip>Próximo</q-tooltip></q-icon
         >
+          <q-tooltip>Próximo</q-tooltip>
+        </q-icon>
       </q-td>
     </template>
   </q-table>
 </template>
 
 <script>
-import { ref } from "vue";
-const addlabel = "Agregar";
+import { ref } from 'vue'
+
+const addlabel = 'Agregar'
 export default {
   props: {
     columns: Array,
@@ -100,18 +106,18 @@ export default {
     editFunction: Function,
     deleteFunction: Function,
   },
-  methods: {
-    load_details(item) {
-      this.$router.push("/equipments/" + item.id);
-    },
-  },
   setup() {
-    const filter = ref("");
+    const filter = ref('')
     return {
       addlabel,
       selected: ref([]),
       filter,
-    };
+    }
   },
-};
+  methods: {
+    load_details(item) {
+      this.$router.push(`/equipments/${item.id}`)
+    },
+  },
+}
 </script>

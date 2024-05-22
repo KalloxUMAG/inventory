@@ -14,28 +14,40 @@
           </div>
         </q-item>
         <q-separator />
-        <!--Datos producto-->
+        <!-- Datos producto -->
         <q-card-section>
           <div class="col q-pa-sm">
             <div class="row q-mb-sm">
-              <div class="col-5 text-h6 text-weight-bold q-pl-md">Nombre</div>
-              <div class="col text-h6 text-grey-8">{{ supply.name }}</div>
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Nombre
+              </div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.name }}
+              </div>
             </div>
             <q-separator />
             <div class="row q-my-sm">
-              <div class="col-5 text-h6 text-weight-bold q-pl-md">Código</div>
-              <div class="col text-h6 text-grey-8">{{ supply.code }}</div>
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Código
+              </div>
+              <div class="col text-h6 text-grey-8">
+                {{ supply.code }}
+              </div>
             </div>
             <q-separator />
             <div class="row q-my-sm">
-              <div class="col-5 text-h6 text-weight-bold q-pl-md">Marca</div>
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Marca
+              </div>
               <div class="col text-h6 text-grey-8">
                 {{ supply.supplies_brand_name }}
               </div>
             </div>
             <q-separator />
             <div class="row q-my-sm">
-              <div class="col-5 text-h6 text-weight-bold q-pl-md">Tipo</div>
+              <div class="col-5 text-h6 text-weight-bold q-pl-md">
+                Tipo
+              </div>
               <div class="col text-h6 text-grey-8">
                 {{ supply.supplies_type_name }}
               </div>
@@ -111,13 +123,13 @@
       <q-card class="my-card fit" flat bordered>
         <q-card-section horizontal>
           <q-separator vertical />
-          <!--Datos producto-->
+          <!-- Datos producto -->
           <div class="col">
             <NoRedirectTable
               title="Proveedores"
               :columns="suppliersSupplyColumns"
               :rows="suppliers"
-              :addFunction="addSupplier"
+              :add-function="addSupplier"
             />
           </div>
         </q-card-section>
@@ -130,9 +142,9 @@
         title="Lotes"
         :columns="lotsColumns"
         :rows="lots"
-        :addFunction="addLot"
-        :editFunction="editLot"
-        :deleteFunction="removeLot"
+        :add-function="addLot"
+        :edit-function="editLot"
+        :delete-function="removeLot"
       />
     </div>
   </div>
@@ -147,58 +159,60 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from "vue-router";
-import { computed, onMounted, ref, getCurrentInstance } from "vue";
-import NoRedirectTable from "src/components/NoRedirectTable.vue";
-import AddSupplier from "./AddSupplier.vue";
-import AddLot from "./AddLot.vue";
-import EditLot from "./EditLot.vue";
-import EditSupply from "./EditSupply.vue";
-import { suppliersSupplyColumns, lotsColumns } from "../constants/columns.js";
-import { useQuasar } from "quasar";
-import { sendRequest } from "src/axios/instance";
-import { api } from "src/boot/axios";
+import { useRoute, useRouter } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import NoRedirectTable from 'src/components/NoRedirectTable.vue'
+import { useQuasar } from 'quasar'
+import { sendRequest } from 'src/axios/instance'
+import { lotsColumns, suppliersSupplyColumns } from '../constants/columns.js'
+import AddSupplier from './AddSupplier.vue'
+import AddLot from './AddLot.vue'
+import EditLot from './EditLot.vue'
+import EditSupply from './EditSupply.vue'
 
-const route = useRoute();
-const id = computed(() => route.params.id);
-const supply = ref({});
-const suppliers = ref([]);
-const lots = ref([]);
+const route = useRoute()
+const id = computed(() => route.params.id)
+const supply = ref({})
+const suppliers = ref([])
+const lots = ref([])
 
-const $q = useQuasar();
-const router = useRouter();
+const $q = useQuasar()
+const router = useRouter()
 
-const api_prefix = process.env.API_URL;
+const api_prefix = process.env.API_URL
 
-const getSupply = async () => {
+async function getSupply() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/supplies/" + id.value,
-    });
-    supply.value = response.data;
-  } catch (error) {}
-};
+      method: 'GET',
+      url: `${api_prefix}/supplies/${id.value}`,
+    })
+    supply.value = response.data
+  }
+  catch (error) {}
+}
 
-const getSuppliers = async () => {
+async function getSuppliers() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/suppliers_supplies/" + id.value,
-    });
-    suppliers.value = response.data;
-  } catch (error) {}
-};
+      method: 'GET',
+      url: `${api_prefix}/suppliers_supplies/${id.value}`,
+    })
+    suppliers.value = response.data
+  }
+  catch (error) {}
+}
 
-const getLots = async () => {
+async function getLots() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/lots/supply/" + id.value,
-    });
-    lots.value = response.data;
-  } catch (error) {}
-};
+      method: 'GET',
+      url: `${api_prefix}/lots/supply/${id.value}`,
+    })
+    lots.value = response.data
+  }
+  catch (error) {}
+}
 
 function addSupplier() {
   $q.dialog({
@@ -207,8 +221,8 @@ function addSupplier() {
       supply_id: supply.value.id,
     },
   }).onOk((data) => {
-    getSuppliers();
-  });
+    getSuppliers()
+  })
 }
 
 function addLot() {
@@ -219,53 +233,55 @@ function addLot() {
       stock: supply.value.lot_stock,
     },
   }).onOk((data) => {
-    getLots();
-    getSupply();
-  });
+    getLots()
+    getSupply()
+  })
 }
 
 function removeLot(lot) {
   $q.dialog({
-    title: "Eliminar lote",
-    message: "Se eliminara el lote y se descontara del stock actual del insumo",
+    title: 'Eliminar lote',
+    message: 'Se eliminara el lote y se descontara del stock actual del insumo',
     ok: {
-      color: "negative",
-      label: "Aceptar y eliminar",
+      color: 'negative',
+      label: 'Aceptar y eliminar',
     },
     cancel: {
-      color: "warning",
-      label: "Cancelar y mantener",
+      color: 'warning',
+      label: 'Cancelar y mantener',
     },
   })
     .onOk(async () => {
-      const lot_id = lot.id;
-      const lot_stock = supply.value.lot_stock * -1;
+      const lot_id = lot.id
+      const lot_stock = supply.value.lot_stock * -1
       try {
         const response = await sendRequest({
-          method: "PUT",
-          url: api_prefix + "/lots/deactivate" + lot_id,
-        });
-        getLots();
-      } catch (error) {}
+          method: 'PUT',
+          url: `${api_prefix}/lots/deactivate${lot_id}`,
+        })
+        getLots()
+      }
+      catch (error) {}
 
       const data = {
         stock: lot_stock,
-      };
+      }
       try {
         const response = await sendRequest({
-          method: "PUT",
-          url: api_prefix + "/supplies/stock/" + id.value,
-          data: data,
-        });
-        getSupply();
-      } catch (error) {}
+          method: 'PUT',
+          url: `${api_prefix}/supplies/stock/${id.value}`,
+          data,
+        })
+        getSupply()
+      }
+      catch (error) {}
     })
     .onCancel(() => {
       // console.log('Cancel')
     })
     .onDismiss(() => {
       // console.log('I am triggered on both OK and Cancel')
-    });
+    })
 }
 
 function editLot(lot) {
@@ -285,15 +301,15 @@ function editLot(lot) {
     },
   })
     .onOk((data) => {
-      getLots();
-      getSupply();
+      getLots()
+      getSupply()
     })
     .onCancel(() => {
       // console.log('Cancel')
     })
     .onDismiss(() => {
       // console.log('I am triggered on both OK and Cancel')
-    });
+    })
 }
 
 function editSupply() {
@@ -323,51 +339,52 @@ function editSupply() {
     },
   })
     .onOk((data) => {
-      getSupply();
+      getSupply()
     })
-    .onCancel(() => {});
+    .onCancel(() => {})
 }
 
 function removeSupply() {
   $q.dialog({
-    title: "Eliminar insumo",
+    title: 'Eliminar insumo',
     message:
-      "El insumo sera archivado y solo podra ser recuperado por un administrador",
+      'El insumo sera archivado y solo podra ser recuperado por un administrador',
     ok: {
-      color: "negative",
-      label: "Aceptar y eliminar",
+      color: 'negative',
+      label: 'Aceptar y eliminar',
     },
     cancel: {
-      color: "warning",
-      label: "Cancelar y mantener",
+      color: 'warning',
+      label: 'Cancelar y mantener',
     },
   })
     .onOk(async () => {
       try {
         const response = await sendRequest({
-          method: "DELETE",
-          url: api_prefix + "/supplies/" + id.value,
-        });
-        redirectToSupplies();
-      } catch (error) {}
+          method: 'DELETE',
+          url: `${api_prefix}/supplies/${id.value}`,
+        })
+        redirectToSupplies()
+      }
+      catch (error) {}
     })
     .onCancel(() => {
       // console.log('Cancel')
     })
     .onDismiss(() => {
       // console.log('I am triggered on both OK and Cancel')
-    });
+    })
 }
 
 function redirectToSupplies() {
-  router.push({ path: "../supplies" });
+  router.push({ path: '../supplies' })
 }
 
 onMounted(() => {
-  getSupply();
-  getSuppliers();
-  getLots();
-});
+  getSupply()
+  getSuppliers()
+  getLots()
+})
 </script>
 
 <style scoped>

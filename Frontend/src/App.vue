@@ -3,13 +3,13 @@
 </template>
 
 <script>
-import { createApp, defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 const app = defineComponent({
-  name: "App",
-});
+  name: 'App',
+})
 
-export default app;
+export default app
 </script>
 
 <style lang="scss">

@@ -1,7 +1,7 @@
-import { defineStore } from "pinia";
-import { api } from "src/boot/axios";
+import { defineStore } from 'pinia'
+import { api } from 'src/boot/axios'
 
-export const useUserStore = defineStore("user", {
+export const useUserStore = defineStore('user', {
   actions: {
     async fetchUser({ fullname = null, email = null }) {
       try {
@@ -10,12 +10,13 @@ export const useUserStore = defineStore("user", {
             fullname,
             email,
           },
-        });
-        return data;
-      } catch (error) {
-        console.log(error);
-        return [];
+        })
+        return data
+      }
+      catch (error) {
+        console.log(error)
+        return []
       }
     },
   },
-});
+})

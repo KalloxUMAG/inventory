@@ -1,8 +1,12 @@
 <template>
   <div v-if="equipment != null" class="row justify-center">
     <q-card class="my-card row q-pa-md q-mb-lg justify-between" flat bordered>
-      <div class="flex item-title"><q-icon name="biotech" size="24px"/><div class="text-subtitle1 text-bold text-uppercase">  {{ equipment.name  }} - {{ equipment.model_name }}</div></div>
-      <q-btn outline color="secondary" label="Editar" class="float-right" @click="editEquipment"/>
+      <div class="flex item-title">
+        <q-icon name="biotech" size="24px" /><div class="text-subtitle1 text-bold text-uppercase">
+          {{ equipment.name }} - {{ equipment.model_name }}
+        </div>
+      </div>
+      <q-btn outline color="secondary" label="Editar" class="float-right" @click="editEquipment" />
     </q-card>
 
     <q-card class="my-card row q-pa-md gap-lg" flat bordered>
@@ -11,105 +15,111 @@
       </div>
 
       <div class="col container">
-        <InfoSection title="Información general" :fields="[
-        {
-          label: 'Nombre',
-          value: equipment.name
-        },
-        {
-          label: 'Codigo serial',
-          value: equipment.serial_number
-        },
-        {
-          label: 'Inventario UMAG',
-          value: equipment.umag_inventory_code
-        },
-        {
-          label: 'Marca',
-          value: equipment.brand_name
-        },
-        {
-          label: 'Modelo',
-          value: equipment.model_name
-        },
-        {
-          label: 'Número de modelo',
-          value: equipment.model_number
-        },
-        {
-          label: 'Periodo de mantención',
-          value: maintenance_period
-        },
-        {
-          label: 'Observación',
-          value: equipment.observation
-        }
-      ]"/>
-      <InfoSection title="Ubicación" :fields="[
-        {
-          label: 'Edificio',
-          value: equipment.building_name
-        },
-        {
-          label: 'Unidad',
-          value: equipment.unit_name
-        },
-        {
-          label: 'Sala',
-          value: equipment.room_name
-        }
-      ]"/>
-      <InfoSection title="Compra" :fields="[
-        {
-          label: 'Proveedor',
-          value: equipment.supplier_name
-        },
-        {
-          label: 'Fecha de recepción',
-          value: equipment.reception_date
-        },
-        {
-          label: 'Factura',
-          value: equipment.invoice_number
-        },
-        {
-          label: 'Proyecto',
-          value: project ? project.project_name : null
-        },
-        {
-          label: 'Etapa',
-          value: project ? project.stage_name : null
-        }
-      ]"/>
+        <InfoSection
+          title="Información general" :fields="[
+            {
+              label: 'Nombre',
+              value: equipment.name,
+            },
+            {
+              label: 'Codigo serial',
+              value: equipment.serial_number,
+            },
+            {
+              label: 'Inventario UMAG',
+              value: equipment.umag_inventory_code,
+            },
+            {
+              label: 'Marca',
+              value: equipment.brand_name,
+            },
+            {
+              label: 'Modelo',
+              value: equipment.model_name,
+            },
+            {
+              label: 'Número de modelo',
+              value: equipment.model_number,
+            },
+            {
+              label: 'Periodo de mantención',
+              value: maintenance_period,
+            },
+            {
+              label: 'Observación',
+              value: equipment.observation,
+            },
+          ]"
+        />
+        <InfoSection
+          title="Ubicación" :fields="[
+            {
+              label: 'Edificio',
+              value: equipment.building_name,
+            },
+            {
+              label: 'Unidad',
+              value: equipment.unit_name,
+            },
+            {
+              label: 'Sala',
+              value: equipment.room_name,
+            },
+          ]"
+        />
+        <InfoSection
+          title="Compra" :fields="[
+            {
+              label: 'Proveedor',
+              value: equipment.supplier_name,
+            },
+            {
+              label: 'Fecha de recepción',
+              value: equipment.reception_date,
+            },
+            {
+              label: 'Factura',
+              value: equipment.invoice_number,
+            },
+            {
+              label: 'Proyecto',
+              value: project ? project.project_name : null,
+            },
+            {
+              label: 'Etapa',
+              value: project ? project.stage_name : null,
+            },
+          ]"
+        />
       </div>
     </q-card>
     <div
       v-if="equipment.maintenance_period === null"
       class="q-mt-md maintenance-table"
     >
-      <q-card class="no-shadow bg-transparent" >
+      <q-card class="no-shadow bg-transparent">
         <q-card-section class="q-pl-none col-12">
           <div class="text-subtitle1 q-pl-md space-between">
             Lista de Mantenimientos
             <div class="actions-buttons">
               <q-input
+                v-model="filter"
                 outlined
                 bg-color="white"
                 dense
                 debounce="300"
                 placeholder="Buscar"
-                v-model="filter"
               >
-                <template v-slot:append>
+                <template #append>
                   <q-icon name="search" />
                 </template>
               </q-input>
               <q-btn
                 class="add-btn q-mr-sm"
-                @click="addFunction"
                 icon="add"
                 label="Agregar"
                 flat
+                @click="addFunction"
               />
             </div>
           </div>
@@ -127,53 +137,56 @@
             :filter="filter"
             class="card-style"
           >
-            <template v-slot:header="props">
+            <template #header="props">
               <q-tr :props="props">
                 <q-th
                   v-for="col in props.cols"
                   :key="col.name"
                   :props="props"
-                  :class="['text-italic', 'table-header']"
+                  class="text-italic table-header"
                 >
                   {{ col.label }}
                 </q-th>
               </q-tr>
             </template>
-            <template v-slot:body-cell="props">
+            <template #body-cell="props">
               <q-td
                 :props="props"
               >
                 {{ props.value }}
               </q-td>
             </template>
-            <template v-slot:body-cell-state="props">
+            <template #body-cell-state="props">
               <q-td
                 :props="props"
               >
-              <q-icon
-                v-if="props.row.state == true"
-                size="md"
-                name="done_all"
-                color="positive"
-                ><q-tooltip>Realizado</q-tooltip></q-icon
-              >
-              <q-icon
-                v-if="props.row.state == false"
-                size="md"
-                name="close"
-                color="negative"
-                ><q-tooltip>No realizado</q-tooltip></q-icon
-              >
-              <q-icon
-                v-if="props.row.state == null"
-                size="md"
-                name="play_arrow"
-                color="warning"
-                ><q-tooltip>Próximo</q-tooltip></q-icon
-              >
+                <q-icon
+                  v-if="props.row.state == true"
+                  size="md"
+                  name="done_all"
+                  color="positive"
+                >
+                  <q-tooltip>Realizado</q-tooltip>
+                </q-icon>
+                <q-icon
+                  v-if="props.row.state == false"
+                  size="md"
+                  name="close"
+                  color="negative"
+                >
+                  <q-tooltip>No realizado</q-tooltip>
+                </q-icon>
+                <q-icon
+                  v-if="props.row.state == null"
+                  size="md"
+                  name="play_arrow"
+                  color="warning"
+                >
+                  <q-tooltip>Próximo</q-tooltip>
+                </q-icon>
               </q-td>
             </template>
-            <template v-slot:body-cell-actions="props">
+            <template #body-cell-actions="props">
               <q-td :props="props">
                 <q-btn
                   flat
@@ -200,43 +213,42 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from "vue-router";
-import { computed, onMounted, ref } from "vue";
-import Carousel from "src/components/Carousel.vue";
-import NoRedirectTable from "src/components/NoRedirectTable.vue";
-import FormModal from "src/components/FormModal.vue";
-import EditEquipmentProduct from "./EditEquipmentProduct.vue";
-import EditEquipmentLocation from "./EditEquipmentLocation.vue";
-import EditEquipmentPurchase from "./EditEquipmentPurchase.vue";
-import EditMaintenance from "./EditMaintenance.vue";
-import { useQuasar } from "quasar";
-import { columns_maintenances } from "src/constants/columns.js";
-import { sendRequest } from "src/axios/instance.js";
-import InfoSection from "src/components/item-page/InfoSection.vue";
+import { useRoute, useRouter } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import Carousel from 'src/components/Carousel.vue'
+import FormModal from 'src/components/FormModal.vue'
+import { useQuasar } from 'quasar'
+import { columns_maintenances } from 'src/constants/columns.js'
+import { sendRequest } from 'src/axios/instance.js'
+import InfoSection from 'src/components/item-page/InfoSection.vue'
+import EditEquipmentProduct from './EditEquipmentProduct.vue'
+import EditEquipmentLocation from './EditEquipmentLocation.vue'
+import EditEquipmentPurchase from './EditEquipmentPurchase.vue'
+import EditMaintenance from './EditMaintenance.vue'
 
-const $q = useQuasar();
+const $q = useQuasar()
 
-const content_loaded = ref(false);
-const filter = ref("");
-const img_api = ref(null);
-const equipment = ref({});
-const maintenances = ref([]);
-const last_maintenance = ref({});
-const project = ref(null);
-const maintenance_period = ref(null);
+const content_loaded = ref(false)
+const filter = ref('')
+const img_api = ref(null)
+const equipment = ref({})
+const maintenances = ref([])
+const last_maintenance = ref({})
+const project = ref(null)
+const maintenance_period = ref(null)
 
-const api_prefix = process.env.API_URL;
+const api_prefix = process.env.API_URL
 
-const route = useRoute();
-const router = useRouter();
-const id = computed(() => route.params.id);
-const query_equipment = api_prefix + "/equipments/" + id.value;
-const query_maintenances = api_prefix + "/maintenances/" + id.value;
-const query_last_maintenance =
-  api_prefix + "/maintenances/last_maintenance/" + id.value;
+const route = useRoute()
+const router = useRouter()
+const id = computed(() => route.params.id)
+const query_equipment = `${api_prefix}/equipments/${id.value}`
+const query_maintenances = `${api_prefix}/maintenances/${id.value}`
+const query_last_maintenance
+  = `${api_prefix}/maintenances/last_maintenance/${id.value}`
 
 function padTo2Digits(num) {
-  return num.toString().padStart(2, "0");
+  return num.toString().padStart(2, '0')
 }
 
 function formatDate(date) {
@@ -244,137 +256,141 @@ function formatDate(date) {
     date.getFullYear(),
     padTo2Digits(date.getMonth() + 1),
     padTo2Digits(date.getDate()),
-  ].join("-");
+  ].join('-')
 }
 
 function createNextMaintenance() {
-  const dateString = last_maintenance.value.date + "T00:00:00";
-  const months = equipment.value.maintenance_period;
-  let date = new Date(dateString);
-  date.setDate(date.getDate() + months * 30);
-  date = formatDate(date);
+  const dateString = `${last_maintenance.value.date}T00:00:00`
+  const months = equipment.value.maintenance_period
+  let date = new Date(dateString)
+  date.setDate(date.getDate() + months * 30)
+  date = formatDate(date)
   const data = {
     id: null,
-    date: date,
-    observations: "Próxima mantención programada",
+    date,
+    observations: 'Próxima mantención programada',
     state: null,
-    maintenance_type: "Programada",
+    maintenance_type: 'Programada',
     equiptment_id: equipment.value.id,
-  };
-  maintenances.value.unshift(data);
+  }
+  maintenances.value.unshift(data)
   maintenances.value.sort((x, y) => {
-    const date1 = new Date(x.date + "T00:00:00");
-    const date2 = new Date(y.date + "T00:00:00");
-    if (date1 < date2) {
-      return -1;
-    }
-    return 1;
-  });
+    const date1 = new Date(`${x.date}T00:00:00`)
+    const date2 = new Date(`${y.date}T00:00:00`)
+    if (date1 < date2)
+      return -1
+
+    return 1
+  })
 }
 
 async function getEquipment() {
   try {
     const response = await sendRequest({
-      method: "GET",
+      method: 'GET',
       url: query_equipment,
-    });
-    equipment.value = response.data;
-    img_api.value = api_prefix + "/equipments/image/" + equipment.value.id;
-    maintenance_period.value = equipment.value.maintenance_period ? "Cada " + equipment.value.maintenance_period + " meses" : "No aplica";
-    getMaintenances();
-  } catch (error) {}
+    })
+    equipment.value = response.data
+    img_api.value = `${api_prefix}/equipments/image/${equipment.value.id}`
+    maintenance_period.value = equipment.value.maintenance_period ? `Cada ${equipment.value.maintenance_period} meses` : 'No aplica'
+    getMaintenances()
+  }
+  catch (error) {}
 }
 
 async function getMaintenances() {
   try {
     const response = await sendRequest({
-      method: "GET",
+      method: 'GET',
       url: query_maintenances,
-    });
-    maintenances.value = response.data;
-    getLastMaintenance();
-  } catch (error) {}
+    })
+    maintenances.value = response.data
+    getLastMaintenance()
+  }
+  catch (error) {}
 }
 
 async function getLastMaintenance() {
   try {
     const response = await sendRequest({
-      method: "GET",
+      method: 'GET',
       url: query_last_maintenance,
-    });
-    last_maintenance.value = response.data;
-    createNextMaintenance();
-  } catch (error) {}
+    })
+    last_maintenance.value = response.data
+    createNextMaintenance()
+  }
+  catch (error) {}
 }
 
 function addFunction() {
   $q.dialog({
     component: FormModal,
     componentProps: {
-      title: "Agregar mantenimiento",
+      title: 'Agregar mantenimiento',
       fields: [
         {
-          label: "Fecha",
-          type: "date",
+          label: 'Fecha',
+          type: 'date',
           defaultvalue: null,
-          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
+          rules: [val => (val && val != null) || 'Este campo es obligatorio'],
         },
         {
-          label: "Tipo de mantenimiento",
-          type: "select",
-          defaultvalue: null,
-          options: [
-            { id: "Programada", name: "Programada" },
-            { id: "Correctiva", name: "Correctiva" },
-          ],
-          option_value: "id",
-          option_label: "name",
-          not_found_label: "No hay tipos de mantenimiento",
-          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
-        },
-        {
-          label: "Estado",
-          type: "select",
+          label: 'Tipo de mantenimiento',
+          type: 'select',
           defaultvalue: null,
           options: [
-            { id: "0", name: "Sin realizar" },
-            { id: "1", name: "Realizado" },
+            { id: 'Programada', name: 'Programada' },
+            { id: 'Correctiva', name: 'Correctiva' },
           ],
-          option_value: "id",
-          option_label: "name",
-          not_found_label: " ",
-          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
+          option_value: 'id',
+          option_label: 'name',
+          not_found_label: 'No hay tipos de mantenimiento',
+          rules: [val => (val && val != null) || 'Este campo es obligatorio'],
         },
         {
-          label: "Observaciones",
-          type: "text",
+          label: 'Estado',
+          type: 'select',
+          defaultvalue: null,
+          options: [
+            { id: '0', name: 'Sin realizar' },
+            { id: '1', name: 'Realizado' },
+          ],
+          option_value: 'id',
+          option_label: 'name',
+          not_found_label: ' ',
+          rules: [val => (val && val != null) || 'Este campo es obligatorio'],
+        },
+        {
+          label: 'Observaciones',
+          type: 'text',
           defaultvalue: null,
           autogrow: true,
-          rules: [(val) => (val && val != null) || "Este campo es obligatorio"],
+          rules: [val => (val && val != null) || 'Este campo es obligatorio'],
         },
       ],
     },
   })
     .onOk(async (data) => {
-      const state = data[2] == 1 ? true : data[2] == 0 ? false : null;
+      const state = data[2] == 1 ? true : data[2] == 0 ? false : null
       const maintenance_data = {
         date: data[0],
         observations: data[3],
         maintenance_type: data[1],
-        state: state,
+        state,
         equiptment_id: equipment.value.id,
-      };
+      }
 
       try {
         const response = await sendRequest({
-          method: "POST",
-          url: api_prefix + "/maintenances",
+          method: 'POST',
+          url: `${api_prefix}/maintenances`,
           data: maintenance_data,
-        });
-        getMaintenances();
-      } catch (error) {}
+        })
+        getMaintenances()
+      }
+      catch (error) {}
     })
-    .onCancel(() => {});
+    .onCancel(() => {})
 }
 
 function editProduct() {
@@ -400,7 +416,7 @@ function editProduct() {
       maintenance_period_value: equipment.value.maintenance_period,
       observation_value: equipment.value.observation,
     },
-  }).onOk((data) => {});
+  }).onOk((data) => {})
 }
 
 function editLocation() {
@@ -421,7 +437,7 @@ function editLocation() {
         name: equipment.value.building_name,
       },
     },
-  }).onOk((data) => {});
+  }).onOk((data) => {})
 }
 
 function editPurchase() {
@@ -430,7 +446,7 @@ function editPurchase() {
     project_name: project.value ? project.value.project_name : null,
     stage_id: project.value ? project.value.stage_id : null,
     stage_name: project.value ? project.value.stage_name : null,
-  };
+  }
   $q.dialog({
     component: EditEquipmentPurchase,
     componentProps: {
@@ -453,7 +469,7 @@ function editPurchase() {
         name: equipment.value.stage_name,
       },
     },
-  }).onOk((data) => {});
+  }).onOk((data) => {})
 }
 
 function editMaintenance(maintenance) {
@@ -467,54 +483,54 @@ function editMaintenance(maintenance) {
         name: maintenance.maintenance_type,
       },
       typeOptions: [
-        { id: "Programada", name: "Programada" },
-        { id: "Correctiva", name: "Correctiva" },
+        { id: 'Programada', name: 'Programada' },
+        { id: 'Correctiva', name: 'Correctiva' },
       ],
       state_value: {
         id: maintenance.state ? 1 : 0,
-        name: maintenance.state ? "Realizado" : "Sin realizar",
+        name: maintenance.state ? 'Realizado' : 'Sin realizar',
       },
       stateOptions: [
-        { id: "0", name: "Sin realizar" },
-        { id: "1", name: "Realizado" },
+        { id: '0', name: 'Sin realizar' },
+        { id: '1', name: 'Realizado' },
       ],
       observation_value: maintenance.observations,
       equiptment_id: maintenance.equiptment_id,
     },
   }).onOk(() => {
-    getMaintenances();
-  });
+    getMaintenances()
+  })
 }
 
-const editEquipment = () => {
-  console.log("Edit equipment " + equipment.value.id);
-};
+function editEquipment() {
+  console.log(`Edit equipment ${equipment.value.id}`)
+}
 
 function removeMaintenance(maintenance) {
   $q.dialog({
-    title: "Eliminar mantenimiento",
-    message: "Se eliminara el mantenimiento",
+    title: 'Eliminar mantenimiento',
+    message: 'Se eliminara el mantenimiento',
     ok: {
-      color: "negative",
-      label: "Aceptar y eliminar",
+      color: 'negative',
+      label: 'Aceptar y eliminar',
     },
     cancel: {
-      color: "warning",
-      label: "Cancelar y mantener",
+      color: 'warning',
+      label: 'Cancelar y mantener',
     },
   })
     .onOk(async () => {
-      const maintenance_id = maintenance.id;
+      const maintenance_id = maintenance.id
       try {
         const response = await sendRequest({
-          method: "DELETE",
-          url: api_prefix + "/maintenances/" + maintenance_id,
-        });
-        getMaintenances();
-      } catch (error) {
-        if (error.response.status === 403) {
-          router.push({ path: "/login" });
-        }
+          method: 'DELETE',
+          url: `${api_prefix}/maintenances/${maintenance_id}`,
+        })
+        getMaintenances()
+      }
+      catch (error) {
+        if (error.response.status === 403)
+          router.push({ path: '/login' })
       }
     })
     .onCancel(() => {
@@ -522,13 +538,13 @@ function removeMaintenance(maintenance) {
     })
     .onDismiss(() => {
       // console.log('I am triggered on both OK and Cancel')
-    });
+    })
 }
 
 onMounted(() => {
-  getEquipment();
-  content_loaded.value = true;
-});
+  getEquipment()
+  content_loaded.value = true
+})
 </script>
 
 <style scoped>

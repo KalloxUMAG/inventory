@@ -1,19 +1,19 @@
 <template>
-  <PageTitle title="Insumos" icon="science"/>
-  <q-card class="no-shadow bg-transparent" >
+  <PageTitle title="Insumos" icon="science" />
+  <q-card class="no-shadow bg-transparent">
     <q-card-section class="q-pl-none col-12">
       <div class="text-subtitle1 q-pl-md space-between">
         Lista de insumos
         <div class="actions-buttons">
           <q-input
+            v-model="filter"
             outlined
             bg-color="white"
             dense
             debounce="300"
             placeholder="Buscar"
-            v-model="filter"
           >
-            <template v-slot:append>
+            <template #append>
               <q-icon name="search" />
             </template>
           </q-input>
@@ -34,27 +34,29 @@
         :rows="supplies"
         no-data-label="No hay registros para mostrar"
         rows-per-page-label="Registros por pagina"
-        @row-click="rowClicker"
         flat
         bordered
         no-wrap
         :filter="filter"
         class="card-style"
+        @row-click="rowClicker"
       >
-        <template v-slot:header="props">
+        <template #header="props">
           <q-tr :props="props">
             <q-th
               v-for="col in props.cols"
               :key="col.name"
               :props="props"
-              :class="['text-italic', 'table-header', col.additionalClass]"
+              class="text-italic table-header" :class="[col.additionalClass]"
             >
               {{ col.label }}
             </q-th>
-            <q-th auto-width>Lotes</q-th>
+            <q-th auto-width>
+              Lotes
+            </q-th>
           </q-tr>
         </template>
-        <template v-slot:body="props">
+        <template #body="props">
           <q-tr :props="props" class="item-row">
             <q-td
               v-for="col in props.cols"
@@ -65,7 +67,7 @@
               {{ col.value }}
             </q-td>
             <q-td auto-width>
-              <q-btn size="sm" align="between" color="accent" flat @click="props.expand = !props.expand" :icon-right="props.expand ? 'expand_less':'expand_more'"/>
+              <q-btn size="sm" align="between" color="accent" flat :icon-right="props.expand ? 'expand_less' : 'expand_more'" @click="props.expand = !props.expand" />
             </q-td>
           </q-tr>
           <q-tr v-show="props.expand" :props="props">
@@ -88,43 +90,43 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { onMounted, ref } from "vue";
-import { sendRequest } from "src/axios/instance";
-import { suppliesColumns, lotsColumns } from "../constants/columns.js";
-import { useRouter } from "vue-router";
+import { onMounted, ref } from 'vue'
+import { sendRequest } from 'src/axios/instance'
+import { useRouter } from 'vue-router'
 
-import PageTitle from "src/components/commons/PageTitle.vue";
+import PageTitle from 'src/components/commons/PageTitle.vue'
+import { lotsColumns, suppliesColumns } from '../constants/columns.js'
 
-const supplies = ref([]);
-const api_prefix = process.env.API_URL;
+const supplies = ref([])
+const api_prefix = process.env.API_URL
 
-const router = useRouter();
-const filter = ref("");
-const detail_query = "/supplies/";
+const router = useRouter()
+const filter = ref('')
+const detail_query = '/supplies/'
 
-const getSupplies = async () => {
+async function getSupplies() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/supplies",
-    });
+      method: 'GET',
+      url: `${api_prefix}/supplies`,
+    })
     supplies.value = response.data.map((supply) => {
-      supply.max_samples = supply.samples * supply.stock;
-      supply.critical = supply.stock <= supply.critical_stock ? true : false;
-      return supply;
-    });
-  } catch (error) {}
-};
+      supply.max_samples = supply.samples * supply.stock
+      supply.critical = supply.stock <= supply.critical_stock
+      return supply
+    })
+  }
+  catch (error) {}
+}
 
-const rowClicker = (row) => {
-  const item = row.id;
-  router.push(detail_query + item);
-};
+function rowClicker(row) {
+  const item = row.id
+  router.push(detail_query + item)
+}
 
 onMounted(() => {
-  getSupplies();
-});
+  getSupplies()
+})
 </script>
 
 <style scoped>

@@ -1,25 +1,25 @@
 <template>
   <PageTitle title="Nuevo insumo" />
   <q-form
-    @submit.prevent="onSubmit"
-    class="q-gutter-md col-xs-12 col-sm-12 col-md-6 relative-position q-mr-md"
     ref="createSupplyForm"
+    class="q-gutter-md col-xs-12 col-sm-12 col-md-6 relative-position q-mr-md"
+    @submit.prevent="onSubmit"
   >
-    <!--Datos Producto-->
+    <!-- Datos Producto -->
     <FormSection title="Datos insumo">
       <div class="col">
         <div class="row">
           <q-input
-            outlined
             v-model="supply.name"
+            outlined
             label="Nombre*"
             class="col q-mr-md"
             :rules="[(val) => !!val || 'Campo obligatorio']"
             lazy-rules
           />
           <q-input
-            outlined
             v-model="supply.code"
+            outlined
             label="Codigo*"
             class="col"
             :rules="[(val) => !!val || 'Campo obligatorio']"
@@ -30,8 +30,8 @@
       <div class="col">
         <div class="row">
           <q-input
-            outlined
             v-model="supply.samples"
+            outlined
             label="Muestras por unidad*"
             type="number"
             step="any"
@@ -41,8 +41,8 @@
             ]"
           />
           <q-input
-            outlined
             v-model="supply.lot_stock"
+            outlined
             label="Stock por lote*"
             type="number"
             step="any"
@@ -56,8 +56,8 @@
       <div class="col">
         <div class="row">
           <q-input
-            outlined
             v-model="supply.critical_stock"
+            outlined
             label="Stock crítico*"
             type="number"
             class="col"
@@ -75,13 +75,13 @@
           option_label="name"
           label="Marca*"
           not_found_label="No hay marcas disponibles"
-          @updateModel="
+          :rules="[(val) => !!val || 'Campo obligatorio']"
+          lazy-rules
+          @update-model="
             (value) => {
               supply.brand = value;
             }
           "
-          :rules="[(val) => !!val || 'Campo obligatorio']"
-          lazy-rules
         />
         <div class="row justify-end q-pt-md">
           <q-btn
@@ -94,8 +94,8 @@
       <div v-else>
         <div class="row">
           <q-input
-            outlined
             v-model="newBrand"
+            outlined
             class="col"
             label="Marca*"
             :disable="flags.disableBrand"
@@ -129,13 +129,13 @@
           option_label="name"
           label="Tipo de insumo*"
           not_found_label="No hay tipos de insumos disponibles"
-          @updateModel="
+          :rules="[(val) => !!val || 'Campo obligatorio']"
+          lazy-rules
+          @update-model="
             (value) => {
               supply.type = value;
             }
           "
-          :rules="[(val) => !!val || 'Campo obligatorio']"
-          lazy-rules
         />
         <div class="row justify-end q-pt-md">
           <q-btn
@@ -148,8 +148,8 @@
       <div v-else>
         <div class="row">
           <q-input
-            outlined
             v-model="newType"
+            outlined
             class="col"
             label="Tipo de insumo*"
             :disable="flags.disableType"
@@ -183,13 +183,13 @@
           option_label="name"
           label="Formato de insumo*"
           not_found_label="No hay formatos de insumos disponibles"
-          @updateModel="
+          :rules="[(val) => !!val || 'Campo obligatorio']"
+          lazy-rules
+          @update-model="
             (value) => {
               supply.format = value;
             }
           "
-          :rules="[(val) => !!val || 'Campo obligatorio']"
-          lazy-rules
         />
         <div class="row justify-end q-pt-md">
           <q-btn
@@ -202,8 +202,8 @@
       <div v-else>
         <div class="row">
           <q-input
-            outlined
             v-model="newFormat"
+            outlined
             class="col"
             label="Tipo de insumo*"
             :disable="flags.disableFormat"
@@ -230,15 +230,15 @@
         </div>
       </div>
       <q-input
-        outlined
         v-model="supply.observation"
+        outlined
         type="textarea"
         label="Observación"
         :rules="[(val) => !!val || 'Campo obligatorio']"
         lazy-rules
       />
     </FormSection>
-    <!--Form button-->
+    <!-- Form button -->
     <div class="row justify-end q-mt-mx">
       <q-btn label="Crear" type="submit" color="positive" />
     </div>
@@ -252,20 +252,20 @@
 </template>
 
 <script setup>
-import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
-import { ref, reactive, onMounted } from "vue";
-import { sendRequest } from "src/axios/instance.js";
-import SelectForm from "src/components/SelectForm.vue";
-import FormSection from "src/components/Form/FormSection.vue";
-import PageTitle from "src/components/commons/PageTitle.vue";
+import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
+import { onMounted, reactive, ref } from 'vue'
+import { sendRequest } from 'src/axios/instance.js'
+import SelectForm from 'src/components/SelectForm.vue'
+import FormSection from 'src/components/Form/FormSection.vue'
+import PageTitle from 'src/components/commons/PageTitle.vue'
 
-//Options Selects
-const brandOptions = ref([]);
-const formatOptions = ref([]);
-const typeOptions = ref([]);
+// Options Selects
+const brandOptions = ref([])
+const formatOptions = ref([])
+const typeOptions = ref([])
 
-//Models
+// Models
 const supply = reactive({
   brand: null,
   type: null,
@@ -276,12 +276,12 @@ const supply = reactive({
   lot_stock: 0,
   observation: null,
   critical_stock: 0,
-});
-const newBrand = ref("");
-const newFormat = ref("");
-const newType = ref("");
+})
+const newBrand = ref('')
+const newFormat = ref('')
+const newType = ref('')
 
-//Flags
+// Flags
 const flags = reactive({
   disableBrand: false,
   disableFormat: false,
@@ -289,153 +289,160 @@ const flags = reactive({
   disableType: false,
   newTypeState: false,
   newFormatState: false,
-});
+})
 
-const loading = ref(false);
+const loading = ref(false)
 
-//Form
-const createSupplyForm = ref(null);
-const router = useRouter();
-const $q = useQuasar();
-const api_prefix = process.env.API_URL;
+// Form
+const createSupplyForm = ref(null)
+const router = useRouter()
+const $q = useQuasar()
+const api_prefix = process.env.API_URL
 
-const getSuppliesBrands = async () => {
+async function getSuppliesBrands() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/supplies_brands",
-    });
-    const result = response.data;
+      method: 'GET',
+      url: `${api_prefix}/supplies_brands`,
+    })
+    const result = response.data
     brandOptions.value = result.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getSuppliesFormats = async () => {
+async function getSuppliesFormats() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/supplies_formats",
-    });
-    const result = response.data;
+      method: 'GET',
+      url: `${api_prefix}/supplies_formats`,
+    })
+    const result = response.data
     formatOptions.value = result.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getSuppliesTypes = async () => {
+async function getSuppliesTypes() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/supplies_types",
-    });
-    const result = response.data;
+      method: 'GET',
+      url: `${api_prefix}/supplies_types`,
+    })
+    const result = response.data
     typeOptions.value = result.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-//Create functions
+// Create functions
 
 async function createNewBrand() {
-  if (!flags.newBrandState) {
-    return supply.brand;
-  }
+  if (!flags.newBrandState)
+    return supply.brand
+
   const brandData = {
     name: newBrand.value,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/supplies_brands",
+      method: 'POST',
+      url: `${api_prefix}/supplies_brands`,
       data: brandData,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la marca: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la marca: ${error}`,
+    })
   }
 }
 
 async function createNewFormat() {
-  if (!flags.newFormatState) {
-    return supply.format;
-  }
+  if (!flags.newFormatState)
+    return supply.format
+
   const formatData = {
     name: newFormat.value,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/supplies_formats",
+      method: 'POST',
+      url: `${api_prefix}/supplies_formats`,
       data: formatData,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el formato: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el formato: ${error}`,
+    })
   }
 }
 
 async function createNewType() {
-  if (!flags.newTypeState) {
-    return supply.type;
-  }
+  if (!flags.newTypeState)
+    return supply.type
+
   const typeData = {
     name: newType.value,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/supplies_types",
+      method: 'POST',
+      url: `${api_prefix}/supplies_types`,
       data: typeData,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el tipo de insumo: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el tipo de insumo: ${error}`,
+    })
   }
 }
 
 async function createNewSupply(supplyData) {
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/supplies",
+      method: 'POST',
+      url: `${api_prefix}/supplies`,
       data: supplyData,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el insumo: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el insumo: ${error}`,
+    })
   }
 }
 
 async function onSubmit() {
-  createSupplyForm.value.resetValidation();
-  let supplyData = {
+  createSupplyForm.value.resetValidation()
+  const supplyData = {
     name: supply.name,
     code: supply.code,
     stock: 0,
@@ -446,50 +453,50 @@ async function onSubmit() {
     supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,
     supplies_format_id: supply.format,
-  };
+  }
 
-  loading.value = true;
+  loading.value = true
 
-  const supplies_brand_id = await createNewBrand();
+  const supplies_brand_id = await createNewBrand()
   if (supplies_brand_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  supplyData["supplies_brand_id"] = supplies_brand_id;
+  supplyData.supplies_brand_id = supplies_brand_id
 
-  const supplies_type_id = await createNewType();
+  const supplies_type_id = await createNewType()
   if (supplies_type_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  supplyData["supplies_type_id"] = supplies_type_id;
+  supplyData.supplies_type_id = supplies_type_id
 
-  const supplies_format_id = await createNewFormat();
+  const supplies_format_id = await createNewFormat()
   if (supplies_format_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  supplyData["supplies_format_id"] = supplies_format_id;
+  supplyData.supplies_format_id = supplies_format_id
 
-  const supply_id = await createNewSupply(supplyData);
+  const supply_id = await createNewSupply(supplyData)
   if (supply_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  loading.value = false;
-  redirectToSupply(supply_id.toString());
-  //Redirect to table
+  loading.value = false
+  redirectToSupply(supply_id.toString())
+  // Redirect to table
 }
 
 function redirectToSupply(supply_id) {
-  router.push({ path: supply_id });
+  router.push({ path: supply_id })
 }
 
 onMounted(() => {
-  getSuppliesBrands();
-  getSuppliesTypes();
-  getSuppliesFormats();
-});
+  getSuppliesBrands()
+  getSuppliesTypes()
+  getSuppliesFormats()
+})
 </script>
 
 <style scoped>

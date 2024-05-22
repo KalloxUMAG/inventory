@@ -1,9 +1,11 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin q-pa-md">
-      <q-form @submit="onOKClick" ref="AddSupplierForm">
-        <div class="text-bold text-subtitle1 q-my-sm">Datos proveedor</div>
-        <!--Fields-->
+      <q-form ref="AddSupplierForm" @submit="onOKClick">
+        <div class="text-bold text-subtitle1 q-my-sm">
+          Datos proveedor
+        </div>
+        <!-- Fields -->
         <div v-if="!newsupplierstate">
           <SelectForm
             outlined
@@ -12,13 +14,13 @@
             option_label="name"
             label="Proveedor"
             not_found_label="No hay proveedores disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 supplier = value;
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-mt-md">
             <q-btn
@@ -33,8 +35,8 @@
         <div v-else>
           <div class="row">
             <q-input
-              outlined
               v-model="newsuppliername"
+              outlined
               label="Nombre proveedor"
               class="col q-my-sm"
               :disable="disableSupplier"
@@ -44,8 +46,8 @@
           </div>
           <div>
             <q-input
-              outlined
               v-model="newsupplierrut"
+              outlined
               label="Rut"
               mask="##.###.###-X"
               unmasked-value
@@ -57,8 +59,8 @@
           </div>
           <div class="row">
             <q-input
-              outlined
               v-model="newsupplieraddress"
+              outlined
               label="Dirección"
               class="col q-my-sm"
               :disable="disableSupplier"
@@ -68,8 +70,8 @@
           </div>
           <div class="row">
             <q-input
-              outlined
               v-model="workername1"
+              outlined
               label="Nombre trabajador"
               class="col q-my-sm"
               :disable="disableSupplier"
@@ -86,17 +88,17 @@
               option_label="name"
               label="Roles"
               not_found_label="No hay roles disponibles"
-              @updateModel="(value) => (workerrol1 = value)"
               class="col q-my-sm"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
+              @update-model="(value) => (workerrol1 = value)"
             />
           </div>
           <div class="row">
             <q-input
+              v-model="workermail1"
               outlined
               type="email"
-              v-model="workermail1"
               label="Correo trabajador"
               class="col q-my-sm"
               :disable="disableSupplier"
@@ -106,8 +108,8 @@
           </div>
           <div class="row">
             <q-input
-              outlined
               v-model="workerphone1"
+              outlined
               label="Telefono trabajador"
               mask="(+##) #####-####"
               class="col q-my-sm"
@@ -122,30 +124,30 @@
               v-if="disableSupplier"
               label="Editar"
               color="amber"
-              @click="disableSupplier = false"
               class="q-mr-sm"
+              @click="disableSupplier = false"
             />
             <q-btn
               v-else
               label="Guardar"
               color="amber"
-              @click="notEmptyFields() ? (disableSupplier = true) : ''"
               class="q-mr-sm"
+              @click="notEmptyFields() ? (disableSupplier = true) : ''"
             />
             <q-btn
               label="Ver lista"
               color="amber"
               @click="
                 (newsupplierstate = !newsupplierstate),
-                  (disableSupplier = false)
+                (disableSupplier = false)
               "
             />
           </div>
         </div>
         <div class="row">
           <q-input
-            outlined
             v-model="cost"
+            outlined
             type="number"
             label="Costo"
             class="col q-my-sm"
@@ -153,7 +155,7 @@
             lazy-rules
           />
         </div>
-        <!--Buttons-->
+        <!-- Buttons -->
         <div class="q-mt-sm row justify-end">
           <q-btn
             color="primary"
@@ -169,153 +171,156 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { sendRequest } from "src/axios/instance.js";
-import { useDialogPluginComponent, useQuasar } from "quasar";
-import { onMounted, ref, toRefs } from "vue";
-import SelectForm from "src/components/SelectForm.vue";
-import { rolOptions } from "src/constants/columns.js";
-
-const cost = ref(0);
-
-const disableSupplier = ref(false);
-
-const newsuppliername = ref("");
-const newsupplierrut = ref("");
-const newsupplieraddress = ref("");
-
-const supplier = ref(null);
-const suppliersOptions = ref([]);
-const newsupplierstate = ref(false);
-
-const workername1 = ref("");
-const workerrol1 = ref("");
-const workermail1 = ref("");
-const workerphone1 = ref("");
-
-const $q = useQuasar();
+import { sendRequest } from 'src/axios/instance.js'
+import { useDialogPluginComponent, useQuasar } from 'quasar'
+import { onMounted, ref, toRefs } from 'vue'
+import SelectForm from 'src/components/SelectForm.vue'
+import { rolOptions } from 'src/constants/columns.js'
 
 const props = defineProps({
   supply_id: Number,
-});
+})
 
-const { supply_id } = toRefs(props);
-const AddSupplierForm = ref(null);
-const api_prefix = process.env.API_URL;
+defineEmits([...useDialogPluginComponent.emits])
 
-const getSuppliers = async () => {
+const cost = ref(0)
+
+const disableSupplier = ref(false)
+
+const newsuppliername = ref('')
+const newsupplierrut = ref('')
+const newsupplieraddress = ref('')
+
+const supplier = ref(null)
+const suppliersOptions = ref([])
+const newsupplierstate = ref(false)
+
+const workername1 = ref('')
+const workerrol1 = ref('')
+const workermail1 = ref('')
+const workerphone1 = ref('')
+
+const $q = useQuasar()
+
+const { supply_id } = toRefs(props)
+const AddSupplierForm = ref(null)
+const api_prefix = process.env.API_URL
+
+async function getSuppliers() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/suppliers",
-    });
-    const suppliers = response.data;
+      method: 'GET',
+      url: `${api_prefix}/suppliers`,
+    })
+    const suppliers = response.data
     suppliersOptions.value = suppliers.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
 function notEmptyFields() {
   return (
-    newsuppliername.value != "" &&
-    newsupplierrut.value != "" &&
-    newsupplieraddress.value != "" &&
-    workername1.value != "" &&
-    workerrol1.value != "" &&
-    workermail1.value != "" &&
-    workerphone1.value != ""
-  );
+    newsuppliername.value != ''
+    && newsupplierrut.value != ''
+    && newsupplieraddress.value != ''
+    && workername1.value != ''
+    && workerrol1.value != ''
+    && workermail1.value != ''
+    && workerphone1.value != ''
+  )
 }
 
 async function createNewSupplier() {
-  if (!newsupplierstate.value) {
-    return supplier.value;
-  }
+  if (!newsupplierstate.value)
+    return supplier.value
+
   const supplierdata = {
     name: newsuppliername.value,
     rut: newsupplierrut.value,
     city_address: newsupplieraddress.value,
-  };
+  }
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/suppliers",
+      method: 'POST',
+      url: `${api_prefix}/suppliers`,
       data: supplierdata,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el proveedor: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el proveedor: ${error}`,
+    })
   }
 }
 
 async function createNewWorker(supplier_id) {
-  if (!newsupplierstate.value) {
-    return;
-  }
+  if (!newsupplierstate.value)
+    return
+
   if (workername1.value != null) {
     const workerdata = {
       name: workername1.value,
       position: workerrol1.value,
       phone: workerphone1.value,
       email: workermail1.value,
-      supplier_id: supplier_id,
-    };
+      supplier_id,
+    }
     try {
       const response = await sendRequest({
-        method: "POST",
-        url: api_prefix + "/suppliers_contacts",
+        method: 'POST',
+        url: `${api_prefix}/suppliers_contacts`,
         data: workerdata,
-      });
-    } catch (error) {
+      })
+    }
+    catch (error) {
       $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "No se pudo crear el contacto 1: " + error,
-      });
+        color: 'red-3',
+        textColor: 'white',
+        icon: 'error',
+        message: `No se pudo crear el contacto 1: ${error}`,
+      })
     }
   }
 }
 
 onMounted(() => {
-  getSuppliers();
-});
+  getSuppliers()
+})
 
-defineEmits([...useDialogPluginComponent.emits]);
-
-const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
-  useDialogPluginComponent();
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel }
+  = useDialogPluginComponent()
 
 async function onOKClick() {
-  AddSupplierForm.value.resetValidation();
-  const supplier_id = await createNewSupplier();
-  await createNewWorker(supplier_id);
+  AddSupplierForm.value.resetValidation()
+  const supplier_id = await createNewSupplier()
+  await createNewWorker(supplier_id)
   const data = {
-    supplier_id: supplier_id,
+    supplier_id,
     supply_id: props.supply_id,
     cost: cost.value,
-  };
+  }
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/suppliers_supplies",
-      data: data,
-    });
-  } catch (error) {
-    $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo guardar los cambios: " + error,
-    });
-    return;
+      method: 'POST',
+      url: `${api_prefix}/suppliers_supplies`,
+      data,
+    })
   }
-  onDialogOK();
+  catch (error) {
+    $q.notify({
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo guardar los cambios: ${error}`,
+    })
+    return
+  }
+  onDialogOK()
 }
 </script>
