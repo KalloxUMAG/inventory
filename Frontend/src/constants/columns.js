@@ -65,6 +65,12 @@ export const equipmentsColumns = [
 
 export const suppliesColumns = [
   {
+    name: "state",
+    align: "left",
+    label: "",
+    field: "state",
+  },
+  {
     name: "name",
     align: "left",
     label: "Nombre",
@@ -347,7 +353,6 @@ export const usersColumns = [
     label: "Imagen",
     field: "img",
     sortable: false,
-    additionalClass: "width-300"
   },
   {
     name: "fullname",
