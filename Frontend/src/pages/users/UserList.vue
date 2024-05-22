@@ -60,19 +60,14 @@
         </template>
         <template v-slot:body-cell-img="props">
           <q-td>
-            <div class="image-visor">
+            <q-avatar square text-color="white" size="56px">
               <q-img
                 v-if="props.value != null"
-                class="rounded-borders"
                 :src="api_prefix.slice(0, -4) + props.value"
                 spinner-color="white"
-                style="height: 100%"
-                fit="contain"
               />
-              <div class="rounded-borders no-image" v-else>
-                No hay imagen disponible
-              </div>
-            </div>
+              <q-img v-else src="~assets/no-image.png" spinner-color="white" />
+            </q-avatar>
           </q-td>
         </template>
       </q-table>
@@ -154,20 +149,7 @@ onMounted(() => {
 }
 .image-visor {
   border: none !important;
-  height: 250px;
-  width: 250px;
   padding: 0;
-}
-.no-image {
-  align-items: center;
-  background-color: #eef3f7;
-  color: #6c757d;
-  display: flex;
-  height: 100%;
-  text-align: center;
-  font-size: 24px;
-  height: 250px;
-  width: 250px;
 }
 
 .width-300 {
