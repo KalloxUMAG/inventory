@@ -24,7 +24,7 @@
 
 <script setup>
 import { onMounted, ref, toRefs } from 'vue'
-import { sendRequest } from 'src/axios/instance'
+import { sendRequest } from 'src/services/axios/instance'
 
 const props = defineProps({
   api_endpoint: String,

@@ -880,7 +880,7 @@
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
-import { sendRequest } from 'src/axios/instance.js'
+import { sendRequest } from 'src/services/axios/instance.js'
 
 import SelectForm from 'src/components/SelectForm.vue'
 import UploadImages from 'src/components/UploadImages.vue'

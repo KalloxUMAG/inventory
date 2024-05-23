@@ -48,7 +48,7 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { computed, onMounted, ref } from 'vue'
-import { sendRequest } from 'src/axios/instance'
+import { sendRequest } from 'src/services/axios/instance'
 
 const route = useRoute()
 const id = computed(() => route.params.id)

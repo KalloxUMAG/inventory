@@ -91,7 +91,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { sendRequest } from 'src/axios/instance'
+import { sendRequest } from 'src/services/axios/instance.js'
 import { useRouter } from 'vue-router'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'

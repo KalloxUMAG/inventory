@@ -74,7 +74,7 @@
 import { useQuasar } from 'quasar'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { sendRequest } from 'src/axios/instance.js'
+import { sendRequest } from 'src/services/axios/instance.js'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import FormSection from 'src/components/Form/FormSection.vue'

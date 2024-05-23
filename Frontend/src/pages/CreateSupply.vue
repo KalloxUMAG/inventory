@@ -255,7 +255,7 @@
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { onMounted, reactive, ref } from 'vue'
-import { sendRequest } from 'src/axios/instance.js'
+import { sendRequest } from 'src/services/axios/instance.js'
 import SelectForm from 'src/components/SelectForm.vue'
 import FormSection from 'src/components/Form/FormSection.vue'
 import PageTitle from 'src/components/commons/PageTitle.vue'

@@ -9,6 +9,9 @@
 
 <script setup>
 import StatisticCounter from 'src/components/statistics/StatisticsCounter.vue'
+import { getEquipmentList } from '/src/services'
+
+const equipments = getEquipmentList()
 </script>
 
 <style scoped>

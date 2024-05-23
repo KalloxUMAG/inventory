@@ -2,3 +2,6 @@
 .vscode/
 
 .env
+Frontend/yarn.lock
+
+Backend/images/*

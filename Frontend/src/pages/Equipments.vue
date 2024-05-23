@@ -81,7 +81,7 @@
 import { onMounted, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
-import { sendRequest } from 'src/axios/instance'
+import { sendRequest } from 'src/services/axios/instance.js'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import { equipmentsColumns } from '../constants/columns.js'

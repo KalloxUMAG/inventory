@@ -171,7 +171,7 @@
 </template>
 
 <script setup>
-import { sendRequest } from 'src/axios/instance.js'
+import { sendRequest } from 'src/services/axios/instance.js'
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref, toRefs } from 'vue'
 import SelectForm from 'src/components/SelectForm.vue'

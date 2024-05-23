@@ -42,7 +42,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { sendRequest } from 'src/axios/instance.js'
+import { sendRequest } from 'src/services/axios/instance.js'
 import CriticTable from 'src/components/CriticTable/CriticTable.vue'
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import StatisticsSection from 'src/components/statistics/StatisticsSection.vue'

@@ -337,7 +337,7 @@
 <script setup>
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
-import { sendRequest } from 'src/axios/instance'
+import { sendRequest } from 'src/services/axios/instance'
 import SelectForm from 'src/components/SelectForm.vue'
 
 const props = defineProps({

@@ -45,7 +45,7 @@
 <script setup>
 import { useQuasar } from 'quasar'
 import { ref } from 'vue'
-import { sendRequest } from 'src/axios/instance.js'
+import { sendRequest } from 'src/services/axios/instance.js'
 
 const password = ref('')
 const newPassword = ref('')

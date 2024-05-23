@@ -23,7 +23,7 @@
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
 import { onMounted, ref, toRefs } from 'vue'
-import { sendRequest } from 'src/axios/instance.js'
+import { sendRequest } from 'src/services/axios/instance.js'
 
 const props = defineProps({
   title: String,
