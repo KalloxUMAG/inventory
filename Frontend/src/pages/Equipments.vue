@@ -81,9 +81,9 @@
 import { onMounted, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
-import { sendRequest } from 'src/services/axios/instance.js'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
+import { getEquipments } from 'src/services/index.js'
 import { equipmentsColumns } from '../constants/columns.js'
 
 const router = useRouter()
@@ -91,19 +91,10 @@ const router = useRouter()
 const equipments = ref([])
 const filter = ref('')
 
-const api_prefix = process.env.API_URL
 const detail_query = '/equipments/'
 
-async function getEquipments() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/equipments`,
-    })
-    equipments.value = response.data
-  }
-  catch (error) {
-  }
+async function getEquipmentsData() {
+  equipments.value = await getEquipments()
 }
 
 function rowClicker(e, row) {
@@ -112,7 +103,7 @@ function rowClicker(e, row) {
 }
 
 onMounted(() => {
-  getEquipments()
+  getEquipmentsData()
 })
 </script>
 

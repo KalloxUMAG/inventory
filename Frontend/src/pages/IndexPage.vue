@@ -1,6 +1,11 @@
 <template>
   <PageTitle title="Inicio" icon="home" />
-  <StatisticsSection />
+  <StatisticsSection
+    :equipments="equipmentsQuantity"
+    :supplies="suppliesQuantity"
+    :critical-equipments="criticalEquipmentsQuantity"
+    :critical-supplies="criticalSuppliesQuantity"
+  />
   <div class="row">
     <div class="col">
       <q-card class="no-shadow bg-transparent">
@@ -13,7 +18,7 @@
         <q-card-section class="q-pa-none">
           <CriticTable
             :columns="suppliesColumns"
-            :rows="supplies"
+            :rows="criticalSupplies"
             detail_query="/supplies/"
             row_key="id"
           />
@@ -30,7 +35,7 @@
         <q-card-section class="q-pa-none">
           <CriticTable
             :columns="equipmentsColumns"
-            :rows="equipments"
+            :rows="criticalEquipments"
             detail_query="/equipments/"
             row_key="id"
           />
@@ -42,64 +47,35 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { sendRequest } from 'src/services/axios/instance.js'
 import CriticTable from 'src/components/CriticTable/CriticTable.vue'
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import StatisticsSection from 'src/components/statistics/StatisticsSection.vue'
-import { useQuasar } from 'quasar'
+import { getCriticalEquipments, getCriticalSupplies, getEquipments, getSupplies } from 'src/services/index.js'
 import { equipmentsColumns, suppliesColumns } from '../constants/columns.js'
 
-const api_prefix = process.env.API_URL
+const criticalEquipments = ref([])
+const criticalEquipmentsQuantity = ref(0)
+const criticalSupplies = ref([])
+const criticalSuppliesQuantity = ref(0)
+const equipmentsQuantity = ref(0)
+const suppliesQuantity = ref(0)
 
-const equipments = ref([])
-const supplies = ref([])
-const $q = useQuasar()
-
-async function getSupplies() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/supplies/critical`,
-    })
-    supplies.value = response.data.map((supply) => {
-      supply.max_samples = supply.samples * supply.stock
-      return supply
-    })
-  }
-  catch (error) {
-    if (error.respose.status === 403) {
-      $q.notify({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-    }
-  }
+async function getEquipmentsData() {
+  criticalEquipments.value = await getCriticalEquipments()
+  criticalEquipmentsQuantity.value = criticalEquipments.value.length
+  const equipments = await getEquipments()
+  equipmentsQuantity.value = equipments.length
 }
 
-async function getEquipments() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/equipments/nextmaintenances`,
-    })
-    equipments.value = response.data
-  }
-  catch (error) {
-    if (error.respose.status === 403) {
-      $q.notify({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-    }
-  }
+async function getSuppliesData() {
+  criticalSupplies.value = await getCriticalSupplies()
+  criticalSuppliesQuantity.value = criticalSupplies.value.length
+  const supplies = await getSupplies()
+  suppliesQuantity.value = supplies.length
 }
 
 onMounted(() => {
-  getEquipments()
-  getSupplies()
+  getEquipmentsData()
+  getSuppliesData()
 })
 </script>

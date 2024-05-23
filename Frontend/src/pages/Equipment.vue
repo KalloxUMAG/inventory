@@ -94,7 +94,7 @@
       </div>
     </q-card>
     <div
-      v-if="equipment.maintenance_period === null"
+      v-if="equipment.maintenance_period !== null"
       class="q-mt-md maintenance-table"
     >
       <q-card class="no-shadow bg-transparent">
@@ -161,7 +161,7 @@
                 :props="props"
               >
                 <q-icon
-                  v-if="props.row.state == true"
+                  v-if="props.row.state === true"
                   size="md"
                   name="done_all"
                   color="positive"
@@ -169,7 +169,7 @@
                   <q-tooltip>Realizado</q-tooltip>
                 </q-icon>
                 <q-icon
-                  v-if="props.row.state == false"
+                  v-if="props.row.state === false"
                   size="md"
                   name="close"
                   color="negative"
@@ -213,13 +213,14 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { computed, onMounted, ref } from 'vue'
 import Carousel from 'src/components/Carousel.vue'
 import FormModal from 'src/components/FormModal.vue'
 import { useQuasar } from 'quasar'
 import { columns_maintenances } from 'src/constants/columns.js'
-import { sendRequest } from 'src/services/axios/instance.js'
+import { deleteMaintenance, getEquipment, getLastMaintenance, getMaintenances, postMaintenance } from 'src/services'
+
 import InfoSection from 'src/components/item-page/InfoSection.vue'
 import EditEquipmentProduct from './EditEquipmentProduct.vue'
 import EditEquipmentLocation from './EditEquipmentLocation.vue'
@@ -240,12 +241,7 @@ const maintenance_period = ref(null)
 const api_prefix = process.env.API_URL
 
 const route = useRoute()
-const router = useRouter()
 const id = computed(() => route.params.id)
-const query_equipment = `${api_prefix}/equipments/${id.value}`
-const query_maintenances = `${api_prefix}/maintenances/${id.value}`
-const query_last_maintenance
-  = `${api_prefix}/maintenances/last_maintenance/${id.value}`
 
 function padTo2Digits(num) {
   return num.toString().padStart(2, '0')
@@ -284,42 +280,13 @@ function createNextMaintenance() {
   })
 }
 
-async function getEquipment() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: query_equipment,
-    })
-    equipment.value = response.data
-    img_api.value = `${api_prefix}/equipments/image/${equipment.value.id}`
-    maintenance_period.value = equipment.value.maintenance_period ? `Cada ${equipment.value.maintenance_period} meses` : 'No aplica'
-    getMaintenances()
-  }
-  catch (error) {}
-}
-
-async function getMaintenances() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: query_maintenances,
-    })
-    maintenances.value = response.data
-    getLastMaintenance()
-  }
-  catch (error) {}
-}
-
-async function getLastMaintenance() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: query_last_maintenance,
-    })
-    last_maintenance.value = response.data
-    createNextMaintenance()
-  }
-  catch (error) {}
+async function getEquipmentData() {
+  equipment.value = await getEquipment(id.value)
+  img_api.value = `${api_prefix}/equipments/image/${equipment.value.id}`
+  maintenance_period.value = equipment.value.maintenance_period ? `Cada ${equipment.value.maintenance_period} meses` : 'No aplica'
+  maintenances.value = await getMaintenances(id.value)
+  last_maintenance.value = await getLastMaintenance(id.value)
+  createNextMaintenance()
 }
 
 function addFunction() {
@@ -371,7 +338,7 @@ function addFunction() {
     },
   })
     .onOk(async (data) => {
-      const state = data[2] == 1 ? true : data[2] == 0 ? false : null
+      const state = data[2] === 1 ? true : data[2] === 0 ? false : null
       const maintenance_data = {
         date: data[0],
         observations: data[3],
@@ -380,15 +347,10 @@ function addFunction() {
         equiptment_id: equipment.value.id,
       }
 
-      try {
-        const response = await sendRequest({
-          method: 'POST',
-          url: `${api_prefix}/maintenances`,
-          data: maintenance_data,
-        })
-        getMaintenances()
-      }
-      catch (error) {}
+      await postMaintenance(maintenance_data)
+      maintenances.value = await getMaintenances(id.value)
+      last_maintenance.value = await getLastMaintenance(id.value)
+      createNextMaintenance()
     })
     .onCancel(() => {})
 }
@@ -497,8 +459,10 @@ function editMaintenance(maintenance) {
       observation_value: maintenance.observations,
       equiptment_id: maintenance.equiptment_id,
     },
-  }).onOk(() => {
-    getMaintenances()
+  }).onOk(async () => {
+    maintenances.value = await getMaintenances(id.value)
+    last_maintenance.value = await getLastMaintenance(id.value)
+    createNextMaintenance()
   })
 }
 
@@ -521,17 +485,10 @@ function removeMaintenance(maintenance) {
   })
     .onOk(async () => {
       const maintenance_id = maintenance.id
-      try {
-        const response = await sendRequest({
-          method: 'DELETE',
-          url: `${api_prefix}/maintenances/${maintenance_id}`,
-        })
-        getMaintenances()
-      }
-      catch (error) {
-        if (error.response.status === 403)
-          router.push({ path: '/login' })
-      }
+      await deleteMaintenance(maintenance_id)
+      maintenances.value = await getMaintenances(id.value)
+      last_maintenance.value = await getLastMaintenance(id.value)
+      createNextMaintenance()
     })
     .onCancel(() => {
       // console.log('Cancel')
@@ -542,7 +499,7 @@ function removeMaintenance(maintenance) {
 }
 
 onMounted(() => {
-  getEquipment()
+  getEquipmentData()
   content_loaded.value = true
 })
 </script>
