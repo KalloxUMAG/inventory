@@ -7,17 +7,17 @@ const routes = [
       { path: '', component: () => import('pages/IndexPage.vue'), meta: { breadCrumb: [{ text: 'Inicio', icon: 'home' }] } },
       {
         path: '/equipments/:id',
-        component: () => import('src/pages/Equipment.vue'),
+        component: () => import('src/pages/equipments/EquipmentItemPage.vue'),
         meta: { breadCrumb(route) { const param = route.currentRoute.value.params.id; return [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Equipamiento', icon: 'biotech', to: '/equipments' }, { text: param }] } },
       },
       {
         path: '/equipments/new_equipment',
-        component: () => import('src/pages/CreateEquipment.vue'),
+        component: () => import('src/pages/equipments/EquipmentForm.vue'),
         meta: { breadCrumb: [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Equipamiento', icon: 'biotech', to: '/equipments' }, { text: 'Nuevo Equipo' }] },
       },
       {
         path: '/equipments',
-        component: () => import('src/pages/Equipments.vue'),
+        component: () => import('src/pages/equipments/EquipmentList.vue'),
         meta: { breadCrumb: [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Equipamiento', icon: 'biotech' }] },
       },
       {

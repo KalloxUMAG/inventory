@@ -64,7 +64,7 @@
             @update-model="
               (value) => {
                 brand = value;
-                getModels();
+                getModelsData();
               }
             "
           />
@@ -105,7 +105,7 @@
             @update-model="
               (value) => {
                 model = value;
-                getModelNumbers();
+                getModelNumbersData();
               }
             "
           />
@@ -262,7 +262,7 @@
           lazy-rules
           @update-model="
             (value) => {
-              (supplier = value), getInvoicesSupplier(value);
+              (supplier = value), getInvoicesSupplierData(value);
             }
           "
         />
@@ -548,7 +548,7 @@
             @update-model="
               (value) => {
                 project = value;
-                getStages();
+                getStagesData();
               }
             "
           />
@@ -721,7 +721,7 @@
             @update-model="
               (value) => {
                 building = value;
-                getUnits();
+                getUnitsData();
               }
             "
           />
@@ -762,7 +762,7 @@
             @update-model="
               (value) => {
                 unit = value;
-                getRooms();
+                getRoomsData();
               }
             "
           />
@@ -882,6 +882,8 @@ import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { sendRequest } from 'src/services/axios/instance.js'
 
+import { getBrands, getBuildings, getInvoices, getInvoicesSupplier, getModelNumbers, getModels, getProjectOwners, getProjects, getRooms, getStages, getSuppliers, getUnits } from '/src/services'
+
 import SelectForm from 'src/components/SelectForm.vue'
 import UploadImages from 'src/components/UploadImages.vue'
 import FormSection from 'src/components/Form/FormSection.vue'
@@ -999,184 +1001,97 @@ function handleAddImages(files) {
 
 function handleRemoveImages(files) {
   equipmentimages.value = equipmentimages.value.filter((value) => {
-    return value != files[0]
+    return value !== files[0]
   })
 }
 
-async function getBrands() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/brands`,
-    })
-    const brands = response.data
-    brandOptions.value = brands.map((x) => {
-      return { id: x.id, name: x.name }
-    })
-  }
-  catch (error) {}
+async function getBrandsData() {
+  const brands = await getBrands()
+  brandOptions.value = brands.map((x) => {
+    return { id: x.id, name: x.name }
+  })
 }
 
-async function getBuildings() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/buildings`,
-    })
-    const buildings = response.data
-    buildingOptions.value = buildings.map((x) => {
-      return { id: x.id, name: x.name }
-    })
-  }
-  catch (error) {}
+async function getBuildingsData() {
+  const buildings = await getBuildings()
+  buildingOptions.value = buildings.map((x) => {
+    return { id: x.id, name: x.name }
+  })
 }
 
-async function getInvoices() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/invoices`,
-    })
-    const invoices = response.data
-    invoicesOptions.value = invoices.map((x) => {
-      return { id: x.id, name: x.number.toString() }
-    })
-  }
-  catch (error) {}
+async function getInvoicesData() {
+  const invoices = await getInvoices()
+  invoicesOptions.value = invoices.map((x) => {
+    return { id: x.id, name: x.number.toString() }
+  })
 }
 
-async function getInvoicesSupplier(supplier_id) {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/invoices/supplier/${supplier_id}`,
-    })
-    const invoices = response.data
-    invoicesOptions.value = invoices.map((x) => {
-      return { id: x.id, name: x.number.toString() }
-    })
-  }
-  catch (error) {}
+async function getInvoicesSupplierData(supplier_id) {
+  const invoices = await getInvoicesSupplier(supplier_id)
+  invoicesOptions.value = invoices.map((x) => {
+    return { id: x.id, name: x.number.toString() }
+  })
 }
 
-async function getModels() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/models/${brand.value}`,
-    })
-    const models = response.data
-    modelOptions.value = models.map((x) => {
-      return { id: x.id, name: x.name }
-    })
-  }
-  catch (error) {}
+async function getModelsData() {
+  const models = await getModels(brand.value)
+  modelOptions.value = models.map((x) => {
+    return { id: x.id, name: x.name }
+  })
 }
 
-async function getModelNumbers() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/model_numbers/${model.value}`,
-    })
-    const modelnumbers = response.data
-    modelNumberOptions.value = modelnumbers.map((x) => {
-      return { id: x.id, name: x.number }
-    })
-  }
-  catch (error) {}
+async function getModelNumbersData() {
+  const modelnumbers = getModelNumbers(model.value)
+  modelNumberOptions.value = modelnumbers.map((x) => {
+    return { id: x.id, name: x.number }
+  })
 }
 
-async function getProjects() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/projects`,
-    })
-    const projects = response.data
-    projectOptions.value = projects.map((x) => {
-      return { id: x.id, name: x.name }
-    })
-  }
-  catch (error) {}
+async function getProjectsData() {
+  const projects = await getProjects()
+  projectOptions.value = projects.map((x) => {
+    return { id: x.id, name: x.name }
+  })
 }
 
-async function getProjectOwners() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/project_owners`,
-    })
-    const projectsowners = response.data
-    projectOwnersOptions.value = projectsowners.map((x) => {
-      return { id: x.id, name: x.name }
-    })
-  }
-  catch (error) {}
+async function getProjectOwnersData() {
+  const projectsowners = await getProjectOwners()
+  projectOwnersOptions.value = projectsowners.map((x) => {
+    return { id: x.id, name: x.name }
+  })
 }
 
-async function getRooms() {
-  const api_url = `${api_prefix}/rooms/${unit.value}`
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: api_url,
-    })
-    room.value = null
-    const rooms = response.data
-    roomOptions.value = rooms.map((x) => {
-      return { id: x.id, name: x.name }
-    })
-  }
-  catch (error) {}
+async function getRoomsData() {
+  const rooms = await getRooms(unit.value)
+  room.value = null
+  roomOptions.value = rooms.map((x) => {
+    return { id: x.id, name: x.name }
+  })
 }
 
-async function getStages() {
-  const api_url = `${api_prefix}/stages/${project.value}`
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: api_url,
-    })
-    stage.value = null
-    const stages = response.data
-    stagesOptions.value = stages.map((x) => {
-      return { id: x.id, name: x.name }
-    })
-  }
-  catch (error) {}
+async function getStagesData() {
+  const stages = await getStages(project.value)
+  stage.value = null
+  stagesOptions.value = stages.map((x) => {
+    return { id: x.id, name: x.name }
+  })
 }
 
-async function getSuppliers() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/suppliers`,
-    })
-    const suppliers = response.data
-    suppliersOptions.value = suppliers.map((x) => {
-      return { id: x.id, name: x.name }
-    })
-  }
-  catch (error) {}
+async function getSuppliersData() {
+  const suppliers = await getSuppliers()
+  suppliersOptions.value = suppliers.map((x) => {
+    return { id: x.id, name: x.name }
+  })
 }
 
-async function getUnits() {
-  const api_url = `${api_prefix}/units/${building.value}`
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: api_url,
-    })
-    unit.value = null
-    room.value = null
-    roomOptions.value = []
-    const units = response.data
-    unitOptions.value = units.map((x) => {
-      return { id: x.id, name: x.name }
-    })
-  }
-  catch (error) {}
+async function getUnitsData() {
+  const units = await getUnits(building.value)
+  unit.value = null
+  room.value = null
+  roomOptions.value = []
+  unitOptions.value = units.map((x) => {
+    return { id: x.id, name: x.name }
+  })
 }
 
 function onReset() {
@@ -1330,10 +1245,10 @@ async function createNewProject(project_owner_id) {
 
   const projectname = newprojectname.value
 
-  if (projectname.trim().length == 0)
+  if (projectname.trim().length === 0)
     return -1
 
-  if (project_owner_id == -1)
+  if (project_owner_id === -1)
     project_owner_id = null
 
   const projectdata = {
@@ -1365,7 +1280,7 @@ async function createNewProjectOwner() {
 
   const projectownername = newprojectownername.value
 
-  if (projectownername.trim().length == 0)
+  if (projectownername.trim().length === 0)
     return -1
 
   const projectownerdata = {
@@ -1532,7 +1447,7 @@ async function createNewStage(project_id) {
 
   const stagename = newstagename.value
 
-  if (stagename.trim().length == 0)
+  if (stagename.trim().length === 0)
     return -1
 
   const stagedata = {
@@ -1565,7 +1480,7 @@ async function createNewEquipment(equipmentdata) {
       url: `${api_prefix}/equipments`,
       data: equipmentdata,
     })
-    if (response.status == 201) {
+    if (response.status === 201) {
       $q.notify({
         color: 'green-4',
         textColor: 'white',
@@ -1657,34 +1572,34 @@ async function onSubmit() {
     equipmentdata.maintenance_period = maintenance.value
 
   const building_id = await createNewBuilding()
-  if (building_id == -1) {
+  if (building_id === -1) {
     loading.value = false
     return
   }
   const unit_id = await createNewUnit(building_id)
-  if (unit_id == -1) {
+  if (unit_id === -1) {
     loading.value = false
     return
   }
   const room_id = await createNewRoom(unit_id)
-  if (room_id == -1) {
+  if (room_id === -1) {
     loading.value = false
     return
   }
   equipmentdata.room_id = room_id
 
   const brand_id = await createNewBrand()
-  if (brand_id == -1) {
+  if (brand_id === -1) {
     loading.value = false
     return
   }
   const model_id = await createNewModel(brand_id)
-  if (model_id == -1) {
+  if (model_id === -1) {
     loading.value = false
     return
   }
   const model_number_id = await createNewModelnumber(model_id)
-  if (model_number_id == -1) {
+  if (model_number_id === -1) {
     loading.value = false
     return
   }
@@ -1692,14 +1607,14 @@ async function onSubmit() {
   equipmentdata.model_number_id = model_number_id
 
   const supplier_id = await createNewSupplier()
-  if (supplier_id == -1) {
+  if (supplier_id === -1) {
     loading.value = false
     return
   }
   equipmentdata.supplier_id = supplier_id
   await createNewWorker(supplier_id)
   const invoice_id = await createNewInvoice(supplier_id)
-  if (invoice_id == -1) {
+  if (invoice_id === -1) {
     loading.value = false
     return
   }
@@ -1708,7 +1623,7 @@ async function onSubmit() {
   const project_owner_id = await createNewProjectOwner()
   const project_id = await createNewProject(project_owner_id)
   const stage_id = await createNewStage(project_id)
-  if (stage_id == -1) {
+  if (stage_id === -1) {
     loading.value = false
     return
   }
@@ -1727,12 +1642,12 @@ function redirectToEquipment(equipment_id) {
 }
 
 onMounted(() => {
-  getBrands()
-  getInvoices()
-  getProjects()
-  getProjectOwners()
-  getSuppliers()
-  getBuildings()
+  getBrandsData()
+  getInvoicesData()
+  getProjectsData()
+  getProjectOwnersData()
+  getSuppliersData()
+  getBuildingsData()
 })
 </script>
 

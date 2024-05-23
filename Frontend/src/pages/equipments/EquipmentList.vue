@@ -84,7 +84,7 @@ import { useRouter } from 'vue-router'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import { getEquipments } from 'src/services/index.js'
-import { equipmentsColumns } from '../constants/columns.js'
+import { equipmentsColumns } from '../../constants/columns.js'
 
 const router = useRouter()
 

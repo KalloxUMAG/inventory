@@ -222,10 +222,10 @@ import { columns_maintenances } from 'src/constants/columns.js'
 import { deleteMaintenance, getEquipment, getLastMaintenance, getMaintenances, postMaintenance } from 'src/services'
 
 import InfoSection from 'src/components/item-page/InfoSection.vue'
-import EditEquipmentProduct from './EditEquipmentProduct.vue'
-import EditEquipmentLocation from './EditEquipmentLocation.vue'
-import EditEquipmentPurchase from './EditEquipmentPurchase.vue'
-import EditMaintenance from './EditMaintenance.vue'
+import EditEquipmentProduct from '../EditEquipmentProduct.vue'
+import EditEquipmentLocation from '../EditEquipmentLocation.vue'
+import EditEquipmentPurchase from '../EditEquipmentPurchase.vue'
+import EditMaintenance from '../EditMaintenance.vue'
 
 const $q = useQuasar()
 
