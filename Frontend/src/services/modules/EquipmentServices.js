@@ -1,6 +1,5 @@
-import { ref } from 'vue'
 import { sendRequest } from '/src/services/axios/instance.js'
-import { Notify } from 'quasar'
+import { CatchNotifications } from './Notifications'
 
 const api_prefix = process.env.API_URL
 
@@ -13,20 +12,7 @@ export async function getEquipment(id) {
     return response.data
   }
   catch (error) {
-    if (error.response.status === 403) {
-      Notify.create({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-    }
-    Notify.create({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: 'Se ha producido un error al cargar el equipo',
-    })
+    CatchNotifications(error, 'Se ha producido un error al cargar el equipo')
   }
 }
 
@@ -40,20 +26,8 @@ export async function getEquipments() {
     return response.data
   }
   catch (error) {
-    if (error.respose.status === 403) {
-      Notify.create({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-    }
-    Notify.create({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: 'Se ha producido un error al cargar los equipos',
-    })
+    CatchNotifications(error, 'Se ha producido un error al cargar los equipos')
+    return []
   }
 }
 
@@ -66,20 +40,8 @@ export async function getCriticalEquipments() {
     return response.data
   }
   catch (error) {
-    if (error.respose.status === 403) {
-      Notify.create({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-    }
-    Notify.create({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: 'Se ha producido un error al cargar los equipos críticos',
-    })
+    CatchNotifications(error, 'Se ha producido un error al cargar los equipos críticos')
+    return []
   }
 }
 
@@ -93,20 +55,7 @@ export async function getMaintenances(id) {
     return response.data
   }
   catch (error) {
-    if (error.respose.status === 403) {
-      Notify.create({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-    }
-    Notify.create({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: 'Se ha producido un error al cargar los mantenimientos del equipo',
-    })
+    CatchNotifications(error, 'Se ha producido un error al cargar los mantenimientos del equipo')
   }
 }
 
@@ -119,20 +68,7 @@ export async function getLastMaintenance(id) {
     return response.data
   }
   catch (error) {
-    if (error.respose.status === 403) {
-      Notify.create({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-    }
-    Notify.create({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: 'Se ha producido un error al cargar el ultimo mantenimiento del equipo',
-    })
+    CatchNotifications(error, 'Se ha producido un error al cargar el ultimo mantenimiento del equipo')
   }
 }
 
@@ -145,20 +81,7 @@ export async function postMaintenance(data) {
     })
   }
   catch (error) {
-    if (error.respose.status === 403) {
-      Notify.create({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-    }
-    Notify.create({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: 'Se ha producido un error al ingresar el mantenimiento',
-    })
+    CatchNotifications(error, 'Se ha producido un error al ingresar el mantenimiento')
   }
 }
 
@@ -170,19 +93,6 @@ export async function deleteMaintenance(id) {
     })
   }
   catch (error) {
-    if (error.respose.status === 403) {
-      Notify.create({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-    }
-    Notify.create({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: 'Se ha producido un error al borrar el manteniminento',
-    })
+    CatchNotifications(error, 'Se ha producido un error al borrar el mantenimiento')
   }
 }

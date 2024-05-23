@@ -1,5 +1,5 @@
 import { sendRequest } from '/src/services/axios/instance.js'
-import { Notify } from 'quasar'
+import { CatchNotifications } from './Notifications'
 
 const api_prefix = process.env.API_URL
 
@@ -16,20 +16,8 @@ export async function getSupplies() {
     })
   }
   catch (error) {
-    if (error.respose.status === 403) {
-      Notify.create({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-    }
-    Notify.create({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: 'Se ha producido un error al cargar los equipos',
-    })
+    CatchNotifications(error, 'Se ha producido un error al cargar los insumos')
+    return []
   }
 }
 
@@ -45,15 +33,7 @@ export async function getCriticalSupplies() {
     })
   }
   catch (error) {
-    if (error.respose.status === 403) {
-      Notify.create({
-        color: 'red-3',
-        textColor: 'white',
-        icon: 'error',
-        message: 'Sesion expirada, favor inciar sesion de nuevo',
-      })
-      return []
-    }
+    CatchNotifications(error, 'Se ha producido un error al cargar los insumos críticos')
     return []
   }
 }
