@@ -193,14 +193,14 @@ export const suppliersColumns = [
     align: 'left',
     label: 'Nombre',
     field: 'name',
-    sortable: false,
+    sortable: true,
   },
   {
     name: 'rut',
     align: 'left',
     label: 'Rut',
     field: 'rut',
-    sortable: false,
+    sortable: true,
   },
   {
     name: 'city_address',
@@ -208,6 +208,37 @@ export const suppliersColumns = [
     label: 'Dirección',
     field: 'city_address',
     sortable: false,
+  },
+]
+
+export const suppliersContactsColumns = [
+  {
+    name: 'name',
+    align: 'left',
+    label: 'Nombre',
+    field: 'name',
+    sortable: true,
+  },
+  {
+    name: 'position',
+    align: 'left',
+    label: 'Posición',
+    field: 'position',
+    sortable: true,
+  },
+  {
+    name: 'phone',
+    align: 'left',
+    label: 'Teléfono',
+    field: 'phone',
+    sortable: false,
+  },
+  {
+    name: 'email',
+    align: 'left',
+    label: 'Correo',
+    field: 'email',
+    sortable: true,
   },
 ]
 

@@ -12,7 +12,6 @@ from starlette.status import (
 
 from config.database import get_db
 from models.models import SupplierContact
-from routes.suppliers import get_supplier
 from schemas.supplier_contact_schema import SupplierContactSchema
 
 from auth.auth_bearer import JWTBearer
@@ -34,9 +33,6 @@ def get_suppliers_contacts(db: Session = Depends(get_db)):
 def add_supplier_contact(
     supplier_contact: SupplierContactSchema, db: Session = Depends(get_db)
 ):
-    db_supplier = get_supplier(supplier_contact.supplier_id, db=db)
-    if not db_supplier:
-        return Response(status_code=HTTP_404_NOT_FOUND)
     db_supplier_contact = (
         db.query(SupplierContact)
         .filter(

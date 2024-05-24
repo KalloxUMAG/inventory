@@ -28,6 +28,14 @@ export const menuItems = [
     type: 'nav',
   },
   {
+    label: 'Proveedores',
+    icon: 'store',
+    to: '/suppliers',
+    exact: false,
+    separator: false,
+    type: 'nav',
+  },
+  {
     label: 'Mantenedor de Inventario',
     icon: 'calendar_month',
     to: '/inventory-maintainer',
