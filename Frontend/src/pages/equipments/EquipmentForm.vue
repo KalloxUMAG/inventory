@@ -248,169 +248,23 @@
     <!-- Datos de compra -->
     <FormSection title="Datos compra">
       <!-- Datos de proveedor -->
-      <div v-if="!newsupplierstate">
-        <SelectForm
-          outlined
-          :options="suppliersOptions"
-          option_value="id"
-          option_label="name"
-          label="Proveedor"
-          not_found_label="No hay proveedores disponibles"
-          :rules="[
-            /*[val => !!val || 'Campo obligatorio']*/
-          ]"
-          lazy-rules
-          @update-model="
-            (value) => {
-              (supplier = value), getInvoicesSupplierData(value);
-            }
-          "
-        />
-        <div class="row justify-end q-mt-md">
-          <q-btn
-            label="Añadir proveedor"
-            icon="add"
-            class="add-btn text-caption"
-            @click="newsupplierstate = !newsupplierstate"
-          />
-        </div>
-      </div>
-
-      <div v-else>
-        <div class="row">
-          <q-input
-            v-model="newsuppliername"
-            outlined
-            label="Nombre proveedor"
-            class="col"
-            :disable="disableSupplier"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
-          />
-          <q-input
-            v-model="newsupplierrut"
-            outlined
-            label="Rut"
-            mask="##.###.###-X"
-            class="col q-ml-md"
-            :disable="disableSupplier"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
-          />
-          <q-input
-            v-model="newsupplieraddress"
-            outlined
-            label="Dirección"
-            class="col q-ml-md"
-            :disable="disableSupplier"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
-          />
-        </div>
-        <div class="row q-mt-sm">
-          <q-input
-            v-model="workername1"
-            outlined
-            label="Nombre trabajador"
-            class="col"
-            :disable="disableSupplier"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
-          />
-          <SelectForm
-            outlined
-            :disable="disableSupplier"
-            :options="rolOptions"
-            option_value="value"
-            option_label="name"
-            label="Roles"
-            not_found_label="No hay roles disponibles"
-            class="col q-ml-md"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
-            @update-model="(value) => (workerrol1 = value)"
-          />
-          <q-input
-            v-model="workermail1"
-            outlined
-            type="email"
-            label="Correo trabajador"
-            class="col q-ml-md"
-            :disable="disableSupplier"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
-          />
-          <q-input
-            v-model="workerphone1"
-            outlined
-            label="Telefono trabajador"
-            mask="(+##) #####-####"
-            class="col q-ml-md"
-            :disable="disableSupplier"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
-          />
-        </div>
-        <div class="row q-mt-sm">
-          <q-input
-            v-model="workername2"
-            outlined
-            label="Nombre trabajador"
-            class="col"
-            :disable="disableSupplier"
-          />
-          <SelectForm
-            outlined
-            :disable="disableSupplier"
-            :options="rolOptions"
-            option_value="value"
-            option_label="name"
-            label="Roles"
-            not_found_label="No hay roles disponibles"
-            class="col q-ml-md"
-            @update-model="(value) => (workerrol2 = value)"
-          />
-          <q-input
-            v-model="workermail2"
-            outlined
-            type="email"
-            label="Correo trabajador"
-            class="col q-ml-md"
-            :disable="disableSupplier"
-          />
-          <q-input
-            v-model="workerphone2"
-            outlined
-            label="Telefono trabajador"
-            mask="(+##) #####-####"
-            class="col q-ml-md"
-            :disable="disableSupplier"
-          />
-        </div>
-        <div class="row justify-end q-mt-sm">
-          <q-btn
-            v-if="disableSupplier"
-            label="Editar"
-            color="amber"
-            class="q-mr-sm"
-            @click="disableSupplier = false"
-          />
-          <q-btn
-            v-else
-            label="Guardar"
-            color="amber"
-            class="q-mr-sm"
-            @click="disableSupplier = true"
-          />
-          <q-btn
-            label="Ver lista"
-            color="amber"
-            @click="
-              (newsupplierstate = !newsupplierstate), (disableSupplier = false)
-            "
-          />
-        </div>
-      </div>
+      <SelectForm
+        outlined
+        :options="suppliersOptions"
+        option_value="id"
+        option_label="name"
+        label="Proveedor"
+        not_found_label="No hay proveedores disponibles"
+        :rules="[
+          /*[val => !!val || 'Campo obligatorio']*/
+        ]"
+        lazy-rules
+        @update-model="
+          (value) => {
+            (supplier = value), getInvoicesSupplierData(value);
+          }
+        "
+      />
 
       <q-input
         v-model="reception_date"
@@ -908,17 +762,6 @@ const maintenanceOptions = [
   },
 ]
 
-const rolOptions = [
-  {
-    value: 'Vendedor',
-    name: 'Vendedor',
-  },
-  {
-    value: 'Tecnico',
-    name: 'Tecnico',
-  },
-]
-
 const brand = ref(null)
 const brandOptions = ref([])
 const building = ref(null)
@@ -929,7 +772,6 @@ const disableInvoice = ref(false)
 const disableLocation = ref(false)
 const disableProject = ref(false)
 const disableProjectOwner = ref(false)
-const disableSupplier = ref(false)
 const equipmentimages = ref([])
 const invoiceimage = ref(null)
 const name = ref(null)
