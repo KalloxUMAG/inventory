@@ -107,7 +107,6 @@ async function onSubmit() {
     password: user.password,
     images: user.images,
   }
-  console.log(userData)
   const userId = await createNewUser(userData)
   await uploadUserImage(userId)
   loading.value = false
@@ -140,7 +139,7 @@ async function createNewUser(data) {
 }
 
 async function uploadUserImage(userId) {
-  if (user.images.length == 0)
+  if (user.images.length === 0)
     return
 
   user.images.forEach(async (image) => {
@@ -170,7 +169,7 @@ function handleAddImages(files) {
 
 function handleRemoveImages(files) {
   user.images = user.images.filter((value) => {
-    return value != files[0]
+    return value !== files[0]
   })
 }
 </script>
