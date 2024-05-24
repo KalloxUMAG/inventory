@@ -64,7 +64,16 @@
               :props="props"
               @click="rowClicker(props.row)"
             >
-              {{ col.value }}
+              <div v-if="col.name === 'state'" class="state-col">
+                <q-icon v-if="props.row.state" name="error" color="red">
+                  <q-tooltip class="bg-negative" :offset="[10, 10]">
+                    Bajo stock
+                  </q-tooltip>
+                </q-icon>
+              </div>
+              <div v-else>
+                {{ col.value }}
+              </div>
             </q-td>
             <q-td auto-width>
               <q-btn size="sm" align="between" color="accent" flat :icon-right="props.expand ? 'expand_less' : 'expand_more'" @click="props.expand = !props.expand" />
