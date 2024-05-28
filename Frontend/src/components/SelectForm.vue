@@ -60,7 +60,10 @@ function updateModel(model) {
 
 const stringOptions = ref(props.options)
 const model_default = ref(props.default_value)
-const model = ref(model_default)
+const model = ref(null)
+if (model_default.value !== null && model_default.value.id !== null)
+  model.value = model_default.value
+
 function filterFn(val, update) {
   if (val === '') {
     update(() => {
@@ -75,13 +78,4 @@ function filterFn(val, update) {
     )
   })
 }
-/*
-watch(props.options, (newOptions, oldOptions) => {
-  if(oldOptions !== undefined){
-    model.value = null;
-    console.log("Value changed")
-  }
-  console.log("Updated")
-})
-*/
 </script>

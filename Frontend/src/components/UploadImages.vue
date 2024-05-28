@@ -91,11 +91,15 @@ const props = defineProps({
   handleAddImages: Function,
   handleRemoveImages: Function,
   uploadImages: Function,
+  defaultImages: Array,
 })
+
+const { label, max_files, handleAddImages, handleRemoveImages, uploadImages, defaultImages } = toRefs(props)
 
 const uploader = ref(null)
 
-const { label, max_files, handleAddImages, handleRemoveImages, uploadImages } = toRefs(props)
+if (defaultImages.value.length > 0)
+  uploader.value = defaultImages.value
 
 defineExpose({
   addFiles(files) {
