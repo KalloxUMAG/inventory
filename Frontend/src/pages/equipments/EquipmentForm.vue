@@ -1201,7 +1201,7 @@ function onReset() {
 }
 
 async function createNewBrand() {
-  if (!brand.value.newBrandState)
+  if (!brand.newBrandState)
     return brand.model
 
   const branddata = {
@@ -1389,6 +1389,7 @@ async function createNewProjectOwner() {
       url: `${api_prefix}/project_owners`,
       data: projectownerdata,
     })
+    return response.data
   }
   catch (error) {
     $q.notify({

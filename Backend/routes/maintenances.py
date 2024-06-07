@@ -95,7 +95,7 @@ def get_last_maintenance_equipment(equipment_id: int, db: Session = Depends(get_
         Maintenance.maintenance_type == "Programada",
     ).order_by(Maintenance.date.desc()).first()
     if not result:
-        return Response(status_code=HTTP_404_NOT_FOUND)
+        return Response(status_code=HTTP_204_NO_CONTENT)
     return result
 
 
