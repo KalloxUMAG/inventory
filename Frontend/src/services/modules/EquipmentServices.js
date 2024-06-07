@@ -12,7 +12,7 @@ export async function getEquipment(id) {
     return response.data
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al cargar el equipo')
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar el equipo')
   }
 }
 
@@ -26,7 +26,7 @@ export async function getEquipments() {
     return response.data
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al cargar los equipos')
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los equipos')
     return []
   }
 }
@@ -40,8 +40,37 @@ export async function getCriticalEquipments() {
     return response.data
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al cargar los equipos críticos')
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los equipos críticos')
     return []
+  }
+}
+
+export async function postEquipment(equipment) {
+  try {
+    const response = await sendRequest({
+      method: 'POST',
+      url: `${api_prefix}/equipments`,
+      data: equipment,
+    })
+    if (response.status === 201)
+      CatchNotifications(response.status, 'Equipo creado correctamente', 'green-3')
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al crear el equipo')
+  }
+}
+
+export async function postEquipmentImage(equipmentId, data) {
+  try {
+    await sendRequest({
+      method: 'POST',
+      url: `${api_prefix}/equipments/${equipmentId}`,
+      data,
+    })
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar la imagen del equipo')
   }
 }
 
@@ -55,7 +84,7 @@ export async function getMaintenances(id) {
     return response.data
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al cargar los mantenimientos del equipo')
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los mantenimientos del equipo')
   }
 }
 
@@ -68,7 +97,7 @@ export async function getLastMaintenance(id) {
     return response.data
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al cargar el ultimo mantenimiento del equipo')
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar el ultimo mantenimiento del equipo')
   }
 }
 
@@ -81,7 +110,7 @@ export async function postMaintenance(data) {
     })
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al ingresar el mantenimiento')
+    CatchNotifications(error.response.status, 'Se ha producido un error al ingresar el mantenimiento')
   }
 }
 
@@ -93,6 +122,6 @@ export async function deleteMaintenance(id) {
     })
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al borrar el mantenimiento')
+    CatchNotifications(error.response.status, 'Se ha producido un error al borrar el mantenimiento')
   }
 }

@@ -16,7 +16,7 @@ export async function getSupplies() {
     })
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al cargar los insumos')
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los insumos')
     return []
   }
 }
@@ -33,7 +33,7 @@ export async function getCriticalSupplies() {
     })
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al cargar los insumos críticos')
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los insumos críticos')
     return []
   }
 }

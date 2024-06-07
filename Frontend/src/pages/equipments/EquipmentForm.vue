@@ -797,7 +797,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { sendRequest } from 'src/services/axios/instance.js'
 import { useEquipmentFormStore } from 'src/stores'
 
-import { getBrands, getBuildings, getInvoices, getInvoicesSupplier, getModelNumbers, getModels, getProjectOwners, getProjects, getRooms, getStages, getSuppliers, getUnits } from '/src/services'
+import { getBrands, getBuildings, getInvoices, getInvoicesSupplier, getModelNumbers, getModels, getProjectOwners, getProjects, getRooms, getStages, getSuppliers, getUnits, postBrand, postBuilding, postEquipment, postEquipmentImage, postInvoice, postInvoiceImage, postModel, postModelNumber, postProject, postProjectOwner, postRoom, postStage, postUnit } from '/src/services'
 
 import SelectForm from 'src/components/SelectForm.vue'
 import UploadImages from 'src/components/UploadImages.vue'
@@ -1116,6 +1116,7 @@ async function getInvoicesData() {
   invoicesOptions.value = invoices.map((x) => {
     return { id: x.id, name: x.number.toString() }
   })
+  console.log(invoicesOptions.value)
 }
 
 async function getInvoicesSupplierData(supplier_id) {
@@ -1204,135 +1205,59 @@ async function createNewBrand() {
   if (!brand.newBrandState)
     return brand.model
 
-  const branddata = {
+  const brandData = {
     name: brand.newBrand,
   }
 
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/brands`,
-      data: branddata,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear la marca: ${error}`,
-    })
-  }
+  return await postBrand(brandData)
 }
 
 async function createNewBuilding() {
   if (!building.newBuildingState)
     return building.model
 
-  const buildingdata = {
+  const buildingData = {
     name: building.newBuilding,
   }
 
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/buildings`,
-      data: buildingdata,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear el edificio: ${error}`,
-    })
-  }
+  return await postBuilding(buildingData)
 }
 
 async function createNewInvoice(supplier_id) {
   if (!invoice.newInvoiceState)
     return invoice.model
 
-  const invoicedata = {
+  const invoiceData = {
     number: invoice.newInvoiceNumber,
     date: invoice.newInvoiceDate,
     supplier_id,
   }
 
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/invoices`,
-      data: invoicedata,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear la factura: ${error}`,
-    })
-  }
+  return await postInvoice(invoiceData)
 }
 
 async function createNewModel(brand_id) {
   if (!brand.newBrandState && !model.newModelState)
     return model.model
 
-  const newmodeldata = {
+  const newmodelData = {
     name: model.newModel,
     brand_id,
   }
 
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/models`,
-      data: newmodeldata,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear el modelo: ${error}`,
-    })
-    return -1
-  }
+  return await postModel(newmodelData)
 }
 
 async function createNewModelnumber(model_id) {
   if (!brand.newBrandState && !model.newModelState && !modelNumber.newModelNumber)
     return modelNumber.model
 
-  const newmodelnumberdata = {
+  const newModelNumberData = {
     number: modelNumber.newModelNumber,
     model_id,
   }
 
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/model_numbers`,
-      data: newmodelnumberdata,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear el número de modelo: ${error}`,
-    })
-  }
+  return await postModelNumber(newModelNumberData)
 }
 
 async function createNewProject(project_owner_id) {
@@ -1347,27 +1272,12 @@ async function createNewProject(project_owner_id) {
   if (project_owner_id === -1)
     project_owner_id = null
 
-  const projectdata = {
+  const projectData = {
     name: projectname,
     owner_id: project_owner_id,
   }
 
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/projects`,
-      data: projectdata,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear el proyecto: ${error}`,
-    })
-  }
+  return await postProject(projectData)
 }
 
 async function createNewProjectOwner() {
@@ -1383,76 +1293,31 @@ async function createNewProjectOwner() {
     name: projectownername,
   }
 
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/project_owners`,
-      data: projectownerdata,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear el dueño: ${error}`,
-    })
-  }
+  return await postProjectOwner(projectownerdata)
 }
 
 async function createNewUnit(building_id) {
   if (!building.newBuildingState && !unit.newUnitState)
     return unit.model
 
-  const unitdata = {
+  const unitData = {
     name: unit.newUnit,
     building_id,
   }
 
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/units`,
-      data: unitdata,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear la unidad: ${error}`,
-    })
-  }
+  return await postUnit(unitData)
 }
 
 async function createNewRoom(unit_id) {
   if (!building.newBuildingState && !unit.newUnitState && !room.newRoomState)
     return room.model
 
-  const roomdata = {
+  const roomData = {
     name: room.newRoom,
     unit_id,
   }
 
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/rooms`,
-      data: roomdata,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear la sala: ${error}`,
-    })
-  }
+  return await postRoom(roomData)
 }
 
 async function createNewStage(project_id) {
@@ -1464,54 +1329,16 @@ async function createNewStage(project_id) {
   if (stagename.trim().length === 0)
     return -1
 
-  const stagedata = {
+  const stageData = {
     name: stage.newStage,
     project_id,
   }
 
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/stages`,
-      data: stagedata,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear la etapa: ${error}`,
-    })
-  }
+  return await postStage(stageData)
 }
 
-async function createNewEquipment(equipmentdata) {
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/equipments`,
-      data: equipmentdata,
-    })
-    if (response.status === 201) {
-      $q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'check',
-        message: 'Equipo creado con éxito',
-      })
-    }
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear el equipo: ${error}`,
-    })
-  }
+async function createNewEquipment(equipmentData) {
+  return await postEquipment(equipmentData)
 }
 
 async function uploadInvoiceImage(equipment_id) {
@@ -1520,50 +1347,18 @@ async function uploadInvoiceImage(equipment_id) {
 
   const formData = new FormData()
   formData.append('file', invoiceimage.value)
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/invoices${equipment_id}`,
-      data: formData,
-    })
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo guardar la imagen de factura: ${error}`,
-    })
-  }
+  await postInvoiceImage(equipment_id, formData)
 }
 
 async function uploadEquipmentImage(equipment_id) {
   if (equipmentimages.value == null)
     return
 
-  equipmentimages.value.forEach((image) => {
+  equipmentimages.value.forEach(async (image) => {
     const formData = new FormData()
     formData.append('file', image)
-    uploadEquipmentImage2(equipment_id, formData)
+    await postEquipmentImage(equipment_id, formData)
   })
-}
-
-async function uploadEquipmentImage2(equipment_id, formData) {
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/equipments/${equipment_id}`,
-      data: formData,
-    })
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo guardar la imagen del equipo: ${error}`,
-    })
-  }
 }
 
 async function onSubmit() {

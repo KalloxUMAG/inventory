@@ -12,7 +12,7 @@ export async function getSuppliersFull() {
     return response.data
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al cargar los proveedores')
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los proveedores')
   }
 }
 
@@ -26,7 +26,7 @@ export async function postSupplier(data) {
     return response.data
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al ingresar los proveedores')
+    CatchNotifications(error.response.status, 'Se ha producido un error al ingresar los proveedores')
   }
 }
 
@@ -39,6 +39,6 @@ export async function postSupplierContact(data) {
     })
   }
   catch (error) {
-    CatchNotifications(error, 'Se ha producido un error al guardar el contacto del proveedor')
+    CatchNotifications(error.response.status, 'Se ha producido un error al guardar el contacto del proveedor')
   }
 }
