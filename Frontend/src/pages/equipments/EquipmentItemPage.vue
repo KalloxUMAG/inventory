@@ -256,7 +256,7 @@ function formatDate(date) {
 }
 
 function createNextMaintenance() {
-  const dateString = `${last_maintenance.value.date}T00:00:00`
+  const dateString = last_maintenance.value ? `${last_maintenance.value.date}T00:00:00` : `${equipment.value.reception_date}T00:00:00`
   const months = equipment.value.maintenance_period
   let date = new Date(dateString)
   date.setDate(date.getDate() + months * 30)
