@@ -98,9 +98,6 @@ const { label, max_files, handleAddImages, handleRemoveImages, uploadImages, def
 
 const uploader = ref(null)
 
-if (defaultImages.value.length > 0)
-  uploader.value = defaultImages.value
-
 defineExpose({
   addFiles(files) {
     if (uploader.value)

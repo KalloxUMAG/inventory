@@ -252,15 +252,13 @@
 
       <!-- Imagenes equipamiento equipmentImages -->
       <div class="row">
-        <div v-if="equipmentImagesDefault" class="col">
-          <UploadImages
-            label="Imagenes equipamiento"
-            :default-images="equipmentImagesDefault"
-            :max_files="5"
-            :handle-add-images="handleAddImages"
-            :handle-remove-images="handleRemoveImages"
-          />
-        </div>
+        <UploadImages
+          ref="uploaderComponent"
+          label="Imagenes equipamiento"
+          :max_files="5"
+          :handle-add-images="handleAddImages"
+          :handle-remove-images="handleRemoveImages"
+        />
       </div>
     </FormSection>
     <!-- Datos de compra -->
@@ -827,6 +825,8 @@ const maintenanceOptions = [
   },
 ]
 
+const uploaderComponent = ref(null)
+
 const brand = reactive({
   model: null,
   name: null,
@@ -848,7 +848,6 @@ const buildingOptions = ref([])
 const createEquipmentForm = ref(null)
 const disableLocation = ref(false)
 const equipmentimages = ref([])
-const equipmentImagesDefault = ref(null)
 const invoiceimage = ref(null)
 const name = ref(null)
 const serial = ref(null)
@@ -951,7 +950,7 @@ function handleRemoveImages(files) {
   })
 }
 
-function loadEquipmentFromStore() {
+async function loadEquipmentFromStore() {
   const storeEquipment = equipmentFormStore.equipment
   if (Object.keys(storeEquipment).length === 0) {
     brand.default = { id: null, name: null }
@@ -965,10 +964,8 @@ function loadEquipmentFromStore() {
     project.default = { id: null, name: null }
     projectOwner.default = { id: null, name: null }
     stage.default = { id: null, name: null }
-    equipmentImagesDefault.value = []
     return
   }
-  equipmentImagesDefault.value = storeEquipment.value.equipmentImagesDefault
   building.model = storeEquipment.value.building.model
   building.default = storeEquipment.value.building.default
   building.disable = storeEquipment.value.building.disable
@@ -1049,7 +1046,8 @@ function loadEquipmentFromStore() {
   invoice.newInvoiceDate = storeEquipment.value.invoice.newInvoiceDate
   invoice.newInvoiceNumber = storeEquipment.value.invoice.newInvoiceNumber
   invoicesOptions.value = storeEquipment.value.invoicesOptions
-  equipmentimages.value = storeEquipment.value.equipmentimages
+  uploaderComponent.value.addFiles(storeEquipment.value.equipmentimages)
+  equipmentFormStore.clearEquipmentForm()
 }
 
 function newSupplier() {
@@ -1067,7 +1065,6 @@ function newSupplier() {
   equipmentFormStore.setRedirectTo()
   equipmentFormStore.setEquipment({
     name: name.value,
-    equipmentImagesDefault: equipmentimages.value,
     serial: serial.value,
     inventory: inventory.value,
     model,
@@ -1095,6 +1092,7 @@ function newSupplier() {
     invoice,
     invoicesOptions: invoicesOptions.value,
     equipmentimages: equipmentimages.value,
+    uploaderComponent: uploaderComponent.value,
   })
   router.push('/suppliers/new_supplier')
 }

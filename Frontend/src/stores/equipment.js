@@ -31,7 +31,6 @@ export const useEquipmentFormStore = defineStore('equipmentForm', () => {
   const redirectTo = ref(null)
 
   const setEquipment = (data) => {
-    console.log('clearEquipmentForm')
     equipment.value = data
   }
 
