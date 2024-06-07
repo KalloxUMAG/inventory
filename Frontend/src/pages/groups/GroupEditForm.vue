@@ -49,7 +49,7 @@
     </FormSection>
     <!-- Form button -->
     <div class="row justify-end q-mt-mx">
-      <q-btn icon="add" label="Crear" type="submit" color="positive" />
+      <q-btn icon="save" label="Guardar" type="submit" color="positive" />
     </div>
     <q-inner-loading
       :showing="loading"
