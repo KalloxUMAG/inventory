@@ -83,11 +83,11 @@
             },
             {
               label: 'Proyecto',
-              value: project ? project.project_name : null,
+              value: equipment.project_name ? equipment.project_name : 'Sin información',
             },
             {
               label: 'Etapa',
-              value: project ? project.stage_name : null,
+              value: equipment.stage_name ? equipment.stage_name : 'Sin información',
             },
           ]"
         />
