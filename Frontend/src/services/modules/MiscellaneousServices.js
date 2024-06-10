@@ -324,3 +324,35 @@ export async function postUnit(unit) {
     CatchNotifications(error.response.status, 'Se ha producido un error al crear la unidad')
   }
 }
+
+export async function getImage(path) {
+  try {
+    const imageResponse = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix.slice(0, -4) + path}?not-from-cache-please`,
+      responseType: 'blob',
+    })
+    return imageResponse.data
+  }
+  catch (error) {
+    CatchNotifications(error.response?.status ? error.response.status : error, 'Se ha producido un error al cargar la imagen del equipo')
+  }
+}
+
+export async function deleteImage(type, id, formData) {
+  try {
+    await sendRequest({
+      method: 'DELETE',
+      url: `${api_prefix}/${type}/image/${id}`,
+      data: formData,
+    })
+  }
+  catch (error) {
+    $q.notify({
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo eliminar la imagen del grupo: ${error}`,
+    })
+  }
+}

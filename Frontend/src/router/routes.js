@@ -11,6 +11,11 @@ const routes = [
         meta: { breadCrumb(route) { const param = route.currentRoute.value.params.id; return [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Equipamiento', icon: 'biotech', to: '/equipments' }, { text: param }] } },
       },
       {
+        path: '/equipments/edit/:id',
+        component: () => import('src/pages/equipments/EquipmentEditForm.vue'),
+        meta: { breadCrumb(route) { const param = route.currentRoute.value.params.id; return [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Equipamiento', icon: 'biotech', to: '/equipments' }, { text: 'Editar' }, { text: param }] } },
+      },
+      {
         path: '/equipments/new_equipment',
         component: () => import('src/pages/equipments/EquipmentForm.vue'),
         meta: { breadCrumb: [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Equipamiento', icon: 'biotech', to: '/equipments' }, { text: 'Nuevo Equipo' }] },

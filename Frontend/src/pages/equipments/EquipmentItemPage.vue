@@ -213,7 +213,7 @@
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { computed, onMounted, ref } from 'vue'
 import Carousel from 'src/components/Carousel.vue'
 import FormModal from 'src/components/FormModal.vue'
@@ -228,6 +228,7 @@ import EditEquipmentPurchase from '../EditEquipmentPurchase.vue'
 import EditMaintenance from '../EditMaintenance.vue'
 
 const $q = useQuasar()
+const router = useRouter()
 
 const content_loaded = ref(false)
 const filter = ref('')
@@ -467,7 +468,7 @@ function editMaintenance(maintenance) {
 }
 
 function editEquipment() {
-  console.log(`Edit equipment ${equipment.value.id}`)
+  router.push(`/equipments/edit/${id.value}`)
 }
 
 function removeMaintenance(maintenance) {

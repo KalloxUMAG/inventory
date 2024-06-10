@@ -45,6 +45,20 @@ export async function getCriticalEquipments() {
   }
 }
 
+export async function getEquipmentImages(id) {
+  const imgUrl = `${api_prefix}/equipments/image/`
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: imgUrl + id,
+    })
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar las imágenes del equipo')
+  }
+}
+
 export async function postEquipment(equipment) {
   try {
     const response = await sendRequest({
@@ -53,7 +67,7 @@ export async function postEquipment(equipment) {
       data: equipment,
     })
     if (response.status === 201)
-      CatchNotifications(response.status, 'Equipo creado correctamente', 'green-3')
+      CatchNotifications(response.status, 'Equipo creado correctamente')
     return response.data
   }
   catch (error) {
@@ -71,6 +85,22 @@ export async function postEquipmentImage(equipmentId, data) {
   }
   catch (error) {
     CatchNotifications(error.response.status, 'Se ha producido un error al cargar la imagen del equipo')
+  }
+}
+
+export async function updateEquipment(equipmentId, equipment) {
+  try {
+    const response = await sendRequest({
+      method: 'PUT',
+      url: `${api_prefix}/equipments/${equipmentId}`,
+      data: equipment,
+    })
+    if (response.status === 200)
+      CatchNotifications(response.status, 'Equipo actualizado correctamente')
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al actualizar el equipo')
   }
 }
 
