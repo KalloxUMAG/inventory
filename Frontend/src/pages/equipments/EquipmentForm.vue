@@ -791,10 +791,8 @@
 </template>
 
 <script setup>
-import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { onMounted, reactive, ref } from 'vue'
-import { sendRequest } from 'src/services/axios/instance.js'
 import { useEquipmentFormStore } from 'src/stores'
 
 import { getBrands, getBuildings, getInvoices, getInvoicesSupplier, getModelNumbers, getModels, getProjectOwners, getProjects, getRooms, getStages, getSuppliers, getUnits, postBrand, postBuilding, postEquipment, postEquipmentImage, postInvoice, postInvoiceImage, postModel, postModelNumber, postProject, postProjectOwner, postRoom, postStage, postUnit } from '/src/services'
@@ -936,9 +934,7 @@ const unit = reactive({
   newUnit: null,
 })
 const unitOptions = ref([])
-const $q = useQuasar()
 const router = useRouter()
-const api_prefix = process.env.API_URL
 
 function handleAddImages(files) {
   equipmentimages.value.push(files[0])
@@ -976,6 +972,7 @@ async function loadEquipmentFromStore() {
   name.value = storeEquipment.value.name
   serial.value = storeEquipment.value.serial
   inventory.value = storeEquipment.value.inventory
+  invoiceimage.value = storeEquipment.value.invoiceimage
   model.model = storeEquipment.value.model.model
   model.name = storeEquipment.value.model.name
   model.default = storeEquipment.value.model.default
@@ -1067,6 +1064,7 @@ function newSupplier() {
     name: name.value,
     serial: serial.value,
     inventory: inventory.value,
+    invoiceimage: invoiceimage.value,
     model,
     modelOptions: modelOptions.value,
     modelNumber,
@@ -1116,7 +1114,6 @@ async function getInvoicesData() {
   invoicesOptions.value = invoices.map((x) => {
     return { id: x.id, name: x.number.toString() }
   })
-  console.log(invoicesOptions.value)
 }
 
 async function getInvoicesSupplierData(supplier_id) {
