@@ -222,9 +222,6 @@ import { columns_maintenances } from 'src/constants/columns.js'
 import { deleteMaintenance, getEquipment, getLastMaintenance, getMaintenances, postMaintenance } from 'src/services'
 
 import InfoSection from 'src/components/item-page/InfoSection.vue'
-import EditEquipmentProduct from '../EditEquipmentProduct.vue'
-import EditEquipmentLocation from '../EditEquipmentLocation.vue'
-import EditEquipmentPurchase from '../EditEquipmentPurchase.vue'
 import EditMaintenance from '../EditMaintenance.vue'
 
 const $q = useQuasar()
@@ -236,7 +233,6 @@ const img_api = ref(null)
 const equipment = ref({})
 const maintenances = ref([])
 const last_maintenance = ref({})
-const project = ref(null)
 const maintenance_period = ref(null)
 
 const api_prefix = process.env.API_URL
@@ -354,85 +350,6 @@ function addFunction() {
       createNextMaintenance()
     })
     .onCancel(() => {})
-}
-
-function editProduct() {
-  $q.dialog({
-    component: EditEquipmentProduct,
-    componentProps: {
-      id: equipment.value.id,
-      name_value: equipment.value.name,
-      serial_number_value: equipment.value.serial_number,
-      umag_inventory_code_value: equipment.value.umag_inventory_code,
-      brand_value: {
-        id: equipment.value.brand_id,
-        name: equipment.value.brand_name,
-      },
-      model_value: {
-        id: equipment.value.model_id,
-        name: equipment.value.model_name,
-      },
-      model_number_value: {
-        id: equipment.value.model_number_id,
-        name: equipment.value.model_number,
-      },
-      maintenance_period_value: equipment.value.maintenance_period,
-      observation_value: equipment.value.observation,
-    },
-  }).onOk((data) => {})
-}
-
-function editLocation() {
-  $q.dialog({
-    component: EditEquipmentLocation,
-    componentProps: {
-      id: equipment.value.id,
-      room_value: {
-        id: equipment.value.room_id,
-        name: equipment.value.room_name,
-      },
-      unit_value: {
-        id: equipment.value.unit_id,
-        name: equipment.value.unit_name,
-      },
-      building_value: {
-        id: equipment.value.building_id,
-        name: equipment.value.building_name,
-      },
-    },
-  }).onOk((data) => {})
-}
-
-function editPurchase() {
-  const projectData = {
-    project_id: project.value ? project.value.id : null,
-    project_name: project.value ? project.value.project_name : null,
-    stage_id: project.value ? project.value.stage_id : null,
-    stage_name: project.value ? project.value.stage_name : null,
-  }
-  $q.dialog({
-    component: EditEquipmentPurchase,
-    componentProps: {
-      id: equipment.value.id,
-      supplier_value: {
-        id: equipment.value.supplier_id,
-        name: equipment.value.supplier_name,
-      },
-      reception_date_value: equipment.value.reception_date,
-      invoice_value: {
-        id: equipment.value.invoice_id,
-        name: equipment.value.invoice_number,
-      },
-      project_value: {
-        id: equipment.value.project_id,
-        name: equipment.value.project_name,
-      },
-      stage_value: {
-        id: equipment.value.stage_id,
-        name: equipment.value.stage_name,
-      },
-    },
-  }).onOk((data) => {})
 }
 
 function editMaintenance(maintenance) {
