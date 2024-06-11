@@ -3,11 +3,12 @@ from pathlib import Path
 from typing import List
 from datetime import datetime, timedelta
 import re
+import os
 
 from fastapi import APIRouter, Depends, Response, UploadFile
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
 from config.database import get_db
 from config.settings import settings
@@ -255,16 +256,32 @@ def delete_equipment(equipment_id: int, db: Session = Depends(get_db)):
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@equipments.put("/{equipment_id}", response_model=UpdateEquipmentSchema)
+@equipments.put("/{equipment_id}", status_code=HTTP_200_OK)
 def update_equipment(
     data_update: UpdateEquipmentSchema, equipment_id: int, db: Session = Depends(get_db)
 ):
     db_equipment = db.query(Equipment).filter(Equipment.id == equipment_id).first()
     if not db_equipment:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    for key, value in data_update.model_dump(exclude_unset=True).items():
-        setattr(db_equipment, key, value)
+    for key, value in data_update.model_dump(exclude_unset=False).items():
+        if value is not None:
+            setattr(db_equipment, key, value)
+        else :
+            setattr(db_equipment, key, None)
     db.add(db_equipment)
     db.commit()
     db.refresh(db_equipment)
-    return db_equipment
+
+    content = str(db_equipment.id)
+    return Response(status_code=HTTP_200_OK, content=content)
+
+# Delete images equipments folder
+@equipments.delete("/image/{equipment_id}", status_code=HTTP_200_OK)
+async def delete_image(equipment_id: int, file: UploadFile):
+    image_path = Path(settings.image_directory, "equipments", str(equipment_id))
+    image_path.mkdir(parents=True, exist_ok=True)
+    extension = file.filename.split(".")[-1].lower()
+    format_filename = file.filename[: -len(extension)].lower()
+    format_filename = re.sub("[^A-Za-z0-9_]", "", format_filename, 0, re.IGNORECASE)
+    os.remove(str(image_path) + "/" + str(format_filename) + "." + str(extension))
+    return Response(status_code=HTTP_200_OK)

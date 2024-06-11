@@ -1,1 +1,22 @@
 // app global css in SCSS form
+
+:root{
+    // Layout general
+    --background-color: #eef3f7;
+    --font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+    // Main Layout Header
+    --header-bg-color: #fff;
+
+    // Main Layout Drawer
+    --drawer-bg-color: #{$cadi-blue};
+    --drawer-menu-label-text-color: #ffffff;
+    --drawer-menu-label-bg-color: #{darken($cadi-blue, 10%)};
+    --drawer-menu-link-text-color: #fff;
+    --drawer-active-menu-link-color: #fff;
+    --drawer-active-menu-link-bg-color: #{darken($cadi-blue, 5%)};
+
+    --add-btn-bg-color: #{$cadi-green};
+    --add-btn-text-color: #fefefe;
+}
+

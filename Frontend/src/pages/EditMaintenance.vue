@@ -1,14 +1,16 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin q-pa-md">
-      <q-form @submit="onOKClick" ref="EditMaintenanceForm">
-        <div class="text-bold text-subtitle1">Editar mantenimiento</div>
-        <!--Fields-->
+      <q-form ref="EditMaintenanceForm" @submit="onOKClick">
+        <div class="text-bold text-subtitle1">
+          Editar mantenimiento
+        </div>
+        <!-- Fields -->
         <q-input
+          v-model="date"
           type="date"
           stack-label
           label="fecha"
-          v-model="date"
           :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
@@ -19,7 +21,7 @@
           label="Tipo de mantenimiento"
           not_found_label="No hay tipos disponibles"
           :default_value="type_value"
-          @updateModel="
+          @update-model="
             (value) => {
               type = value;
             }
@@ -32,14 +34,14 @@
           label="Estado de mantenimiento"
           not_found_label="No hay estados disponibles"
           :default_value="state_value"
-          @updateModel="
+          @update-model="
             (value) => {
               state = value;
             }
           "
         />
         <q-input v-model="observation" label="Observacion" autogrow="" />
-        <!--Buttons-->
+        <!-- Buttons -->
         <div class="q-mt-sm row justify-end">
           <q-btn
             color="primary"
@@ -55,13 +57,10 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { useDialogPluginComponent, useQuasar } from "quasar";
-import { onMounted, ref, toRefs } from "vue";
-import { sendRequest } from "src/axios/instance";
-import SelectForm from "src/components/SelectForm.vue";
-
-const $q = useQuasar();
+import { useDialogPluginComponent, useQuasar } from 'quasar'
+import { onMounted, ref, toRefs } from 'vue'
+import { sendRequest } from 'src/services/axios/instance'
+import SelectForm from 'src/components/SelectForm.vue'
 
 const props = defineProps({
   id: Number,
@@ -72,7 +71,11 @@ const props = defineProps({
   stateOptions: Array,
   observation_value: String,
   equiptment_id: Number,
-});
+})
+
+defineEmits([...useDialogPluginComponent.emits])
+
+const $q = useQuasar()
 
 const {
   id,
@@ -83,66 +86,67 @@ const {
   stateOptions,
   observation_value,
   equiptment_id,
-} = toRefs(props);
+} = toRefs(props)
 
-const EditMaintenanceForm = ref(null);
-const api_prefix = process.env.API_URL;
+const EditMaintenanceForm = ref(null)
+const api_prefix = process.env.API_URL
 
-const date = ref(date_value.value);
-const type = ref(type_value.value.id);
-const state = ref(state_value.value.id);
-const observation = ref(observation_value.value);
+const date = ref(date_value.value)
+const type = ref(type_value.value.id)
+const state = ref(state_value.value.id)
+const observation = ref(observation_value.value)
 
-onMounted(() => {});
+onMounted(() => {})
 
-defineEmits([...useDialogPluginComponent.emits]);
-
-const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
-  useDialogPluginComponent();
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel }
+  = useDialogPluginComponent()
 async function onOKClick() {
-  EditMaintenanceForm.value.resetValidation();
-  const newState = state.value == 0 ? false : true;
+  EditMaintenanceForm.value.resetValidation()
+  const newState = state.value != 0
   const data = {
     date: date.value,
     observations: observation.value,
     state: newState,
     maintenance_type: type.value,
-  };
+  }
 
   if (id.value == null) {
-    data["equiptment_id"] = equiptment_id.value;
+    data.equiptment_id = equiptment_id.value
     try {
       const response = await sendRequest({
-        method: "POST",
-        url: api_prefix + "/maintenances",
-        data: data,
-      });
-    } catch (error) {
-      $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "No se pudo guardar los cambios: " + error,
-      });
-      return;
+        method: 'POST',
+        url: `${api_prefix}/maintenances`,
+        data,
+      })
     }
-  } else {
-    try {
-      const response = await sendRequest({
-        method: "PUT",
-        url: api_prefix + "/maintenances/" + id.value,
-        data: data,
-      });
-    } catch (error) {
+    catch (error) {
       $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "No se pudo guardar los cambios: " + error,
-      });
-      return;
+        color: 'red-3',
+        textColor: 'white',
+        icon: 'error',
+        message: `No se pudo guardar los cambios: ${error}`,
+      })
+      return
     }
   }
-  onDialogOK();
+  else {
+    try {
+      const response = await sendRequest({
+        method: 'PUT',
+        url: `${api_prefix}/maintenances/${id.value}`,
+        data,
+      })
+    }
+    catch (error) {
+      $q.notify({
+        color: 'red-3',
+        textColor: 'white',
+        icon: 'error',
+        message: `No se pudo guardar los cambios: ${error}`,
+      })
+      return
+    }
+  }
+  onDialogOK()
 }
 </script>

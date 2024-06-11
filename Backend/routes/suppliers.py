@@ -11,13 +11,14 @@ from starlette.status import (
 )
 
 from config.database import get_db
-from models.models import Supplier
-from schemas.supplier_schema import SupplierSchema
+from models.models import Supplier, SupplierContact
+from schemas.supplier_schema import SupplierSchema, SupplierFullSchema
+from routes.supplier_contact import get_supplier_contacts
 
 from auth.auth_bearer import JWTBearer
 
 suppliers = APIRouter(
-    dependencies=[Depends(JWTBearer())], tags=["supplies"], prefix="/api/suppliers"
+    dependencies=[Depends(JWTBearer())], tags=["suppliers"], prefix="/api/suppliers"
 )
 
 
@@ -26,9 +27,20 @@ def get_suppliers(db: Session = Depends(get_db)):
     result = db.query(Supplier).all()
     return result
 
+@suppliers.get("/full", response_model=List[SupplierFullSchema])
+def get_suppliers_full(db: Session = Depends(get_db)):
+    suppliers = db.query(Supplier).all()
+    new_suppliers = [{
+        "id": supplier.id,
+        "name": supplier.name,
+        "rut": supplier.rut,
+        "city_address": supplier.city_address,
+        "contacts": get_supplier_contacts(supplier.id, db)
+    } for supplier in suppliers]
+    return new_suppliers
 
 @suppliers.post("", status_code=HTTP_201_CREATED)
-def add_supplier(supplier: SupplierSchema, db: Session = Depends(get_db)):
+def add_supplier(supplier: SupplierFullSchema, db: Session = Depends(get_db)):
     db_supplier = (
         db.query(Supplier)
         .filter(
@@ -47,6 +59,16 @@ def add_supplier(supplier: SupplierSchema, db: Session = Depends(get_db)):
     db.add(new_supplier)
     db.commit()
     db.refresh(new_supplier)
+    for contact in supplier.contacts:
+        new_contact = SupplierContact(
+            name=contact.name,
+            position=contact.position,
+            phone=contact.phone,
+            email=contact.email,
+            supplier_id=new_supplier.id,
+        )
+        db.add(new_contact)
+    db.commit()
     content = str(new_supplier.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 

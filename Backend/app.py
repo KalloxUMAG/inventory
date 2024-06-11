@@ -32,11 +32,13 @@ from routes.units import units
 from routes.users import users, login
 from routes.groups import groups
 from routes.groups_supplies import groups_supplies
+from routes.inventory import inventory
+from routes.roles import roles
 
 
 def create_tables():
     if not settings.production:
-        Base.metadata.drop_all(bind=engine)
+        # Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
 
 
@@ -74,6 +76,7 @@ routes = [
     units,
     projects,
     project_owners,
+    roles,
     rooms,
     stages,
     sub_locations,
@@ -85,6 +88,7 @@ routes = [
     suppliers_contacts,
     suppliers_supplies,
     users,
+    inventory,
 ]
 
 for route in routes:

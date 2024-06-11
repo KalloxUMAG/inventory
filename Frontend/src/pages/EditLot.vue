@@ -4,9 +4,11 @@
       class="q-dialog-plugin q-pa-md"
       style="width: 900px; max-width: 1000px"
     >
-      <q-form @submit="onOKClick" ref="EditLotForm">
-        <div class="text-bold text-subtitle1 q-my-sm">Datos lote</div>
-        <!--Fields-->
+      <q-form ref="EditLotForm" @submit="onOKClick">
+        <div class="text-bold text-subtitle1 q-my-sm">
+          Datos lote
+        </div>
+        <!-- Fields -->
         <div class="col">
           <div class="row q-my-sm">
             <SelectForm
@@ -18,19 +20,19 @@
               label="Proveedor"
               :default_value="props.supplier"
               not_found_label="No hay proveedores disponibles"
-              @updateModel="
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
+              @update-model="
                 (value) => {
                   supplier = value;
                 }
               "
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
             />
           </div>
           <div class="row q-my-sm">
             <q-input
-              outlined
               v-model="number"
+              outlined
               label="Número de lote"
               class="col q-mr-sm"
               :rules="[(val) => !!val || 'Campo obligatorio']"
@@ -39,9 +41,9 @@
           </div>
           <div class="row q-my-sm">
             <q-input
+              v-model="reception_date"
               outlined
               class="col"
-              v-model="reception_date"
               type="date"
               label="Fecha de recepcion*"
               stack-label
@@ -53,9 +55,9 @@
           </div>
           <div class="row q-my-sm">
             <q-input
+              v-model="due_date"
               outlined
               class="col"
-              v-model="due_date"
               type="date"
               label="Fecha de vencimiento*"
               stack-label
@@ -67,12 +69,12 @@
           </div>
           <div class="row">
             <q-input
+              v-model="observation"
               outlined=""
               class="col"
               type="text"
               stack-label
               label="Observación"
-              v-model="observation"
             />
           </div>
           <div class="row">
@@ -87,14 +89,14 @@
                 :default_value="props.location"
                 label="Localización"
                 not_found_label="No hay localizaciones disponibles"
-                @updateModel="
+                :rules="[(val) => !!val || 'Campo obligatorio']"
+                lazy-rules
+                @update-model="
                   (value) => {
                     location = value;
                     getSublocations();
                   }
                 "
-                :rules="[(val) => !!val || 'Campo obligatorio']"
-                lazy-rules
               />
               <div class="row justify-end q-pt-md">
                 <q-btn
@@ -108,8 +110,8 @@
             <div v-else class="col q-mt-md">
               <div class="row">
                 <q-input
-                  outlined
                   v-model="newLocation"
+                  outlined
                   label="Nombre localización"
                   class="col"
                   :disable="disableLocation"
@@ -132,13 +134,13 @@
                 :default_value="props.sublocation"
                 label="Sub-localización"
                 not_found_label="No hay sublocalizaciones disponibles"
-                @updateModel="
+                :rules="[(val) => !!val || 'Campo obligatorio']"
+                lazy-rules
+                @update-model="
                   (value) => {
                     sublocation = value;
                   }
                 "
-                :rules="[(val) => !!val || 'Campo obligatorio']"
-                lazy-rules
               />
               <div class="row justify-end q-pt-md">
                 <q-btn
@@ -153,8 +155,8 @@
             <div v-else class="col q-mt-md">
               <div class="row">
                 <q-input
-                  outlined
                   v-model="newSublocation"
+                  outlined
                   label="Nombre sub-localización"
                   class="col"
                   :disable="disableLocation"
@@ -174,13 +176,14 @@
               v-if="disableLocation"
               label="Editar"
               color="amber"
-              @click="disableLocation = false"
               class="q-mr-sm"
+              @click="disableLocation = false"
             />
             <q-btn
               v-else
               label="Guardar"
               color="amber"
+              class="q-mr-sm"
               @click="
                 newSublocation != ''
                   ? newLocationState == true
@@ -188,19 +191,18 @@
                       ? (disableLocation = true)
                       : ''
                     : location != null
-                    ? (disableLocation = true)
-                    : ''
+                      ? (disableLocation = true)
+                      : ''
                   : ''
               "
-              class="q-mr-sm"
             />
             <q-btn
               label="Ver lista"
               color="amber"
               @click="
                 (newLocationState = false),
-                  (newSublocationState = false),
-                  (disableLocation = false)
+                (newSublocationState = false),
+                (disableLocation = false)
               "
             />
           </div>
@@ -215,13 +217,13 @@
             :default_value="props.project"
             label="Proyectos"
             not_found_label="No hay proyectos disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 project = value;
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -235,8 +237,8 @@
         <div v-else class="col">
           <div class="row">
             <q-input
-              outlined
               v-model="newProject"
+              outlined
               label="Nombre proyeto"
               class="col"
               :disable="disableProject"
@@ -249,8 +251,8 @@
           <q-btn
             :label="disableProject ? 'Editar' : 'Guardar'"
             color="amber"
-            @click="newProject != '' ? (disableProject = !disableProject) : ''"
             class="q-mr-sm"
+            @click="newProject != '' ? (disableProject = !disableProject) : ''"
           />
           <q-btn
             label="Ver lista"
@@ -269,13 +271,13 @@
               option_label="name"
               label="Dueño proyecto"
               not_found_label="No hay dueños disponibles"
-              @updateModel="
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
+              @update-model="
                 (value) => {
                   projectOwner = value;
                 }
               "
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
             />
             <div class="row justify-end q-mt-md">
               <q-btn
@@ -288,9 +290,9 @@
           </div>
           <div v-else class="col">
             <q-input
+              v-model="newProjectOwner"
               outlined
               class="row"
-              v-model="newProjectOwner"
               label="Nombre dueño"
               :disable="disableProjectOwner"
               :rules="[(val) => !!val || 'Campo obligatorio']"
@@ -300,12 +302,12 @@
               <q-btn
                 :label="disableProjectOwner ? 'Editar' : 'Guardar'"
                 color="amber"
+                class="q-mr-sm"
                 @click="
                   newProjectOwner != ''
                     ? (disableProjectOwner = !disableProjectOwner)
                     : ''
                 "
-                class="q-mr-sm"
               />
               <q-btn
                 label="Ver lista"
@@ -317,7 +319,29 @@
             </div>
           </div>
         </div>
-        <!--Buttons-->
+
+        <div class="row">
+          <div class="col">
+            <SelectForm
+              outlined
+              class="row"
+              :default_value="group_default"
+              :options="groupsOptions"
+              option_value="id"
+              option_label="name"
+              label="Grupo"
+              not_found_label="No hay grupos disponibles"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
+              @update-model="
+                (value) => {
+                  group = value;
+                }
+              "
+            />
+          </div>
+        </div>
+        <!-- Buttons -->
         <div class="q-mt-md row justify-end">
           <q-btn
             color="primary"
@@ -333,12 +357,10 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { useDialogPluginComponent, useQuasar } from "quasar";
-import { onMounted, ref, toRefs } from "vue";
-import { sendRequest } from "src/axios/instance";
-import SelectForm from "src/components/SelectForm.vue";
-const api_prefix = process.env.API_URL;
+import { useDialogPluginComponent, useQuasar } from 'quasar'
+import { onMounted, ref } from 'vue'
+import { sendRequest } from 'src/services/axios/instance'
+import SelectForm from 'src/components/SelectForm.vue'
 
 const props = defineProps({
   supply_id: Number,
@@ -351,245 +373,269 @@ const props = defineProps({
   location: Object,
   sublocation: Object,
   project: Object,
-});
+  group: Number,
+  group_default: Object,
+})
 
-const number = ref(props.number);
-const supplier = ref(props.supplier.id);
-const observation = ref(props.observation);
-const reception_date = ref(props.reception_date);
-const due_date = ref(props.due_date);
-const location = ref(props.location.id);
-const sublocation = ref(props.sublocation.id);
-const project = ref(props.project.id);
-const projectOwner = ref(null);
+defineEmits([...useDialogPluginComponent.emits])
 
-const newLocationState = ref(false);
-const disableLocation = ref(false);
-const newSublocationState = ref(false);
-const disableSublocation = ref(false);
-const disableProject = ref(false);
-const disableProjectOwner = ref(false);
-const newProjectState = ref(false);
-const newProjectOwnerState = ref(false);
-const newLocation = ref("");
-const newSublocation = ref("");
-const newProject = ref("");
-const newProjectOwner = ref("");
+const api_prefix = process.env.API_URL
 
-const suppliersOptions = ref([]);
-const locationOptions = ref([]);
-const sublocationOptions = ref([]);
-const projectOptions = ref([]);
-const projectOwnersOptions = ref([]);
+const number = ref(props.number)
+const supplier = ref(props.supplier.id)
+const observation = ref(props.observation)
+const reception_date = ref(props.reception_date)
+const due_date = ref(props.due_date)
+const location = ref(props.location.id)
+const sublocation = ref(props.sublocation.id)
+const project = ref(props.project.id)
+const projectOwner = ref(null)
+const group = ref(props.group)
+const group_default = ref(props.group_default)
 
-const EditLotForm = ref(null);
+const newLocationState = ref(false)
+const disableLocation = ref(false)
+const newSublocationState = ref(false)
+const disableSublocation = ref(false)
+const disableProject = ref(false)
+const disableProjectOwner = ref(false)
+const newProjectState = ref(false)
+const newProjectOwnerState = ref(false)
+const newLocation = ref('')
+const newSublocation = ref('')
+const newProject = ref('')
+const newProjectOwner = ref('')
 
-const $q = useQuasar();
+const groupsOptions = ref([])
+const suppliersOptions = ref([])
+const locationOptions = ref([])
+const sublocationOptions = ref([])
+const projectOptions = ref([])
+const projectOwnersOptions = ref([])
 
-const getSuppliers = async () => {
+const EditLotForm = ref(null)
+
+const $q = useQuasar()
+
+async function getSuppliers() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/suppliers_supplies/" + props.supply_id,
-    });
-    suppliersOptions.value = response.data;
-  } catch (error) {}
-};
+      method: 'GET',
+      url: `${api_prefix}/suppliers_supplies/${props.supply_id}`,
+    })
+    suppliersOptions.value = response.data
+  }
+  catch (error) {}
+}
 
-const getProjects = async () => {
+async function getGroups() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/projects",
-    });
-    projectOptions.value = response.data;
-  } catch (error) {}
-};
+      method: 'GET',
+      url: `${api_prefix}/groups`,
+    })
+    groupsOptions.value = response.data
+  }
+  catch (error) {}
+}
 
-const getProjectOwners = async () => {
+async function getProjects() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/project_owners",
-    });
-    const projectsowners = response.data;
+      method: 'GET',
+      url: `${api_prefix}/projects`,
+    })
+    projectOptions.value = response.data
+  }
+  catch (error) {}
+}
+
+async function getProjectOwners() {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/project_owners`,
+    })
+    const projectsowners = response.data
     projectOwnersOptions.value = projectsowners.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getLocations = async () => {
+async function getLocations() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/locations",
-    });
-    locationOptions.value = response.data;
-  } catch (error) {}
-};
+      method: 'GET',
+      url: `${api_prefix}/locations`,
+    })
+    locationOptions.value = response.data
+  }
+  catch (error) {}
+}
 
-const getSublocations = async () => {
+async function getSublocations() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/sub_locations/" + location.value,
-    });
-    sublocationOptions.value = response.data;
-  } catch (error) {}
-};
+      method: 'GET',
+      url: `${api_prefix}/sub_locations/${location.value}`,
+    })
+    sublocationOptions.value = response.data
+  }
+  catch (error) {}
+}
 
 async function createNewLocation() {
-  if (!newLocationState.value) {
-    return location.value;
-  }
+  if (!newLocationState.value)
+    return location.value
+
   const data = {
     name: newLocation.value,
-  };
+  }
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/locations",
-      data: data,
-    });
-    return response.data;
-  } catch (error) {
+      method: 'POST',
+      url: `${api_prefix}/locations`,
+      data,
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la localizacion: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la localizacion: ${error}`,
+    })
   }
 }
 
 async function createNewSublocation(location_id) {
-  if (!newLocationState.value && !newSublocationState.value) {
-    return sublocation.value;
-  }
+  if (!newLocationState.value && !newSublocationState.value)
+    return sublocation.value
+
   const data = {
     name: newSublocation.value,
-    location_id: location_id,
-  };
+    location_id,
+  }
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/sub_locations",
-      data: data,
-    });
-    return response.data;
-  } catch (error) {
+      method: 'POST',
+      url: `${api_prefix}/sub_locations`,
+      data,
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la sublocalizacion: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la sublocalizacion: ${error}`,
+    })
   }
 }
 
 async function editLot(data) {
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/lots/" + props.lot_id,
-      data: data,
-    });
-    return response.data;
-  } catch (error) {
+      method: 'PUT',
+      url: `${api_prefix}/lots/${props.lot_id}`,
+      data,
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo editar el lote: " + error,
-    });
-    return -1;
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo editar el lote: ${error}`,
+    })
+    return -1
   }
 }
 
 async function createNewProject(project_owner_id) {
-  if (!newProjectState.value) {
-    return project.value;
-  }
+  if (!newProjectState.value)
+    return project.value
 
-  const projectName = newProject.value;
+  const projectName = newProject.value
 
-  if (projectName.trim().length == 0) {
-    return -1;
-  }
+  if (projectName.trim().length == 0)
+    return -1
 
-  if (project_owner_id == -1) {
-    project_owner_id = null;
-  }
+  if (project_owner_id == -1)
+    project_owner_id = null
 
   const projectData = {
     name: projectName,
     owner_id: project_owner_id,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/projects",
+      method: 'POST',
+      url: `${api_prefix}/projects`,
       data: projectData,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el proyecto: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el proyecto: ${error}`,
+    })
   }
 }
 
 async function createNewProjectOwner() {
-  if (!newProjectOwnerState.value) {
-    return projectOwner.value;
-  }
+  if (!newProjectOwnerState.value)
+    return projectOwner.value
 
-  const projectOwnerName = newProjectOwner.value;
+  const projectOwnerName = newProjectOwner.value
 
-  if (projectOwnerName.trim().length == 0) {
-    return -1;
-  }
+  if (projectOwnerName.trim().length == 0)
+    return -1
 
   const projectOwnerData = {
     name: projectOwnerName,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/project_owners",
+      method: 'POST',
+      url: `${api_prefix}/project_owners`,
       data: projectOwnerData,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el dueño: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el dueño: ${error}`,
+    })
   }
 }
 
 onMounted(() => {
-  getSuppliers();
-  getProjects();
-  getProjectOwners();
-  getLocations();
-});
+  getGroups()
+  getSuppliers()
+  getProjects()
+  getProjectOwners()
+  getLocations()
+})
 
-defineEmits([...useDialogPluginComponent.emits]);
-
-const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
-  useDialogPluginComponent();
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel }
+  = useDialogPluginComponent()
 
 async function onOKClick() {
-  EditLotForm.value.resetValidation();
+  EditLotForm.value.resetValidation()
 
   const data = {
     number: number.value,
@@ -601,18 +647,19 @@ async function onOKClick() {
     supply_id: props.supply_id,
     project_id: project.value,
     supplier_id: supplier.value,
-  };
+    group_id: group.value,
+  }
 
-  const project_owner_id = await createNewProjectOwner();
-  const project_id = await createNewProject(project_owner_id);
-  data["project_id"] = project_id;
-  const location_id = await createNewLocation();
-  const sub_location_id = await createNewSublocation(location_id);
+  const project_owner_id = await createNewProjectOwner()
+  const project_id = await createNewProject(project_owner_id)
+  data.project_id = project_id
+  const location_id = await createNewLocation()
+  const sub_location_id = await createNewSublocation(location_id)
 
-  data["sub_location_id"] = sub_location_id;
+  data.sub_location_id = sub_location_id
 
-  await editLot(data);
+  await editLot(data)
 
-  onDialogOK();
+  onDialogOK()
 }
 </script>

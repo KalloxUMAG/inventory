@@ -44,6 +44,8 @@ def add_maintenances(maintenance: MaintenanceSchema, db: Session = Depends(get_d
     db.add(new_maintenance)
     db.commit()
     db.refresh(new_maintenance)
+    if maintenance.maintenance_type == "Correctiva":
+        return Response(status_code=HTTP_201_CREATED)
     last_maintenance = get_last_maintenance_equipment(maintenance.equiptment_id, db)
     if last_maintenance.id == new_maintenance.id:
         next_maintenance = last_maintenance.date + timedelta(
@@ -83,22 +85,20 @@ def get_maintenances_equipment(equipment_id: int, db: Session = Depends(get_db))
     response_model=MaintenanceFromEquipment,
 )
 def get_last_maintenance_equipment(equipment_id: int, db: Session = Depends(get_db)):
-    return (
-        db.query(
-            Maintenance.id,
-            Maintenance.date,
-            Maintenance.maintenance_type,
-            Maintenance.observations,
-            Maintenance.state,
-            Maintenance.equiptment_id,
-        )
-        .filter(
-            Maintenance.equiptment_id == equipment_id,
-            Maintenance.maintenance_type == "Programada",
-        )
-        .order_by(Maintenance.date.desc())
-        .first()
-    )
+    result = db.query(
+        Maintenance.id,
+        Maintenance.date,
+        Maintenance.maintenance_type,
+        Maintenance.observations,
+        Maintenance.state,
+        Maintenance.equiptment_id,
+    ).filter(
+        Maintenance.equiptment_id == equipment_id,
+        Maintenance.maintenance_type == "Programada",
+    ).order_by(Maintenance.date.desc()).first()
+    if not result:
+        return Response(status_code=HTTP_204_NO_CONTENT)
+    return result
 
 
 @maintenances.put("/{maintenance_id}", response_model=MaintenanceSchema)
@@ -115,6 +115,8 @@ def update_maintenance(
     db.add(db_maintenance)
     db.commit()
     db.refresh(db_maintenance)
+    if db_maintenance.maintenance_type == "Correctiva":
+        return db_maintenance
     last_maintenance = get_last_maintenance_equipment(db_maintenance.equiptment_id, db)
     if last_maintenance.id == db_maintenance.id:
         db_equipment = get_equipment_exist(db_maintenance.equiptment_id, db)

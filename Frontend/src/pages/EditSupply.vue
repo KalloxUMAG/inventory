@@ -4,22 +4,24 @@
       class="q-dialog-plugin q-pa-md"
       style="width: 900px; max-width: 1000px"
     >
-      <q-form @submit="onOKClick" ref="EditSupplyForm">
-        <div class="text-bold text-subtitle1 q-my-sm">Editar insumo</div>
-        <!--Fields-->
+      <q-form ref="EditSupplyForm" @submit="onOKClick">
+        <div class="text-bold text-subtitle1 q-my-sm">
+          Editar insumo
+        </div>
+        <!-- Fields -->
         <div class="col">
           <div class="row">
             <q-input
-              outlined
               v-model="supply.name"
+              outlined
               label="Nombre*"
               class="col q-mr-md"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
             />
             <q-input
-              outlined
               v-model="supply.code"
+              outlined
               label="Codigo*"
               class="col"
               :rules="[(val) => !!val || 'Campo obligatorio']"
@@ -30,8 +32,8 @@
         <div class="col">
           <div class="row">
             <q-input
-              outlined
               v-model="supply.samples"
+              outlined
               label="Muestras por unidad*"
               type="number"
               step="any"
@@ -42,8 +44,8 @@
               ]"
             />
             <q-input
-              outlined
               v-model="supply.lot_stock"
+              outlined
               label="Stock por lote*"
               type="number"
               step="any"
@@ -58,8 +60,8 @@
         <div class="col">
           <div class="row">
             <q-input
-              outlined
               v-model="supply.stock"
+              outlined
               label="Stock actual"
               type="number"
               class="col q-mr-md"
@@ -69,8 +71,8 @@
               ]"
             />
             <q-input
-              outlined
               v-model="supply.critical_stock"
+              outlined
               label="Stock crítico*"
               type="number"
               class="col"
@@ -89,13 +91,13 @@
             :default_value="props.brand"
             label="Marca*"
             not_found_label="No hay marcas disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 supply.brand = value;
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -108,8 +110,8 @@
         <div v-else>
           <div class="row">
             <q-input
-              outlined
               v-model="newBrand"
+              outlined
               class="col"
               label="Marca*"
               :disable="flags.disableBrand"
@@ -144,13 +146,13 @@
             :default_value="props.type"
             label="Tipo de insumo*"
             not_found_label="No hay tipos de insumos disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 supply.type = value;
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -163,8 +165,8 @@
         <div v-else>
           <div class="row">
             <q-input
-              outlined
               v-model="newType"
+              outlined
               class="col"
               label="Tipo de insumo*"
               :disable="flags.disableType"
@@ -199,13 +201,13 @@
             :default_value="props.format"
             label="Formato de insumo*"
             not_found_label="No hay formatos de insumos disponibles"
-            @updateModel="
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+            @update-model="
               (value) => {
                 supply.format = value;
               }
             "
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
           <div class="row justify-end q-pt-md">
             <q-btn
@@ -218,8 +220,8 @@
         <div v-else>
           <div class="row">
             <q-input
-              outlined
               v-model="newFormat"
+              outlined
               class="col"
               label="Tipo de insumo*"
               :disable="flags.disableFormat"
@@ -246,14 +248,14 @@
           </div>
         </div>
         <q-input
-          outlined
           v-model="supply.observation"
+          outlined
           type="textarea"
           label="Observación"
           :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
-        <!--Buttons-->
+        <!-- Buttons -->
         <div class="q-mt-md row justify-end">
           <q-btn
             color="primary"
@@ -275,12 +277,10 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { useDialogPluginComponent, useQuasar } from "quasar";
-import { onMounted, reactive, ref, toRefs } from "vue";
-import { sendRequest } from "src/axios/instance";
-import SelectForm from "src/components/SelectForm.vue";
-const api_prefix = process.env.API_URL;
+import { useDialogPluginComponent, useQuasar } from 'quasar'
+import { onMounted, reactive, ref } from 'vue'
+import { sendRequest } from 'src/services/axios/instance'
+import SelectForm from 'src/components/SelectForm.vue'
 
 const props = defineProps({
   supply_id: Number,
@@ -294,18 +294,22 @@ const props = defineProps({
   lot_stock: Number,
   observation: String,
   critical_stock: Number,
-});
+})
 
-const EditSupplyForm = ref(null);
+defineEmits([...useDialogPluginComponent.emits])
 
-const $q = useQuasar();
+const api_prefix = process.env.API_URL
 
-//Options Selects
-const brandOptions = ref([]);
-const formatOptions = ref([]);
-const typeOptions = ref([]);
+const EditSupplyForm = ref(null)
 
-//Models
+const $q = useQuasar()
+
+// Options Selects
+const brandOptions = ref([])
+const formatOptions = ref([])
+const typeOptions = ref([])
+
+// Models
 const supply = reactive({
   brand: props.brand.id,
   type: props.type.id,
@@ -317,12 +321,12 @@ const supply = reactive({
   lot_stock: props.lot_stock,
   observation: props.observation,
   critical_stock: props.critical_stock,
-});
-const newBrand = ref("");
-const newFormat = ref("");
-const newType = ref("");
+})
+const newBrand = ref('')
+const newFormat = ref('')
+const newType = ref('')
 
-//Flags
+// Flags
 const flags = reactive({
   disableBrand: false,
   disableFormat: false,
@@ -330,158 +334,163 @@ const flags = reactive({
   disableType: false,
   newTypeState: false,
   newFormatState: false,
-});
+})
 
-const loading = ref(false);
+const loading = ref(false)
 
-const getSuppliesBrands = async () => {
+async function getSuppliesBrands() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/supplies_brands",
-    });
-    const result = response.data;
+      method: 'GET',
+      url: `${api_prefix}/supplies_brands`,
+    })
+    const result = response.data
     brandOptions.value = result.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getSuppliesFormats = async () => {
+async function getSuppliesFormats() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/supplies_formats",
-    });
-    const result = response.data;
+      method: 'GET',
+      url: `${api_prefix}/supplies_formats`,
+    })
+    const result = response.data
     formatOptions.value = result.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-const getSuppliesTypes = async () => {
+async function getSuppliesTypes() {
   try {
     const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/supplies_types",
-    });
-    const result = response.data;
+      method: 'GET',
+      url: `${api_prefix}/supplies_types`,
+    })
+    const result = response.data
     typeOptions.value = result.map((x) => {
-      return { id: x.id, name: x.name };
-    });
-  } catch (error) {}
-};
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
-//Create functions
+// Create functions
 
 async function createNewBrand() {
-  if (!flags.newBrandState) {
-    return supply.brand;
-  }
+  if (!flags.newBrandState)
+    return supply.brand
+
   const brandData = {
     name: newBrand.value,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/supplies_brands",
+      method: 'POST',
+      url: `${api_prefix}/supplies_brands`,
       data: brandData,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear la marca: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la marca: ${error}`,
+    })
   }
 }
 
 async function createNewFormat() {
-  if (!flags.newFormatState) {
-    return supply.format;
-  }
+  if (!flags.newFormatState)
+    return supply.format
+
   const formatData = {
     name: newFormat.value,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/supplies_formats",
+      method: 'POST',
+      url: `${api_prefix}/supplies_formats`,
       data: formatData,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el formato: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el formato: ${error}`,
+    })
   }
 }
 
 async function createNewType() {
-  if (!flags.newTypeState) {
-    return supply.type;
-  }
+  if (!flags.newTypeState)
+    return supply.type
+
   const typeData = {
     name: newType.value,
-  };
+  }
 
   try {
     const response = await sendRequest({
-      method: "POST",
-      url: api_prefix + "/supplies_types",
+      method: 'POST',
+      url: `${api_prefix}/supplies_types`,
       data: typeData,
-    });
-    return response.data;
-  } catch (error) {
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo crear el tipo de insumo: " + error,
-    });
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear el tipo de insumo: ${error}`,
+    })
   }
 }
 
 async function editSupply(data) {
   try {
     const response = await sendRequest({
-      method: "PUT",
-      url: api_prefix + "/supplies/" + props.supply_id,
-      data: data,
-    });
-    return response.data;
-  } catch (error) {
+      method: 'PUT',
+      url: `${api_prefix}/supplies/${props.supply_id}`,
+      data,
+    })
+    return response.data
+  }
+  catch (error) {
     $q.notify({
-      color: "red-3",
-      textColor: "white",
-      icon: "error",
-      message: "No se pudo editar el insumo: " + error,
-    });
-    return -1;
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo editar el insumo: ${error}`,
+    })
+    return -1
   }
 }
 
 onMounted(() => {
-  getSuppliesBrands();
-  getSuppliesTypes();
-  getSuppliesFormats();
-});
+  getSuppliesBrands()
+  getSuppliesTypes()
+  getSuppliesFormats()
+})
 
-defineEmits([...useDialogPluginComponent.emits]);
-
-const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
-  useDialogPluginComponent();
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel }
+  = useDialogPluginComponent()
 
 async function onOKClick() {
-  EditSupplyForm.value.resetValidation();
+  EditSupplyForm.value.resetValidation()
 
   const data = {
     name: supply.name,
@@ -495,36 +504,36 @@ async function onOKClick() {
     supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,
     supplies_format_id: supply.format,
-  };
+  }
 
-  loading.value = true;
+  loading.value = true
 
-  const supplies_brand_id = await createNewBrand();
+  const supplies_brand_id = await createNewBrand()
   if (supplies_brand_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  data["supplies_brand_id"] = supplies_brand_id;
+  data.supplies_brand_id = supplies_brand_id
 
-  const supplies_type_id = await createNewType();
+  const supplies_type_id = await createNewType()
   if (supplies_type_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  data["supplies_type_id"] = supplies_type_id;
+  data.supplies_type_id = supplies_type_id
 
-  const supplies_format_id = await createNewFormat();
+  const supplies_format_id = await createNewFormat()
   if (supplies_format_id == -1) {
-    loading.value = false;
-    return;
+    loading.value = false
+    return
   }
-  data["supplies_format_id"] = supplies_format_id;
+  data.supplies_format_id = supplies_format_id
 
-  await editSupply(data);
+  await editSupply(data)
 
-  loading.value = false;
+  loading.value = false
 
-  onDialogOK();
+  onDialogOK()
 }
 </script>
 
