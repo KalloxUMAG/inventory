@@ -9,9 +9,9 @@
     class="rounded-borders bg-primary"
   >
     <q-carousel-slide
-      v-if="images.length == 0"
+      v-if="images.length === 0"
       :name="1"
-      img-src="https://cdn.quasar.dev/img/mountains.jpg"
+      img-src="/images/no_img.jpg"
     />
     <q-carousel-slide
       v-for="image in images"

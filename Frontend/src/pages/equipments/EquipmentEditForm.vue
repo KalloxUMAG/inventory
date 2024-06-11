@@ -224,7 +224,7 @@
         val="lg"
         label="Aplica para mantención"
       />
-      <div v-if="maintenance.default">
+      <div v-if="maintenance.default !== null">
         <SelectForm
           v-if="maintenance.apply"
           outlined
@@ -987,7 +987,7 @@ async function getEquipmentData() {
   room.default = { id: defaultEquipment.room_id, name: defaultEquipment.room_name }
   room.model = defaultEquipment.room_id
   room.name = defaultEquipment.room_name
-  maintenance.default = { id: defaultEquipment.maintenance_period, name: maintenanceOptions.find(x => x.id === defaultEquipment.maintenance_period).name }
+  maintenance.default = defaultEquipment.maintenance_period ? { id: defaultEquipment.maintenance_period, name: maintenanceOptions.find(x => x.id === defaultEquipment.maintenance_period).name } : { id: null, name: null }
   maintenance.model = defaultEquipment.maintenance_period
   maintenance.name = maintenanceOptions.find(x => x.id === defaultEquipment.maintenance_period).name
   supplier.default = { id: defaultEquipment.supplier_id, name: defaultEquipment.supplier_name }
