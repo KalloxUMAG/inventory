@@ -95,7 +95,6 @@ class UpdateEquipmentSchema(BaseModel):
     reception_date: Optional[date] = None
     maintenance_period: Optional[int] = None
     last_preventive_mainteinance: Optional[date] = None
-    next_maintenance: Optional[date] = None
     observation: Optional[str] = None
     supplier_id: Optional[int] = None
     invoice_id: Optional[int] = None

@@ -263,13 +263,14 @@ def update_equipment(
     db_equipment = db.query(Equipment).filter(Equipment.id == equipment_id).first()
     if not db_equipment:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    for key, value in data_update.model_dump(exclude_unset=True).items():
-        setattr(db_equipment, key, value)
+    for key, value in data_update.model_dump(exclude_unset=False).items():
+        if value is not None:
+            setattr(db_equipment, key, value)
+        else :
+            setattr(db_equipment, key, None)
     db.add(db_equipment)
     db.commit()
     db.refresh(db_equipment)
-
-    print(data_update)
 
     content = str(db_equipment.id)
     return Response(status_code=HTTP_200_OK, content=content)

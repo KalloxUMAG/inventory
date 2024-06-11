@@ -1311,6 +1311,7 @@ async function uploadEquipmentImage(equipment_id) {
 async function onSubmit() {
   createEquipmentForm.value.resetValidation()
   const equipmentdata = {
+    id: id.value,
     name: name.value,
     serial_number: serial.value,
     umag_inventory_code: inventory.value,
@@ -1387,7 +1388,7 @@ async function onSubmit() {
 }
 
 function redirectToEquipment(equipment_id) {
-  router.push({ path: equipment_id })
+  router.push({ path: `/equipments/${equipment_id}` })
 }
 
 onMounted(() => {
