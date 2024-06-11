@@ -74,25 +74,6 @@ async function getSuppliesData() {
   suppliesQuantity.value = supplies.length
 }
 
-const getEquipments = async () => {
-  try {
-    const response = await sendRequest({
-      method: "GET",
-      url: api_prefix + "/equipments/nextmaintenances",
-    });
-    equipments.value = response.data
-  } catch (error) {
-    if (error.respose.status === 403) {
-      $q.notify({
-        color: "red-3",
-        textColor: "white",
-        icon: "error",
-        message: "Sesion expirada, favor inciar sesion de nuevo",
-      });
-    }
-  }
-};
-
 onMounted(() => {
   getEquipmentsData()
   getSuppliesData()
