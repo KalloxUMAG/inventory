@@ -319,6 +319,28 @@
             </div>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col">
+            <SelectForm
+              outlined
+              class="row"
+              :default_value="group_default"
+              :options="groupsOptions"
+              option_value="id"
+              option_label="name"
+              label="Grupo"
+              not_found_label="No hay grupos disponibles"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
+              @update-model="
+                (value) => {
+                  group = value;
+                }
+              "
+            />
+          </div>
+        </div>
         <!-- Buttons -->
         <div class="q-mt-md row justify-end">
           <q-btn
@@ -351,6 +373,8 @@ const props = defineProps({
   location: Object,
   sublocation: Object,
   project: Object,
+  group: Number,
+  group_default: Object,
 })
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -366,6 +390,8 @@ const location = ref(props.location.id)
 const sublocation = ref(props.sublocation.id)
 const project = ref(props.project.id)
 const projectOwner = ref(null)
+const group = ref(props.group)
+const group_default = ref(props.group_default)
 
 const newLocationState = ref(false)
 const disableLocation = ref(false)
@@ -380,6 +406,7 @@ const newSublocation = ref('')
 const newProject = ref('')
 const newProjectOwner = ref('')
 
+const groupsOptions = ref([])
 const suppliersOptions = ref([])
 const locationOptions = ref([])
 const sublocationOptions = ref([])
@@ -397,6 +424,17 @@ async function getSuppliers() {
       url: `${api_prefix}/suppliers_supplies/${props.supply_id}`,
     })
     suppliersOptions.value = response.data
+  }
+  catch (error) {}
+}
+
+async function getGroups() {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/groups`,
+    })
+    groupsOptions.value = response.data
   }
   catch (error) {}
 }
@@ -502,7 +540,7 @@ async function createNewSublocation(location_id) {
 async function editLot(data) {
   try {
     const response = await sendRequest({
-      method: 'POST',
+      method: 'PUT',
       url: `${api_prefix}/lots/${props.lot_id}`,
       data,
     })
@@ -586,6 +624,7 @@ async function createNewProjectOwner() {
 }
 
 onMounted(() => {
+  getGroups()
   getSuppliers()
   getProjects()
   getProjectOwners()
@@ -608,6 +647,7 @@ async function onOKClick() {
     supply_id: props.supply_id,
     project_id: project.value,
     supplier_id: supplier.value,
+    group_id: group.value,
   }
 
   const project_owner_id = await createNewProjectOwner()

@@ -52,7 +52,7 @@ const routes = [
       },
       {
         path: '/supplies/:id',
-        component: () => import('src/pages/Supply.vue'),
+        component: () => import('src/pages/supplies/SupplyItemPage.vue'),
         meta: { breadCrumb(route) { const param = route.currentRoute.value.params.id; return [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Insumos', icon: 'science', to: '/supplies' }, { text: param }] } },
       },
       {
