@@ -2,7 +2,7 @@
   <q-layout view="Lhh lpR lFf">
     <q-header bordered class="text-white" height-hint="98">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" class="hidden" @click="toggleLeftDrawer" />
+        <q-btn dense flat round icon="menu" color="secondary" @click="toggleLeftDrawer" />
         <BreadCrumb />
         <q-btn
           to="/login"
@@ -25,11 +25,11 @@
             </div>
           </q-item>
           <template v-for="(menuItem, index) in menuItems" :key="index">
-            <q-item v-if="menuItem.type == 'label'" class="menu-label">
+            <q-item v-if="menuItem.type === 'label'" class="menu-label">
               {{ menuItem.label }}
             </q-item>
             <q-item
-              v-if="menuItem.type == 'nav'"
+              v-if="menuItem.type === 'nav'"
               v-ripple
               clickable
               :to="menuItem.to"

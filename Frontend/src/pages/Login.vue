@@ -3,7 +3,7 @@
     <q-card class="q-pa-md shadow-2 my_card" bordered>
       <q-card-section class="text-center">
         <div class="text-h4 text-weight-bold">
-          Sistema de Gestion de Inventario CADI
+          Sistema de Inventario CADI UMAG
         </div>
       </q-card-section>
       <q-card-section class="text-center">
@@ -45,6 +45,12 @@
       </q-card-section>
     </q-card>
   </q-form>
+  <q-inner-loading
+    :showing="loading"
+    label="Iniciando sesion..."
+    label-class="text-secondary"
+    label-style="font-size: 1.6em"
+  />
 </template>
 
 <script setup>
@@ -60,11 +66,13 @@ const email = ref('')
 const password = ref('')
 
 const loginForm = ref(null)
+const loading = ref(false)
 
 const router = useRouter()
 
 async function onSubmit() {
   loginForm.value.resetValidation()
+  loading.value = true
   const data = {
     email: email.value,
     password: password.value,
@@ -73,9 +81,11 @@ async function onSubmit() {
     const response = await axios.post(`${api_prefix}/users/login`, data)
     $q.localStorage.set('CATGInventoryToken', response.data.access_token)
     $q.localStorage.set('CATGInventoryFullname', response.data.fullname)
+    loading.value = false
     router.push({ path: '/' })
   }
   catch (error) {
+    loading.value = false
     $q.notify({
       color: 'red-3',
       textColor: 'white',
