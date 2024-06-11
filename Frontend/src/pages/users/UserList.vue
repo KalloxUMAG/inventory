@@ -66,7 +66,7 @@
                 :src="api_prefix.slice(0, -4) + props.value"
                 spinner-color="white"
               />
-              <q-img v-else src="~assets/no-image.png" spinner-color="white" />
+              <q-img v-else src="/images/no_img.png" spinner-color="white" />
             </q-avatar>
           </q-td>
         </template>
