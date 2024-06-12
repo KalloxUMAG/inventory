@@ -21,7 +21,7 @@
         <q-list>
           <q-item class="drawer-message-container">
             <div class="image-container">
-              <img src="/images/cadi_inv.webp" width="100%">
+              <img src="/images/cadi_inv.webp">
             </div>
           </q-item>
           <template v-for="(menuItem, index) in menuItems" :key="index">
@@ -108,6 +108,9 @@ function toggleLeftDrawer() {
 .image-container {
   width: 100%;
   padding: 10px;
+  img {
+    width: 100%;
+  }
 }
 
 .q-header {
