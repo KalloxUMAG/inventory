@@ -7,40 +7,23 @@
     :critical-supplies="criticalSuppliesQuantity"
   />
   <div class="row">
-    <div class="col">
-      <q-card class="no-shadow bg-transparent">
-        <q-card-section class="q-pl-none col-12">
-          <div class="text-subtitle1 q-pl-md">
-            Insumos con bajo stock
-            <q-btn flat icon-right="arrow_forward" label="Ver todos" to="/supplies/" class="text-gray-8 non-selectable no-outline float-right" />
-          </div>
-        </q-card-section>
-        <q-card-section class="q-pa-none">
-          <CriticTable
-            :columns="suppliesColumns"
-            :rows="criticalSupplies"
-            detail_query="/supplies/"
-            row_key="id"
-          />
-        </q-card-section>
-      </q-card>
-
-      <q-card class="no-shadow bg-transparent">
-        <q-card-section class="q-pl-none col-12">
-          <div class="text-subtitle1 q-pl-md">
-            Equipos con mantenimiento proximo
-            <q-btn flat icon-right="arrow_forward" label="Ver todos" to="/equipments/" class="text-gray-8 non-selectable no-outline float-right" />
-          </div>
-        </q-card-section>
-        <q-card-section class="q-pa-none">
-          <CriticTable
-            :columns="equipmentsColumns"
-            :rows="criticalEquipments"
-            detail_query="/equipments/"
-            row_key="id"
-          />
-        </q-card-section>
-      </q-card>
+    <div class="col-12">
+      <CriticTable
+        title="Insumos con stock bajo"
+        :columns="suppliesColumns"
+        :rows="criticalSupplies"
+        detail_query="/supplies/"
+        row_key="id"
+      />
+    </div>
+    <div class="col-12">
+      <CriticTable
+      title="Equipos con mantenimiento proximo"
+        :columns="equipmentsColumns"
+        :rows="criticalEquipments"
+        detail_query="/equipments/"
+        row_key="id"
+      />
     </div>
   </div>
 </template>
