@@ -35,7 +35,7 @@ from schemas.equipment_schema import (
     EquipmentFullSchema,
     EquipmentListSchema,
     EquipmentSchema,
-    NextMaintenanceSchema,
+    CriticEquipmentSchema,
     UpdateEquipmentSchema,
 )
 
@@ -84,10 +84,10 @@ def get_equipments(db: Session = Depends(get_db)):
     return result
 
 
-@equipments.get("/nextmaintenances", response_model=List[EquipmentSchema])
+@equipments.get("/nextmaintenances", response_model=List[CriticEquipmentSchema])
 def get_equipments_nextmaintenances(db: Session = Depends(get_db)):
     s = text(
-        """ SELECT * FROM "Equipments" WHERE next_maintenance <= (CURRENT_DATE + interval '8 month');"""
+        """ SELECT "Equipments".*, "Rooms".id as room_id, "Rooms".name as room_name FROM "Equipments", "Rooms" WHERE "Equipments".next_maintenance <= (CURRENT_DATE + interval '8 month') AND "Rooms".id = "Equipments".room_id;"""
     )
     query = db.execute(s).all()
     return query
@@ -119,9 +119,7 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
 
     if equipment.maintenance_period != None:
         reception_date = equipment.reception_date
-        next_maintenance = reception_date + timedelta(
-            days=equipment.maintenance_period * 30
-        )
+        next_maintenance = reception_date + timedelta(days=equipment.maintenance_period * 30)
         next_maintenance = next_maintenance.strftime("%Y-%m-%d")
     else:
         next_maintenance = None
@@ -159,12 +157,7 @@ async def add_image(equipment_id: int, file: UploadFile):
     date_now = datetime.now()
     date_now = date_now.strftime("%d%m%Y_%H%M%S")
     with open(
-        str(image_path)
-        + "/"
-        + str(date_now)
-        + str(format_filename)
-        + "."
-        + str(extension),
+        str(image_path) + "/" + str(date_now) + str(format_filename) + "." + str(extension),
         "wb",
     ) as buffer:
         buffer.write(await file.read())
@@ -266,7 +259,7 @@ def update_equipment(
     for key, value in data_update.model_dump(exclude_unset=False).items():
         if value is not None:
             setattr(db_equipment, key, value)
-        else :
+        else:
             setattr(db_equipment, key, None)
     db.add(db_equipment)
     db.commit()
@@ -274,6 +267,7 @@ def update_equipment(
 
     content = str(db_equipment.id)
     return Response(status_code=HTTP_200_OK, content=content)
+
 
 # Delete images equipments folder
 @equipments.delete("/image/{equipment_id}", status_code=HTTP_200_OK)

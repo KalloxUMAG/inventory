@@ -27,11 +27,11 @@ export const equipmentsColumns = [
     sortable: false,
   },
   {
-    name: 'invoice_number',
+    name: 'room_name',
     align: 'left',
-    label: 'Factura',
-    field: 'invoice_number',
-    sortable: false,
+    label: 'Sala',
+    field: 'room_name',
+    sortable: true,
   },
   {
     name: 'project_name',
