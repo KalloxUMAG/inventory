@@ -1006,6 +1006,9 @@ async function getEquipmentData() {
   stage.default = { id: defaultEquipment.stage_id, name: defaultEquipment.stage_name }
   stage.model = defaultEquipment.stage_id
   stage.name = defaultEquipment.stage_name
+  projectOwner.default = { id: defaultEquipment.project_owner_id, name: defaultEquipment.project_owner_name }
+  projectOwner.model = defaultEquipment.project_owner_id
+  projectOwner.name = defaultEquipment.project_owner_name
   getImages()
 }
 
