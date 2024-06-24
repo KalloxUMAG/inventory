@@ -5,6 +5,22 @@
       <div class="text-subtitle1 q-pl-md space-between">
         Lista de equipamientos
         <div class="actions-buttons">
+          <SelectForm
+            outlined
+            dense
+            bg-color="white"
+            class="q-mr-md"
+            :options="projects"
+            option_value="id"
+            option_label="name"
+            label="Filtrar por Proyecto"
+            not_found_label="No hay modelos disponibles"
+            @update-model="
+              (value) => {
+                filterByProject(value)
+              }
+            "
+          />
           <q-input
             v-model="filter"
             outlined
@@ -31,7 +47,7 @@
       <q-table
         row-key="id"
         :columns="equipmentsColumns"
-        :rows="equipments"
+        :rows="filteredEquipments"
         no-data-label="No hay registros para mostrar"
         rows-per-page-label="Registros por pagina"
         flat
@@ -83,18 +99,35 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
-import { getEquipments } from 'src/services/index.js'
+import SelectForm from 'src/components/SelectForm.vue'
+import { getEquipments, getProjects } from 'src/services/index.js'
 import { equipmentsColumns } from '../../constants/columns.js'
 
 const router = useRouter()
 
 const equipments = ref([])
+const filteredEquipments = ref([])
+const projects = ref([])
 const filter = ref('')
 
 const detail_query = '/equipments/'
 
 async function getEquipmentsData() {
   equipments.value = await getEquipments()
+  filteredEquipments.value = equipments.value
+}
+
+async function getProjectsData() {
+  projects.value = await getProjects()
+  console.log(projects.value)
+}
+
+function filterByProject(value) {
+  if (!value){
+    filteredEquipments.value = equipments.value
+    return
+  }
+  filteredEquipments.value = equipments.value.filter((equipment) => equipment.project_id === value)
 }
 
 function rowClicker(e, row) {
@@ -104,6 +137,7 @@ function rowClicker(e, row) {
 
 onMounted(() => {
   getEquipmentsData()
+  getProjectsData()
 })
 </script>
 
