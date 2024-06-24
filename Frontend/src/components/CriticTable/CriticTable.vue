@@ -3,7 +3,7 @@
     <q-card-section class="q-pl-none col-12">
       <div class="text-subtitle1 q-pl-md">
         <span class="text-red text-uppercase text-bold">¡Importante!</span> {{ title }}
-        <q-btn flat icon-right="arrow_forward" label="Ver todos" to="/supplies/" class="text-gray-8 non-selectable no-outline float-right" />
+        <q-btn flat icon-right="arrow_forward" label="Ver todos" :to=detail_query class="text-gray-8 non-selectable no-outline float-right" />
       </div>
     </q-card-section>
     <q-card-section class="q-pa-none">

@@ -9,19 +9,19 @@
   <div class="row">
     <div class="col-12">
       <CriticTable
-        title="Insumos con stock bajo"
-        :columns="suppliesColumns"
-        :rows="criticalSupplies"
-        detail_query="/supplies/"
+      title="Equipos con mantenimiento proximo"
+        :columns="equipmentsColumns"
+        :rows="criticalEquipments"
+        detail_query="/equipments/"
         row_key="id"
       />
     </div>
     <div class="col-12">
       <CriticTable
-      title="Equipos con mantenimiento proximo"
-        :columns="equipmentsColumns"
-        :rows="criticalEquipments"
-        detail_query="/equipments/"
+        title="Insumos con stock bajo"
+        :columns="suppliesColumns"
+        :rows="criticalSupplies"
+        detail_query="/supplies/"
         row_key="id"
       />
     </div>
