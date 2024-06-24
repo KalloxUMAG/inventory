@@ -27,6 +27,13 @@ export const equipmentsColumns = [
     sortable: false,
   },
   {
+    name: 'equipment_type_name',
+    align: 'left',
+    label: 'Tipo de equipo',
+    field: 'equipment_type_name',
+    sortable: true,
+  },
+  {
     name: 'room_name',
     align: 'left',
     label: 'Sala',

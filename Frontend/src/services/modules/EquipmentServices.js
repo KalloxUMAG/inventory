@@ -31,6 +31,20 @@ export async function getEquipments() {
   }
 }
 
+export async function getEquipmentTypes() {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/equipments/types`,
+    })
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los tipos de equipo')
+    return []
+  }
+}
+
 export async function getCriticalEquipments() {
   try {
     const response = await sendRequest({

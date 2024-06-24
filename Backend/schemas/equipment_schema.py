@@ -18,6 +18,7 @@ class EquipmentSchema(BaseModel):
     model_number_id: Optional[int] = None
     room_id: Optional[int] = None
     stage_id: Optional[int] = None
+    equipment_type_id: Optional[int] = None
 
     class Config:
         from_attributes = True
@@ -46,6 +47,8 @@ class EquipmentListSchema(BaseModel):
     project_name: Optional[str] = None
     stage_id: Optional[int] = None
     stage_name: Optional[str] = None
+    equipment_type_id: Optional[int] = None
+    equipment_type_name: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -82,6 +85,8 @@ class EquipmentFullSchema(BaseModel):
     project_name: Optional[str] = None
     project_owner_id: Optional[int] = None
     project_owner_name: Optional[str] = None
+    equipment_type_id: Optional[int] = None
+    equipment_type_name: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -152,6 +157,14 @@ class CriticEquipmentSchema(BaseModel):
     room_id: Optional[int] = None
     room_name: Optional[str] = None
     stage_id: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+
+class EquipmentTypeSchema(BaseModel):
+    id: Optional[int] = None
+    name: str
 
     class Config:
         from_attributes = True

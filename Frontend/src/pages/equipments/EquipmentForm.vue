@@ -46,6 +46,25 @@
         ]"
       />
 
+      <SelectForm
+        outlined
+        class="row q-mr-md"
+        :default_value="types.default"
+        :options="typesOptions"
+        option_value="id"
+        option_label="name"
+        label="Tipo"
+        not_found_label="No hay tipos de equipo disponibles"
+        :rules="[(val) => !!val || 'Campo obligatorio']"
+        lazy-rules
+        @update-model="
+          (value) => {
+            types.model = value;
+            types.name = value ? typesOptions.find((x) => x.id === value).name : null;
+          }
+        "
+      />
+
       <!-- Brand Model Number -->
 
       <div class="row justify-center">
@@ -795,7 +814,7 @@ import { useRouter } from 'vue-router'
 import { onMounted, reactive, ref } from 'vue'
 import { useEquipmentFormStore } from 'src/stores'
 
-import { getBrands, getBuildings, getInvoices, getInvoicesSupplier, getModelNumbers, getModels, getProjectOwners, getProjects, getRooms, getStages, getSuppliers, getUnits, postBrand, postBuilding, postEquipment, postEquipmentImage, postInvoice, postInvoiceImage, postModel, postModelNumber, postProject, postProjectOwner, postRoom, postStage, postUnit } from '/src/services'
+import { getBrands, getBuildings, getEquipmentTypes, getInvoices, getInvoicesSupplier, getModelNumbers, getModels, getProjectOwners, getProjects, getRooms, getStages, getSuppliers, getUnits, postBrand, postBuilding, postEquipment, postEquipmentImage, postInvoice, postInvoiceImage, postModel, postModelNumber, postProject, postProjectOwner, postRoom, postStage, postUnit } from '/src/services'
 
 import SelectForm from 'src/components/SelectForm.vue'
 import UploadImages from 'src/components/UploadImages.vue'
@@ -925,6 +944,12 @@ const room = reactive({
 const roomOptions = ref([])
 const supplier = ref(null)
 const suppliersOptions = ref([])
+const types = reactive({
+  model: null,
+  name: null,
+  default: null,
+})
+const typesOptions = ref([])
 const unit = reactive({
   model: null,
   name: null,
@@ -960,6 +985,7 @@ async function loadEquipmentFromStore() {
     project.default = { id: null, name: null }
     projectOwner.default = { id: null, name: null }
     stage.default = { id: null, name: null }
+    types.default = { id: null, name: null }
     return
   }
   building.model = storeEquipment.value.building.model
@@ -1035,6 +1061,10 @@ async function loadEquipmentFromStore() {
   stage.newStage = storeEquipment.value.stage.newStage
   stagesOptions.value = storeEquipment.value.stagesOptions
   supplier.value = storeEquipment.value.supplier
+  types.model = storeEquipment.value.types.model
+  types.name = storeEquipment.value.types.name
+  types.default = storeEquipment.value.types.default
+  typesOptions.value = storeEquipment.value.typesOptions
   invoice.model = storeEquipment.value.invoice.model
   invoice.name = storeEquipment.value.invoice.name
   invoice.default = storeEquipment.value.invoice.default
@@ -1058,6 +1088,7 @@ function newSupplier() {
   invoice.default = { id: invoice.model, name: invoice.name }
   project.default = { id: project.model, name: project.name }
   projectOwner.default = { id: projectOwner.model, name: projectOwner.name }
+  types.default = { id: types.model, name: types.name }
   stage.default = { id: stage.model, name: stage.name }
   equipmentFormStore.setRedirectTo()
   equipmentFormStore.setEquipment({
@@ -1091,6 +1122,8 @@ function newSupplier() {
     invoicesOptions: invoicesOptions.value,
     equipmentimages: equipmentimages.value,
     uploaderComponent: uploaderComponent.value,
+    types,
+    typesOptions: typesOptions.value
   })
   router.push('/suppliers/new_supplier')
 }
@@ -1172,6 +1205,13 @@ async function getStagesData() {
 async function getSuppliersData() {
   const suppliers = await getSuppliers()
   suppliersOptions.value = suppliers.map((x) => {
+    return { id: x.id, name: x.name }
+  })
+}
+
+async function getEquipmentTypesData() {
+  const types = await getEquipmentTypes()
+  typesOptions.value = types.map((x) => {
     return { id: x.id, name: x.name }
   })
 }
@@ -1371,6 +1411,7 @@ async function onSubmit() {
     invoice_id: invoice.model,
     room_id: room.model,
     stage_id: stage.model,
+    equipment_type_id: types.model,
     last_preventive_mainteinance: reception_date.value,
   }
   loading.value = true
@@ -1446,6 +1487,7 @@ onMounted(() => {
   getProjectsData()
   getProjectOwnersData()
   getSuppliersData()
+  getEquipmentTypesData()
   getBuildingsData()
   loadEquipmentFromStore()
 })

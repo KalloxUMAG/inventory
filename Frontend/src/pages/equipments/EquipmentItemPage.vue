@@ -42,6 +42,10 @@
               value: equipment.model_number,
             },
             {
+              label: 'Tipo de equipo',
+              value: equipment.equipment_type_name ?? 'Sin información',
+            },
+            {
               label: 'Periodo de mantención',
               value: maintenance_period,
             },

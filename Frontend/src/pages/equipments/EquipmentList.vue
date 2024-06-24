@@ -17,7 +17,25 @@
             not_found_label="No hay modelos disponibles"
             @update-model="
               (value) => {
-                filterByProject(value)
+                equipmentFilters.project = value
+                filterEquipment()
+              }
+            "
+          />
+          <SelectForm
+            outlined
+            dense
+            bg-color="white"
+            class="q-mr-md"
+            :options="equipmentTypes"
+            option_value="id"
+            option_label="name"
+            label="Filtrar por Tipo de equipo"
+            not_found_label="No hay tipos de equipo disponibles"
+            @update-model="
+              (value) => {
+                equipmentFilters.equipmentType = value
+                filterEquipment()
               }
             "
           />
@@ -94,20 +112,25 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import SelectForm from 'src/components/SelectForm.vue'
-import { getEquipments, getProjects } from 'src/services/index.js'
+import { getEquipments, getEquipmentTypes, getProjects } from 'src/services/index.js'
 import { equipmentsColumns } from '../../constants/columns.js'
 
 const router = useRouter()
 
 const equipments = ref([])
+const equipmentTypes = ref([])
 const filteredEquipments = ref([])
 const projects = ref([])
+const equipmentFilters = reactive({
+  project: null,
+  equipmentType: null,
+})
 const filter = ref('')
 
 const detail_query = '/equipments/'
@@ -119,15 +142,20 @@ async function getEquipmentsData() {
 
 async function getProjectsData() {
   projects.value = await getProjects()
-  console.log(projects.value)
 }
 
-function filterByProject(value) {
-  if (!value){
-    filteredEquipments.value = equipments.value
-    return
+async function getEquipmentTypesData() {
+  equipmentTypes.value = await getEquipmentTypes()
+}
+
+function filterEquipment() {
+  filteredEquipments.value = equipments.value
+  if (equipmentFilters.project) {
+    filteredEquipments.value = filteredEquipments.value.filter((equipment) => equipment.project_id === equipmentFilters.project)
   }
-  filteredEquipments.value = equipments.value.filter((equipment) => equipment.project_id === value)
+  if (equipmentFilters.equipmentType) {
+    filteredEquipments.value = filteredEquipments.value.filter((equipment) => equipment.equipment_type_id === equipmentFilters.equipmentType)
+  }
 }
 
 function rowClicker(e, row) {
@@ -137,6 +165,7 @@ function rowClicker(e, row) {
 
 onMounted(() => {
   getEquipmentsData()
+  getEquipmentTypesData()
   getProjectsData()
 })
 </script>

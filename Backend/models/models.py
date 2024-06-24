@@ -143,6 +143,7 @@ class Groups(Base):
         secondary="Groups_has_Supplies", back_populates="groups"
     )
 
+
 # Tablas dependientes
 
 
@@ -158,6 +159,9 @@ class Equipment(Base):
     observation: Mapped[Optional[str]] = mapped_column(String)
     next_maintenance: Mapped[Optional[Date]] = mapped_column(Date)
 
+    equipment_type_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("Equipment_types.id", ondelete="SET NULL"), nullable=True
+    )
     supplier_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("Suppliers.id", ondelete="SET NULL"), nullable=True
     )
@@ -178,8 +182,16 @@ class Equipment(Base):
     maintenances: Mapped[List["Maintenance"]] = relationship(
         backref="Equipments", cascade="delete,merge"
     )
-
     loans: Mapped[List["Loan"]] = relationship("Loan", back_populates="equipment")
+
+
+class EquipmentTypes(Base):
+    __tablename__ = "Equipment_types"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String)
+
+    equipments: Mapped[List["Equipment"]] = relationship(backref="Equipment_types")
 
 
 class GroupOtherNames(Base):
@@ -395,6 +407,7 @@ class SuppliersHasSupplies(Base):
     )
     cost: Mapped[int] = mapped_column(Integer)
 
+
 class Loan(Base):
     __tablename__ = "Loans"
 
@@ -406,6 +419,8 @@ class Loan(Base):
 
     user: Mapped[Users] = relationship("Users", back_populates="loans")
     equipment: Mapped[Equipment] = relationship("Equipment", back_populates="loans")
+
+
 class UserGroupRoleRelation(Base):
     __tablename__ = "User_Group_Role_Relation"
 

@@ -8,7 +8,13 @@ import os
 from fastapi import APIRouter, Depends, Response, UploadFile
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from starlette.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_404_NOT_FOUND,
+    HTTP_409_CONFLICT,
+)
 
 from config.database import get_db
 from config.settings import settings
@@ -16,6 +22,7 @@ from models.models import (
     Brand,
     Building,
     Equipment,
+    EquipmentTypes,
     Invoice,
     Model,
     ModelNumber,
@@ -34,6 +41,7 @@ from routes.suppliers import get_supplier
 from schemas.equipment_schema import (
     EquipmentFullSchema,
     EquipmentListSchema,
+    EquipmentTypeSchema,
     EquipmentSchema,
     CriticEquipmentSchema,
     UpdateEquipmentSchema,
@@ -71,6 +79,8 @@ def get_equipments(db: Session = Depends(get_db)):
             Stage.name.label("stage_name"),
             Project.id.label("project_id"),
             Project.name.label("project_name"),
+            EquipmentTypes.id.label("equipment_type_id"),
+            EquipmentTypes.name.label("equipment_type_name"),
         )
         .outerjoin(Room, Room.id == Equipment.room_id)
         .outerjoin(Supplier, Supplier.id == Equipment.supplier_id)
@@ -79,9 +89,30 @@ def get_equipments(db: Session = Depends(get_db)):
         .outerjoin(Model, Model.id == ModelNumber.model_id)
         .outerjoin(Stage, Stage.id == Equipment.stage_id)
         .outerjoin(Project, Project.id == Stage.project_id)
+        .outerjoin(EquipmentTypes, EquipmentTypes.id == Equipment.equipment_type_id)
         .all()
     )
     return result
+
+
+@equipments.get("/types", response_model=List[EquipmentTypeSchema])
+def get_equipment_types(db: Session = Depends(get_db)):
+    return db.query(EquipmentTypes).all()
+
+
+@equipments.post("/types", status_code=HTTP_201_CREATED)
+def add_equipment_type(equipment_type: EquipmentTypeSchema, db: Session = Depends(get_db)):
+    db_equipment_type = (
+        db.query(EquipmentTypes).filter(EquipmentTypes.name == equipment_type.name).first()
+    )
+    if db_equipment_type:
+        return Response(status_code=HTTP_409_CONFLICT)
+    new_equipment_type = EquipmentTypes(name=equipment_type.name)
+    db.add(new_equipment_type)
+    db.commit()
+    db.refresh(new_equipment_type)
+    content = str(new_equipment_type.id)
+    return Response(status_code=HTTP_201_CREATED, content=content)
 
 
 @equipments.get("/nextmaintenances", response_model=List[CriticEquipmentSchema])
@@ -116,6 +147,14 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
         db_stage = get_stage(equipment.stage_id, db=db)
         if not db_stage:
             return Response(status_code=HTTP_404_NOT_FOUND)
+    if equipment.equipment_type_id is not None:
+        db_equipment_type = (
+            db.query(EquipmentTypes)
+            .filter(EquipmentTypes.id == equipment.equipment_type_id)
+            .first()
+        )
+        if not db_equipment_type:
+            return Response(status_code=HTTP_404_NOT_FOUND)
 
     if equipment.maintenance_period != None:
         reception_date = equipment.reception_date
@@ -138,6 +177,7 @@ def add_equipment(equipment: EquipmentSchema, db: Session = Depends(get_db)):
         model_number_id=equipment.model_number_id,
         room_id=equipment.room_id,
         stage_id=equipment.stage_id,
+        equipment_type_id=equipment.equipment_type_id,
     )
     db.add(new_equipment)
     db.commit()
@@ -216,6 +256,8 @@ def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
             Project.name.label("project_name"),
             ProjectOwner.id.label("project_owner_id"),
             ProjectOwner.name.label("project_owner_name"),
+            EquipmentTypes.id.label("equipment_type_id"),
+            EquipmentTypes.name.label("equipment_type_name"),
         )
         .outerjoin(Room, Room.id == Equipment.room_id)
         .outerjoin(Supplier, Supplier.id == Equipment.supplier_id)
@@ -228,6 +270,7 @@ def get_equipment(equipment_id: int, db: Session = Depends(get_db)):
         .outerjoin(Stage, Stage.id == Equipment.stage_id)
         .outerjoin(Project, Project.id == Stage.project_id)
         .outerjoin(ProjectOwner, ProjectOwner.id == Project.owner_id)
+        .outerjoin(EquipmentTypes, EquipmentTypes.id == Equipment.equipment_type_id)
         .filter(Equipment.id == equipment_id)
         .first()
     )
