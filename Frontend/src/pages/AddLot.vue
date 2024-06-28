@@ -182,9 +182,9 @@
               color="amber"
               class="q-mr-sm"
               @click="
-                newSublocation != ''
-                  ? newLocationState == true
-                    ? newLocation != ''
+                newSublocation !== ''
+                  ? newLocationState === true
+                    ? newLocation !== ''
                       ? (disableLocation = true)
                       : ''
                     : location != null
@@ -248,7 +248,7 @@
             :label="disableProject ? 'Editar' : 'Guardar'"
             color="amber"
             class="q-mr-sm"
-            @click="newProject != '' ? (disableProject = !disableProject) : ''"
+            @click="newProject !== '' ? (disableProject = !disableProject) : ''"
           />
           <q-btn
             label="Ver lista"
@@ -300,7 +300,7 @@
                 color="amber"
                 class="q-mr-sm"
                 @click="
-                  newProjectOwner != ''
+                  newProjectOwner !== ''
                     ? (disableProjectOwner = !disableProjectOwner)
                     : ''
                 "
@@ -316,11 +316,13 @@
           </div>
         </div>
         <div class="row">
-          <div class="col">
+          <div v-if="defaultGroup" class="col">
             <SelectForm
               outlined
               class="row"
+              :clearable="false"
               :options="groupsOptions"
+              :default_value="defaultGroup"
               option_value="id"
               option_label="name"
               label="Grupo"
@@ -375,6 +377,7 @@ const sublocation = ref(null)
 const project = ref(null)
 const projectOwner = ref(null)
 const group = ref(null)
+const defaultGroup = ref(null)
 
 const newLocationState = ref(false)
 const disableLocation = ref(false)
@@ -418,6 +421,10 @@ async function getGroups() {
       url: `${api_prefix}/groups`,
     })
     groupsOptions.value = response.data
+    if (response.data.length > 0)
+      defaultGroup.value = { id: response.data[0].id, name: response.data[0].name }
+    else
+      defaultGroup.value = { id: null, name: null }
   }
   catch (error) {}
 }
@@ -571,10 +578,10 @@ async function createNewProject(project_owner_id) {
 
   const projectName = newProject.value
 
-  if (projectName.trim().length == 0)
+  if (projectName.trim().length === 0)
     return -1
 
-  if (project_owner_id == -1)
+  if (project_owner_id === -1)
     project_owner_id = null
 
   const projectData = {
@@ -605,7 +612,7 @@ async function createNewProjectOwner() {
 
   const projectOwnerName = newProjectOwner.value
 
-  if (projectOwnerName.trim().length == 0)
+  if (projectOwnerName.trim().length === 0)
     return -1
 
   const projectOwnerData = {
@@ -666,7 +673,7 @@ async function onOKClick() {
 
   const lot_id = await createNewLot(data)
 
-  if (lot_id != -1)
+  if (lot_id !== -1)
     await updateStock(props.supply_id)
 
   onDialogOK()

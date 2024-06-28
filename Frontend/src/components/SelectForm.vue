@@ -9,7 +9,7 @@
     :label="label"
     use-input
     input-debounce="0"
-    clearable
+    :clearable="clearable"
     @update:model-value="updateModel(model)"
     @filter="filterFn"
   >
@@ -52,6 +52,11 @@ const props = defineProps({
     required: false,
     default: null,
   },
+  clearable: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
 })
 const emit = defineEmits(['updateModel'])
 function updateModel(model) {
@@ -60,6 +65,7 @@ function updateModel(model) {
 
 const stringOptions = ref(props.options)
 const model_default = ref(props.default_value)
+const clearable = ref(props.clearable)
 const model = ref(null)
 if (model_default.value !== null && model_default.value.id !== null)
   model.value = model_default.value
