@@ -2,76 +2,62 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import func
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
     HTTP_404_NOT_FOUND,
 )
 
 from config.database import get_db
-from models.models import ProjectOwner
-from schemas.project_owner_schema import ProjectOwnerSchema
+from services.project_owners import ProjectOwnerService
+from schemas.basic_option_schema import BasicOptionSchema, BasicOptionSchemaWithId
 
 from auth.auth_bearer import JWTBearer
 
 project_owners = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["projects"], prefix="/api/project_owners"
 )
+service = ProjectOwnerService()
 
 
-@project_owners.get("", response_model=List[ProjectOwnerSchema])
-def get_project_owners(db: Session = Depends(get_db)):
-    result = db.query(ProjectOwner).all()
-    return result
+@project_owners.get("", response_model=List[BasicOptionSchemaWithId])
+async def get_project_owners(db: Session = Depends(get_db)):
+    project_owners = await service.get_project_owners(db)
+    return project_owners
 
 
 @project_owners.post("", status_code=HTTP_201_CREATED)
-def add_project_owner(project_owner: ProjectOwnerSchema, db: Session = Depends(get_db)):
-    db_project_owner = (
-        db.query(ProjectOwner)
-        .filter(func.lower(ProjectOwner.name) == project_owner.name.lower())
-        .first()
-    )
-    if db_project_owner:
-        content = str(db_project_owner.id)
-        return Response(status_code=HTTP_200_OK, content=content)
-    new_project_owner = ProjectOwner(name=project_owner.name)
-    db.add(new_project_owner)
-    db.commit()
-    db.refresh(new_project_owner)
-    content = str(new_project_owner.id)
+async def add_project_owner(project_owner: BasicOptionSchema, db: Session = Depends(get_db)):
+    project_owner = await service.add_project_owner(project_owner.name, db)
+    content = str(project_owner.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@project_owners.get("/{project_owner_id}", response_model=ProjectOwnerSchema)
-def get_project_owner(project_owner_id: int, db: Session = Depends(get_db)):
-    return db.query(ProjectOwner).filter(ProjectOwner.id == project_owner_id).first()
+@project_owners.get("/{project_owner_id}", response_model=BasicOptionSchemaWithId)
+async def get_project_owner(project_owner_id: int, db: Session = Depends(get_db)):
+    project_owner = await service.get_project_owner(project_owner_id, db)
+    if not project_owner:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    return project_owner
 
 
-@project_owners.put("/{project_owner_id}", response_model=ProjectOwnerSchema)
-def update_project_owner(
-    data_update: ProjectOwnerSchema,
+@project_owners.put("/{project_owner_id}", response_model=BasicOptionSchemaWithId)
+async def update_project_owner(
+    data_update: BasicOptionSchema,
     project_owner_id: int,
     db: Session = Depends(get_db),
 ):
-    db_project_owner = get_project_owner(project_owner_id, db=db)
-    if not db_project_owner:
+    project_owner = await service.get_project_owner(project_owner_id, db)
+    if not project_owner:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    for key, value in data_update.model_dump(exclude_unset=True).items():
-        setattr(db_project_owner, key, value)
-    db.add(db_project_owner)
-    db.commit()
-    db.refresh(db_project_owner)
-    return db_project_owner
+    project_owner = await service.update_project_owner(project_owner, data_update, db)
+    return project_owner
 
 
-@project_owners.delete("/{project_owner_id}", status_code=HTTP_204_NO_CONTENT)
-def delete_project_owner(project_owner_id: int, db: Session = Depends(get_db)):
-    db_project_owner = get_project_owner(project_owner_id, db=db)
+@project_owners.delete("/{project_owner_id}", status_code=HTTP_200_OK)
+async def delete_project_owner(project_owner_id: int, db: Session = Depends(get_db)):
+    db_project_owner = await service.get_project_owner(project_owner_id, db)
     if not db_project_owner:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    db.delete(db_project_owner)
-    db.commit()
-    return Response(status_code=HTTP_204_NO_CONTENT)
+    await service.delete_project_owner(db_project_owner, db)
+    return Response(status_code=HTTP_200_OK)

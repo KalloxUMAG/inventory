@@ -14,3 +14,18 @@ class BasicOptionSchemaWithId(BaseModel):
 
     class Config:
         from_attributes = True
+
+class ModelSchema(BaseModel):
+    name: str
+    brand_id: int
+
+    class Config:
+        from_attributes = True
+
+class ModelSchemaWithId(ModelSchema):
+    id: int
+    name: str
+    brand_id: int
+
+    class Config:
+        from_attributes = True
