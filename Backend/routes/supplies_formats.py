@@ -2,12 +2,11 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import func
-from starlette.status import HTTP_200_OK, HTTP_201_CREATED
+from starlette.status import HTTP_201_CREATED
 
 from config.database import get_db
-from models.models import SupplyFormat
-from schemas.supplies_format_schema import SuppliesFormatsSchema
+from services.supplies_formats import SupplyFormatService
+from schemas.basic_option_schema import BasicOptionSchema, BasicOptionSchemaWithId
 
 from auth.auth_bearer import JWTBearer
 
@@ -16,27 +15,17 @@ supplies_formats = APIRouter(
     tags=["supplies"],
     prefix="/api/supplies_formats",
 )
+service = SupplyFormatService()
 
 
-@supplies_formats.get("", response_model=List[SuppliesFormatsSchema])
-def get_supplies_formats(db: Session = Depends(get_db)):
-    result = db.query(SupplyFormat.id, SupplyFormat.name).all()
-    return result
+@supplies_formats.get("", response_model=List[BasicOptionSchemaWithId])
+async def get_supplies_formats(db: Session = Depends(get_db)):
+    supply_formats = await service.get_supply_formats(db)
+    return supply_formats
 
 
 @supplies_formats.post("", status_code=HTTP_201_CREATED)
-def add_supplies_format(sformat: SuppliesFormatsSchema, db: Session = Depends(get_db)):
-    db_supplies_format = (
-        db.query(SupplyFormat)
-        .filter(func.lower(SupplyFormat.name) == sformat.name.lower())
-        .first()
-    )
-    if db_supplies_format:
-        content = str(new_supplies_format.id)
-        return Response(status_code=HTTP_200_OK, content=content)
-    new_supplies_format = SupplyFormat(name=sformat.name)
-    db.add(new_supplies_format)
-    db.commit()
-    db.refresh(new_supplies_format)
-    content = str(new_supplies_format.id)
+async def add_supplies_format(supply_format: BasicOptionSchema, db: Session = Depends(get_db)):
+    supply_format = await service.add_supply_format(db=db, supply_format_name=supply_format.name)
+    content = str(supply_format.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
