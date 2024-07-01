@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from sqlalchemy import Boolean, Date, Float, Integer, String, DateTime
+from sqlalchemy import Boolean, Date, Float, Integer, String, DateTime, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import ForeignKey
 
@@ -121,6 +121,9 @@ class Users(Base):
     hashed_password: Mapped[str] = mapped_column(String)
 
     loans: Mapped[List["Loan"]] = relationship("Loan", back_populates="user")
+    logs: Mapped[List["Logs"]] = relationship(
+        backref="Logs"
+    )
 
 
 class TokenTable(Base):
@@ -142,6 +145,17 @@ class Groups(Base):
     supplies: Mapped[List["Supply"]] = relationship(
         secondary="Groups_has_Supplies", back_populates="groups"
     )
+
+
+class Logs(Base):
+    __tablename__ = "Logs"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("Users.id"))
+    target_id: Mapped[int] = mapped_column(Integer) # Id del registro en la tabla objetivo
+    target_table: Mapped[str] = mapped_column(String) # Nombre de la tabla objetivo
+    action: Mapped[str] = mapped_column(String) # Accion realizada (Post, Put, Delete)
+    date = mapped_column(DateTime, default=datetime.now) # Fecha de la accion
+    new_data: Mapped[dict] = mapped_column(JSON) # Datos nuevos en formato JSON
 
 
 # Tablas dependientes

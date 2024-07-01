@@ -34,7 +34,7 @@ from routes.groups import groups
 from routes.groups_supplies import groups_supplies
 from routes.inventory import inventory
 from routes.roles import roles
-
+from routes.logs import logs
 
 def create_tables():
     if not settings.production:
@@ -70,6 +70,7 @@ routes = [
     locations,
     login,
     lots,
+    logs,
     maintenances,
     models,
     model_numbers,
