@@ -3,10 +3,9 @@ from typing import List
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
 from starlette.status import (
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_404_NOT_FOUND,
     HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_404_NOT_FOUND
 )
 
 from config.database import get_db
@@ -50,7 +49,7 @@ async def update_brand(
     return brand
 
 
-@brands.delete("/{brand_id}", status_code=HTTP_204_NO_CONTENT)
+@brands.delete("/{brand_id}", status_code=HTTP_200_OK)
 async def delete_brand(brand_id: int, db: Session = Depends(get_db)):
     db_brand = await service.get_brand(brand_id=brand_id, db=db)
     if not db_brand:
