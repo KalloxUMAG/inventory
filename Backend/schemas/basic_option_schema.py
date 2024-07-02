@@ -59,4 +59,33 @@ class RoomSchemaWithId(RoomSchema):
 
     class Config:
         from_attributes = True
-        
+
+class ProjectSchema(BaseModel):
+    name: str
+    owner_id: int
+
+    class Config:
+        from_attributes = True
+
+class ProjectSchemaWithId(ProjectSchema):
+    id: int
+    name: str
+    owner_id: int
+
+    class Config:
+        from_attributes = True
+
+class StageSchema(BaseModel):
+    name: str
+    project_id: int
+
+    class Config:
+        from_attributes = True
+
+class StageSchemaWithId(StageSchema):
+    id: int
+    name: str
+    project_id: int
+
+    class Config:
+        from_attributes = True
