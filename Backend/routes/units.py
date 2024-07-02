@@ -2,83 +2,70 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import func
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
     HTTP_404_NOT_FOUND,
 )
 
 from config.database import get_db
-from models.models import Building, Unit
-from schemas.unit_schema import UnitSchema
+from services.units import UnitService
+from services.buildings import BuildingService
+from schemas.basic_option_schema import UnitSchema, UnitSchemaWithId
 
 from auth.auth_bearer import JWTBearer
 
 units = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["locations"], prefix="/api/units"
 )
+service = UnitService()
+building_service = BuildingService()
 
 
-@units.get("", response_model=List[UnitSchema])
-def get_units(db: Session = Depends(get_db)):
-    result = db.query(Unit).all()
-    return result
+@units.get("", response_model=List[UnitSchemaWithId])
+async def get_units(db: Session = Depends(get_db)):
+    units = await service.get_units(db)
+    return units
 
 
 @units.post("", status_code=HTTP_201_CREATED)
-def add_unit(unit: UnitSchema, db: Session = Depends(get_db)):
-    db_building = db.query(Building).filter(Building.id == unit.building_id).first()
+async def add_unit(unit: UnitSchema, db: Session = Depends(get_db)):
+    db_building = await building_service.get_build(build_id=unit.building_id, db=db)
     if not db_building:
-        return Response(status_code=HTTP_404_NOT_FOUND)
-    db_unit = (
-        db.query(Unit)
-        .filter(
-            func.lower(Unit.name) == unit.name.lower(),
-            Unit.building_id == unit.building_id,
-        )
-        .first()
-    )
-    if db_unit:
-        content = str(db_unit.id)
-        return Response(status_code=HTTP_200_OK, content=content)
-    new_unit = Unit(name=unit.name, building_id=unit.building_id)
-    db.add(new_unit)
-    db.commit()
-    db.refresh(new_unit)
-    content = str(new_unit.id)
+        return Response(status_code=HTTP_404_NOT_FOUND, content="Building not found")
+    unit = await service.add_unit(unit, db=db)
+    content = str(unit.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 
-@units.get("/unit/{unit_id}", response_model=UnitSchema)
-def get_unit(unit_id: int, db: Session = Depends(get_db)):
-    return db.query(Unit).filter(Unit.id == unit_id).first()
+@units.get("/unit/{unit_id}", response_model=UnitSchemaWithId)
+async def get_unit(unit_id: int, db: Session = Depends(get_db)):
+    unit = await service.get_unit(unit_id, db)
+    if not unit:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    return unit
 
 
-@units.get("/{building_id}", response_model=List[UnitSchema])
-def get_units_building(building_id: int, db: Session = Depends(get_db)):
-    return db.query(Unit).filter(Unit.building_id == building_id).all()
+@units.get("/{building_id}", response_model=List[UnitSchemaWithId])
+async def get_units_building(building_id: int, db: Session = Depends(get_db)):
+    units = await service.get_units_by_building(building_id, db)
+    return units
 
 
-@units.put("/{unit_id}", response_model=UnitSchema)
-def update_unit(data_update: UnitSchema, unit_id: int, db: Session = Depends(get_db)):
-    db_unit = db.query(Unit).filter(Unit.id == unit_id).first()
+@units.put("/{unit_id}", response_model=UnitSchemaWithId)
+async def update_unit(data_update: UnitSchema, unit_id: int, db: Session = Depends(get_db)):
+    db_unit = await service.get_unit(unit_id, db)
     if not db_unit:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    for key, value in data_update.model_dump(exclude_unset=True).items():
-        setattr(db_unit, key, value)
-    db.add(db_unit)
-    db.commit()
-    db.refresh(db_unit)
-    return db_unit
+    unit = await service.update_unit(db_unit, data_update, db)
+    return unit
 
 
-@units.delete("/{unit_id}", status_code=HTTP_204_NO_CONTENT)
-def delete_unit(unit_id: int, db: Session = Depends(get_db)):
-    db_unit = db.query(Unit).filter(Unit.id == unit_id).first()
+@units.delete("/{unit_id}", status_code=HTTP_200_OK)
+async def delete_unit(unit_id: int, db: Session = Depends(get_db)):
+    print(unit_id)
+    db_unit = await service.get_unit(unit_id, db)
     if not db_unit:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    db.delete(db_unit)
-    db.commit()
-    return Response(status_code=HTTP_204_NO_CONTENT)
+    await service.delete_unit(db_unit, db)
+    return Response(status_code=HTTP_200_OK)
