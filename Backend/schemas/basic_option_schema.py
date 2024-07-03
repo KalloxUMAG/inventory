@@ -104,3 +104,18 @@ class ModelNumberSchemaWithId(ModelNumberSchema):
 
     class Config:
         from_attributes = True
+
+class SubLocationSchema(BaseModel):
+    name: str
+    location_id: int
+
+    class Config:
+        from_attributes = True
+
+class SubLocationSchemaWithId(SubLocationSchema):
+    id: int
+    name: str
+    location_id: int
+
+    class Config:
+        from_attributes = True
