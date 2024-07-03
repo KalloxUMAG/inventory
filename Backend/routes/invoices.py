@@ -1,6 +1,3 @@
-import os
-import shutil
-from pathlib import Path
 from typing import List
 
 from fastapi import APIRouter, Depends, Response, UploadFile
@@ -8,48 +5,30 @@ from sqlalchemy.orm import Session
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
     HTTP_404_NOT_FOUND,
 )
 
 from config.database import get_db
-from config.settings import settings
-from models.models import Invoice
-from schemas.invoce_schema import InvoiceSchema
+from services.invoices import InvoiceService
+from schemas.invoce_schema import InvoiceSchema, InvoiceSchemaWithId
 
 from auth.auth_bearer import JWTBearer
 
 invoices = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["invoices"], prefix="/api/invoices"
 )
+service = InvoiceService()
 
 
-@invoices.get("", response_model=List[InvoiceSchema])
-def get_inovices(db: Session = Depends(get_db)):
-    return db.query(Invoice).all()
+@invoices.get("", response_model=List[InvoiceSchemaWithId])
+async def get_inovices(db: Session = Depends(get_db)):
+    invoices = await service.get_invoices(db)
+    return invoices
 
 
 @invoices.post("", status_code=HTTP_201_CREATED)
 async def add_invoice(invoice: InvoiceSchema, db: Session = Depends(get_db)):
-    db_invoice = (
-        db.query(Invoice)
-        .filter(
-            Invoice.number == invoice.number,
-            Invoice.date == invoice.date,
-            Invoice.supplier_id == invoice.supplier_id,
-        )
-        .first()
-    )
-    if db_invoice:
-        content = str(db_invoice.id)
-        return Response(status_code=HTTP_200_OK, content=content)
-
-    new_invoice = Invoice(
-        number=invoice.number, date=invoice.date, supplier_id=invoice.supplier_id
-    )
-    db.add(new_invoice)
-    db.commit()
-    db.refresh(new_invoice)
+    new_invoice = await service.add_invoice(invoice, db)
     content = str(new_invoice.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
@@ -57,30 +36,29 @@ async def add_invoice(invoice: InvoiceSchema, db: Session = Depends(get_db)):
 # Upload image to invoice folder using invoice id
 @invoices.post("/{invoice_id}", status_code=HTTP_201_CREATED)
 async def add_image(invoice_id: int, file: UploadFile):
-    image_path = Path(settings.image_directory, "images", str(invoice_id))
-    image_path.mkdir(parents=True, exist_ok=True)
-    with open(image_path / file.filename, "wb") as buffer:
-        buffer.write(await file.read())
-        # shutil.copyfileobj(file.file, buffer)
+    await service.add_invoice_image(invoice_id, file)
     return Response(status_code=HTTP_201_CREATED)
 
 
-@invoices.get("/{invoice_id}", response_model=InvoiceSchema)
-def get_invoice(invoice_id: int, db: Session = Depends(get_db)):
-    return db.query(Invoice).filter(Invoice.id == invoice_id).first()
+@invoices.get("/{invoice_id}", response_model=InvoiceSchemaWithId)
+async def get_invoice(invoice_id: int, db: Session = Depends(get_db)):
+    invoice = await service.get_invoice(invoice_id, db)
+    if not invoice:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    return invoice
 
 
 # Get invoice by supplier_id
-@invoices.get("/supplier/{supplier_id}", response_model=List[InvoiceSchema])
-def get_invoice_supplier(supplier_id: int, db: Session = Depends(get_db)):
-    return db.query(Invoice).filter(Invoice.supplier_id == supplier_id).all()
+@invoices.get("/supplier/{supplier_id}", response_model=List[InvoiceSchemaWithId])
+async def get_invoice_supplier(supplier_id: int, db: Session = Depends(get_db)):
+    invoices = await service.get_invoices_by_supplier(supplier_id, db)
+    return invoices
 
 
-@invoices.delete("/{invoice_id}", status_code=HTTP_204_NO_CONTENT)
-def delete_invoice(invoice_id: int, db: Session = Depends(get_db)):
-    db_invoice = get_invoice(invoice_id, db=db)
+@invoices.delete("/{invoice_id}", status_code=HTTP_200_OK)
+async def delete_invoice(invoice_id: int, db: Session = Depends(get_db)):
+    db_invoice = await service.get_invoice(invoice_id, db=db)
     if not db_invoice:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    db.delete(db_invoice)
-    db.commit()
-    return Response(status_code=HTTP_204_NO_CONTENT)
+    await service.delete_invoice(db_invoice, db)
+    return Response(status_code=HTTP_200_OK)
