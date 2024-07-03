@@ -4,7 +4,15 @@ from pydantic import BaseModel
 
 
 class RoleSchema(BaseModel):
-    id: Optional[int] = None
+    name: str
+    description: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class RoleSchemaWithId(BaseModel):
+    id: int
     name: str
     description: Optional[str] = None
 

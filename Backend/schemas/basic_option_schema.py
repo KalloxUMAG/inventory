@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class BasicOptionSchema(BaseModel):
@@ -86,6 +86,21 @@ class StageSchemaWithId(StageSchema):
     id: int
     name: str
     project_id: int
+
+    class Config:
+        from_attributes = True
+
+class ModelNumberSchema(BaseModel):
+    number: str
+    model_id: int
+
+    class Config:
+        from_attributes = True
+
+class ModelNumberSchemaWithId(ModelNumberSchema):
+    id: int
+    number: str
+    model_id: int
 
     class Config:
         from_attributes = True
