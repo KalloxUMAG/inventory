@@ -5,7 +5,9 @@ from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 
 from config.database import get_db
-from models.models import GroupsHasSupplies, Groups, Supply
+from services.groups_supplies import GroupSupplyService
+from services.groups import GroupService
+from services.supplies import SupplyService
 from schemas.groups_supplies_schema import GroupSupplySchema
 
 from auth.auth_bearer import JWTBearer
@@ -15,48 +17,33 @@ groups_supplies = APIRouter(
     tags=["groups"],
     prefix="/api/groups_supplies",
 )
+service = GroupSupplyService()
+group_service = GroupService()
+supply_service = SupplyService()
 
 
 @groups_supplies.get("", response_model=List[GroupSupplySchema])
-def get_groups_supplies(db: Session = Depends(get_db)):
-    result = db.query(GroupsHasSupplies).all()
+async def get_groups_supplies(db: Session = Depends(get_db)):
+    result = await service.get_groups_supplies(db)
     return result
 
 
 @groups_supplies.post("", status_code=HTTP_201_CREATED)
-def add_group_supply(group_supply: GroupSupplySchema, db: Session = Depends(get_db)):
-    db_group = db.query(Groups).filter(Groups.id == group_supply.group_id).first()
+async def add_group_supply(group_supply: GroupSupplySchema, db: Session = Depends(get_db)):
+    db_group = await group_service.get_group_simple(group_supply.group_id, db)
     if not db_group:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    db_supply = db.query(Supply).filter(Supply.id == group_supply.supply_id).first()
+    db_supply = await supply_service.get_supply(group_supply.supply_id, db)
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    new_group_supply = GroupsHasSupplies(
-        group_id=group_supply.group_id,
-        supply_id=group_supply.supply_id,
-        quantity=group_supply.quantity,
-    )
-    db.add(new_group_supply)
-    db.commit()
-    db.refresh(new_group_supply)
+    new_group_supply = await service.add_group_supply(group_supply, db)
     return Response(status_code=HTTP_201_CREATED)
 
 
 @groups_supplies.put("", response_model=GroupSupplySchema)
-def update_quantity(data_update: GroupSupplySchema, db: Session = Depends(get_db)):
-    db_relation = (
-        db.query(GroupsHasSupplies)
-        .filter(
-            GroupsHasSupplies.group_id == data_update.group_id,
-            GroupsHasSupplies.supply_id == data_update.supply_id,
-        )
-        .first()
-    )
+async def update_quantity(data_update: GroupSupplySchema, db: Session = Depends(get_db)):
+    db_relation = await service.get_group_supply(data_update.group_id, data_update.supply_id, db)
     if not db_relation:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    for key, value in data_update.model_dump(exclude_unset=True).items():
-        setattr(db_relation, key, value)
-    db.add(db_relation)
-    db.commit()
-    db.refresh(db_relation)
-    return db_relation
+    update_quantity = await service.update_quantity(db_relation, data_update, db)
+    return update_quantity
