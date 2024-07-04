@@ -55,7 +55,7 @@ async def update_lot(
     db_lot = await service.get_lot_simple(lot_id, db)
     if not db_lot:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    updated_lot = await service.update_lot(data_update, db_lot, db)
+    updated_lot = await service.update_lot(db_lot, data_update, db)
     return updated_lot
 
 
