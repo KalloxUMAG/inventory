@@ -1,13 +1,6 @@
-import re
-import os
-import shutil
-
 from typing import List
-from datetime import datetime
-from pathlib import Path
 from fastapi import APIRouter, Depends, Response, UploadFile
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import func
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
@@ -17,8 +10,7 @@ from starlette.status import (
 )
 
 from config.database import get_db
-from config.settings import settings
-from models.models import Groups, GroupOtherNames
+from services.groups import GroupService
 from schemas.group_schema import CreateGroupSchema, GroupSchema
 
 from auth.auth_bearer import JWTBearer
@@ -26,142 +18,65 @@ from auth.auth_bearer import JWTBearer
 groups = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["groups"], prefix="/api/groups"
 )
+service = GroupService()
 
 
 @groups.get("", response_model=List[GroupSchema])
-def get_groups(db: Session = Depends(get_db)):
-    results_db = db.query(Groups.id, Groups.name, Groups.description).all()
-    results = [
-        GroupSchema(
-            id = result.id,
-            name = result.name,
-            description = result.description,
-            other_names = get_other_names_supply(result.id, db),
-            ) for result in results_db]
-    return results
+async def get_groups(db: Session = Depends(get_db)):
+    groups = await service.get_groups(db)
+    return groups
 
 @groups.get("/{group_id}", response_model=GroupSchema)
-def get_group(group_id: int, db: Session = Depends(get_db)):
-    result_db = db.query(Groups).filter(Groups.id == group_id).first()
-    result = GroupSchema(
-        id = result_db.id,
-        name = result_db.name,
-        description = result_db.description,
-        other_names = get_other_names_supply(result_db.id, db),
-        )
-    return result
+async def get_group(group_id: int, db: Session = Depends(get_db)):
+    group = await service.get_group(group_id, db)
+    if not group:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    return group
   
 @groups.post("", status_code=HTTP_201_CREATED)
-def add_groups(group: CreateGroupSchema, db: Session = Depends(get_db)):
-    db_group = (
-        db.query(Groups).filter(func.lower(Groups.name) == group.name.lower()).first()
-    )
+async def add_groups(group: CreateGroupSchema, db: Session = Depends(get_db)):
+    db_group = await service.get_group_by_name(group.name, db)
     if db_group:
         return Response(status_code=HTTP_409_CONFLICT, content="Group already exists")
-    new_group = Groups(name=group.name, description=group.description)
-    db.add(new_group)
-    db.commit()
-    db.refresh(new_group)
-    new_group_id = new_group.id
-    if group.other_names:
-        for name in group.other_names:
-            db.add(GroupOtherNames(group_id=new_group_id, name=name))
-            db.commit()
+    new_group = await service.add_group(group, db)
     content = str(new_group.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
 @groups.get("/names/{group_id}", response_model=List[str])
-def get_other_names_supply(group_id: int, db: Session = Depends(get_db)):
-    results_db = db.query(GroupOtherNames).filter(GroupOtherNames.group_id == group_id).all()
-    results = [result.name for result in results_db]
-    return results
+async def get_other_names_supply(group_id: int, db: Session = Depends(get_db)):
+    names = await service.get_group_others_names(group_id, db)
+    return names
 
 @groups.put("", status_code=HTTP_200_OK)
-def update_group(data_update: GroupSchema, db: Session = Depends(get_db)):
-    db_group = (
-        db.query(Groups)
-        .filter(
-            Groups.id == data_update.id,
-        )
-        .first()
-    )
+async def update_group(data_update: GroupSchema, db: Session = Depends(get_db)):
+    db_group = await service.get_group_simple(data_update.id, db)
     if not db_group:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    for key, value in data_update.model_dump(exclude_unset=True).items():
-        if key != "other_names":
-            setattr(db_group, key, value)
-    db.add(db_group)
-    db.commit()
-    db.refresh(db_group)
-    if data_update.other_names:
-        db.query(GroupOtherNames).filter(GroupOtherNames.group_id == db_group.id).delete()
-        for name in data_update.other_names:
-            db.add(GroupOtherNames(group_id=db_group.id, name=name))
-            db.commit()
+    update_group = await service.update_group(db_group, data_update, db)
     return Response(status_code=HTTP_200_OK)
 
 @groups.delete("/{group_id}", response_model=List[str])
-def delete_group(group_id: int, db: Session = Depends(get_db)):
-    db_group = db.query(Groups).filter(Groups.id == group_id).first()
+async def delete_group(group_id: int, db: Session = Depends(get_db)):
+    db_group = await service.get_group_simple(group_id, db)
     if not db_group:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    db_group_names = db.query(GroupOtherNames).filter(GroupOtherNames.group_id == group_id).all()
-    for group_name in db_group_names:
-        db.delete(group_name)
-        db.commit()
-    db.delete(db_group)
-    db.commit()
-    image_path = Path(settings.image_directory, "groups", str(group_id))
-    shutil.rmtree(image_path, ignore_errors=True)
+    
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 # Upload image to groups folder
 @groups.post("/{group_id}", status_code=HTTP_201_CREATED)
 async def add_image(group_id: int, file: UploadFile):
-    image_path = Path(settings.image_directory, "groups", str(group_id))
-    image_path.mkdir(parents=True, exist_ok=True)
-    extension = file.filename.split(".")[-1].lower()
-    format_filename = file.filename[: -len(extension)].lower()
-    format_filename = re.sub("[^A-Za-z0-9]", "", format_filename, 0, re.IGNORECASE)
-    date_now = datetime.now()
-    date_now = date_now.strftime("%d%m%Y_%H%M%S")
-    with open(
-        str(image_path)
-        + "/"
-        + str(date_now)
-        + str(format_filename)
-        + "."
-        + str(extension),
-        "wb",
-    ) as buffer:
-        buffer.write(await file.read())
+    await service.add_image(group_id, file)
     return Response(status_code=HTTP_201_CREATED)
 
 # Get images from groups folder
 @groups.get("/image/{group_id}")
 async def get_images(group_id: int):
-    image_path = Path(settings.image_directory, "groups", str(group_id))
-    if not image_path.exists():
-        print("No images found")
-        return Response(status_code=HTTP_404_NOT_FOUND)
-
-    image_base_url = settings.base_url.path.replace("/api", "/images")
-    return [
-        {
-            "id": i,
-            "name": file.name,
-            "path": f"{image_base_url}/groups/{group_id}/{file.name}",
-        }
-        for i, file in enumerate(image_path.iterdir(), start=1)
-    ]
+    images = await service.get_images(group_id)
+    return images
 
 # Delete images to groups folder
 @groups.delete("/image/{group_id}", status_code=HTTP_200_OK)
 async def delete_image(group_id: int, file: UploadFile):
-    image_path = Path(settings.image_directory, "groups", str(group_id))
-    image_path.mkdir(parents=True, exist_ok=True)
-    extension = file.filename.split(".")[-1].lower()
-    format_filename = file.filename[: -len(extension)].lower()
-    format_filename = re.sub("[^A-Za-z0-9_]", "", format_filename, 0, re.IGNORECASE)
-    os.remove(str(image_path) + "/" + str(format_filename) + "." + str(extension))
+    await service.delete_image(group_id, file)
     return Response(status_code=HTTP_200_OK)
