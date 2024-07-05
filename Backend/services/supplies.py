@@ -86,6 +86,13 @@ class SupplyService:
             .first()
         )
         return result
+    async def get_supply_by_code(self, code: str, db: Session):
+        result = (
+            db.query(Supply)
+            .filter(and_(Supply.code == code, Supply.state == True))
+            .first()
+        )
+        return result
     async def get_supplies_critical(self, db: Session):
         result = (
             db.query(

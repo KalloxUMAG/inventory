@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
 
 from config.database import get_db
 from services.supplies import SupplyService
@@ -35,6 +35,9 @@ async def get_supplies_critical(db: Session = Depends(get_db)):
 
 @supplies.post("", status_code=HTTP_201_CREATED)
 async def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
+    db_supply = await service.get_supply_by_code(supply.code, db)
+    if db_supply:
+        return Response(status_code=HTTP_409_CONFLICT)
     new_supply = await service.add_supply(supply, db)
     content = str(new_supply.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
