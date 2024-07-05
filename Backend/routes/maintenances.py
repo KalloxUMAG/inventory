@@ -1,108 +1,68 @@
 from typing import List
-from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 
 from config.database import get_db
-from models.models import Maintenance
-from routes.equipments import get_equipment_exist
+from services.maintenances import MaintenanceService
+from services.equipments import EquipmentService
 from schemas.maintenance_schema import (
     EditMaintenanceSchema,
     MaintenanceFromEquipment,
     MaintenanceSchema,
 )
 
-from routes.equipments import update_equipment, get_equipment
 
 from auth.auth_bearer import JWTBearer
 
 maintenances = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["equipments"], prefix="/api/maintenances"
 )
-
+service = MaintenanceService()
+equipment_service = EquipmentService()
 
 @maintenances.get("", response_model=List[MaintenanceSchema])
-def get_maintenances(db: Session = Depends(get_db)):
-    result = db.query(Maintenance).all()
-    return result
+async def get_maintenances(db: Session = Depends(get_db)):
+    maintenances = await service.get_maintenances(db)
+    return maintenances
 
 
 @maintenances.post("", status_code=HTTP_201_CREATED)
-def add_maintenances(maintenance: MaintenanceSchema, db: Session = Depends(get_db)):
-    db_equipment = get_equipment_exist(maintenance.equiptment_id, db=db)
+async def add_maintenances(maintenance: MaintenanceSchema, db: Session = Depends(get_db)):
+    db_equipment = await equipment_service.get_equipment_simple(maintenance.equiptment_id, db)
     if not db_equipment:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    new_maintenance = Maintenance(
-        date=maintenance.date,
-        observations=maintenance.observations,
-        state=maintenance.state,
-        maintenance_type=maintenance.maintenance_type,
-        equiptment_id=maintenance.equiptment_id,
-    )
-    db.add(new_maintenance)
-    db.commit()
-    db.refresh(new_maintenance)
-    if maintenance.maintenance_type == "Correctiva":
-        return Response(status_code=HTTP_201_CREATED)
-    last_maintenance = get_last_maintenance_equipment(maintenance.equiptment_id, db)
-    if last_maintenance.id == new_maintenance.id:
-        next_maintenance = last_maintenance.date + timedelta(
-            days=db_equipment.maintenance_period * 30
-        )
-        setattr(db_equipment, "next_maintenance", next_maintenance)
-        db.add(db_equipment)
-        db.commit()
-        db.refresh(db_equipment)
+    new_maintenance = await service.add_maintenance(maintenance, db_equipment, db)
     return Response(status_code=HTTP_201_CREATED)
 
 
 @maintenances.get("/maintenance/{maintenance_id}", response_model=MaintenanceSchema)
-def get_maintenance(maintenance_id: int, db: Session = Depends(get_db)):
-    return db.query(Maintenance).filter(Maintenance.id == maintenance_id).first()
-
+async def get_maintenance(maintenance_id: int, db: Session = Depends(get_db)):
+    maintenance = await service.get_maintenance(maintenance_id, db)
+    if not maintenance:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    return maintenance
 
 @maintenances.get("/{equipment_id}", response_model=List[MaintenanceFromEquipment])
-def get_maintenances_equipment(equipment_id: int, db: Session = Depends(get_db)):
-    return (
-        db.query(
-            Maintenance.id,
-            Maintenance.date,
-            Maintenance.maintenance_type,
-            Maintenance.observations,
-            Maintenance.state,
-            Maintenance.equiptment_id,
-        )
-        .filter(Maintenance.equiptment_id == equipment_id)
-        .order_by(Maintenance.date.desc())
-        .all()
-    )
+async def get_maintenances_equipment(equipment_id: int, db: Session = Depends(get_db)):
+    maintenances = await service.get_maintenances_by_equipment(equipment_id, db)
+    return maintenances
 
 
 @maintenances.get(
     "/last_maintenance/{equipment_id}",
     response_model=MaintenanceFromEquipment,
 )
-def get_last_maintenance_equipment(equipment_id: int, db: Session = Depends(get_db)):
-    result = db.query(
-        Maintenance.id,
-        Maintenance.date,
-        Maintenance.maintenance_type,
-        Maintenance.observations,
-        Maintenance.state,
-        Maintenance.equiptment_id,
-    ).filter(
-        Maintenance.equiptment_id == equipment_id,
-        Maintenance.maintenance_type == "Programada",
-    ).order_by(Maintenance.date.desc()).first()
-    if not result:
+async def get_last_maintenance_equipment(equipment_id: int, db: Session = Depends(get_db)):
+    maintenance = await service.get_last_maintenance_equipment(equipment_id, db)
+    if not maintenance:
         return Response(status_code=HTTP_204_NO_CONTENT)
-    return result
+    return maintenance
 
 
 @maintenances.put("/{maintenance_id}", response_model=MaintenanceSchema)
-def update_maintenance(
+async def update_maintenance(
     data_update: EditMaintenanceSchema,
     maintenance_id: int,
     db: Session = Depends(get_db),
@@ -110,31 +70,14 @@ def update_maintenance(
     db_maintenance = get_maintenance(maintenance_id, db=db)
     if not db_maintenance:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    for key, value in data_update.model_dump(exclude_unset=True).items():
-        setattr(db_maintenance, key, value)
-    db.add(db_maintenance)
-    db.commit()
-    db.refresh(db_maintenance)
-    if db_maintenance.maintenance_type == "Correctiva":
-        return db_maintenance
-    last_maintenance = get_last_maintenance_equipment(db_maintenance.equiptment_id, db)
-    if last_maintenance.id == db_maintenance.id:
-        db_equipment = get_equipment_exist(db_maintenance.equiptment_id, db)
-        next_maintenance = last_maintenance.date + timedelta(
-            days=db_equipment.maintenance_period * 30
-        )
-        setattr(db_equipment, "next_maintenance", next_maintenance)
-        db.add(db_equipment)
-        db.commit()
-        db.refresh(db_equipment)
-    return db_maintenance
+    maintenance = await service.update_maintenance(db_maintenance, data_update, db)
+    return maintenance
 
 
-@maintenances.delete("/{maintenance_id}", status_code=HTTP_204_NO_CONTENT)
-def delete_maintenance(maintenance_id: int, db: Session = Depends(get_db)):
-    db_maintenance = get_maintenance(maintenance_id, db=db)
+@maintenances.delete("/{maintenance_id}", status_code=HTTP_200_OK)
+async def delete_maintenance(maintenance_id: int, db: Session = Depends(get_db)):
+    db_maintenance = await service.get_maintenance(maintenance_id, db)
     if not db_maintenance:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    db.delete(db_maintenance)
-    db.commit()
-    return Response(status_code=HTTP_204_NO_CONTENT)
+    await service.delete_maintenance(db_maintenance, db)
+    return Response(status_code=HTTP_200_OK)
