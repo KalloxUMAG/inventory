@@ -13,7 +13,7 @@ from config.database import get_db
 from services.groups import GroupService
 from schemas.group_schema import CreateGroupSchema, GroupSchema
 
-from auth.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
 
 groups = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["groups"], prefix="/api/groups"
@@ -34,11 +34,11 @@ async def get_group(group_id: int, db: Session = Depends(get_db)):
     return group
   
 @groups.post("", status_code=HTTP_201_CREATED)
-async def add_groups(group: CreateGroupSchema, db: Session = Depends(get_db)):
+async def add_groups(group: CreateGroupSchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     db_group = await service.get_group_by_name(group.name, db)
     if db_group:
         return Response(status_code=HTTP_409_CONFLICT, content="Group already exists")
-    new_group = await service.add_group(group, db)
+    new_group = await service.add_group(user_id=get_user_id_from_token(dependencies), group=group, db=db)
     content = str(new_group.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
@@ -48,25 +48,25 @@ async def get_other_names_supply(group_id: int, db: Session = Depends(get_db)):
     return names
 
 @groups.put("", status_code=HTTP_200_OK)
-async def update_group(data_update: GroupSchema, db: Session = Depends(get_db)):
+async def update_group(data_update: GroupSchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     db_group = await service.get_group_simple(data_update.id, db)
     if not db_group:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    update_group = await service.update_group(db_group, data_update, db)
+    update_group = await service.update_group(user_id=get_user_id_from_token(dependencies), group=db_group, data_update=data_update, db=db)
     return Response(status_code=HTTP_200_OK)
 
 @groups.delete("/{group_id}", response_model=List[str])
-async def delete_group(group_id: int, db: Session = Depends(get_db)):
+async def delete_group(group_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     db_group = await service.get_group_simple(group_id, db)
     if not db_group:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    
+    await service.delete_group(user_id=get_user_id_from_token(dependencies), group=db_group, db=db)
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 # Upload image to groups folder
 @groups.post("/{group_id}", status_code=HTTP_201_CREATED)
-async def add_image(group_id: int, file: UploadFile):
-    await service.add_image(group_id, file)
+async def add_image(group_id: int, file: UploadFile, dependencies=Depends(JWTBearer())):
+    await service.add_image(user_id=get_user_id_from_token(dependencies), group_id=group_id, file=file)
     return Response(status_code=HTTP_201_CREATED)
 
 # Get images from groups folder
@@ -77,6 +77,6 @@ async def get_images(group_id: int):
 
 # Delete images to groups folder
 @groups.delete("/image/{group_id}", status_code=HTTP_200_OK)
-async def delete_image(group_id: int, file: UploadFile):
-    await service.delete_image(group_id, file)
+async def delete_image(group_id: int, file: UploadFile, dependencies=Depends(JWTBearer())):
+    await service.delete_image(user_id=get_user_id_from_token(dependencies), group_id=group_id, file=file)
     return Response(status_code=HTTP_200_OK)

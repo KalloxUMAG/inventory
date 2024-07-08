@@ -10,6 +10,8 @@ from sqlalchemy.sql.expression import func
 from models.models import Groups, GroupOtherNames
 from schemas.group_schema import CreateGroupSchema, GroupSchema
 
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
+
 class GroupService:
     async def get_group_others_names(self, group_id: int, db: Session):
         results_db = db.query(GroupOtherNames).filter(GroupOtherNames.group_id == group_id).all()
@@ -40,7 +42,8 @@ class GroupService:
         return db.query(Groups).filter(Groups.id == group_id).first()
     async def get_group_by_name(self, name: str, db: Session):
         return db.query(Groups).filter(func.lower(Groups.name) == name.lower()).first()
-    async def add_group(self, group: CreateGroupSchema, db: Session):
+    @log_func_calls("groups", CREATE_LOG)
+    async def add_group(self, user_id: int, group: CreateGroupSchema, db: Session):
         new_group = Groups(name=group.name, description=group.description)
         db.add(new_group)
         db.commit()
@@ -51,7 +54,8 @@ class GroupService:
                 db.add(GroupOtherNames(group_id=new_group_id, name=name))
                 db.commit()
         return new_group
-    async def update_group(self, group: GroupSchema, data_update: GroupSchema, db: Session):
+    @log_func_calls("groups", UPDATE_LOG)
+    async def update_group(self, user_id: int, group: GroupSchema, data_update: GroupSchema, db: Session):
         for key, value in data_update.model_dump(exclude_unset=True).items():
             if key != "other_names":
                 setattr(group, key, value)
@@ -64,7 +68,8 @@ class GroupService:
                 db.add(GroupOtherNames(group_id=group.id, name=name))
                 db.commit()
         return group
-    async def delete_group(self, group: GroupSchema, db: Session):
+    @log_func_calls("groups", DELETE_LOG)
+    async def delete_group(self, user_id: int, group: GroupSchema, db: Session):
         db_group_names = db.query(GroupOtherNames).filter(GroupOtherNames.group_id == group.id).all()
         for group_name in db_group_names:
             db.delete(group_name)
@@ -73,7 +78,9 @@ class GroupService:
         db.commit()
         image_path = Path(settings.image_directory, "groups", str(group.id))
         shutil.rmtree(image_path, ignore_errors=True)
-    async def add_image(self, group_id: int, file):
+        return group
+    @log_func_calls("groups image", CREATE_LOG)
+    async def add_image(self, user_id: int, group_id: int, file):
         image_path = Path(settings.image_directory, "groups", str(group_id))
         image_path.mkdir(parents=True, exist_ok=True)
         extension = file.filename.split(".")[-1].lower()
@@ -105,7 +112,8 @@ class GroupService:
             }
             for i, file in enumerate(image_path.iterdir(), start=1)
         ]
-    async def delete_image(self, group_id: int, file):
+    @log_func_calls("groups image", DELETE_LOG)
+    async def delete_image(self, user_id: int, group_id: int, file):
         image_path = Path(settings.image_directory, "groups", str(group_id))
         image_path.mkdir(parents=True, exist_ok=True)
         extension = file.filename.split(".")[-1].lower()

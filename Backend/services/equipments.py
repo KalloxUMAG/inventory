@@ -6,7 +6,6 @@ from config.settings import settings
 from datetime import timedelta, datetime
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import func
 from models.models import (
     Brand,
     Building,
@@ -24,6 +23,7 @@ from models.models import (
 )
 from schemas.basic_option_schema import BasicOptionSchema, BasicOptionSchemaWithId
 from schemas.equipment_schema import EquipmentSchema, UpdateEquipmentSchema
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
 class EquipmentService:
     async def get_equipments(self, db: Session):
@@ -124,7 +124,8 @@ class EquipmentService:
         return db.query(EquipmentTypes).filter(EquipmentTypes.id == equipment_type_id).first()
     async def get_equipment_type_by_name(self, equipment_type_name: str, db: Session):
         return db.query(EquipmentTypes).filter(EquipmentTypes.name == equipment_type_name).first()
-    async def add_equipment_type(self, equipment_type: BasicOptionSchema, db: Session):
+    @log_func_calls("equipment_types", CREATE_LOG)
+    async def add_equipment_type(self, user_id: int, equipment_type: BasicOptionSchema, db: Session):
         new_equipment_type = EquipmentTypes(name=equipment_type.name)
         db.add(new_equipment_type)
         db.commit()
@@ -136,8 +137,10 @@ class EquipmentService:
         )
         query = db.execute(s).all()
         return query
-    async def add_equipment(self, equipment: EquipmentSchema, db: Session):
+    @log_func_calls("equipments", CREATE_LOG)
+    async def add_equipment(self, user_id: int, equipment: EquipmentSchema, db: Session):
         if equipment.maintenance_period != None:
+            print(user_id)
             reception_date = equipment.reception_date
             next_maintenance = reception_date + timedelta(days=equipment.maintenance_period * 30)
             next_maintenance = next_maintenance.strftime("%Y-%m-%d")
@@ -164,9 +167,11 @@ class EquipmentService:
         db.commit()
         db.refresh(new_equipment)
         return new_equipment
-    async def update_equipment(self, equipment: EquipmentSchema, data_update: UpdateEquipmentSchema, db: Session):
-        for key, value in data_update.model_dump(exclude_unset=False).items():
+    @log_func_calls("equipments", UPDATE_LOG)
+    async def update_equipment(self, user_id: int, equipment: EquipmentSchema, data_update: UpdateEquipmentSchema, db: Session):
+        for key, value in data_update.model_dump(exclude_unset=True).items():
             if value is not None:
+                print(key, value)
                 setattr(equipment, key, value)
             else:
                 setattr(equipment, key, None)
@@ -174,9 +179,11 @@ class EquipmentService:
         db.commit()
         db.refresh(equipment)
         return equipment
-    async def delete_equipment(self, equipment: EquipmentSchema, db: Session):
+    @log_func_calls("equipments", DELETE_LOG)
+    async def delete_equipment(self, user_id: int, equipment: EquipmentSchema, db: Session):
         db.delete(equipment)
         db.commit()
+        return equipment
     async def get_images(self, equipment_id: int):
         image_path = Path(settings.image_directory, "equipments", str(equipment_id))
         if not image_path.exists():
@@ -191,7 +198,8 @@ class EquipmentService:
             }
             for i, file in enumerate(image_path.iterdir(), start=1)
         ]
-    async def add_image(self, equipment_id: int, file):
+    @log_func_calls("equipment image", CREATE_LOG)
+    async def add_image(self, user_id: int, equipment_id: int, file):
         image_path = Path(settings.image_directory, "equipments", str(equipment_id))
         image_path.mkdir(parents=True, exist_ok=True)
         extension = file.filename.split(".")[-1].lower()
@@ -204,7 +212,8 @@ class EquipmentService:
             "wb",
         ) as buffer:
             buffer.write(await file.read())
-    async def delete_image(self, equipment_id: int, file):
+    @log_func_calls("equipment image", DELETE_LOG)
+    async def delete_image(self, user_id: int, equipment_id: int, file):
         image_path = Path(settings.image_directory, "equipments", str(equipment_id))
         image_path.mkdir(parents=True, exist_ok=True)
         extension = file.filename.split(".")[-1].lower()
