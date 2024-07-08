@@ -9,7 +9,7 @@ from services.inventory import LoanService
 from schemas.loans_scheme import LoanCreate, LoanSchema
 from schemas.equipment_schema import EquipmentAvailableSchema
 
-from auth.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
 ## Depends(JWTBearer())
 inventory = APIRouter(
     dependencies=[], tags=["inventory"], prefix="/api/inventory"
@@ -31,10 +31,10 @@ async def get_equipments_with_availability(start_date: date, end_date: date, db:
 
 
 @inventory.post("/loans", tags=["loans"], response_model=LoanSchema)
-async def create_loan(loan: LoanCreate, db: Session = Depends(get_db)):
+async def create_loan(loan: LoanCreate, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     # Comprueba si el equipo ya está prestado durante las fechas especificadas
     existing_loan = await service.get_equipment_availability(loan.equipment_id, loan.loan_start_date, loan.loan_end_date, db)
     if existing_loan is not None:
         raise HTTPException(status_code=400, detail="Equipment is already loaned during the specified dates")
-    new_loan = await service.create_loan(loan, db)
+    new_loan = await service.create_loan(user_id=get_user_id_from_token(dependencies), loan=loan, db=db)
     return new_loan

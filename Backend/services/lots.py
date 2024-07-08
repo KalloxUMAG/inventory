@@ -11,6 +11,7 @@ from models.models import (
     Supply
 )
 from schemas.lot_schema import CreateLotSchema, LotListSchema
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
 class LotService:
     async def get_lots(self, db: Session):
@@ -91,7 +92,8 @@ class LotService:
             .all()
         )
         return result
-    async def add_lot(self, lot: CreateLotSchema, db: Session):
+    @log_func_calls("lots", CREATE_LOG)
+    async def add_lot(self, user_id: int, lot: CreateLotSchema, db: Session):
         new_lot = Lot(
             number=lot.number,
             reception_date=lot.reception_date,
@@ -108,14 +110,16 @@ class LotService:
         db.commit()
         db.refresh(new_lot)
         return new_lot
-    async def update_lot(self, lot, data_update: CreateLotSchema, db: Session):
+    @log_func_calls("lots", UPDATE_LOG)
+    async def update_lot(self, user_id: int, lot, data_update: CreateLotSchema, db: Session):
         for key, value in data_update.model_dump(exclude_unset=True).items():
             setattr(lot, key, value)
         db.add(lot)
         db.commit()
         db.refresh(lot)
         return lot
-    async def delete_lot(self, lot, db: Session):
+    @log_func_calls("lots", DELETE_LOG)
+    async def delete_lot(self, user_id: int, lot, db: Session):
         setattr(lot, "state", False)
         db.add(lot)
         db.commit()

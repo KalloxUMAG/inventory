@@ -6,6 +6,8 @@ from schemas.maintenance_schema import MaintenanceSchema
 from services.equipments import EquipmentService
 equipment_service = EquipmentService()
 
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
+
 class MaintenanceService:
     async def get_maintenances(self, db: Session):
         return db.query(Maintenance).all()
@@ -15,7 +17,8 @@ class MaintenanceService:
         return db.query(Maintenance).filter(Maintenance.equiptment_id == equipment_id).order_by(Maintenance.date.desc()).all()
     async def get_last_maintenance_equipment(self, equipment_id: int, db: Session):
         return db.query(Maintenance).filter(Maintenance.equiptment_id == equipment_id, Maintenance.maintenance_type == "Programada").order_by(Maintenance.date.desc()).first()
-    async def add_maintenance(self, maintenance: MaintenanceSchema, equipment, db: Session):
+    @log_func_calls("maintenances", CREATE_LOG)
+    async def add_maintenance(self, user_id: int, maintenance: MaintenanceSchema, equipment, db: Session):
         new_maintenance = Maintenance(
             date=maintenance.date,
             observations=maintenance.observations,
@@ -38,7 +41,7 @@ class MaintenanceService:
             db.commit()
             db.refresh(equipment)
         return new_maintenance
-    async def update_maintenance(self, maintenance: MaintenanceSchema, data_update, db: Session):
+    async def update_maintenance(self, user_id: int, maintenance: MaintenanceSchema, data_update, db: Session):
         for key, value in data_update.model_dump(exclude_unset=True).items():
             setattr(maintenance, key, value)
         db.add(maintenance)
@@ -57,6 +60,7 @@ class MaintenanceService:
             db.commit()
             db.refresh(db_equipment)
         return maintenance
-    async def delete_maintenance(self, maintenance: MaintenanceSchema, db: Session):
+    async def delete_maintenance(self, user_id: int, maintenance: MaintenanceSchema, db: Session):
         db.delete(maintenance)
         db.commit()
+        return maintenance

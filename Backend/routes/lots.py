@@ -10,10 +10,9 @@ from starlette.status import (
 
 from config.database import get_db
 from services.lots import LotService
-from models.models import Lot
 from schemas.lot_schema import CreateLotSchema, LotListSchema
 
-from auth.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
 
 lots = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["supplies"], prefix="/api/lots"
@@ -28,8 +27,8 @@ async def get_lots(db: Session = Depends(get_db)):
 
 
 @lots.post("", status_code=HTTP_201_CREATED)
-async def add_lots(lot: CreateLotSchema, db: Session = Depends(get_db)):
-    new_lot = await service.add_lot(lot, db)
+async def add_lots(lot: CreateLotSchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
+    new_lot = await service.add_lot(user_id=get_user_id_from_token(dependencies), lot=lot, db=db)
     content = str(new_lot.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
@@ -50,19 +49,19 @@ async def get_lots_supply(supply_id: int, db: Session = Depends(get_db)):
 
 @lots.put("/{lot_id}", response_model=CreateLotSchema)
 async def update_lot(
-    data_update: CreateLotSchema, lot_id: int, db: Session = Depends(get_db)
+    data_update: CreateLotSchema, lot_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)
 ):
     db_lot = await service.get_lot_simple(lot_id, db)
     if not db_lot:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    updated_lot = await service.update_lot(db_lot, data_update, db)
+    updated_lot = await service.update_lot(user_id=get_user_id_from_token(dependencies), lot=db_lot, data_update=data_update, db=db)
     return updated_lot
 
 
 @lots.put("/deactive/{lot_id}", status_code=HTTP_205_RESET_CONTENT)
-async def deactive_lot(lot_id: int, db: Session = Depends(get_db)):
+async def deactive_lot(lot_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     db_lot = await service.get_lot_simple(lot_id, db)
     if not db_lot:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    deactivated_lot = await service.delete_lot(db_lot, db)
+    deactivated_lot = await service.delete_lot(user_id=get_user_id_from_token(dependencies), lot=db_lot, db=db)
     return Response(status_code=HTTP_205_RESET_CONTENT)

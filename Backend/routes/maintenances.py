@@ -14,7 +14,7 @@ from schemas.maintenance_schema import (
 )
 
 
-from auth.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
 
 maintenances = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["equipments"], prefix="/api/maintenances"
@@ -29,11 +29,11 @@ async def get_maintenances(db: Session = Depends(get_db)):
 
 
 @maintenances.post("", status_code=HTTP_201_CREATED)
-async def add_maintenances(maintenance: MaintenanceSchema, db: Session = Depends(get_db)):
+async def add_maintenances(maintenance: MaintenanceSchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     db_equipment = await equipment_service.get_equipment_simple(maintenance.equiptment_id, db)
     if not db_equipment:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    new_maintenance = await service.add_maintenance(maintenance, db_equipment, db)
+    new_maintenance = await service.add_maintenance(user_id=get_user_id_from_token(dependencies), maintenance=maintenance, equipment=db_equipment, db=db)
     return Response(status_code=HTTP_201_CREATED)
 
 
@@ -65,19 +65,20 @@ async def get_last_maintenance_equipment(equipment_id: int, db: Session = Depend
 async def update_maintenance(
     data_update: EditMaintenanceSchema,
     maintenance_id: int,
+    dependencies=Depends(JWTBearer()),
     db: Session = Depends(get_db),
 ):
     db_maintenance = get_maintenance(maintenance_id, db=db)
     if not db_maintenance:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    maintenance = await service.update_maintenance(db_maintenance, data_update, db)
+    maintenance = await service.update_maintenance(user_id=get_user_id_from_token(dependencies), maintenance=db_maintenance, data_update=data_update, db=db)
     return maintenance
 
 
 @maintenances.delete("/{maintenance_id}", status_code=HTTP_200_OK)
-async def delete_maintenance(maintenance_id: int, db: Session = Depends(get_db)):
+async def delete_maintenance(maintenance_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     db_maintenance = await service.get_maintenance(maintenance_id, db)
     if not db_maintenance:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    await service.delete_maintenance(db_maintenance, db)
+    await service.delete_maintenance(user_id=get_user_id_from_token(dependencies), maintenance=db_maintenance, db=db)
     return Response(status_code=HTTP_200_OK)

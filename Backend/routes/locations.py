@@ -8,7 +8,7 @@ from config.database import get_db
 from services.locations import LocationService
 from schemas.basic_option_schema import BasicOptionSchema, BasicOptionSchemaWithId
 
-from auth.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
 
 locations = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["locations"], prefix="/api/locations"
@@ -23,8 +23,8 @@ async def get_locations(db: Session = Depends(get_db)):
 
 
 @locations.post("", status_code=HTTP_201_CREATED)
-async def add_location(location: BasicOptionSchema, db: Session = Depends(get_db)):
-    location = await service.add_location(location.name, db)
+async def add_location(location: BasicOptionSchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
+    location = await service.add_location(user_id=get_user_id_from_token(dependencies), location_name=location.name, db=db)
     content = str(location.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 

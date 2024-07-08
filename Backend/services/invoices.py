@@ -4,6 +4,7 @@ from config.settings import settings
 from sqlalchemy.orm import Session
 from models.models import Invoice
 from schemas.invoce_schema import InvoiceSchema, InvoiceSchemaWithId
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
 class InvoiceService:
     async def get_invoices(self, db: Session):
@@ -12,7 +13,8 @@ class InvoiceService:
         return db.query(Invoice).filter(Invoice.id == invoice_id).first()
     async def get_invoices_by_supplier(self, supplier_id: int, db: Session):
         return db.query(Invoice).filter(Invoice.supplier_id == supplier_id).all()
-    async def add_invoice(self, invoice: InvoiceSchema, db: Session):
+    @log_func_calls("invoices", CREATE_LOG)
+    async def add_invoice(self, user_id: int, invoice: InvoiceSchema, db: Session):
         db_invoice = (
             db.query(Invoice)
             .filter(
@@ -31,12 +33,14 @@ class InvoiceService:
         db.commit()
         db.refresh(new_invoice)
         return new_invoice
-    async def add_invoice_image(self, invoice_id: int, file: UploadFile):
+    @log_func_calls("invoices image", CREATE_LOG)
+    async def add_invoice_image(self, user_id: int, invoice_id: int, file: UploadFile):
         image_path = Path(settings.image_directory, "invoices", str(invoice_id))
         image_path.mkdir(parents=True, exist_ok=True)
         with open(image_path / file.filename, "wb") as buffer:
             buffer.write(await file.read())
-    async def delete_invoice(self, invoice: InvoiceSchemaWithId, db: Session):
+    @log_func_calls("invoices", DELETE_LOG)
+    async def delete_invoice(self, user_id: int, invoice: InvoiceSchemaWithId, db: Session):
         db.delete(invoice)
         db.commit()
-        return None
+        return invoice

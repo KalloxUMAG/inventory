@@ -6,6 +6,8 @@ from schemas.loans_scheme import LoanCreate
 
 from helpers.utils import format_equipment_data
 
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
+
 class LoanService:
     async def get_loans(self, db: Session):
         result = (
@@ -46,7 +48,8 @@ class LoanService:
             Loan.loan_end_date >= start_date,
         ).first()
 
-    async def create_loan(self, loan: LoanCreate, db: Session):
+    @log_func_calls("loans", CREATE_LOG)
+    async def create_loan(self, user_id: int, loan: LoanCreate, db: Session):
         new_loan = Loan(
             user_id=loan.user_id,
             equipment_id=loan.equipment_id,
@@ -56,5 +59,4 @@ class LoanService:
         db.add(new_loan)
         db.commit()
         db.refresh(new_loan)
-
         return new_loan
