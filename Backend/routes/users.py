@@ -167,14 +167,6 @@ async def search_users(fullname: str = None, email: str = None, db: Session = De
     users = await service.search_users(db, fullname, email)
     return users
 
-@users.get("/me", tags=["users"])
-async def get_me(dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
-    token = JWTBearer()
-    payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
-    user_id = payload["sub"]
-    print("user_id", user_id)
-    return user_id
-
 @users.get("/{user_id}", tags=["users"], response_model=FilterUser)
 async def get_user(user_id: int, db: Session = Depends(get_db)):
     user = await service.get_user(user_id, db)
