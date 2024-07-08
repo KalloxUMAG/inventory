@@ -2,20 +2,17 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import func
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
     HTTP_404_NOT_FOUND,
 )
 
 from config.database import get_db
 from services.supplier_contact import SupplierContactService
-from models.models import SupplierContact
 from schemas.supplier_contact_schema import SupplierContactSchema, SupplierContactSchemaWithId
 
-from auth.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
 
 suppliers_contacts = APIRouter(
     dependencies=[Depends(JWTBearer())],
@@ -33,9 +30,9 @@ async def get_suppliers_contacts(db: Session = Depends(get_db)):
 
 @suppliers_contacts.post("", status_code=HTTP_201_CREATED)
 async def add_supplier_contact(
-    supplier_contact: SupplierContactSchema, db: Session = Depends(get_db)
+    supplier_contact: SupplierContactSchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)
 ):
-    new_supplier_contact = await service.add_supplier_contact(supplier_contact, db)
+    new_supplier_contact = await service.add_supplier_contact(user_id=get_user_id_from_token(dependencies), supplier_contact=supplier_contact, db=db)
     content = str(new_supplier_contact.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
@@ -66,19 +63,20 @@ async def get_supplier_contacts(supplier_id: int, db: Session = Depends(get_db))
 async def update_supplier_contact(
     data_update: SupplierContactSchema,
     supplier_contact_id: int,
+    dependencies=Depends(JWTBearer()),
     db: Session = Depends(get_db),
 ):
     db_supplier_contact = await service.get_supplier_contact(supplier_contact_id, db)
     if not db_supplier_contact:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    new_supplier_contact = await service.update_supplier_contact(db_supplier_contact, data_update, db)
+    new_supplier_contact = await service.update_supplier_contact(user_id=get_user_id_from_token(dependencies), supplier_contact=db_supplier_contact, data_update=data_update, db=db)
     return new_supplier_contact
 
 
 @suppliers_contacts.delete("/{contact_id}", status_code=HTTP_200_OK)
-async def delete_supplier_contact(contact_id: int, db: Session = Depends(get_db)):
+async def delete_supplier_contact(contact_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     db_supplier_contact = await service.get_supplier_contact(contact_id, db)
     if not db_supplier_contact:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    await service.delete_supplier_contact(db_supplier_contact, db)
+    await service.delete_supplier_contact(user_id=get_user_id_from_token(dependencies), supplier_contact=db_supplier_contact, db=db)
     return Response(status_code=HTTP_200_OK)

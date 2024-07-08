@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from models.models import SuppliersHasSupplies, Supplier
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
 class SupplierSupplyService:
     async def get_suppliers_supplies(self, db: Session):
@@ -19,7 +20,8 @@ class SupplierSupplyService:
             .all()
         )
         return result
-    async def add_supplier_supply(self, supplier_supply: SuppliersHasSupplies, db: Session):
+    @log_func_calls("suppliers_supplies", CREATE_LOG)
+    async def add_supplier_supply(self, user_id: int, supplier_supply: SuppliersHasSupplies, db: Session):
         new_supplier_supply = SuppliersHasSupplies(
             supplier_id=supplier_supply.supplier_id,
             supply_id=supplier_supply.supply_id,

@@ -3,6 +3,7 @@ from sqlalchemy.sql.expression import func
 from models.models import Supplier
 from schemas.supplier_schema import SupplierSchema, SupplierSchemaWithId, SupplierFullSchema
 from services.supplier_contact import SupplierContactService
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
 contact_service = SupplierContactService()
 
@@ -20,7 +21,8 @@ class SupplierService:
             "city_address": supplier.city_address,
             "contacts": await contact_service.get_supplier_contact_by_supplier(supplier.id, db)
         } for supplier in suppliers]
-    async def add_supplier(self, supplier: SupplierFullSchema, db: Session):
+    @log_func_calls("suppliers", CREATE_LOG)
+    async def add_supplier(self, user_id: int, supplier: SupplierFullSchema, db: Session):
         db_supplier = (
             db.query(Supplier)
             .filter(
@@ -48,13 +50,16 @@ class SupplierService:
             }
             contact_service.add_supplier_contact(new_contact, db)
         return new_supplier
-    async def update_supplier(self, supplier: SupplierSchemaWithId, data_update: SupplierSchema, db: Session):
+    @log_func_calls("suppliers", UPDATE_LOG)
+    async def update_supplier(self, user_id: int, supplier: SupplierSchemaWithId, data_update: SupplierSchema, db: Session):
         for key, value in data_update.model_dump(exclude_unset=True).items():
             setattr(supplier, key, value)
         db.add(supplier)
         db.commit()
         db.refresh(supplier)
         return supplier
-    async def delete_supplier(self, supplier: SupplierSchemaWithId, db: Session):
+    @log_func_calls("suppliers", DELETE_LOG)
+    async def delete_supplier(self, user_id: int, supplier: SupplierSchemaWithId, db: Session):
         db.delete(supplier)
         db.commit()
+        return supplier

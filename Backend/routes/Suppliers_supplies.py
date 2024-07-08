@@ -10,7 +10,7 @@ from services.suppliers import SupplierService
 from services.supplies import SupplyService
 from schemas.supplier_supply_schema import GetSupplierSupplySchema, SupplierSupplySchema
 
-from auth.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
 
 suppliers_supplies = APIRouter(
     dependencies=[Depends(JWTBearer())],
@@ -30,7 +30,7 @@ async def get_suppliers_supplies(db: Session = Depends(get_db)):
 
 @suppliers_supplies.post("", status_code=HTTP_201_CREATED)
 async def add_supplier_supply(
-    supplier_supply: SupplierSupplySchema, db: Session = Depends(get_db)
+    supplier_supply: SupplierSupplySchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)
 ):
     db_supplier = await supplier_service.get_supplier(supplier_supply.supplier_id, db)
     if not db_supplier:
@@ -38,7 +38,7 @@ async def add_supplier_supply(
     db_supply = await supply_service.get_supply(supplier_supply.supply_id, db)
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    new_supplier_supply = await service.add_supplier_supply(supplier_supply, db)
+    new_supplier_supply = await service.add_supplier_supply(user_id=get_user_id_from_token(dependencies), supplier_supply=supplier_supply, db=db)
     return Response(status_code=HTTP_201_CREATED)
 
 

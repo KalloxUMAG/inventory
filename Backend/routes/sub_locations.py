@@ -9,7 +9,7 @@ from services.sub_locations import SubLocationService
 from services.locations import LocationService
 from schemas.basic_option_schema import SubLocationSchema, SubLocationSchemaWithId
 
-from auth.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
 
 sub_locations = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["locations"], prefix="/api/sub_locations"
@@ -25,11 +25,11 @@ async def get_sub_locations(db: Session = Depends(get_db)):
 
 
 @sub_locations.post("", status_code=HTTP_201_CREATED)
-async def add_sub_location(sub_location: SubLocationSchema, db: Session = Depends(get_db)):
+async def add_sub_location(sub_location: SubLocationSchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     db_location = location_service.get_location(db, sub_location.location_id)
     if not db_location:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    new_sub_location = await service.add_sub_location(db, sub_location)
+    new_sub_location = await service.add_sub_location(user_id=get_user_id_from_token(dependencies), db=db, sub_location=sub_location)
     content = str(new_sub_location.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 

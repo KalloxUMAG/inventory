@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import func
 from models.models import SupplierContact
 from schemas.supplier_contact_schema import SupplierContactSchema, SupplierContactSchemaWithId
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
 class SupplierContactService:
     async def get_supplier_contacts(self, db: Session):
@@ -10,7 +11,8 @@ class SupplierContactService:
         return db.query(SupplierContact).filter(SupplierContact.id == supplier_contact_id).first()
     async def get_supplier_contact_by_supplier(self, supplier_id: int, db: Session):
         return db.query(SupplierContact).filter(SupplierContact.supplier_id == supplier_id).all()
-    async def add_supplier_contact(self, supplier_contact: SupplierContactSchema, db: Session):
+    @log_func_calls("suppliers_contacts", CREATE_LOG)
+    async def add_supplier_contact(self, user_id: int, supplier_contact: SupplierContactSchema, db: Session):
         db_supplier_contact = (
             db.query(SupplierContact)
             .filter(
@@ -34,13 +36,16 @@ class SupplierContactService:
         db.commit()
         db.refresh(new_supplier_contact)
         return new_supplier_contact
-    async def update_supplier_contact(self, supplier_contact: SupplierContactSchemaWithId, data_update: SupplierContactSchema, db: Session):
+    @log_func_calls("suppliers_contacts", UPDATE_LOG)
+    async def update_supplier_contact(self, user_id: int, supplier_contact: SupplierContactSchemaWithId, data_update: SupplierContactSchema, db: Session):
         for key, value in data_update.model_dump(exclude_unset=True).items():
             setattr(supplier_contact, key, value)
         db.add(supplier_contact)
         db.commit()
         db.refresh(supplier_contact)
         return supplier_contact
-    async def delete_supplier_contact(self, supplier_contact: SupplierContactSchemaWithId, db: Session):
+    @log_func_calls("suppliers_contacts", DELETE_LOG)
+    async def delete_supplier_contact(self, user_id: int, supplier_contact: SupplierContactSchemaWithId, db: Session):
         db.delete(supplier_contact)
         db.commit()
+        return supplier_contact
