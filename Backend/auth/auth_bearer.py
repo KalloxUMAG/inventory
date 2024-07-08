@@ -12,6 +12,15 @@ SECRET_KEY = settings.secret_key
 REFRESH_SECRET_KEY = "13ugfdfgh@#$%^@&jkl45678902"
 
 
+def get_user_id_from_token(jwtoken: str):
+    try:
+        payload = jwt.decode(jwtoken, SECRET_KEY, ALGORITHM)
+        user_id = payload.get("sub")
+    except JWTError:
+        user_id = None
+    return user_id
+
+
 def decodeJWT(jwtoken: str):
     try:
         # Decode and verify the token
