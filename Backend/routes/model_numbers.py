@@ -26,7 +26,6 @@ model_service = ModelService()
 
 @model_numbers.get("", response_model=List[ModelNumberSchemaWithId])
 async def get_model_numbers(db: Session = Depends(get_db)):
-    print(db)
     model_numbers = await service.get_model_numbers(db)
     return model_numbers
 

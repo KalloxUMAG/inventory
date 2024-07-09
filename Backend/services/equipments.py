@@ -140,7 +140,6 @@ class EquipmentService:
     @log_func_calls("equipments", CREATE_LOG)
     async def add_equipment(self, user_id: int, equipment: EquipmentSchema, db: Session):
         if equipment.maintenance_period != None:
-            print(user_id)
             reception_date = equipment.reception_date
             next_maintenance = reception_date + timedelta(days=equipment.maintenance_period * 30)
             next_maintenance = next_maintenance.strftime("%Y-%m-%d")
@@ -171,7 +170,6 @@ class EquipmentService:
     async def update_equipment(self, user_id: int, equipment: EquipmentSchema, data_update: UpdateEquipmentSchema, db: Session):
         for key, value in data_update.model_dump(exclude_unset=True).items():
             if value is not None:
-                print(key, value)
                 setattr(equipment, key, value)
             else:
                 setattr(equipment, key, None)

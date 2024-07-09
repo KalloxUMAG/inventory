@@ -6,7 +6,6 @@ from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
 class ModelNumberService:
     async def get_model_numbers(self, db: Session):
-        print(db)
         return db.query(ModelNumber).all()
     async def get_model_number(self, model_number_id: int, db: Session):
         return db.query(ModelNumber).filter(ModelNumber.id == model_number_id).first()

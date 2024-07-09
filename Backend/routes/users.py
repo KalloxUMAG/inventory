@@ -210,7 +210,6 @@ def logout(dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     token_record = db.query(TokenTable).all()
     info = []
     for record in token_record:
-        print("record", record)
         if (datetime.utcnow() - record.created_date).days > 1:
             info.append(record.user_id)
     if info:

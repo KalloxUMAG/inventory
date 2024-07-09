@@ -63,7 +63,6 @@ async def update_unit(data_update: UnitSchema, unit_id: int, dependencies=Depend
 
 @units.delete("/{unit_id}", status_code=HTTP_200_OK)
 async def delete_unit(unit_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
-    print(unit_id)
     db_unit = await service.get_unit(unit_id, db)
     if not db_unit:
         return Response(status_code=HTTP_404_NOT_FOUND)

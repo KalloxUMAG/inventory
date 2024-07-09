@@ -8,7 +8,6 @@ class UnitService:
     async def get_units(self, db: Session):
         return db.query(Unit).all()
     async def get_unit(self, unit_id: int, db: Session):
-        print("unit_id", unit_id)
         return db.query(Unit).filter(Unit.id == unit_id).first()
     async def get_units_by_building(self, building_id: int, db: Session):
         return db.query(Unit).filter(Unit.building_id == building_id).all()
