@@ -44,7 +44,8 @@ def log_func_calls(table_name: str, log_method: str):
                 if log_method == CREATE_LOG:
                     new_data = row2dict(response)
                 if log_method == UPDATE_LOG:
-                    new_data = kwargs["data_update"].dict()
+                    data = kwargs["data_update"].dict()
+                    new_data = del_dict_nulls(data)
                 log = LogSchema(
                     user_id=user_id,
                     target_id=target_id,
@@ -61,6 +62,14 @@ def log_func_calls(table_name: str, log_method: str):
 def row2dict(row):
     d = {}
     for column in row.__table__.columns:
-        d[column.name] = str(getattr(row, column.name))
+        if len(str(getattr(row, column.name))) != 0:
+            d[column.name] = str(getattr(row, column.name))
 
     return d
+
+def del_dict_nulls(d: dict):
+    new_dict = {}
+    for key, value in d.items():
+        if value != None:
+            new_dict[key] = d[key]
+    return new_dict
