@@ -9,6 +9,8 @@ from schemas.supply_schema import (
     UpdateStockSchema,
 )
 from services.lots import LotService
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
+
 lot_service = LotService()
 
 class SupplyService:
@@ -115,7 +117,8 @@ class SupplyService:
             .all()
         )
         return result
-    async def add_supply(self, supply: SupplySchema, db: Session):
+    @log_func_calls("supplies", CREATE_LOG)
+    async def add_supply(self, user_id: int, supply: SupplySchema, db: Session):
         new_supply = Supply(
             name=supply.name,
             code=supply.code,
@@ -133,20 +136,23 @@ class SupplyService:
         db.commit()
         db.refresh(new_supply)
         return new_supply
-    async def update_stock(self, supply: SupplySchema, data_update: SupplySchema, db: Session):
+    @log_func_calls("supplies", UPDATE_LOG)
+    async def update_stock(self, user_id: int, supply: SupplySchema, data_update: SupplySchema, db: Session):
         setattr(supply, "stock", supply.stock + data_update.stock)
         db.add(supply)
         db.commit()
         db.refresh(supply)
         return supply
-    async def update_supply(self, supply: SupplySchema, data_update: SupplySchema, db: Session):
+    @log_func_calls("supplies", UPDATE_LOG)
+    async def update_supply(self, user_id: int, supply: SupplySchema, data_update: SupplySchema, db: Session):
         for key, value in data_update.model_dump(exclude_unset=True).items():
             setattr(supply, key, value)
         db.add(supply)
         db.commit()
         db.refresh(supply)
         return supply
-    async def delete_supply(self, supply: SupplySchema, db: Session):
+    @log_func_calls("supplies", DELETE_LOG)
+    async def delete_supply(self, user_id: int, supply: SupplySchema, db: Session):
         setattr(supply, "state", False)
         db.add(supply)
         db.commit()

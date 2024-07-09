@@ -8,6 +8,7 @@ from sqlalchemy import false
 from sqlalchemy.orm import Session
 from models.models import Users
 from schemas.user_schema import UserCreate, UserEdit, FilterUser
+from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
 class UserService:
     async def get_user_by_username(self, username: str, db: Session):
@@ -16,7 +17,8 @@ class UserService:
         return db.query(Users).filter(Users.email == email).first()
     async def get_users(self, db: Session):
         return db.query(Users).all()
-    async def create_user(self, user: UserCreate, hashed_password: str, db: Session):
+    @log_func_calls("users", CREATE_LOG)
+    async def create_user(self, user_id: int, user: UserCreate, hashed_password: str, db: Session):
         new_user = Users(
             username=user.username,
             fullname=user.fullname,

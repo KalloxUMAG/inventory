@@ -26,11 +26,9 @@ from sqlalchemy.orm import Session
 
 from models.models import Users, TokenTable, UserGroupRoleRelation
 
-from auth.auth_bearer import JWTBearer
-from functools import wraps
 from routes.groups import get_group
 
-from auth.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
 from functools import wraps
 
 users = APIRouter(
@@ -106,7 +104,7 @@ def create_refresh_token(subject: Union[str, Any], expires_delta: int = None) ->
 
 
 @users.post("", status_code=HTTP_201_CREATED, tags=["users"])
-async def create_user(user: UserCreate, db: Session = Depends(get_db)):
+async def create_user(user: UserCreate, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     username = user.username.lower()
     email = user.email.lower()
     if await service.get_user_by_username(username, db):
@@ -114,7 +112,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     if await service.get_user_by_email(email, db):
         raise HTTPException(status_code=400, detail="Email already taken")
     hashed_password = get_hashed_password(user.password)
-    new_user = await service.create_user(user, hashed_password, db)
+    new_user = await service.create_user(user_id=get_user_id_from_token(dependencies), user=user, hashed_password=hashed_password, db=db)
     content = str(new_user.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 

@@ -13,7 +13,7 @@ from schemas.supply_schema import (
     UpdateStockSchema,
 )
 
-from auth.auth_bearer import JWTBearer
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
 
 supplies = APIRouter(
     dependencies=[Depends(JWTBearer())], tags=["supplies"], prefix="/api/supplies"
@@ -34,11 +34,11 @@ async def get_supplies_critical(db: Session = Depends(get_db)):
 
 
 @supplies.post("", status_code=HTTP_201_CREATED)
-async def add_supplies(supply: SupplySchema, db: Session = Depends(get_db)):
+async def add_supplies(supply: SupplySchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     db_supply = await service.get_supply_by_code(supply.code, db)
     if db_supply:
         return Response(status_code=HTTP_409_CONFLICT)
-    new_supply = await service.add_supply(supply, db)
+    new_supply = await service.add_supply(user_id=get_user_id_from_token(dependencies), supply=supply, db=db)
     content = str(new_supply.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
 
@@ -53,30 +53,30 @@ async def get_supply(supply_id: int, db: Session = Depends(get_db)):
 
 @supplies.put("/stock/{supply_id}", response_model=SupplySchema)
 async def update_stock(
-    data_update: UpdateStockSchema, supply_id: int, db: Session = Depends(get_db)
+    data_update: UpdateStockSchema, supply_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)
 ):
     db_supply = await service.get_supply(supply_id, db)
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    update_supply = await service.update_stock(data_update, db_supply, db)
+    update_supply = await service.update_stock(user_id=get_user_id_from_token(dependencies), data_update=data_update, supply=db_supply, db=db)
     return update_supply
 
 
 @supplies.put("/{supply_id}", response_model=SupplySchema)
 async def update_supply(
-    data_update: SupplySchema, supply_id: int, db: Session = Depends(get_db)
+    data_update: SupplySchema, supply_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)
 ):
     db_supply = await service.get_supply(supply_id, db)
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    update_supply = await service.update_supply(data_update, db_supply, db)
+    update_supply = await service.update_supply(user_id=get_user_id_from_token(dependencies), data_update=data_update, supply=db_supply, db=db)
     return update_supply
 
 
 @supplies.delete("/{supply_id}", status_code=HTTP_204_NO_CONTENT)
-async def delete_supply(supply_id: int, db: Session = Depends(get_db)):
+async def delete_supply(supply_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     db_supply = await service.get_supply(supply_id, db)
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
-    delete_supply = await service.delete_supply(db_supply, db)
+    delete_supply = await service.delete_supply(user_id=get_user_id_from_token(dependencies), supply=db_supply, db=db)
     return delete_supply
