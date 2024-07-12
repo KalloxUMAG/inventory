@@ -48,6 +48,21 @@
           lazy-rules
         />
       </div>
+      <div v-if="group" class="row">
+        <SelectForm
+          outlined
+          bg-color="white"
+          :clearable="false"
+          class="col q-mr-md"
+          :default_value="group"
+          :options="groupsOptions"
+          option_value="id"
+          option_label="name"
+          label="Grupo"
+          not_found_label="No hay grupos disponibles"
+          @update-model="(value) => (user.group = value)"
+        />
+      </div>
       <div class="row">
         <UploadImages
           label="Imagen del usuario"
@@ -68,17 +83,21 @@
       label-style="font-size: 1.6em"
     />
   </q-form>
+  {{ user }}
 </template>
 
 <script setup>
 import { useQuasar } from 'quasar'
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { sendRequest } from 'src/services/axios/instance.js'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import FormSection from 'src/components/Form/FormSection.vue'
 import UploadImages from 'src/components/UploadImages.vue'
+import SelectForm from 'src/components/SelectForm.vue'
+
+import { getGroups } from 'src/services'
 
 const createUserForm = ref(null)
 const api_prefix = process.env.API_URL
@@ -91,11 +110,20 @@ const user = reactive({
   email: '',
   password: '',
   images: [],
+  group: null,
 })
+const groupsOptions = ref([])
+const group = ref(null)
 
 const loading = ref(false)
 
 // Functions
+
+async function getGroupsData() {
+  groupsOptions.value = await getGroups()
+  group.value = groupsOptions.value[0]
+  user.group = group.value.id
+}
 
 async function onSubmit() {
   createUserForm.value.resetValidation()
@@ -172,14 +200,11 @@ function handleRemoveImages(files) {
     return value !== files[0]
   })
 }
+
+onMounted(() => {
+  getGroupsData()
+})
 </script>
 
 <style scoped>
-.form-input {
-  background-color: #fff;
-  border: 1px solid #ced4da;
-  border-radius: 12px;
-  box-shadow: inset 0 1px 1px #00000013;
-  color: #495057;
-}
 </style>

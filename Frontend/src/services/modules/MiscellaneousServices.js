@@ -348,11 +348,6 @@ export async function deleteImage(type, id, formData) {
     })
   }
   catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo eliminar la imagen del grupo: ${error}`,
-    })
+    CatchNotifications(error.response.status, `No se pudo eliminar la imagen del grupo: ${error}`)
   }
 }

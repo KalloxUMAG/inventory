@@ -34,6 +34,7 @@ from routes.groups import groups
 from routes.groups_supplies import groups_supplies
 from routes.inventory import inventory
 from routes.roles import roles
+from routes.user_group_role import user_group_role
 from routes.logs import logs
 
 def create_tables():
@@ -89,6 +90,7 @@ routes = [
     suppliers_contacts,
     suppliers_supplies,
     users,
+    user_group_role,
     inventory,
 ]
 
