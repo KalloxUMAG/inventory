@@ -6,6 +6,10 @@ from pydantic import BaseModel
 class RoleSchema(BaseModel):
     name: str
     description: Optional[str] = None
+    create: bool = False
+    read: bool = False
+    update: bool = False
+    delete: bool = False
 
     class Config:
         from_attributes = True
@@ -15,6 +19,10 @@ class RoleSchemaWithId(BaseModel):
     id: int
     name: str
     description: Optional[str] = None
+    create: bool = False
+    read: bool = False
+    update: bool = False
+    delete: bool = False
 
     class Config:
         from_attributes = True
