@@ -4,6 +4,9 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from config.settings import settings
 
 from config.settings import settings
+from contextvars import ContextVar
+
+user_context: ContextVar[str] = ContextVar("user_context", default=None)
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30  # 30 minutes
 REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
@@ -47,6 +50,8 @@ class JWTBearer(HTTPBearer):
                 raise HTTPException(
                     status_code=403, detail="Invalid token or expired token."
                 )
+            user_id = get_user_id_from_token(credentials.credentials)
+            user_context.set(user_id)
             return credentials.credentials
         else:
             raise HTTPException(status_code=403, detail="Invalid authorization code.")
