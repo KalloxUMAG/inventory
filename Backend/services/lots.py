@@ -12,9 +12,16 @@ from models.models import (
 )
 from schemas.lot_schema import CreateLotSchema, LotListSchema
 from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
+from services.user_group_role import UserGroupRoleService
+from auth.auth_bearer import user_context
+
+permissionsService = UserGroupRoleService()
+
 
 class LotService:
     async def get_lots(self, db: Session):
+        permissions = await permissionsService.get_user_groups_and_roles(user_context.get(), db)
+        groups = [permission[2] for permission in permissions]
         result = (
             db.query(
                 Lot.id,
@@ -22,6 +29,7 @@ class LotService:
                 Lot.reception_date,
                 Lot.due_date,
                 Lot.observations,
+                Lot.group_id,
                 Supply.name.label("supply_name"),
                 Supply.code.label("supply_code"),
                 Location.name.label("location"),
@@ -32,12 +40,17 @@ class LotService:
             .outerjoin(SubLocation, SubLocation.id == Lot.sub_location_id)
             .outerjoin(Location, Location.id == SubLocation.id)
             .outerjoin(Project, Project.id == Lot.project_id)
+            .filter(Lot.group_id.in_(groups))
             .all()
         )
         return result
     async def get_lot_simple(self, lot_id: int, db: Session):
-        return db.query(Lot).filter(Lot.id == lot_id).first()
+        permissions = await permissionsService.get_user_groups_and_roles(user_context.get(), db)
+        groups = [permission[2] for permission in permissions]
+        return db.query(Lot).filter(Lot.id == lot_id, Lot.group_id.in_(groups)).first()
     async def get_lot(self, lot_id: int, db: Session):
+        permissions = await permissionsService.get_user_groups_and_roles(user_context.get(), db)
+        groups = [permission[2] for permission in permissions]
         result = (
             db.query(
                 Lot.id,
@@ -58,10 +71,13 @@ class LotService:
             .outerjoin(Location, Location.id == SubLocation.id)
             .outerjoin(Project, Project.id == Lot.project_id)
             .outerjoin(Supplier, Supplier.id == Lot.supplier_id)
+            .filter(Lot.group_id.in_(groups))
             .first()
         )
         return result
     async def get_lots_by_supply(self, supply_id: int, db: Session):
+        permissions = await permissionsService.get_user_groups_and_roles(user_context.get(), db)
+        groups = [permission[2] for permission in permissions]
         result = (
             db.query(
                 Lot.id,
@@ -82,7 +98,7 @@ class LotService:
                 Lot.group_id,
                 Groups.name.label("group_name"),
             )
-            .filter(Lot.supplies_id == supply_id, Lot.state == True)
+            .filter(Lot.supplies_id == supply_id, Lot.state == True, Lot.group_id.in_(groups))
             .outerjoin(SubLocation, SubLocation.id == Lot.sub_location_id)
             .outerjoin(Location, Location.id == SubLocation.id)
             .outerjoin(Project, Project.id == Lot.project_id)
