@@ -22,6 +22,7 @@ class EquipmentSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        protected_namespaces = ()
 
 
 class EquipmentListSchema(BaseModel):
@@ -52,6 +53,7 @@ class EquipmentListSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        protected_namespaces = ()
 
 
 class EquipmentFullSchema(BaseModel):
@@ -90,6 +92,7 @@ class EquipmentFullSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        protected_namespaces = ()
 
 
 class UpdateEquipmentSchema(BaseModel):
@@ -110,6 +113,7 @@ class UpdateEquipmentSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        protected_namespaces = ()
 
 
 class NextMaintenanceSchema(BaseModel):
@@ -140,6 +144,7 @@ class EquipmentAvailableSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        protected_namespaces = ()
 
 
 class CriticEquipmentSchema(BaseModel):
@@ -160,6 +165,7 @@ class CriticEquipmentSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        protected_namespaces = ()
 
 
 class EquipmentTypeSchema(BaseModel):

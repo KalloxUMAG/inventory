@@ -96,6 +96,7 @@ class ModelNumberSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        protected_namespaces = ()
 
 class ModelNumberSchemaWithId(ModelNumberSchema):
     id: int
@@ -104,6 +105,7 @@ class ModelNumberSchemaWithId(ModelNumberSchema):
 
     class Config:
         from_attributes = True
+        protected_namespaces = ()
 
 class SubLocationSchema(BaseModel):
     name: str
