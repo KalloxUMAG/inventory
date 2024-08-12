@@ -392,6 +392,7 @@ class Lot(Base):
     due_date = mapped_column(Date)
     observations: Mapped[str] = mapped_column(String)
     state: Mapped[bool] = mapped_column(Boolean)
+    stock: Mapped[int] = mapped_column(Integer)
 
     supplies_id: Mapped[int] = mapped_column(Integer, ForeignKey("Supplies.id", ondelete="CASCADE"))
     supplier_id: Mapped[int] = mapped_column(
