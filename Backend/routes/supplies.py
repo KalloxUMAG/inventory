@@ -11,6 +11,7 @@ from schemas.supply_schema import (
     SupplySchema,
     SupplySchemaFull,
     UpdateStockSchema,
+    SupplyCriticalSchema
 )
 
 from auth.auth_bearer import JWTBearer, get_user_id_from_token
@@ -27,7 +28,7 @@ async def get_supplies(db: Session = Depends(get_db)):
    return supplies
 
 
-@supplies.get("/critical", response_model=List[SupplyListSchema])
+@supplies.get("/critical", response_model=List[SupplyCriticalSchema])
 async def get_supplies_critical(db: Session = Depends(get_db)):
     supplies = await service.get_supplies_critical(db)
     return supplies

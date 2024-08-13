@@ -1,7 +1,7 @@
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import func
-from models.models import Supply, SupplyBrand, SupplyFormat, SupplyType
+from models.models import Supply, SupplyBrand, SupplyFormat, SupplyType, GroupsHasSupplies, Groups
 from schemas.supply_schema import (
     SupplyListSchema,
     SupplySchema,
@@ -109,10 +109,15 @@ class SupplyService:
                 SupplyBrand.name.label("supplies_brand_name"),
                 SupplyType.name.label("supplies_type_name"),
                 SupplyFormat.name.label("supplies_format_name"),
+                GroupsHasSupplies.group_id,
+                Groups.name.label("group_name"),
+                GroupsHasSupplies.quantity.label("group_stock"),
             )
             .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
             .outerjoin(SupplyType, SupplyType.id == Supply.supplies_type_id)
             .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)
+            .outerjoin(GroupsHasSupplies, GroupsHasSupplies.supply_id == Supply.id)
+            .outerjoin(Groups, Groups.id == GroupsHasSupplies.group_id)
             .filter(and_(Supply.stock <= Supply.critical_stock, Supply.state == True))
             .all()
         )
