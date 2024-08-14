@@ -118,7 +118,7 @@ class SupplyService:
             .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)
             .outerjoin(GroupsHasSupplies, GroupsHasSupplies.supply_id == Supply.id)
             .outerjoin(Groups, Groups.id == GroupsHasSupplies.group_id)
-            .filter(and_(Supply.stock <= Supply.critical_stock, Supply.state == True))
+            .filter(and_(GroupsHasSupplies.quantity <= Supply.critical_stock, Supply.state == True))
             .all()
         )
         return result
