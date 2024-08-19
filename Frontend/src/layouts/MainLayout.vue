@@ -4,15 +4,6 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" color="secondary" @click="toggleLeftDrawer" />
         <BreadCrumb />
-        <q-btn
-          to="/login"
-          flat
-          align="between"
-          size="lg"
-          class="q-mr-md absolute-right text-black"
-          icon="logout"
-          label="Cerrar session"
-        />
       </q-toolbar>
     </q-header>
 

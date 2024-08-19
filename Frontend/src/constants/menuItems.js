@@ -71,4 +71,12 @@ export const menuItems = [
     separator: false,
     type: 'nav',
   },
+  {
+    label: 'Cerrar sesión',
+    icon: 'logout',
+    to: '/login',
+    exact: true,
+    separator: false,
+    type: 'nav',
+  },
 ]
