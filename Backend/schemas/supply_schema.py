@@ -66,8 +66,16 @@ class SupplySchema(BaseModel):
         from_attributes = True
 
 
+class SupplyCriticalSchema(SupplyListSchema):
+    group_id: Optional[int] = None
+    group_name: Optional[str] = None
+    group_stock: Optional[int] = None
+
+
 class UpdateStockSchema(BaseModel):
     stock: int
 
     class Config:
         from_attributes = True
+
+

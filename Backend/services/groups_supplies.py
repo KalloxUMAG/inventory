@@ -11,7 +11,6 @@ class GroupSupplyService:
             GroupsHasSupplies.group_id == group_id,
             GroupsHasSupplies.supply_id == supply_id,
         ).first()
-    @log_func_calls("groups_has_supplies", CREATE_LOG)
     async def add_group_supply(self, user_id: int, group_supply: GroupSupplySchema, db: Session):
         new_group_supply = GroupsHasSupplies(
             group_id=group_supply.group_id,
@@ -22,7 +21,6 @@ class GroupSupplyService:
         db.commit()
         db.refresh(new_group_supply)
         return new_group_supply
-    @log_func_calls("groups_has_supplies", UPDATE_LOG)
     async def update_quantity(self, user_id: int, relation: GroupSupplySchema, data_update: GroupSupplySchema, db: Session):
         for key, value in data_update.model_dump(exclude_unset=True).items():
             setattr(relation, key, value)
