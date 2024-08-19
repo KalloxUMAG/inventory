@@ -39,5 +39,6 @@ const { equipments, supplies, criticalEquipments, criticalSupplies } = toRefs(pr
     display: flex;
     gap: 20px;
     margin-top: 20px;
+    flex-wrap: wrap;
   }
 </style>

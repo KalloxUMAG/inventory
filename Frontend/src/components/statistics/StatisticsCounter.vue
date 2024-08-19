@@ -52,6 +52,7 @@ const style = computed(() => {
   justify-content: center;
   overflow: hidden;
   width: 200px;
+  min-width: 200px;
 }
 
 .statistic-icon {
