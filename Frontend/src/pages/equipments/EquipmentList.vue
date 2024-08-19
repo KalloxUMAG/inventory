@@ -63,6 +63,7 @@
     </q-card-section>
     <q-card-section class="q-pa-none">
       <q-table
+        :grid="$q.screen.xs"
         row-key="id"
         :columns="equipmentsColumns"
         :rows="filteredEquipments"
@@ -115,6 +116,7 @@
 import { onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import SelectForm from 'src/components/SelectForm.vue'
@@ -122,6 +124,7 @@ import { getEquipments, getEquipmentTypes, getProjects } from 'src/services/inde
 import { equipmentsColumns } from '../../constants/columns.js'
 
 const router = useRouter()
+const $q = useQuasar()
 
 const equipments = ref([])
 const equipmentTypes = ref([])

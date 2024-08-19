@@ -100,6 +100,7 @@
           </q-card-section>
           <q-card-section class="q-pa-none">
             <q-table
+              :grid="$q.screen.xs"
               row-key="id"
               :columns="suppliersSupplyColumns"
               :rows="suppliers"
@@ -166,6 +167,7 @@
         </q-card-section>
         <q-card-section class="q-pa-none">
           <q-table
+            :grid="$q.screen.xs"
             row-key="id"
             :columns="lotsColumns"
             :rows="lots"

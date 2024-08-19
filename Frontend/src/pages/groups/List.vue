@@ -29,6 +29,7 @@
     </q-card-section>
     <q-card-section class="q-pa-none">
       <q-table
+        :grid="$q.screen.xs"
         row-key="id"
         :columns="groupsColumns"
         :rows="groups"
@@ -69,12 +70,14 @@
 import { onMounted, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 import { sendRequest } from 'src/services/axios/instance'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import { groupsColumns } from 'src/constants/columns'
 
 const router = useRouter()
+const $q = useQuasar()
 
 const groups = ref([])
 const filter = ref('')

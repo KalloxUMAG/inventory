@@ -1,5 +1,6 @@
 <template>
   <q-table
+    :grid="$q.screen.xs"
     :title="title"
     row-key="id"
     :columns="columns"

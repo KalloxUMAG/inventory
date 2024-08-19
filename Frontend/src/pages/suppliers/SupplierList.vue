@@ -29,6 +29,7 @@
     </q-card-section>
     <q-card-section class="q-pa-none">
       <q-table
+        :grid="$q.screen.xs"
         row-key="id"
         :columns="suppliersColumns"
         :rows="suppliers"
@@ -73,6 +74,7 @@
           <q-tr v-show="props.expand" :props="props">
             <q-td class="subtable" colspan="100%">
               <q-table
+                :grid="$q.screen.xs"
                 :rows="props.row.contacts"
                 :columns="suppliersContactsColumns"
                 row-key="id"
@@ -93,6 +95,7 @@
 import { onMounted, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import { suppliersColumns, suppliersContactsColumns } from 'src/constants/columns'
@@ -100,6 +103,7 @@ import { suppliersColumns, suppliersContactsColumns } from 'src/constants/column
 import { getSuppliersFull } from 'src/services'
 
 const router = useRouter()
+const $q = useQuasar()
 
 const suppliers = ref([])
 const filter = ref('')

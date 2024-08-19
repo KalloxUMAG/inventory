@@ -29,6 +29,7 @@
     </q-card-section>
     <q-card-section class="q-pa-none">
       <q-table
+        :grid="$q.screen.xs"
         row-key="id"
         :columns="suppliesColumns"
         :rows="supplies"
@@ -82,6 +83,7 @@
           <q-tr v-show="props.expand" :props="props">
             <q-td class="subtable" colspan="100%">
               <q-table
+                :grid="$q.screen.xs"
                 :rows="props.row.lots"
                 :columns="lotsColumns"
                 row-key="id"
@@ -102,6 +104,7 @@
 import { onMounted, ref } from 'vue'
 import { sendRequest } from 'src/services/axios/instance.js'
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import { lotsColumns, suppliesColumns } from '../constants/columns.js'
@@ -112,6 +115,7 @@ const api_prefix = process.env.API_URL
 const router = useRouter()
 const filter = ref('')
 const detail_query = '/supplies/'
+const $q = useQuasar()
 
 async function getSupplies() {
   try {

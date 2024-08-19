@@ -130,6 +130,7 @@
         </q-card-section>
         <q-card-section class="q-pa-none">
           <q-table
+            :grid="$q.screen.xs"
             row-key="id"
             :columns="columns_maintenances"
             :rows="maintenances"

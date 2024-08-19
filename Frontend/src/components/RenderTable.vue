@@ -1,5 +1,6 @@
 <template>
   <q-table
+    :grid="$q.screen.xs"
     v-model:pagination="pagination"
     :title="title"
     :row-key="row_key"
