@@ -69,7 +69,7 @@ import { menuItems } from '../constants/menuItems.js'
 import BreadCrumb from '../components/commons/BreadCrumb.vue'
 
 const $q = useQuasar()
-const fullname = $q.localStorage.getItem('CATGInventoryFullname')
+const fullname = $q.cookies.get('CATGInventoryFullname')
 const leftDrawerOpen = ref(true)
 
 function toggleLeftDrawer() {

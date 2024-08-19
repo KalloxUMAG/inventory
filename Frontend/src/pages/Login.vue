@@ -73,8 +73,8 @@ async function onSubmit() {
   }
   try {
     const response = await axios.post(`${api_prefix}/users/login`, data)
-    $q.localStorage.set('CATGInventoryToken', response.data.access_token)
-    $q.localStorage.set('CATGInventoryFullname', response.data.fullname)
+    $q.cookies.set('CATGInventoryToken', response.data.access_token)
+    $q.cookies.set('CATGInventoryFullname', response.data.fullname)
     loading.value = false
     router.push({ path: '/' })
   }
@@ -91,8 +91,8 @@ async function onSubmit() {
 }
 
 async function clearToken() {
-  $q.localStorage.remove('CATGInventoryToken')
-  $q.localStorage.remove('CATGInventoryFullname')
+  $q.cookies.remove('CATGInventoryToken')
+  $q.cookies.remove('CATGInventoryFullname')
 }
 
 onMounted(() => {

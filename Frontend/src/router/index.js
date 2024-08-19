@@ -5,7 +5,7 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router'
-import { LocalStorage } from 'quasar'
+import { Cookies } from 'quasar'
 import routes from './routes'
 
 export default route((/* { store, ssrContext } */) => {
@@ -23,7 +23,8 @@ export default route((/* { store, ssrContext } */) => {
   })
 
   Router.beforeEach((to, from, next) => {
-    const token = LocalStorage.getItem('CATGInventoryToken')
+    const token = Cookies.get('CATGInventoryToken')
+    console.log(token)
     if (to.matched.some(record => record.meta.requiresAuth)) {
       if (!token)
         next({ name: 'login' })

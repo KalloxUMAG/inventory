@@ -1,9 +1,9 @@
-import { LocalStorage } from 'quasar'
+import { Cookies } from 'quasar'
 import axios from 'axios'
 
 export const reqInstance = axios.create({
   headers: {
-    Authorization: `Bearer ${LocalStorage.getItem('CATGInventoryToken')}`,
+    Authorization: `Bearer ${Cookies.get('CATGInventoryToken')}`,
   },
 })
 
@@ -14,8 +14,8 @@ export async function sendRequest(config) {
   }
   catch (error) {
     if (error.response.status === 403) {
-      LocalStorage.remove('CATGInventoryToken')
-      LocalStorage.remove('CATGInventoryFullname')
+      Cookies.remove('CATGInventoryToken')
+      Cookies.remove('CATGInventoryFullname')
     }
     throw error
   }

@@ -1,5 +1,5 @@
 import { boot } from 'quasar/wrappers'
-import { LocalStorage } from 'quasar'
+import { Cookies } from 'quasar'
 import axios from 'axios'
 
 // Be careful when using SSR for cross-request state pollution
@@ -10,7 +10,7 @@ import axios from 'axios'
 // for each client)
 const api = axios.create({
   headers: {
-    Authorization: `Bearer ${LocalStorage.getItem('CATGInventoryToken')}`,
+    Authorization: `Bearer ${Cookies.get('CATGInventoryToken')}`,
   },
   baseURL: process.env.API_URL,
 })
