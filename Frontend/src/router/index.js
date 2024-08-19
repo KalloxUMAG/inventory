@@ -24,7 +24,6 @@ export default route((/* { store, ssrContext } */) => {
 
   Router.beforeEach((to, from, next) => {
     const token = Cookies.get('CATGInventoryToken')
-    console.log(token)
     if (to.matched.some(record => record.meta.requiresAuth)) {
       if (!token)
         next({ name: 'login' })
