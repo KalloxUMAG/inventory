@@ -9,6 +9,10 @@ export function CatchNotifications(status, message) {
     SuccessNotification(message)
     return
   }
+  if (status === 401) {
+    ErrorNotification(`Error de permisos: ${message}`)
+    return
+  }
   ErrorNotification(`Se ha producido un error: ${message}`)
 }
 
