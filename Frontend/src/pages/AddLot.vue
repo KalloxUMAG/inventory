@@ -356,6 +356,8 @@
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
 import { sendRequest } from 'src/services/axios/instance.js'
+import { getGroups, postLot } from 'src/services/index.js'
+
 import SelectForm from 'src/components/SelectForm.vue'
 
 const props = defineProps({
@@ -414,19 +416,15 @@ async function getSuppliers() {
   catch (error) {}
 }
 
-async function getGroups() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/groups`,
-    })
-    groupsOptions.value = response.data
-    if (response.data.length > 0)
-      defaultGroup.value = { id: response.data[0].id, name: response.data[0].name }
-    else
-      defaultGroup.value = { id: null, name: null }
+async function getGroupsData() {
+  groupsOptions.value = await getGroups()
+  if (groupsOptions.value.length > 0) {
+    defaultGroup.value = { id: groupsOptions.value[0].id, name: groupsOptions.value[0].name }
+    group.value = defaultGroup.value.id
   }
-  catch (error) {}
+  else {
+    defaultGroup.value = { id: null, name: null }
+  }
 }
 
 async function getProjects() {
@@ -638,7 +636,7 @@ async function createNewProjectOwner() {
 }
 
 onMounted(() => {
-  getGroups()
+  getGroupsData()
   getSuppliers()
   getProjects()
   getProjectOwners()
@@ -671,9 +669,9 @@ async function onOKClick() {
 
   data.sub_location_id = sub_location_id
 
-  const lot_id = await createNewLot(data)
+  const lot_id = await postLot(data)
 
-  if (lot_id !== -1)
+  if (lot_id)
     await updateStock(props.supply_id)
 
   onDialogOK()
