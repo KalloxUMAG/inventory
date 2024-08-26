@@ -1,7 +1,7 @@
 <template>
   <div class="info-section">
     <div class="info-section__header q-pa-sm">
-      <div class="text-subtitle2 text-weight-bold">
+      <div class="text-h5 text-weight-bold">
         {{ props.title }}
       </div>
     </div>
@@ -10,22 +10,22 @@
       <q-list>
         <q-item v-for="field in props.fields" :key="field.label">
           <q-item-section class="col-4">
-            <div class="text-caption">
+            <div class="field-label text-weight-medium">
               {{ field.label }}
             </div>
           </q-item-section>
           <q-item-section class="col-1">
-            <div class="text-caption">
+            <div class="field-label text-weight-medium">
               :
             </div>
           </q-item-section>
-          <q-item-section v-if="field?.type == 'list'" class="col-7">
-            <div v-for="value in field.value" :key="value" class="text-body2">
+          <q-item-section v-if="field?.type === 'list'" class="col-7">
+            <div v-for="value in field.value" :key="value" class="field-value">
               {{ value }}
             </div>
           </q-item-section>
           <q-item-section v-else class="col-7">
-            <div class="text-body2">
+            <div class="field-value">
               {{ field.value }}
             </div>
           </q-item-section>
@@ -51,4 +51,10 @@ const props = defineProps({
 </script>
 
 <style scoped>
+.field-label {
+  font-size: 1rem;
+}
+.field-value {
+  font-size: 1rem;
+}
 </style>

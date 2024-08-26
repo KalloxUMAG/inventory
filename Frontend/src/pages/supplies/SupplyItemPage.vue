@@ -18,62 +18,66 @@
         -->
       </div>
     </PageTitle>
-
-    <q-card class="my-card row q-pa-md gap-lg" flat bordered>
-      <div class="col-12 col-md-7 col-lg-6 container">
-        <InfoSection
-          title="Datos Insumo" :fields="[
-            {
-              label: 'Nombre',
-              value: supply.name,
-            },
-            {
-              label: 'Código',
-              value: supply.code,
-            },
-            {
-              label: 'Marca',
-              value: supply.supplies_brand_name,
-            },
-            {
-              label: 'Tipo',
-              value: supply.supplies_type_name,
-            },
-            {
-              label: 'Formato',
-              value: supply.supplies_format_name,
-            },
-            {
-              label: 'Stock actual',
-              value: `${supply.stock} unidades`,
-            },
-            {
-              label: 'Stock por lote',
-              value: `${supply.lot_stock} unidades por lote`,
-            },
-            {
-              label: 'Stock crítico',
-              value: supply.critical_stock,
-            },
-            {
-              label: 'Muestras por unidad',
-              value: supply.samples,
-            },
-            {
-              label: 'Muestras totales',
-              value: supply.samples * supply.stock,
-            },
-            {
-              label: 'Observación',
-              value: supply.observation,
-            },
-          ]"
-        />
+    <div class="row q-col-gutter-md">
+      <div class="col-12 col-md-6">
+        <q-card class="bg-white no-shadow card_style" flat bordered>
+          <q-card-section>
+            <InfoSection
+              title="Datos Insumo" :fields="[
+                {
+                  label: 'Nombre',
+                  value: supply.name,
+                },
+                {
+                  label: 'Código',
+                  value: supply.code,
+                },
+                {
+                  label: 'Marca',
+                  value: supply.supplies_brand_name,
+                },
+                {
+                  label: 'Tipo',
+                  value: supply.supplies_type_name,
+                },
+                {
+                  label: 'Formato',
+                  value: supply.supplies_format_name,
+                },
+                {
+                  label: 'Stock actual',
+                  value: `${supply.stock} unidades`,
+                },
+                {
+                  label: 'Stock por lote',
+                  value: `${supply.lot_stock} unidades por lote`,
+                },
+                {
+                  label: 'Stock crítico',
+                  value: supply.critical_stock,
+                },
+                {
+                  label: 'Muestras por unidad',
+                  value: supply.samples,
+                },
+                {
+                  label: 'Muestras totales',
+                  value: supply.samples * supply.stock,
+                },
+                {
+                  label: 'Observación',
+                  value: supply.observation,
+                },
+              ]"
+            />
+          </q-card-section>
+        </q-card>
       </div>
-      <div class="col container border-none">
-        <q-card class="no-shadow bg-transparent">
-          <q-card-section class="q-pl-none col-12">
-            <div class="text-subtitle1 q-pl-md space-between">
+
+      <div class="col-12 col-md-6">
+        <q-card class="bg-white full-height card_style" flat bordered>
+          <q-card-section>
+            <div class="text-h5 text-weight-bold q-pl-md space-between">
               Proveedores
               <div class="actions-buttons">
                 <q-input
@@ -98,7 +102,8 @@
               </div>
             </div>
           </q-card-section>
-          <q-card-section class="q-pa-none">
+          <q-separator />
+          <q-card-section class="q-pa-xs">
             <q-table
               :grid="$q.screen.xs"
               row-key="id"
@@ -135,92 +140,92 @@
           </q-card-section>
         </q-card>
       </div>
-    </q-card>
-
-    <div class="q-mt-md col">
-      <q-card class="no-shadow bg-transparent">
-        <q-card-section class="q-pl-none">
-          <div class="text-subtitle1 q-pl-md space-between">
-            Lotes
-            <div class="actions-buttons">
-              <q-input
-                v-model="lotsFilter"
-                outlined
-                bg-color="white"
-                dense
-                debounce="300"
-                placeholder="Buscar"
-              >
-                <template #append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-              <q-btn
-                class="add-btn q-mr-sm"
-                icon="add"
-                label="Agregar"
-                flat
-                @click="addLot"
-              />
-            </div>
-          </div>
-        </q-card-section>
-        <q-card-section class="q-pa-none">
-          <q-table
-            :grid="$q.screen.xs"
-            row-key="id"
-            :columns="lotsColumns"
-            :rows="lots"
-            no-data-label="No hay registros para mostrar"
-            rows-per-page-label="Registros por pagina"
-            flat
-            bordered
-            no-wrap
-            :filter="lotsFilter"
-            class="card-style"
-          >
-            <template #header="props">
-              <q-tr :props="props">
-                <q-th
-                  v-for="col in props.cols"
-                  :key="col.name"
-                  :props="props"
-                  class="text-italic table-header"
-                >
-                  {{ col.label }}
-                </q-th>
-              </q-tr>
-            </template>
-            <template #body-cell="props">
-              <q-td
-                :props="props"
-              >
-                {{ props.value }}
-              </q-td>
-            </template>
-            <template #body-cell-actions="props">
-              <q-td :props="props">
-                <q-btn
-                  flat
-                  dense
-                  icon="edit"
-                  color="warning"
-                  @click="editLot(props.row)"
-                />
-                <q-btn
-                  v-if="props.row.id != null"
-                  flat
-                  dense
-                  icon="delete"
-                  color="negative"
-                  @click="removeLot(props.row)"
-                />
-              </q-td>
-            </template>
-          </q-table>
-        </q-card-section>
-      </q-card>
     </div>
+  </div>
+
+  <div class="q-mt-md col">
+    <q-card class="no-shadow q-pa-xs card_style" flat bordered>
+      <q-card-section class="q-pl-none">
+        <div class="text-h5 text-weight-bold q-pl-md space-between">
+          Lotes
+          <div class="actions-buttons">
+            <q-input
+              v-model="lotsFilter"
+              outlined
+              dense
+              debounce="300"
+              placeholder="Buscar"
+            >
+              <template #append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+            <q-btn
+              class="add-btn q-mr-sm"
+              icon="add"
+              label="Agregar"
+              flat
+              @click="addLot"
+            />
+          </div>
+        </div>
+      </q-card-section>
+      <q-separator />
+      <q-card-section class="q-pa-xs">
+        <q-table
+          :grid="$q.screen.xs"
+          row-key="id"
+          :columns="lotsColumns"
+          :rows="lots"
+          no-data-label="No hay registros para mostrar"
+          rows-per-page-label="Registros por pagina"
+          flat
+          bordered
+          no-wrap
+          :filter="lotsFilter"
+          class="card-style"
+        >
+          <template #header="props">
+            <q-tr :props="props">
+              <q-th
+                v-for="col in props.cols"
+                :key="col.name"
+                :props="props"
+                class="text-italic table-header"
+              >
+                {{ col.label }}
+              </q-th>
+            </q-tr>
+          </template>
+          <template #body-cell="props">
+            <q-td
+              :props="props"
+            >
+              {{ props.value }}
+            </q-td>
+          </template>
+          <template #body-cell-actions="props">
+            <q-td :props="props">
+              <q-btn
+                flat
+                dense
+                icon="edit"
+                color="warning"
+                @click="editLot(props.row)"
+              />
+              <q-btn
+                v-if="props.row.id != null"
+                flat
+                dense
+                icon="delete"
+                color="negative"
+                @click="removeLot(props.row)"
+              />
+            </q-td>
+          </template>
+        </q-table>
+      </q-card-section>
+    </q-card>
   </div>
 </template>
 
@@ -450,12 +455,20 @@ onMounted(() => {
   overflow: visible;
 }
 
+.card_style {
+  border-radius: 12px;
+}
+
 .border-none {
   border: none !important;
 }
 
 .gap-lg{
   gap: 24px;
+}
+
+.full-height {
+  min-height: 100%;
 }
 
 .image-visor{
@@ -492,10 +505,6 @@ onMounted(() => {
 .space-between{
   display: flex;
   justify-content: space-between;
-}
-
-.card-style{
-  border-radius: 12px;
 }
 
 .maintenance-table {
