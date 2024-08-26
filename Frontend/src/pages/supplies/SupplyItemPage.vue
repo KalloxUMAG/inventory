@@ -231,6 +231,7 @@ import { useQuasar } from 'quasar'
 import { sendRequest } from 'src/services/axios/instance.js'
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import { lotsColumns, suppliersSupplyColumns } from 'src/constants/columns.js'
+import { deleteLot } from 'src/services/index'
 
 import InfoSection from 'src/components/item-page/InfoSection.vue'
 import AddSupplier from '../AddSupplier.vue'
@@ -324,28 +325,9 @@ function removeLot(lot) {
   })
     .onOk(async () => {
       const lot_id = lot.id
-      const lot_stock = supply.value.lot_stock * -1
-      try {
-        const response = await sendRequest({
-          method: 'PUT',
-          url: `${api_prefix}/lots/deactivate${lot_id}`,
-        })
-        getLots()
-      }
-      catch (error) {}
-
-      const data = {
-        stock: lot_stock,
-      }
-      try {
-        const response = await sendRequest({
-          method: 'PUT',
-          url: `${api_prefix}/supplies/stock/${id.value}`,
-          data,
-        })
-        getSupply()
-      }
-      catch (error) {}
+      await deleteLot(lot_id)
+      await getLots()
+      await getSupply()
     })
     .onCancel(() => {
       // console.log('Cancel')

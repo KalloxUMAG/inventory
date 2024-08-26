@@ -156,4 +156,7 @@ class LotService:
         db.add(lot)
         db.commit()
         db.refresh(lot)
+        group_supply_db = await groupSuppliesService.get_group_supply(group_id=lot.group_id, supply_id=lot.supplies_id, db=db)
+        group_supply = GroupSupplySchema(group_id=lot.group_id, supply_id=lot.supplies_id, quantity=group_supply_db.quantity - lot.stock)
+        await groupSuppliesService.update_quantity(user_id=user_id, relation=group_supply_db, data_update=group_supply, db=db)
         return lot

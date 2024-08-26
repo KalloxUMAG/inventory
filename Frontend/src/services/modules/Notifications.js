@@ -5,7 +5,7 @@ export function CatchNotifications(status, message) {
     ErrorNotification('Sesion expirada, favor inciar sesion de nuevo')
     return
   }
-  if (status === 200 || status === 201) {
+  if (status === 200 || status === 201 || status === 205) {
     SuccessNotification(message)
     return
   }
