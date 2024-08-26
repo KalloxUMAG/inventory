@@ -1,218 +1,237 @@
 <template>
-  <div v-if="equipment != null" class="row justify-center">
-    <q-card class="my-card row q-pa-md q-mb-lg justify-between" flat bordered>
-      <div class="flex item-title">
-        <q-icon name="biotech" size="24px" /><div class="text-subtitle1 text-bold text-uppercase">
-          {{ equipment.name }} - {{ equipment.model_name }}
-        </div>
+  <div v-if="equipment != null" class="col justify-center">
+    <PageTitle :title="equipment.name" icon="biotech">
+      <div>
+        <q-btn
+          outline
+          color="secondary"
+          label="Editar"
+          @click="editEquipment"
+        />
+        <!--
+        <q-btn
+          class="q-ml-sm"
+          color="negative"
+          label="Eliminar"
+          @click="removeSupply"
+        />
+        -->
       </div>
-      <q-btn outline color="secondary" label="Editar" class="float-right" @click="editEquipment" />
-    </q-card>
+    </PageTitle>
 
-    <q-card class="my-card row q-pa-md gap-lg" flat bordered>
-      <div class="col-12 col-md-7 col-lg-6 container image-visor">
-        <Carousel v-if="img_api" :api_endpoint="img_api" />
+    <div class="row q-col-gutter-md">
+      <div class="col-12 col-md-6">
+        <q-card class="bg-white full-height card_style" flat bordered>
+          <q-card-section>
+            <Carousel v-if="img_api" :api_endpoint="img_api" />
+          </q-card-section>
+        </q-card>
       </div>
-
-      <div class="col container">
-        <InfoSection
-          title="Información general" :fields="[
-            {
-              label: 'Nombre',
-              value: equipment.name,
-            },
-            {
-              label: 'Codigo serial',
-              value: equipment.serial_number,
-            },
-            {
-              label: 'Inventario UMAG',
-              value: equipment.umag_inventory_code,
-            },
-            {
-              label: 'Marca',
-              value: equipment.brand_name,
-            },
-            {
-              label: 'Modelo',
-              value: equipment.model_name,
-            },
-            {
-              label: 'Número de modelo',
-              value: equipment.model_number,
-            },
-            {
-              label: 'Tipo de equipo',
-              value: equipment.equipment_type_name ?? 'Sin información',
-            },
-            {
-              label: 'Periodo de mantención',
-              value: maintenance_period,
-            },
-            {
-              label: 'Observación',
-              value: equipment.observation,
-            },
-          ]"
-        />
-        <InfoSection
-          title="Ubicación" :fields="[
-            {
-              label: 'Edificio',
-              value: equipment.building_name,
-            },
-            {
-              label: 'Unidad',
-              value: equipment.unit_name,
-            },
-            {
-              label: 'Sala',
-              value: equipment.room_name,
-            },
-          ]"
-        />
-        <InfoSection
-          title="Compra" :fields="[
-            {
-              label: 'Proveedor',
-              value: equipment.supplier_name,
-            },
-            {
-              label: 'Fecha de recepción',
-              value: equipment.reception_date,
-            },
-            {
-              label: 'Factura',
-              value: equipment.invoice_number,
-            },
-            {
-              label: 'Proyecto',
-              value: equipment.project_name ? equipment.project_name : 'Sin información',
-            },
-            {
-              label: 'Etapa',
-              value: equipment.stage_name ? equipment.stage_name : 'Sin información',
-            },
-          ]"
-        />
+      <div class="col-12 col-md-6">
+        <q-card class="bg-white no-shadow card_style" flat bordered>
+          <q-card-section>
+            <InfoSection
+              title="Información general" :fields="[
+                {
+                  label: 'Nombre',
+                  value: equipment.name,
+                },
+                {
+                  label: 'Codigo serial',
+                  value: equipment.serial_number,
+                },
+                {
+                  label: 'Inventario UMAG',
+                  value: equipment.umag_inventory_code,
+                },
+                {
+                  label: 'Marca',
+                  value: equipment.brand_name,
+                },
+                {
+                  label: 'Modelo',
+                  value: equipment.model_name,
+                },
+                {
+                  label: 'Número de modelo',
+                  value: equipment.model_number,
+                },
+                {
+                  label: 'Tipo de equipo',
+                  value: equipment.equipment_type_name ?? 'Sin información',
+                },
+                {
+                  label: 'Periodo de mantención',
+                  value: maintenance_period,
+                },
+                {
+                  label: 'Observación',
+                  value: equipment.observation,
+                },
+              ]"
+            />
+            <InfoSection
+              title="Ubicación" :fields="[
+                {
+                  label: 'Edificio',
+                  value: equipment.building_name,
+                },
+                {
+                  label: 'Unidad',
+                  value: equipment.unit_name,
+                },
+                {
+                  label: 'Sala',
+                  value: equipment.room_name,
+                },
+              ]"
+            />
+            <InfoSection
+              title="Compra" :fields="[
+                {
+                  label: 'Proveedor',
+                  value: equipment.supplier_name,
+                },
+                {
+                  label: 'Fecha de recepción',
+                  value: equipment.reception_date,
+                },
+                {
+                  label: 'Factura',
+                  value: equipment.invoice_number,
+                },
+                {
+                  label: 'Proyecto',
+                  value: equipment.project_name ? equipment.project_name : 'Sin información',
+                },
+                {
+                  label: 'Etapa',
+                  value: equipment.stage_name ? equipment.stage_name : 'Sin información',
+                },
+              ]"
+            />
+          </q-card-section>
+        </q-card>
       </div>
-    </q-card>
+    </div>
     <div
       v-if="equipment.maintenance_period !== null"
       class="q-mt-md maintenance-table"
     >
-      <q-card class="no-shadow bg-transparent">
-        <q-card-section class="q-pl-none col-12">
-          <div class="text-subtitle1 q-pl-md space-between">
-            Lista de Mantenimientos
-            <div class="actions-buttons">
-              <q-input
-                v-model="filter"
-                outlined
-                bg-color="white"
-                dense
-                debounce="300"
-                placeholder="Buscar"
-              >
-                <template #append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-              <q-btn
-                class="add-btn q-mr-sm"
-                icon="add"
-                label="Agregar"
-                flat
-                @click="addFunction"
-              />
+      <div class="q-mt-md col">
+        <q-card class="no-shadow q-pa-xs card_style" flat bordered>
+          <q-card-section class="q-pl-none">
+            <div class="text-h5 text-weight-bold q-pl-md space-between">
+              Lista de Mantenimientos
+              <div class="actions-buttons">
+                <q-input
+                  v-model="filter"
+                  outlined
+                  bg-color="white"
+                  dense
+                  debounce="300"
+                  placeholder="Buscar"
+                >
+                  <template #append>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
+                <q-btn
+                  class="add-btn q-mr-sm"
+                  icon="add"
+                  label="Agregar"
+                  flat
+                  @click="addFunction"
+                />
+              </div>
             </div>
-          </div>
-        </q-card-section>
-        <q-card-section class="q-pa-none">
-          <q-table
-            :grid="$q.screen.xs"
-            row-key="id"
-            :columns="columns_maintenances"
-            :rows="maintenances"
-            no-data-label="No hay registros para mostrar"
-            rows-per-page-label="Registros por pagina"
-            flat
-            bordered
-            no-wrap
-            :filter="filter"
-            class="card-style"
-          >
-            <template #header="props">
-              <q-tr :props="props">
-                <q-th
-                  v-for="col in props.cols"
-                  :key="col.name"
+          </q-card-section>
+          <q-card-section class="q-pa-none">
+            <q-table
+              :grid="$q.screen.xs"
+              row-key="id"
+              :columns="columns_maintenances"
+              :rows="maintenances"
+              no-data-label="No hay registros para mostrar"
+              rows-per-page-label="Registros por pagina"
+              flat
+              bordered
+              no-wrap
+              :filter="filter"
+              class="card-style"
+            >
+              <template #header="props">
+                <q-tr :props="props">
+                  <q-th
+                    v-for="col in props.cols"
+                    :key="col.name"
+                    :props="props"
+                    class="text-italic table-header"
+                  >
+                    {{ col.label }}
+                  </q-th>
+                </q-tr>
+              </template>
+              <template #body-cell="props">
+                <q-td
                   :props="props"
-                  class="text-italic table-header"
                 >
-                  {{ col.label }}
-                </q-th>
-              </q-tr>
-            </template>
-            <template #body-cell="props">
-              <q-td
-                :props="props"
-              >
-                {{ props.value }}
-              </q-td>
-            </template>
-            <template #body-cell-state="props">
-              <q-td
-                :props="props"
-              >
-                <q-icon
-                  v-if="props.row.state === true"
-                  size="md"
-                  name="done_all"
-                  color="positive"
+                  {{ props.value }}
+                </q-td>
+              </template>
+              <template #body-cell-state="props">
+                <q-td
+                  :props="props"
                 >
-                  <q-tooltip>Realizado</q-tooltip>
-                </q-icon>
-                <q-icon
-                  v-if="props.row.state === false"
-                  size="md"
-                  name="close"
-                  color="negative"
-                >
-                  <q-tooltip>No realizado</q-tooltip>
-                </q-icon>
-                <q-icon
-                  v-if="props.row.state == null"
-                  size="md"
-                  name="play_arrow"
-                  color="warning"
-                >
-                  <q-tooltip>Próximo</q-tooltip>
-                </q-icon>
-              </q-td>
-            </template>
-            <template #body-cell-actions="props">
-              <q-td :props="props">
-                <q-btn
-                  flat
-                  dense
-                  icon="edit"
-                  color="warning"
-                  @click="editMaintenance(props.row)"
-                />
-                <q-btn
-                  v-if="props.row.id != null"
-                  flat
-                  dense
-                  icon="delete"
-                  color="negative"
-                  @click="removeMaintenance(props.row)"
-                />
-              </q-td>
-            </template>
-          </q-table>
-        </q-card-section>
-      </q-card>
+                  <q-icon
+                    v-if="props.row.state === true"
+                    size="md"
+                    name="done_all"
+                    color="positive"
+                  >
+                    <q-tooltip>Realizado</q-tooltip>
+                  </q-icon>
+                  <q-icon
+                    v-if="props.row.state === false"
+                    size="md"
+                    name="close"
+                    color="negative"
+                  >
+                    <q-tooltip>No realizado</q-tooltip>
+                  </q-icon>
+                  <q-icon
+                    v-if="props.row.state == null"
+                    size="md"
+                    name="play_arrow"
+                    color="warning"
+                  >
+                    <q-tooltip>Próximo</q-tooltip>
+                  </q-icon>
+                </q-td>
+              </template>
+              <template #body-cell-actions="props">
+                <q-td :props="props">
+                  <q-btn
+                    flat
+                    dense
+                    icon="edit"
+                    color="warning"
+                    @click="editMaintenance(props.row)"
+                  />
+                  <q-btn
+                    v-if="props.row.id != null"
+                    flat
+                    dense
+                    icon="delete"
+                    color="negative"
+                    @click="removeMaintenance(props.row)"
+                  />
+                </q-td>
+              </template>
+            </q-table>
+          </q-card-section>
+        </q-card>
+      </div>
     </div>
   </div>
 </template>
@@ -222,6 +241,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { computed, onMounted, ref } from 'vue'
 import Carousel from 'src/components/Carousel.vue'
 import FormModal from 'src/components/FormModal.vue'
+import PageTitle from 'src/components/commons/PageTitle.vue'
 import { useQuasar } from 'quasar'
 import { columns_maintenances } from 'src/constants/columns.js'
 import { deleteMaintenance, getEquipment, getLastMaintenance, getMaintenances, postMaintenance } from 'src/services'
@@ -235,7 +255,7 @@ const router = useRouter()
 const content_loaded = ref(false)
 const filter = ref('')
 const img_api = ref(null)
-const equipment = ref({})
+const equipment = ref(null)
 const maintenances = ref([])
 const last_maintenance = ref({})
 const maintenance_period = ref(null)
@@ -430,6 +450,10 @@ onMounted(() => {
 <style scoped>
 .item-title{
   align-content: center;
+}
+
+.card_style {
+  border-radius: 12px;
 }
 
 .my-card {
