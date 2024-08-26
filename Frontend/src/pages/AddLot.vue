@@ -526,50 +526,6 @@ async function createNewSublocation(location_id) {
   }
 }
 
-async function createNewLot(data) {
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/lots`,
-      data,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear el insumo: ${error}`,
-    })
-    return -1
-  }
-}
-
-async function updateStock(supply_id) {
-  // Update stock on database
-  const data = {
-    stock: props.stock,
-  }
-
-  try {
-    const response = await sendRequest({
-      method: 'PUT',
-      url: `${api_prefix}/supplies/stock/${supply_id}`,
-      data,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo modificar el stock del insumo: ${error}`,
-    })
-  }
-}
-
 async function createNewProject(project_owner_id) {
   if (!newProjectState.value)
     return project.value
@@ -669,10 +625,7 @@ async function onOKClick() {
 
   data.sub_location_id = sub_location_id
 
-  const lot_id = await postLot(data)
-
-  if (lot_id)
-    await updateStock(props.supply_id)
+  await postLot(data)
 
   onDialogOK()
 }
