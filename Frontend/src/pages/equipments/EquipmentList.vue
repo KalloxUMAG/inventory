@@ -1,67 +1,69 @@
 <template>
   <PageTitle title="Equipos" icon="biotech" />
-  <q-card class="no-shadow bg-transparent">
+  <q-card class="no-shadow card-style" bordered>
     <q-card-section class="q-pl-none col-12">
-      <div class="text-subtitle1 q-pl-md space-between">
-        Lista de equipamientos
-        <div class="actions-buttons">
-          <SelectForm
-            outlined
-            dense
-            bg-color="white"
-            class="q-mr-md"
-            :options="projects"
-            option_value="id"
-            option_label="name"
-            label="Filtrar por Proyecto"
-            not_found_label="No hay modelos disponibles"
-            @update-model="
-              (value) => {
-                equipmentFilters.project = value
-                filterEquipment()
-              }
-            "
-          />
-          <SelectForm
-            outlined
-            dense
-            bg-color="white"
-            class="q-mr-md"
-            :options="equipmentTypes"
-            option_value="id"
-            option_label="name"
-            label="Filtrar por Tipo de equipo"
-            not_found_label="No hay tipos de equipo disponibles"
-            @update-model="
-              (value) => {
-                equipmentFilters.equipmentType = value
-                filterEquipment()
-              }
-            "
-          />
-          <q-input
-            v-model="filter"
-            outlined
-            bg-color="white"
-            dense
-            debounce="300"
-            placeholder="Buscar"
-          >
-            <template #append>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-          <q-btn
-            class="add-btn q-mr-sm"
-            to="/equipments/new_equipment"
-            icon="add"
-            label="Agregar"
-            flat
-          />
+      <div class="text-subtitle1 q-pl-md row">
+        <div class="text-weight-bold col-12 col-lg-4">
+          Lista de equipamientos
+        </div>
+        <div class="col-12 col-lg-8">
+          <div class="actions-buttons float-right">
+            <SelectForm
+              outlined
+              dense
+              bg-color="white"
+              :options="projects"
+              option_value="id"
+              option_label="name"
+              label="Filtrar por Proyecto"
+              not_found_label="No hay modelos disponibles"
+              @update-model="
+                (value) => {
+                  equipmentFilters.project = value
+                  filterEquipment()
+                }
+              "
+            />
+            <SelectForm
+              outlined
+              dense
+              bg-color="white"
+              :options="equipmentTypes"
+              option_value="id"
+              option_label="name"
+              label="Filtrar por Tipo de equipo"
+              not_found_label="No hay tipos de equipo disponibles"
+              @update-model="
+                (value) => {
+                  equipmentFilters.equipmentType = value
+                  filterEquipment()
+                }
+              "
+            />
+            <q-input
+              v-model="filter"
+              outlined
+              bg-color="white"
+              dense
+              debounce="300"
+              placeholder="Buscar"
+            >
+              <template #append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+            <q-btn
+              class="add-btn"
+              to="/equipments/new_equipment"
+              icon="add"
+              label="Agregar"
+              flat
+            />
+          </div>
         </div>
       </div>
     </q-card-section>
-    <q-card-section class="q-pa-none">
+    <q-card-section class="q-pa-xs">
       <q-table
         :grid="$q.screen.xs"
         row-key="id"
@@ -120,7 +122,7 @@ import { useQuasar } from 'quasar'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import SelectForm from 'src/components/SelectForm.vue'
-import { getEquipments, getEquipmentTypes, getProjects } from 'src/services/index.js'
+import { getEquipmentTypes, getEquipments, getProjects } from 'src/services/index.js'
 import { equipmentsColumns } from '../../constants/columns.js'
 
 const router = useRouter()
@@ -154,10 +156,10 @@ async function getEquipmentTypesData() {
 function filterEquipment() {
   filteredEquipments.value = equipments.value
   if (equipmentFilters.project) {
-    filteredEquipments.value = filteredEquipments.value.filter((equipment) => equipment.project_id === equipmentFilters.project)
+    filteredEquipments.value = filteredEquipments.value.filter(equipment => equipment.project_id === equipmentFilters.project)
   }
   if (equipmentFilters.equipmentType) {
-    filteredEquipments.value = filteredEquipments.value.filter((equipment) => equipment.equipment_type_id === equipmentFilters.equipmentType)
+    filteredEquipments.value = filteredEquipments.value.filter(equipment => equipment.equipment_type_id === equipmentFilters.equipmentType)
   }
 }
 
@@ -183,7 +185,9 @@ onMounted(() => {
  }
  .actions-buttons{
   display: inline-flex;
+  flex-wrap: wrap;
   gap: 10px;
+  justify-content: flex-end;
   .add-btn{
     background-color: var(--add-btn-bg-color);
     color: var(--add-btn-text-color);
