@@ -63,6 +63,7 @@
         </div>
       </div>
     </q-card-section>
+    <q-separator />
     <q-card-section class="q-pa-xs">
       <q-table
         :grid="$q.screen.xs"

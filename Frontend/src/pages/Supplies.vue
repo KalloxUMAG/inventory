@@ -1,33 +1,38 @@
 <template>
   <PageTitle title="Insumos" icon="science" />
-  <q-card class="no-shadow bg-transparent">
+  <q-card class="no-shadow card-style" bordered>
     <q-card-section class="q-pl-none col-12">
-      <div class="text-subtitle1 q-pl-md space-between">
-        Lista de insumos
-        <div class="actions-buttons">
-          <q-input
-            v-model="filter"
-            outlined
-            bg-color="white"
-            dense
-            debounce="300"
-            placeholder="Buscar"
-          >
-            <template #append>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-          <q-btn
-            class="add-btn q-mr-sm"
-            to="/supplies/new_supply"
-            icon="add"
-            label="Agregar"
-            flat
-          />
+      <div class="text-subtitle1 q-pl-md row">
+        <div class="text-weight-bold col-12 col-lg-4">
+          Lista de insumos
+        </div>
+        <div class="col-12 col-lg-8">
+          <div class="actions-buttons float-right">
+            <q-input
+              v-model="filter"
+              outlined
+              bg-color="white"
+              dense
+              debounce="300"
+              placeholder="Buscar"
+            >
+              <template #append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+            <q-btn
+              class="add-btn"
+              to="/supplies/new_supply"
+              icon="add"
+              label="Agregar"
+              flat
+            />
+          </div>
         </div>
       </div>
     </q-card-section>
-    <q-card-section class="q-pa-none">
+    <q-separator />
+    <q-card-section class="q-pa-xs">
       <q-table
         :grid="$q.screen.xs"
         row-key="id"
@@ -152,6 +157,8 @@ onMounted(() => {
  }
  .actions-buttons{
   display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
   .add-btn{
     background-color: var(--add-btn-bg-color);
