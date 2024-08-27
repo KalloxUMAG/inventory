@@ -1,17 +1,13 @@
 <template>
-  <div class="statistic-container">
-    <div class="statistic-icon" :style="style">
+  <q-item class="q-pa-none" :style="style">
+    <q-item-section class="justify-center q-pa-md q-ml-none text-white">
+      <q-item-label class="text-white text-h6 text-weight-bolder">{{ value }}</q-item-label>
+      <q-item-label>{{ title }}</q-item-label>
+    </q-item-section>
+    <q-item-section class="justify-center q-mr-md text-white" side>
       <q-icon :name="icon" size="50px" color="white" />
-    </div>
-    <div class="statistic-info">
-      <p class="statistic-value">
-        {{ value }}
-      </p>
-      <p class="statistic-title">
-        {{ title }}
-      </p>
-    </div>
-  </div>
+    </q-item-section>
+  </q-item>
 </template>
 
 <script setup>

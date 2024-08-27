@@ -1,9 +1,17 @@
 <template>
-  <div class="statistics-container">
-    <StatisticCounter color="#23978a" icon="biotech" title="Equipos" :value="equipments" />
-    <StatisticCounter color="#48b06d" icon="science" title="Insumos" :value="supplies" />
-    <StatisticCounter color="#644d99" icon="settings" title="Mantenimientos próximos" :value="criticalEquipments" />
-    <StatisticCounter color="#104e95" icon="call" title="Insumos críticos" :value="criticalSupplies" />
+  <div class="row q-col-gutter-sm">
+    <div class="col-md-3 col-sm-12 col-xs-12">
+      <StatisticCounter color="#23978a" icon="biotech" title="Equipos" :value="equipments" />
+    </div>
+    <div class="col-md-3 col-sm-12 col-xs-12">
+      <StatisticCounter color="#48b06d" icon="science" title="Insumos" :value="supplies" />
+    </div>
+    <div class="col-md-3 col-sm-12 col-xs-12">
+      <StatisticCounter color="#644d99" icon="settings" title="Mantenimientos próximos" :value="criticalEquipments" />
+    </div>
+    <div class="col-md-3 col-sm-12 col-xs-12">
+      <StatisticCounter color="#104e95" icon="call" title="Insumos críticos" :value="criticalSupplies" />
+    </div>
   </div>
 </template>
 
@@ -32,13 +40,4 @@ const props = defineProps({
 
 const { equipments, supplies, criticalEquipments, criticalSupplies } = toRefs(props)
 
-</script>
-
-<style scoped>
-  .statistics-container {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-  }
-</style>
+</script>\
