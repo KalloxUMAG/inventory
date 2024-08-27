@@ -1,12 +1,17 @@
 <template>
-  <q-card class="no-shadow bg-transparent">
+  <q-card class="no-shadow q-pa-xs card-style" bordered>
     <q-card-section class="q-pl-none col-12">
-      <div class="text-subtitle1 q-pl-md">
-        <span class="text-red text-uppercase text-bold">¡Importante!</span> {{ title }}
-        <q-btn flat icon-right="arrow_forward" label="Ver todos" :to=detail_query class="text-gray-8 non-selectable no-outline float-right" />
+      <div class="text-subtitle1 q-pl-md row">
+        <div class="col-8">
+          <span class="text-red text-uppercase text-bold">¡Importante!</span> {{ title }}
+        </div>
+        <div class="col-4">
+          <q-btn flat icon-right="arrow_forward" label="Ver todos" :to="detail_query" class="text-gray-8 non-selectable no-outline float-right" />
+        </div>
       </div>
     </q-card-section>
-    <q-card-section class="q-pa-none">
+    <q-separator />
+    <q-card-section class="q-pa-none q-mt-sm">
       <q-table
         :grid="$q.screen.xs"
         :row-key="row_key"
@@ -18,7 +23,6 @@
         flat
         bordered
         no-wrap
-        class="card-style"
         @row-click="rowClicker"
       >
         <template #body-cell="props">

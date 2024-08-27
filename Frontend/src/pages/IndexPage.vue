@@ -6,10 +6,10 @@
     :critical-equipments="criticalEquipmentsQuantity"
     :critical-supplies="criticalSuppliesQuantity"
   />
-  <div class="row">
+  <div class="row q-gutter-md q-mt-md">
     <div class="col-12">
       <CriticTable
-      title="Equipos con mantenimiento proximo"
+        title="Equipos con mantenimiento proximo"
         :columns="equipmentsColumns"
         :rows="criticalEquipments"
         detail_query="/equipments/"

@@ -16,7 +16,6 @@ const props = defineProps({
   icon: String,
 })
 const { title } = props
-console.log(title)
 </script>
 
 <style scoped>
