@@ -48,7 +48,7 @@
 
       <SelectForm
         outlined
-        class="row q-mr-md"
+        class="row"
         :default_value="types.default"
         :options="typesOptions"
         option_value="id"
@@ -67,12 +67,12 @@
 
       <!-- Brand Model Number -->
 
-      <div class="row justify-center">
-        <div v-if="!brand.newBrandState" class="col q-mr-md">
+      <div class="row q-col-gutter-md q-ml-none">
+        <div v-if="!brand.newBrandState" class="col-12 col-sm-4">
           <div v-if="brand.default">
             <SelectForm
               outlined
-              class="row q-mr-md"
+              class="row"
               :disable="brand.disable"
               :default_value="brand.default"
               :options="brandOptions"
@@ -92,33 +92,31 @@
             />
           </div>
 
-          <div class="row justify-end q-pt-md">
+          <div class="row justify-end">
             <q-btn
               label="Añadir marca"
               icon="add"
-              class="add-btn text-caption q-mr-md"
+              class="add-btn text-caption"
               @click="brand.newBrandState = !brand.newBrandState"
             />
           </div>
         </div>
-        <div v-else class="col">
-          <div class="row">
-            <q-input
-              v-model="brand.newBrand"
-              outlined
-              label="Nombre marca"
-              class="col"
-              :disable="brand.disable"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-          </div>
+        <div v-else class="col-12 col-sm-4">
+          <q-input
+            v-model="brand.newBrand"
+            outlined
+            label="Nombre marca"
+            class="col-12 col-sm-4"
+            :disable="brand.disable"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
         </div>
-        <div v-if="!brand.newBrandState && !model.newModelState" class="col q-mr-md">
+        <div v-if="!brand.newBrandState && !model.newModelState" class="col-12 col-sm-4">
           <div v-if="model.default">
             <SelectForm
               outlined
-              class="row q-mr-md"
+              class="row"
               :default_value="model.default"
               :disable="brand.disable"
               :options="modelOptions"
@@ -137,16 +135,16 @@
               "
             />
           </div>
-          <div class="row justify-end q-pt-md">
+          <div class="row justify-end">
             <q-btn
               label="Añadir modelo"
               icon="add"
-              class="add-btn text-caption q-mr-md"
+              class="add-btn text-caption"
               @click="model.newModelState = !model.newModelState"
             />
           </div>
         </div>
-        <div v-else class="col q-pl-md">
+        <div v-else class="col-12 col-sm-4">
           <div class="row">
             <q-input
               v-model="model.newModel"
@@ -161,7 +159,7 @@
         </div>
         <div
           v-if="!brand.newBrandState && !model.newModelState && !modelNumber.newModelNumberState"
-          class="col"
+          class="col-12 col-sm-4"
         >
           <div v-if="modelNumber.default">
             <SelectForm
@@ -184,7 +182,7 @@
               "
             />
           </div>
-          <div class="row justify-end q-pt-md">
+          <div class="row justify-end">
             <q-btn
               label="Añadir nro. modelo"
               icon="add"
@@ -193,7 +191,7 @@
             />
           </div>
         </div>
-        <div v-else class="col q-pl-md">
+        <div v-else class="col-12 col-sm-4">
           <div class="row">
             <q-input
               v-model="modelNumber.newModelNumber"
@@ -209,7 +207,7 @@
       </div>
       <div
         v-if="model.newModelState || modelNumber.newModelNumberState || brand.newBrandState"
-        class="row justify-end q-pt-md"
+        class="row justify-end q-mt-none"
       >
         <q-btn
           v-if="brand.disable"
@@ -368,13 +366,13 @@
       </div>
 
       <div v-else>
-        <div class="row">
+        <div class="row q-col-gutter-md">
           <q-input
             v-model="invoice.newInvoiceNumber"
             outlined
             label="Numero"
             type="number"
-            class="col"
+            class="col-12 col-sm-6"
             :disable="invoice.disable"
             :rules="[(val) => !!val || 'Campo obligatorio']"
             lazy-rules
@@ -385,7 +383,7 @@
             label="Fecha"
             type="date"
             stack-label
-            class="col q-ml-md"
+            class="col-12 col-sm-6"
             :disable="invoice.disable"
             :rules="[(val) => !!val || 'Campo obligatorio']"
             lazy-rules
@@ -433,12 +431,12 @@
 
       <!-- Projects stages and owner -->
 
-      <div class="row justify-center">
-        <div v-if="!project.newProjectState" class="col q-mr-md">
-          <div v-if="project.default">
+      <div class="row q-col-gutter-md q-ml-none q-mt-xs">
+        <div v-if="!project.newProjectState" class="col-12 col-sm-6">
+          <div v-if="project.default" class="row">
             <SelectForm
               outlined
-              class="row q-mr-md"
+              class="col"
               :default_value="project.default"
               :disable="project.disable"
               :options="projectOptions"
@@ -460,30 +458,27 @@
             />
           </div>
 
-          <div class="row justify-end q-pt-md">
+          <div class="row justify-end">
             <q-btn
               label="Añadir Proyecto"
               icon="add"
-              class="add-btn text-caption q-mr-md"
+              class="add-btn text-caption q-mt-md"
               @click="project.newProjectState = !project.newProjectState"
             />
           </div>
         </div>
-        <div v-else class="col q-mr-lg">
-          <div class="row">
-            <q-input
-              v-model="project.newProject"
-              outlined
-              label="Nombre proyeto"
-              class="col"
-              :disable="project.disable"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-          </div>
+        <div v-else class="col-12 col-sm-6">
+          <q-input
+            v-model="project.newProject"
+            outlined
+            label="Nombre proyeto"
+            :disable="project.disable"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
         </div>
 
-        <div v-if="!stage.newStageState && !project.newProjectState" class="col q-ml-md">
+        <div v-if="!stage.newStageState && !project.newProjectState" class="col-12 col-sm-6">
           <div v-if="stage.default">
             <SelectForm
               outlined
@@ -506,27 +501,24 @@
             />
           </div>
 
-          <div class="row justify-end q-pt-md">
+          <div class="row justify-end">
             <q-btn
               label="Añadir Etapa"
               icon="add"
-              class="add-btn text-caption q-ml-md"
+              class="add-btn text-caption q-mt-md"
               @click="stage.newStageState = !stage.newStageState"
             />
           </div>
         </div>
-        <div v-else class="col">
-          <div class="row">
-            <q-input
-              v-model="stage.newStage"
-              outlined
-              label="Nombre etapa"
-              class="col"
-              :disable="project.disable"
-              :rules="[(val) => !!val || 'Campo obligatorio']"
-              lazy-rules
-            />
-          </div>
+        <div v-else class="col-12 col-sm-6">
+          <q-input
+            v-model="stage.newStage"
+            outlined
+            label="Nombre etapa"
+            :disable="project.disable"
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+            lazy-rules
+          />
         </div>
       </div>
       <div v-if="stage.newStageState || project.newProjectState" class="row justify-end">
@@ -624,12 +616,12 @@
     </FormSection>
     <!-- Location -->
     <FormSection title="Datos ubicación">
-      <div class="row justify-center">
-        <div v-if="!building.newBuildingState" class="col q-mr-md">
+      <div class="row q-col-gutter-md q-ml-none">
+        <div v-if="!building.newBuildingState" class="col-12 col-sm-4">
           <div v-if="building.default">
             <SelectForm
               outlined
-              class="row q-mr-md"
+              class="row"
               :default_value="building.default"
               :disable="disableLocation"
               :options="buildingOptions"
@@ -648,16 +640,16 @@
               "
             />
           </div>
-          <div class="row justify-end q-pt-md">
+          <div class="row justify-end">
             <q-btn
               label="Añadir Edificio"
               icon="add"
-              class="add-btn text-caption q-mr-md"
+              class="add-btn text-caption"
               @click="building.newBuildingState = !building.newBuildingState"
             />
           </div>
         </div>
-        <div v-else class="col">
+        <div v-else class="col-12 col-sm-4">
           <div class="row">
             <q-input
               v-model="building.newBuilding"
@@ -670,11 +662,11 @@
             />
           </div>
         </div>
-        <div v-if="!building.newBuildingState && !unit.newUnitState" class="col q-mr-md">
+        <div v-if="!building.newBuildingState && !unit.newUnitState" class="col-12 col-sm-4">
           <div v-if="unit.default">
             <SelectForm
               outlined
-              class="row q-mr-md"
+              class="row"
               :default_value="unit.default"
               :disable="disableLocation"
               :options="unitOptions"
@@ -694,7 +686,7 @@
             />
           </div>
 
-          <div class="row justify-end q-pt-md">
+          <div class="row justify-end">
             <q-btn
               outlined
               label="Añadir unidad"
@@ -704,7 +696,7 @@
             />
           </div>
         </div>
-        <div v-else class="col q-pl-md">
+        <div v-else class="col-12 col-sm-4">
           <div class="row">
             <q-input
               v-model="unit.newUnit"
@@ -719,7 +711,7 @@
         </div>
         <div
           v-if="!building.newBuildingState && !unit.newUnitState && !room.newRoomState"
-          class="col"
+          class="col-12 col-sm-4"
         >
           <div v-if="room.default">
             <SelectForm
@@ -743,7 +735,7 @@
             />
           </div>
 
-          <div class="row justify-end q-pt-md">
+          <div class="row justify-end">
             <q-btn
               label="Añadir sala"
               icon="add"
@@ -752,7 +744,7 @@
             />
           </div>
         </div>
-        <div v-else class="col q-pl-md">
+        <div v-else class="col-12 col-sm-4">
           <div class="row">
             <q-input
               v-model="room.newRoom"
@@ -1123,7 +1115,7 @@ function newSupplier() {
     equipmentimages: equipmentimages.value,
     uploaderComponent: uploaderComponent.value,
     types,
-    typesOptions: typesOptions.value
+    typesOptions: typesOptions.value,
   })
   router.push('/suppliers/new_supplier')
 }
