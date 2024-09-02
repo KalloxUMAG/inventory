@@ -9,6 +9,7 @@ class LotSchema(BaseModel):
     number: str
     observations: str
     state: Optional[bool] = None
+    stock: Optional[int] = None
     group_id: Optional[int] = None
     group_name: Optional[str] = None
     location_id: Optional[int] = None
@@ -27,6 +28,7 @@ class LotListSchema(BaseModel):
     due_date: Optional[date] = None
     observations: Optional[str] = None
     state: Optional[bool] = None
+    stock: int
     group_id: Optional[int] = None
     group_name: Optional[str] = None
     location_id: Optional[int] = None

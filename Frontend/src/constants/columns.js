@@ -179,6 +179,12 @@ export const lotsColumns = [
     sortable: false,
   },
   {
+    name: 'stock',
+    align: 'left',
+    label: 'Stock actual',
+    field: 'stock',
+  },
+  {
     name: 'observations',
     align: 'left',
     label: 'Observación',
@@ -357,6 +363,63 @@ export const criticEquipmentsColumns = [
     label: 'Fecha',
     field: 'reception_date',
     sortable: false,
+  },
+]
+
+export const criticSuppliesColumns = [
+  {
+    name: 'state',
+    align: 'left',
+    label: '',
+    field: 'state',
+  },
+  {
+    name: 'group_name',
+    align: 'left',
+    label: 'Grupo',
+    field: 'group_name',
+  },
+  {
+    name: 'name',
+    align: 'left',
+    label: 'Nombre',
+    field: 'name',
+    sortable: false,
+  },
+  {
+    name: 'code',
+    align: 'left',
+    label: 'Código',
+    field: 'code',
+    sortable: false,
+  },
+  {
+    name: 'supplies_brand_name',
+    align: 'left',
+    label: 'Marca',
+    field: 'supplies_brand_name',
+    sortable: true,
+  },
+  {
+    name: 'supplies_type_name',
+    align: 'left',
+    label: 'Tipo de insumo',
+    field: 'supplies_type_name',
+    sortable: true,
+  },
+  {
+    name: 'stock',
+    align: 'left',
+    label: 'Stock actual',
+    field: 'stock',
+    sortable: true,
+  },
+  {
+    name: 'max_samples',
+    align: 'left',
+    label: 'Muestras',
+    field: 'max_samples',
+    sortable: true,
   },
 ]
 

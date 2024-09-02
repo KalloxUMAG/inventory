@@ -19,7 +19,7 @@
     <div class="col-12">
       <CriticTable
         title="Insumos con stock bajo"
-        :columns="suppliesColumns"
+        :columns="criticSuppliesColumns"
         :rows="criticalSupplies"
         detail_query="/supplies/"
         row_key="id"
@@ -34,7 +34,7 @@ import CriticTable from 'src/components/CriticTable/CriticTable.vue'
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import StatisticsSection from 'src/components/statistics/StatisticsSection.vue'
 import { getCriticalEquipments, getCriticalSupplies, getEquipments, getSupplies } from 'src/services/index.js'
-import { equipmentsColumns, suppliesColumns } from '../constants/columns.js'
+import { criticSuppliesColumns, equipmentsColumns } from '../constants/columns.js'
 
 const criticalEquipments = ref([])
 const criticalEquipmentsQuantity = ref(0)
