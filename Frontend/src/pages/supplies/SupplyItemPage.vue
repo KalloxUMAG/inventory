@@ -141,91 +141,93 @@
         </q-card>
       </div>
     </div>
-  </div>
-
-  <div class="q-mt-md col">
-    <q-card class="no-shadow q-pa-xs card_style" flat bordered>
-      <q-card-section class="q-pl-none">
-        <div class="text-h5 text-weight-bold q-pl-md space-between">
-          Lotes
-          <div class="actions-buttons">
-            <q-input
-              v-model="lotsFilter"
-              outlined
-              dense
-              debounce="300"
-              placeholder="Buscar"
-            >
-              <template #append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-            <q-btn
-              class="add-btn q-mr-sm"
-              icon="add"
-              label="Agregar"
-              flat
-              @click="addLot"
-            />
-          </div>
-        </div>
-      </q-card-section>
-      <q-separator />
-      <q-card-section class="q-pa-xs">
-        <q-table
-          :grid="$q.screen.xs"
-          row-key="id"
-          :columns="lotsColumns"
-          :rows="lots"
-          no-data-label="No hay registros para mostrar"
-          rows-per-page-label="Registros por pagina"
-          flat
-          bordered
-          no-wrap
-          :filter="lotsFilter"
-          class="card-style"
-        >
-          <template #header="props">
-            <q-tr :props="props">
-              <q-th
-                v-for="col in props.cols"
-                :key="col.name"
-                :props="props"
-                class="text-italic table-header"
+    <div class="q-mt-md col-12">
+      <q-card class="no-shadow q-pa-xs card_style" flat bordered>
+        <q-card-section class="q-pl-none">
+          <div class="text-h5 text-weight-bold q-pl-md space-between">
+            Lotes
+            <div class="actions-buttons">
+              <q-input
+                v-model="lotsFilter"
+                outlined
+                dense
+                debounce="300"
+                placeholder="Buscar"
               >
-                {{ col.label }}
-              </q-th>
-            </q-tr>
-          </template>
-          <template #body-cell="props">
-            <q-td
-              :props="props"
-            >
-              {{ props.value }}
-            </q-td>
-          </template>
-          <template #body-cell-actions="props">
-            <q-td :props="props">
+                <template #append>
+                  <q-icon name="search" />
+                </template>
+              </q-input>
               <q-btn
+                class="add-btn q-mr-sm"
+                icon="add"
+                label="Agregar"
                 flat
-                dense
-                icon="edit"
-                color="warning"
-                @click="editLot(props.row)"
+                @click="addLot"
               />
-              <q-btn
-                v-if="props.row.id != null"
-                flat
-                dense
-                icon="delete"
-                color="negative"
-                @click="removeLot(props.row)"
-              />
-            </q-td>
-          </template>
-        </q-table>
-      </q-card-section>
-    </q-card>
+            </div>
+          </div>
+        </q-card-section>
+        <q-separator />
+        <q-card-section class="q-pa-xs">
+          <q-table
+            :grid="$q.screen.xs"
+            row-key="id"
+            :columns="lotsColumns"
+            :rows="lots"
+            no-data-label="No hay registros para mostrar"
+            rows-per-page-label="Registros por pagina"
+            flat
+            bordered
+            no-wrap
+            :filter="lotsFilter"
+            class="card-style"
+          >
+            <template #header="props">
+              <q-tr :props="props">
+                <q-th
+                  v-for="col in props.cols"
+                  :key="col.name"
+                  :props="props"
+                  class="text-italic table-header"
+                >
+                  {{ col.label }}
+                </q-th>
+              </q-tr>
+            </template>
+            <template #body-cell="props">
+              <q-td
+                :props="props"
+              >
+                {{ props.value }}
+              </q-td>
+            </template>
+            <template #body-cell-actions="props">
+              <q-td :props="props">
+                <q-btn
+                  flat
+                  dense
+                  icon="edit"
+                  color="warning"
+                  @click="editLot(props.row)"
+                />
+                <q-btn
+                  v-if="props.row.id != null"
+                  flat
+                  dense
+                  icon="delete"
+                  color="negative"
+                  @click="removeLot(props.row)"
+                />
+              </q-td>
+            </template>
+          </q-table>
+        </q-card-section>
+      </q-card>
+    </div>
+    <div v-if="groupStocks.length > 0" class="q-mt-md">
+      <StockChart title="Stocks por grupo" :data="groupStocks" :critical="supply.critical_stock" />
+    </div>
   </div>
 </template>
 
@@ -236,9 +238,10 @@ import { useQuasar } from 'quasar'
 import { sendRequest } from 'src/services/axios/instance.js'
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import { lotsColumns, suppliersSupplyColumns } from 'src/constants/columns.js'
-import { deleteLot } from 'src/services/index'
+import { deleteLot, getGroupsStock } from 'src/services/index'
 
 import InfoSection from 'src/components/item-page/InfoSection.vue'
+import StockChart from 'src/components/statistics/StockChart.vue'
 import AddSupplier from '../AddSupplier.vue'
 import AddLot from '../AddLot.vue'
 import EditLot from '../EditLot.vue'
@@ -249,6 +252,7 @@ const id = computed(() => route.params.id)
 const supply = ref(null)
 const suppliers = ref([])
 const lots = ref([])
+const groupStocks = ref([])
 
 const filter = ref('')
 const lotsFilter = ref('')
@@ -278,6 +282,10 @@ async function getSuppliers() {
     suppliers.value = response.data
   }
   catch (error) {}
+}
+
+async function loadGroupStock() {
+  groupStocks.value = await getGroupsStock(id.value)
 }
 
 async function getLots() {
@@ -445,6 +453,7 @@ onMounted(() => {
   getSupply()
   getSuppliers()
   getLots()
+  loadGroupStock()
 })
 </script>
 
