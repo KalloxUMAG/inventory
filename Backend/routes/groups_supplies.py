@@ -8,7 +8,7 @@ from config.database import get_db
 from services.groups_supplies import GroupSupplyService
 from services.groups import GroupService
 from services.supplies import SupplyService
-from schemas.groups_supplies_schema import GroupSupplySchema
+from schemas.groups_supplies_schema import GroupSupplySchema, GroupSupplyWithNameSchema
 
 from auth.auth_bearer import JWTBearer, get_user_id_from_token
 
@@ -27,6 +27,11 @@ async def get_groups_supplies(db: Session = Depends(get_db)):
     result = await service.get_groups_supplies(db)
     return result
 
+
+@groups_supplies.get("/{supply_id}", response_model=List[GroupSupplyWithNameSchema])
+async def get_groups_supply(supply_id: int, db: Session = Depends(get_db)):
+    result = await service.get_groups_supply(supply_id, db)
+    return result
 
 @groups_supplies.post("", status_code=HTTP_201_CREATED)
 async def add_group_supply(group_supply: GroupSupplySchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
@@ -47,3 +52,4 @@ async def update_quantity(data_update: GroupSupplySchema, dependencies=Depends(J
         return Response(status_code=HTTP_404_NOT_FOUND)
     update_quantity = await service.update_quantity(user_id=get_user_id_from_token(dependencies), relation=db_relation, data_update=data_update, db=db)
     return update_quantity
+

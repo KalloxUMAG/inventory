@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
-from models.models import GroupsHasSupplies
+from sqlalchemy.orm import Session, joinedload
+from models.models import GroupsHasSupplies, Groups
 from schemas.groups_supplies_schema import GroupSupplySchema
 from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
@@ -11,6 +11,12 @@ class GroupSupplyService:
             GroupsHasSupplies.group_id == group_id,
             GroupsHasSupplies.supply_id == supply_id,
         ).first()
+    async def get_groups_supply(self, supply_id: int, db: Session):
+        results = db.query(GroupsHasSupplies.group_id, GroupsHasSupplies.supply_id, GroupsHasSupplies.quantity, Groups.name.label("group_name")).filter(
+            GroupsHasSupplies.supply_id == supply_id,
+            GroupsHasSupplies.group_id == Groups.id,
+        ).all()
+        return results
     async def add_group_supply(self, user_id: int, group_supply: GroupSupplySchema, db: Session):
         new_group_supply = GroupsHasSupplies(
             group_id=group_supply.group_id,
