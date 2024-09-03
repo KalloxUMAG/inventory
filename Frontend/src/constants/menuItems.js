@@ -36,9 +36,9 @@ export const menuItems = [
     type: 'nav',
   },
   {
-    label: 'Mantenedor de Inventario',
+    label: 'Prestamos',
     icon: 'calendar_month',
-    to: '/inventory-maintainer',
+    to: '/loans',
     exact: false,
     separator: false,
     type: 'nav',

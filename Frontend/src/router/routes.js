@@ -96,9 +96,9 @@ const routes = [
         meta: { breadCrumb: [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Change Password' }] },
       },
       {
-        path: '/inventory-maintainer',
-        component: () => import('src/pages/InventoryMaintainer.vue'),
-        meta: { breadCrumb: [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Mantenedor de inventario', icon: 'calendar_month' }] },
+        path: '/loans',
+        component: () => import('src/pages/Loans.vue'),
+        meta: { breadCrumb: [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Prestamos', icon: 'calendar_month' }] },
       },
     ],
   },

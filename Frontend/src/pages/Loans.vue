@@ -2,13 +2,13 @@
   <div class="row q-pa-md">
     <section class="col-12">
       <div class="row justify-between items-center">
-        <PageTitle title="Mantenedor de inventario" icon="calendar_month" />
+        <PageTitle title="Prestamos" icon="calendar_month" />
         <div>
           <div v-if="showModal">
             <eventModal
               :show-modal="showModal"
               :event="event"
-              :title="event?.title ?? 'Suministrar equipamiento'"
+              :title="event?.title ?? 'Suministrar insumo'"
               @create="AddSupply"
               @close="hideModal"
             />
