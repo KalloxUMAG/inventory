@@ -146,11 +146,17 @@ class LotService:
         return new_lot
     @log_func_calls("lots", UPDATE_LOG)
     async def update_lot(self, user_id: int, lot, data_update: CreateLotSchema, db: Session):
+        old_stock = lot.stock
         for key, value in data_update.model_dump(exclude_unset=True).items():
             setattr(lot, key, value)
         db.add(lot)
         db.commit()
         db.refresh(lot)
+        new_stock = data_update.stock
+        if new_stock != old_stock:
+            group_supply_db = await groupSuppliesService.get_group_supply(group_id=lot.group_id, supply_id=lot.supplies_id, db=db)
+            group_supply = GroupSupplySchema(group_id=lot.group_id, supply_id=lot.supplies_id, quantity=group_supply_db.quantity + new_stock - old_stock)
+            await groupSuppliesService.update_quantity(user_id=user_id, relation=group_supply_db, data_update=group_supply, db=db)
         return lot
     @log_func_calls("lots", DELETE_LOG)
     async def delete_lot(self, user_id: int, lot, db: Session):

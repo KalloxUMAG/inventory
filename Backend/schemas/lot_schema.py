@@ -50,6 +50,7 @@ class CreateLotSchema(BaseModel):
     number: str
     reception_date: Optional[date] = None
     due_date: Optional[date] = None
+    stock: Optional[int] = None
     observations: Optional[str] = None
     state: Optional[bool] = None
     supply_id: int

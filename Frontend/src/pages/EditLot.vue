@@ -67,6 +67,20 @@
               ]"
             />
           </div>
+          <div class="row q-my-sm">
+            <q-input
+              v-model="stock"
+              outlined
+              class="col"
+              type="number"
+              label="Stock"
+              stack-label
+              lazy-rules
+              :rules="[
+                (val) => (val && val != null) || 'Este campo es obligatorio',
+              ]"
+            />
+          </div>
           <div class="row">
             <q-input
               v-model="observation"
@@ -370,6 +384,7 @@ const props = defineProps({
   observation: String,
   reception_date: String,
   due_date: String,
+  stock: Number,
   location: Object,
   sublocation: Object,
   project: Object,
@@ -386,6 +401,7 @@ const supplier = ref(props.supplier.id)
 const observation = ref(props.observation)
 const reception_date = ref(props.reception_date)
 const due_date = ref(props.due_date)
+const stock = ref(props.stock)
 const location = ref(props.location.id)
 const sublocation = ref(props.sublocation.id)
 const project = ref(props.project.id)
@@ -641,6 +657,7 @@ async function onOKClick() {
     number: number.value,
     reception_date: reception_date.value,
     due_date: due_date.value,
+    stock: stock.value,
     observations: observation.value,
     sub_location_id: sublocation.value,
     state: true,

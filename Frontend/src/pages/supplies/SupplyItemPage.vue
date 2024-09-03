@@ -353,6 +353,7 @@ function editLot(lot) {
       observation: lot.observations,
       reception_date: lot.reception_date,
       due_date: lot.due_date,
+      stock: lot.stock,
       location: { id: lot.location_id, name: lot.location },
       sublocation: { id: lot.sub_location_id, name: lot.sub_location },
       project: { id: lot.project_id, name: lot.project },
