@@ -71,5 +71,5 @@ def del_dict_nulls(d: dict):
     new_dict = {}
     for key, value in d.items():
         if value != None:
-            new_dict[key] = d[key]
+            new_dict[key] = str(d[key])
     return new_dict
