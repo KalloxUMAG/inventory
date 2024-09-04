@@ -21,6 +21,20 @@ export async function getSupplies() {
   }
 }
 
+export async function getSuppliesByGroupId(group_id) {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/supplies/by_group/${group_id}`,
+    })
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los insumos')
+    return []
+  }
+}
+
 export async function getCriticalSupplies() {
   try {
     const response = await sendRequest({

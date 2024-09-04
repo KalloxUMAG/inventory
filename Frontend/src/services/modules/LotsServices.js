@@ -3,6 +3,20 @@ import { CatchNotifications } from './Notifications'
 
 const api_prefix = process.env.API_URL
 
+export async function getLotsBySupplyId(supply_id) {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/lots/supply/${supply_id}`,
+    })
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los lotes')
+    return []
+  }
+}
+
 export async function postLot(lot) {
   try {
     const response = await sendRequest({

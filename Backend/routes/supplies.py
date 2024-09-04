@@ -28,6 +28,11 @@ async def get_supplies(db: Session = Depends(get_db)):
    return supplies
 
 
+@supplies.get("/by_group/{group_id}", response_model=List[SupplySchema])
+async def get_supplies_by_group(group_id: int, db: Session = Depends(get_db)):
+    supplies = await service.get_supplies_by_group(group_id, db)
+    return supplies
+
 @supplies.get("/critical", response_model=List[SupplyCriticalSchema])
 async def get_supplies_critical(db: Session = Depends(get_db)):
     supplies = await service.get_supplies_critical(db)

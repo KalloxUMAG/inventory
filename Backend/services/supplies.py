@@ -5,8 +5,6 @@ from models.models import Supply, SupplyBrand, SupplyFormat, SupplyType, GroupsH
 from schemas.supply_schema import (
     SupplyListSchema,
     SupplySchema,
-    SupplySchemaFull,
-    UpdateStockSchema,
 )
 from services.lots import LotService
 from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
@@ -95,6 +93,11 @@ class SupplyService:
             .first()
         )
         return result
+    
+    async def get_supplies_by_group(self, group_id: int, db: Session):
+        result = db.query(Supply).filter(Supply.groups.any(Groups.id == group_id), Supply.state == True).all()
+        return result
+
     async def get_supplies_critical(self, db: Session):
         result = (
             db.query(
