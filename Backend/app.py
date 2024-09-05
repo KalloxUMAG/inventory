@@ -32,7 +32,7 @@ from routes.units import units
 from routes.users import users, login
 from routes.groups import groups
 from routes.groups_supplies import groups_supplies
-from routes.inventory import inventory
+from routes.loans import loans
 from routes.roles import roles
 from routes.user_group_role import user_group_role
 from routes.logs import logs
@@ -91,7 +91,7 @@ routes = [
     suppliers_supplies,
     users,
     user_group_role,
-    inventory,
+    loans,
 ]
 
 for route in routes:

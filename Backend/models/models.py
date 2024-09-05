@@ -196,7 +196,6 @@ class Equipment(Base):
     maintenances: Mapped[List["Maintenance"]] = relationship(
         backref="Equipments", cascade="delete,merge"
     )
-    loans: Mapped[List["Loan"]] = relationship("Loan", back_populates="equipment")
 
 
 class EquipmentTypes(Base):
@@ -402,6 +401,7 @@ class Lot(Base):
     project_id: Mapped[int] = mapped_column(Integer, ForeignKey("Projects.id"))
     group_id: Mapped[int] = mapped_column(Integer, ForeignKey("Groups.id"))
 
+    loans: Mapped[List["Loan"]] = relationship("Loan", back_populates="lot")
 
 class GroupsHasSupplies(Base):
     __tablename__ = "Groups_has_Supplies"
@@ -430,14 +430,16 @@ class SuppliersHasSupplies(Base):
 class Loan(Base):
     __tablename__ = "Loans"
 
-    loan_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("Users.id"))
-    equipment_id: Mapped[int] = mapped_column(Integer, ForeignKey("Equipments.id"))
-    loan_start_date = mapped_column(Date, nullable=False)
-    loan_end_date = mapped_column(Date, nullable=False)
+    lot_id: Mapped[int] = mapped_column(Integer, ForeignKey("Lots.id"))
+    start_date = mapped_column(Date, nullable=False)
+    end_date = mapped_column(Date, nullable=False)
+    state = mapped_column(String, nullable=False)
+    description = mapped_column(String, nullable=False)
 
     user: Mapped[Users] = relationship("Users", back_populates="loans")
-    equipment: Mapped[Equipment] = relationship("Equipment", back_populates="loans")
+    lot: Mapped[Equipment] = relationship("Lot", back_populates="loans")
 
 
 class UserGroupRoleRelation(Base):
