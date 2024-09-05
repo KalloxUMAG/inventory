@@ -477,3 +477,13 @@ export const usersColumns = [
     sortable: false,
   },
 ]
+
+export const loansColumns = [
+  {
+    name: 'description',
+    align: 'left',
+    label: 'Descripción',
+    field: 'description',
+    sortable: false,
+  },
+]

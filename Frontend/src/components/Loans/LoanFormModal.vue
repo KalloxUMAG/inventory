@@ -121,7 +121,7 @@
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
 import { onMounted, ref } from 'vue'
-import { getGroups, getLotsBySupplyId, getSuppliesByGroupId } from 'src/services'
+import { getGroups, getLotsBySupplyId, getSuppliesByGroupId, postLoan } from 'src/services'
 import SelectForm from '../SelectForm.vue'
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -149,6 +149,13 @@ const AddLoanForm = ref(null)
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 async function onOKClick() {
+  await postLoan({
+    lot_id: lot.value,
+    start_date: loanDate.value,
+    end_date: returnDate.value,
+    state: status.value,
+    description: description.value,
+  })
   onDialogOK()
 }
 

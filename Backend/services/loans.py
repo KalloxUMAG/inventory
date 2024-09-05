@@ -31,7 +31,7 @@ class LoanService:
     @log_func_calls("loans", CREATE_LOG)
     async def create_loan(self, user_id: int, loan: LoanCreate, db: Session):
         new_loan = Loan(
-            user_id=loan.user_id,
+            user_id=user_id,
             lot_id=loan.lot_id,
             start_date=loan.start_date,
             end_date=loan.end_date,

@@ -18,7 +18,6 @@ class LoanSchema(BaseModel):
         from_attributes = True
 
 class LoanCreate(BaseModel):
-    user_id: int
     lot_id: int
     start_date: date
     end_date: date

@@ -28,16 +28,17 @@
       </div>
     </div>
     <div class="col-12 row">
-      Contenido
+      <LoanTable />
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import PageTitle from 'src/components/commons/PageTitle.vue'
 import { useQuasar } from 'quasar'
 import dayjs from 'dayjs'
+import { onMounted, ref } from 'vue'
+import PageTitle from 'src/components/commons/PageTitle.vue'
+import LoanTable from 'src/components/Loans/LoanTable.vue'
 import eventModal from '../components/Loans/LoanFormModal.vue'
 
 dayjs.locale('es')
@@ -51,7 +52,6 @@ async function AddLoan() {
   $q.dialog({
     component: eventModal,
   }).onOk((data) => {
-    console.log('Ok')
   })
 }
 
