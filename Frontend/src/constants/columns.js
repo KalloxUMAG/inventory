@@ -487,10 +487,10 @@ export const loansColumns = [
     sortable: true,
   },
   {
-    name: 'supply_name',
+    name: 'supplyName',
     align: 'left',
     label: 'Insumo prestado',
-    field: 'supply_name',
+    field: 'supplyName',
     sortable: true,
   },
   {

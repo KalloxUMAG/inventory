@@ -33,6 +33,11 @@
             {{ props.value }}
           </q-td>
         </template>
+        <template #body-cell-supplyName="props">
+          <q-td :props="props" auto-width>
+            <a :href="`/supplies/${props.row.supply_id}`">{{ props.row.supply_name }}</a>
+          </q-td>
+        </template>
         <template #body-cell-state="props">
           <q-td :props="props" auto-width>
             <!-- Mostrar icono si state es false, de lo contrario mostrar texto normal -->
