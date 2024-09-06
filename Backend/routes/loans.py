@@ -37,3 +37,8 @@ async def update_loan(
 ):
     await service.update_loan(user_id=get_user_id_from_token(dependencies), loan_id=loan_id, data_update=data_update, db=db)
     return Response(status_code=HTTP_200_OK)
+
+@loans.delete("/{loan_id}", status_code=HTTP_200_OK)
+async def delete_loan(loan_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
+    await service.delete_loan(user_id=get_user_id_from_token(dependencies), loan_id=loan_id, db=db)
+    return Response(status_code=HTTP_200_OK)

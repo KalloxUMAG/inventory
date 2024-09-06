@@ -64,6 +64,7 @@
               dense
               icon="delete"
               color="negative"
+              @click="removeLoan(props.row)"
             />
           </q-td>
         </template>
@@ -76,7 +77,7 @@
 import { onMounted, ref } from 'vue'
 import { useQuasar } from 'quasar'
 import { loansColumns } from 'src/constants/columns'
-import { getLoans } from 'src/services'
+import { deleteLoan, getLoans } from 'src/services'
 
 import LoanEditFormModal from './LoanEditFormModal.vue'
 
@@ -103,6 +104,24 @@ function editLoan(loan) {
       description: loan.description,
     },
   }).onOk(async () => {
+    await getLoansData()
+  })
+}
+
+async function removeLoan(loan) {
+  $q.dialog({
+    title: 'Eliminar préstamo',
+    message: 'Se eliminara el préstamo seleccionado, ¿estás seguro?',
+    ok: {
+      color: 'negative',
+      label: 'Aceptar y eliminar',
+    },
+    cancel: {
+      color: 'warning',
+      label: 'Cancelar y mantener',
+    },
+  }).onOk(async () => {
+    await deleteLoan(loan.id)
     await getLoansData()
   })
 }

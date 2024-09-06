@@ -64,3 +64,10 @@ class LoanService:
         db.commit()
         db.refresh(loan)
         return loan
+    
+    @log_func_calls("loans", DELETE_LOG)
+    async def delete_loan(self, user_id: int, loan_id: int, db: Session):
+        loan = db.query(Loan).filter(Loan.id == loan_id).first()
+        db.delete(loan)
+        db.commit()
+        return loan

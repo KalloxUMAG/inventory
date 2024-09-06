@@ -46,3 +46,17 @@ export async function putLoan(id, loan) {
     return []
   }
 }
+
+export async function deleteLoan(id) {
+  try {
+    const response = await sendRequest({
+      method: 'DELETE',
+      url: `${api_prefix}/loans/${id}`,
+    })
+    CatchNotifications(response.status, 'Préstamo eliminado correctamente')
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al eliminar el préstamo')
+    return []
+  }
+}
