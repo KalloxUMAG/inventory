@@ -480,10 +480,60 @@ export const usersColumns = [
 
 export const loansColumns = [
   {
+    name: 'group_name',
+    align: 'left',
+    label: 'Prestador',
+    field: 'group_name',
+    sortable: true,
+  },
+  {
+    name: 'supply_name',
+    align: 'left',
+    label: 'Insumo prestado',
+    field: 'supply_name',
+    sortable: true,
+  },
+  {
+    name: 'lot_number',
+    align: 'left',
+    label: 'Lote',
+    field: 'lot_number',
+    sortable: true,
+  },
+  {
+    name: 'user_fullname',
+    align: 'left',
+    label: 'Ingresa prestamo',
+    field: 'user_fullname',
+    sortable: true,
+  },
+  {
+    name: 'start_date',
+    align: 'left',
+    label: 'Fecha de prestamo',
+    field: 'start_date',
+    sortable: true,
+  },
+
+  {
+    name: 'end_date',
+    align: 'left',
+    label: 'Fecha de devolución',
+    field: 'end_date',
+    sortable: true,
+  },
+  {
     name: 'description',
     align: 'left',
     label: 'Descripción',
     field: 'description',
+    sortable: false,
+  },
+  {
+    name: 'actions',
+    align: 'left',
+    label: '',
+    field: 'actions',
     sortable: false,
   },
 ]

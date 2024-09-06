@@ -1,10 +1,6 @@
-from datetime import date
-from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from models.models import Equipment, Loan, Lot, Users
+from models.models import Loan, Lot, Users, Supply, Groups
 from schemas.loans_scheme import LoanCreate
-
-from helpers.utils import format_equipment_data
 
 from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
@@ -21,9 +17,16 @@ class LoanService:
                 Users.id.label("user_id"),
                 Lot.id.label("lot_id"),
                 Lot.number.label("lot_number"),
+                Supply.id.label("supply_id"),
+                Supply.name.label("supply_name"),
+                Supply.code.label("supply_code"),
+                Groups.id.label("group_id"),
+                Groups.name.label("group_name"),
             )
             .join(Users, Users.id == Loan.user_id)
             .join(Lot, Lot.id == Loan.lot_id)
+            .join(Supply, Supply.id == Lot.supplies_id)
+            .join(Groups, Groups.id == Lot.group_id)
             .all()
         )
         return result

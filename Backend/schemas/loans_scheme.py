@@ -13,6 +13,11 @@ class LoanSchema(BaseModel):
     lot_number: Optional[str] = None
     state: str
     description: str
+    supply_id: int
+    supply_name: str
+    supply_code: str
+    group_id: int
+    group_name: str
 
     class Config:
         from_attributes = True
