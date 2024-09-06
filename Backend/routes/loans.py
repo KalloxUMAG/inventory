@@ -1,13 +1,17 @@
 from typing import List
 from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
+from starlette.status import (
+    HTTP_201_CREATED,
+    HTTP_200_OK,
+    HTTP_404_NOT_FOUND,
+)
 
 from config.database import get_db
 from services.loans import LoanService
 from schemas.loans_scheme import LoanCreate, LoanSchema
-from schemas.equipment_schema import EquipmentAvailableSchema
 
 from auth.auth_bearer import JWTBearer, get_user_id_from_token
 ## Depends(JWTBearer())
@@ -22,7 +26,7 @@ async def get_loans(db: Session = Depends(get_db)):
     loans = await service.get_loans(db)
     return loans
 
-@loans.post("/", tags=["loans"], response_model=LoanSchema)
+@loans.post("/", status_code=HTTP_201_CREATED)
 async def create_loan(loan: LoanCreate, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
-    new_loan = await service.create_loan(user_id=get_user_id_from_token(dependencies), loan=loan, db=db)
-    return new_loan
+    await service.create_loan(user_id=get_user_id_from_token(dependencies), loan=loan, db=db)
+    return Response(status_code=HTTP_201_CREATED)

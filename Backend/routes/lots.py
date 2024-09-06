@@ -11,7 +11,7 @@ from starlette.status import (
 
 from config.database import get_db
 from services.lots import LotService
-from schemas.lot_schema import CreateLotSchema, LotListSchema
+from schemas.lot_schema import CreateLotSchema, LotListSchema, FiltersSchema
 
 from auth.auth_bearer import JWTBearer, get_user_id_from_token, user_context
 
@@ -55,6 +55,10 @@ async def get_lots_supply(supply_id: int, db: Session = Depends(get_db)):
     lots = await service.get_lots_by_supply(supply_id, db)
     return lots
 
+@lots.get("/supply/{supply_id}/group/{group_id}", response_model=List[LotListSchema])
+async def get_lot_supply_group(supply_id: int, group_id: int, db: Session = Depends(get_db)):
+    lots = await service.get_lots_by_supply_group(supply_id, group_id, db)
+    return lots
 
 @lots.put("/{lot_id}", response_model=CreateLotSchema)
 async def update_lot(

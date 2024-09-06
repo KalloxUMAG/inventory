@@ -47,6 +47,9 @@ class LotService:
             .all()
         )
         return result
+    async def get_lot_to_loan(self, lot_id:int, db: Session):
+        result = db.query(Lot).filter(Lot.id == lot_id).first()
+        return  result
     async def get_lot_simple(self, lot_id: int, db: Session):
         permissions = await permissionsService.get_user_groups_and_roles(user_context.get(), db)
         groups = [permission[2] for permission in permissions]
@@ -103,6 +106,40 @@ class LotService:
                 Groups.name.label("group_name"),
             )
             .filter(Lot.supplies_id == supply_id, Lot.state == True, Lot.group_id.in_(groups))
+            .outerjoin(SubLocation, SubLocation.id == Lot.sub_location_id)
+            .outerjoin(Location, Location.id == SubLocation.id)
+            .outerjoin(Project, Project.id == Lot.project_id)
+            .outerjoin(ProjectOwner, ProjectOwner.id == Project.owner_id)
+            .outerjoin(Supplier, Supplier.id == Lot.supplier_id)
+            .outerjoin(Groups, Groups.id == Lot.group_id)
+            .all()
+        )
+        return result
+    
+    async def get_lots_by_supply_group(self, supply_id: int, group_id, db: Session):
+        permissions = await permissionsService.get_user_groups_and_roles(user_context.get(), db)
+        result = (
+            db.query(
+                Lot.id,
+                Lot.number,
+                Lot.reception_date,
+                Lot.due_date,
+                Lot.observations,
+                Location.id.label("location_id"),
+                Location.name.label("location"),
+                Lot.sub_location_id,
+                Lot.stock,
+                SubLocation.name.label("sub_location"),
+                Lot.project_id,
+                Project.name.label("project"),
+                ProjectOwner.id.label("project_owner_id"),
+                ProjectOwner.name.label("project_owner_name"),
+                Lot.supplier_id,
+                Supplier.name.label("supplier_name"),
+                Lot.group_id,
+                Groups.name.label("group_name"),
+            )
+            .filter(Lot.supplies_id == supply_id, Lot.state == True, Lot.stock > 0, Lot.group_id == group_id)
             .outerjoin(SubLocation, SubLocation.id == Lot.sub_location_id)
             .outerjoin(Location, Location.id == SubLocation.id)
             .outerjoin(Project, Project.id == Lot.project_id)

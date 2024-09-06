@@ -1,5 +1,6 @@
 import { sendRequest } from '/src/services/axios/instance.js'
 import { CatchNotifications } from './Notifications'
+import { data } from 'autoprefixer'
 
 const api_prefix = process.env.API_URL
 
@@ -8,6 +9,20 @@ export async function getLotsBySupplyId(supply_id) {
     const response = await sendRequest({
       method: 'GET',
       url: `${api_prefix}/lots/supply/${supply_id}`,
+    })
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los lotes')
+    return []
+  }
+}
+
+export async function getLotsBySupplyAndGroupId(supply_id, group_id) {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/lots/supply/${supply_id}/group/${group_id}`,
     })
     return response.data
   }

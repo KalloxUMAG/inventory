@@ -61,3 +61,10 @@ class CreateLotSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class FiltersSchema(BaseModel):
+    group_id: int
+    supply_id: int
+
+    class Config:
+        from_attributes = True

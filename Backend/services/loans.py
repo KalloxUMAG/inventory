@@ -1,8 +1,12 @@
 from sqlalchemy.orm import Session
 from models.models import Loan, Lot, Users, Supply, Groups
 from schemas.loans_scheme import LoanCreate
+from schemas.lot_schema import CreateLotSchema
 
+from services.lots import LotService
 from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
+
+lotService = LotService()
 
 class LoanService:
     async def get_loans(self, db: Session):
@@ -44,4 +48,7 @@ class LoanService:
         db.add(new_loan)
         db.commit()
         db.refresh(new_loan)
+        lot = await lotService.get_lot_to_loan(loan.lot_id, db)
+        new_lot = CreateLotSchema(number=lot.number, supply_id=lot.supplies_id, group_id=lot.group_id, supplier_id=lot.supplier_id, stock=0)
+        await lotService.update_lot(user_id=user_id, lot=lot, data_update=new_lot, db=db)
         return new_loan

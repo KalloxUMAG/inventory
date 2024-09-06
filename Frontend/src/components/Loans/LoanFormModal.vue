@@ -24,7 +24,7 @@
               not_found_label="No hay grupos"
               :rules="[val => !!val || 'Seleccione un grupo']"
               hint="El grupo que presta el lote"
-              @update-model="(value) => { group = value; loadSupplies(value) }"
+              @update-model="(value) => { group = value; supply = null; loadSupplies(value) }"
             />
           </div>
           <div class="row q-col-gutter-md q-mt-md">
@@ -39,7 +39,7 @@
               not_found_label="No hay insumos"
               :rules="[val => !!val || 'Seleccione un insumo']"
               hint="El insumo que se presta"
-              @update-model="(value) => { supply = value; loadLots(value) }"
+              @update-model="(value) => { supply = value; lot = null; loadLots(value) }"
             />
             <SelectForm
               v-model="lot"
@@ -121,7 +121,7 @@
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
 import { onMounted, ref } from 'vue'
-import { getGroups, getLotsBySupplyId, getSuppliesByGroupId, postLoan } from 'src/services'
+import { getGroups, getLotsBySupplyAndGroupId, getSuppliesByGroupId, postLoan } from 'src/services'
 import SelectForm from '../SelectForm.vue'
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -186,7 +186,7 @@ async function loadLots(supply_id) {
     lot.value = null
     return
   }
-  const data = await getLotsBySupplyId(supply_id)
+  const data = await getLotsBySupplyAndGroupId(supply.value, group.value)
   lots.value = data.map((lot) => {
     return {
       id: lot.id,
