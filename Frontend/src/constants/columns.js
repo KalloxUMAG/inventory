@@ -508,6 +508,13 @@ export const loansColumns = [
     sortable: true,
   },
   {
+    name: 'state',
+    align: 'left',
+    label: 'Estado',
+    field: 'state',
+    sortable: true,
+  },
+  {
     name: 'start_date',
     align: 'left',
     label: 'Fecha de prestamo',

@@ -36,6 +36,12 @@
         <template #body-cell-state="props">
           <q-td :props="props" auto-width>
             <!-- Mostrar icono si state es false, de lo contrario mostrar texto normal -->
+            <q-chip v-if="props.row.state === 'devuelto'" color="teal" text-color="white" icon="check">
+              Devuelto
+            </q-chip>
+            <q-chip v-if="props.row.state === 'pendiente'" color="red" text-color="white" icon="schedule">
+              Pendiente
+            </q-chip>
           </q-td>
         </template>
       </q-table>
