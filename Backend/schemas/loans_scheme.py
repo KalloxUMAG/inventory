@@ -31,3 +31,12 @@ class LoanCreate(BaseModel):
 
     class Config:
         from_attributes = True
+
+class LoanUpdateSchema(BaseModel):
+    start_date: date
+    end_date: date
+    state: str
+    description: str
+
+    class Config:
+        from_attributes = True

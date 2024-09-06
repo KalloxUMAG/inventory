@@ -11,7 +11,7 @@ from starlette.status import (
 
 from config.database import get_db
 from services.loans import LoanService
-from schemas.loans_scheme import LoanCreate, LoanSchema
+from schemas.loans_scheme import LoanCreate, LoanSchema, LoanUpdateSchema
 
 from auth.auth_bearer import JWTBearer, get_user_id_from_token
 ## Depends(JWTBearer())
@@ -30,3 +30,10 @@ async def get_loans(db: Session = Depends(get_db)):
 async def create_loan(loan: LoanCreate, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     await service.create_loan(user_id=get_user_id_from_token(dependencies), loan=loan, db=db)
     return Response(status_code=HTTP_201_CREATED)
+
+@loans.put("/{loan_id}", status_code=HTTP_200_OK)
+async def update_loan(
+    data_update: LoanUpdateSchema, loan_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)
+):
+    await service.update_loan(user_id=get_user_id_from_token(dependencies), loan_id=loan_id, data_update=data_update, db=db)
+    return Response(status_code=HTTP_200_OK)

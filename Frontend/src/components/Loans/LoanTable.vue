@@ -49,6 +49,24 @@
             </q-chip>
           </q-td>
         </template>
+        <template #body-cell-actions="props">
+          <q-td :props="props" auto-width>
+            <q-btn
+              flat
+              dense
+              icon="edit"
+              color="warning"
+              @click="editLoan(props.row)"
+            />
+            <q-btn
+              v-if="props.row.id != null"
+              flat
+              dense
+              icon="delete"
+              color="negative"
+            />
+          </q-td>
+        </template>
       </q-table>
     </q-card-section>
   </q-card>
@@ -60,6 +78,8 @@ import { useQuasar } from 'quasar'
 import { loansColumns } from 'src/constants/columns'
 import { getLoans } from 'src/services'
 
+import LoanEditFormModal from './LoanEditFormModal.vue'
+
 const filter = ref('')
 const loans = ref([])
 
@@ -67,6 +87,24 @@ const $q = useQuasar()
 
 async function getLoansData() {
   loans.value = await getLoans()
+}
+
+function editLoan(loan) {
+  $q.dialog({
+    component: LoanEditFormModal,
+    componentProps: {
+      id: loan.id,
+      group: loan.group_name,
+      supply: loan.supply_name,
+      lot: loan.lot_number,
+      loanDate: loan.start_date,
+      returnDate: loan.end_date,
+      state: loan.state,
+      description: loan.description,
+    },
+  }).onOk(async () => {
+    await getLoansData()
+  })
 }
 
 onMounted(() => {

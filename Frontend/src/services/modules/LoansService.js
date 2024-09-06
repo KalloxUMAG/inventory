@@ -31,3 +31,18 @@ export async function postLoan(loan) {
     return []
   }
 }
+
+export async function putLoan(id, loan) {
+  try {
+    const response = await sendRequest({
+      method: 'PUT',
+      url: `${api_prefix}/loans/${id}`,
+      data: loan,
+    })
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al editar el préstamo')
+    return []
+  }
+}

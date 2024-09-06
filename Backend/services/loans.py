@@ -52,3 +52,15 @@ class LoanService:
         new_lot = CreateLotSchema(number=lot.number, supply_id=lot.supplies_id, group_id=lot.group_id, supplier_id=lot.supplier_id, stock=0)
         await lotService.update_lot(user_id=user_id, lot=lot, data_update=new_lot, db=db)
         return new_loan
+    
+    @log_func_calls("loans", UPDATE_LOG)
+    async def update_loan(self, user_id: int, loan_id: int, data_update: LoanCreate, db: Session):
+        loan = db.query(Loan).filter(Loan.id == loan_id).first()
+        loan.start_date = data_update.start_date
+        loan.end_date = data_update.end_date
+        loan.state = data_update.state
+        loan.description = data_update.description
+        db.add(loan)
+        db.commit()
+        db.refresh(loan)
+        return loan
