@@ -119,6 +119,7 @@ class Users(Base):
     email: Mapped[str] = mapped_column(String, unique=True)
     disable: Mapped[bool] = mapped_column(Boolean, default=False)
     hashed_password: Mapped[str] = mapped_column(String)
+    role_id = mapped_column(Integer, ForeignKey("System_Roles.id", ondelete="SET NULL"), nullable=True)
 
     loans: Mapped[List["Loan"]] = relationship("Loan", back_populates="user")
     logs: Mapped[List["Logs"]] = relationship(
@@ -448,3 +449,30 @@ class UserGroupRoleRelation(Base):
     user_id = mapped_column(Integer, ForeignKey("Users.id", ondelete="CASCADE"), primary_key=True)
     group_id = mapped_column(Integer, ForeignKey("Groups.id", ondelete="CASCADE"), primary_key=True)
     role_id = mapped_column(Integer, ForeignKey("Roles.id", ondelete="CASCADE"), primary_key=True)
+
+
+# Roles del sistema
+
+class SystemRoles(Base):
+    __tablename__ = "System_Roles"
+
+    id = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name = mapped_column(String, nullable=False)
+
+    users: Mapped[List["Users"]] = relationship(backref="System_Roles")
+
+class Modules(Base):
+    __tablename__ = "Modules"
+
+    id = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name = mapped_column(String, nullable=False)
+
+class RoleModuleRelation(Base):
+    __tablename__ = "Role_Module_Relation"
+
+    role_id = mapped_column(Integer, ForeignKey("System_Roles.id", ondelete="CASCADE"), primary_key=True)
+    module_id = mapped_column(Integer, ForeignKey("Modules.id", ondelete="CASCADE"), primary_key=True)
+    create = mapped_column(Boolean, default=True)
+    read = mapped_column(Boolean, default=True)
+    update = mapped_column(Boolean, default=True)
+    delete = mapped_column(Boolean, default=True)
