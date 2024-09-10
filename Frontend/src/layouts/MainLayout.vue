@@ -40,7 +40,7 @@
         </q-list>
 
         <footer class="fixed-bottom text-white">
-          <small>Fecha de actualización: 11-06-2024</small>
+          <small>Fecha de actualización: 11-09-2024</small>
         </footer>
       </q-scroll-area>
     </q-drawer>
