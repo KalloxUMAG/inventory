@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import func
 from models.models import Supplier
 from schemas.supplier_schema import SupplierSchema, SupplierSchemaWithId, SupplierFullSchema
+from schemas.supplier_contact_schema import SupplierContactSchema
 from services.supplier_contact import SupplierContactService
 from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
@@ -41,14 +42,8 @@ class SupplierService:
         db.commit()
         db.refresh(new_supplier)
         for contact in supplier.contacts:
-            new_contact = {
-                "name": contact.name,
-                "position": contact.position,
-                "phone": contact.phone,
-                "email": contact.email,
-                "supplier_id": new_supplier.id,
-            }
-            contact_service.add_supplier_contact(new_contact, db)
+            new_contact = SupplierContactSchema(name=contact.name, position=contact.position, phone=contact.phone, email=contact.email, supplier_id=new_supplier.id)
+            await contact_service.add_supplier_contact(user_id=user_id, supplier_contact=new_contact, db=db)
         return new_supplier
     @log_func_calls("suppliers", UPDATE_LOG)
     async def update_supplier(self, user_id: int, supplier: SupplierSchemaWithId, data_update: SupplierSchema, db: Session):
