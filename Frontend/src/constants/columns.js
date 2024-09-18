@@ -476,6 +476,13 @@ export const usersColumns = [
     field: 'username',
     sortable: false,
   },
+  {
+    name: 'status',
+    align: 'left',
+    label: 'Estado',
+    field: 'disable',
+    sortable: true,
+  }
 ]
 
 export const loansColumns = [

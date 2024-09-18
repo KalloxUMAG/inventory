@@ -71,6 +71,18 @@
             </q-avatar>
           </q-td>
         </template>
+        <template #body-cell-status="props">
+          <q-td>
+            <q-chip v-if="!props.row.disable" color="teal" text-color="white" icon="check">
+              Activo
+              <q-tooltip>Los usuarios activos pueden iniciar sesión. Para desactivarlos contacta con un administrador.</q-tooltip>
+            </q-chip>
+            <q-chip v-if="props.row.disable" color="red" text-color="white" icon="block">
+              Desactivado
+              <q-tooltip>Los usuarios desactivados no pueden iniciar sesión. Para volver a activarlo contacta con un administrador.</q-tooltip>
+            </q-chip>
+          </q-td>
+        </template>
       </q-table>
     </q-card-section>
   </q-card>
