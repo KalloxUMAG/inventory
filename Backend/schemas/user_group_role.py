@@ -20,3 +20,12 @@ class UserGroupRoleFullSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class BasicNoUserGroupRoleSchema(BaseModel):
+    group_id: int
+    group_name: str
+    role_id: int
+    role_name: str
+
+    class Config:
+        from_attributes = True

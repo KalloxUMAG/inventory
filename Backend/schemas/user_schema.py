@@ -1,7 +1,7 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
-
+from schemas.user_group_role import BasicNoUserGroupRoleSchema
 
 class User(BaseModel):
     id: Optional[int]
@@ -94,6 +94,7 @@ class FilterUser(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
     fullname: Optional[str] = None
+    group_roles: List[BasicNoUserGroupRoleSchema]
 
     class Config:
         from_attributes = True

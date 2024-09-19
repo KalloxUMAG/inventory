@@ -22,6 +22,7 @@ from config.settings import settings
 
 from config.database import get_db
 from services.users import UserService
+from services.user_group_role import UserGroupRoleService
 from sqlalchemy.orm import Session
 
 from models.models import Users, TokenTable, UserGroupRoleRelation
@@ -35,6 +36,7 @@ users = APIRouter(
     tags=["users"], prefix="/api/users", dependencies=[Depends(JWTBearer())]
 )
 service = UserService()
+groupAndRolesService = UserGroupRoleService()
 login = APIRouter(tags=["users"], prefix="/api/users")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -173,6 +175,8 @@ async def search_users(fullname: str = None, email: str = None, db: Session = De
 @users.get("/{user_id}", tags=["users"], response_model=FilterUser)
 async def get_user(user_id: int, db: Session = Depends(get_db)):
     user = await service.get_user(user_id, db)
+    group_roles = await groupAndRolesService.get_user_groups_and_roles(user_id, db)
+    user.group_roles = group_roles
     return user
 
 @users.post("/change-password", tags=["users"])

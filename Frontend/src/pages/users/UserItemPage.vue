@@ -13,7 +13,7 @@
       </div>
     </PageTitle>
 
-    <q-card class="my-card row q-pa-md gap-lg" flat bordered>
+    <q-card class="my-card row q-pa-md q-mb-lg gap-lg" flat bordered>
       <div class="col-12 col-sm-3 container image-visor">
         <q-img
           v-if="images != null"
@@ -43,6 +43,29 @@
           ]"
         />
       </div>
+    </q-card>
+
+    <q-card class="col-12" flat bordered>
+      <q-card-section>
+        <div class="text-h5 text-weight-bold q-pl-md space-between">
+          Grupos
+        </div>
+      </q-card-section>
+      <q-separator />
+      <q-card-section>
+        <div class="q-pa-md">
+          <q-list>
+            <q-item v-for="group in user.group_roles" :key="group.group_id">
+              <q-item-section>
+                <q-item-label>
+                  <q-badge color="primary" label="Grupo" />
+                  {{ group.group_name }} ({{ group.role_name }})
+                </q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
+      </q-card-section>
     </q-card>
   </div>
 </template>

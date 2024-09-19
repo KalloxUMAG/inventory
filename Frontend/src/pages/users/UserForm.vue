@@ -63,6 +63,21 @@
           @update-model="(value) => (user.group = value)"
         />
       </div>
+      <div v-if="role" class="row">
+        <SelectForm
+          outlined
+          bg-color="white"
+          :clearable="false"
+          class="col q-mr-md"
+          :default_value="role"
+          :options="rolesOptions"
+          option_value="id"
+          option_label="name"
+          label="Rol"
+          not_found_label="No hay roles disponibles"
+          @update-model="(value) => (user.role = value)"
+        />
+      </div>
       <div class="row">
         <UploadImages
           label="Imagen del usuario"
@@ -83,7 +98,6 @@
       label-style="font-size: 1.6em"
     />
   </q-form>
-  {{ user }}
 </template>
 
 <script setup>
@@ -97,7 +111,7 @@ import FormSection from 'src/components/Form/FormSection.vue'
 import UploadImages from 'src/components/UploadImages.vue'
 import SelectForm from 'src/components/SelectForm.vue'
 
-import { getGroups } from 'src/services'
+import { getGroups, getGroupRoles, postUser, addUserGroupRole } from 'src/services'
 
 const createUserForm = ref(null)
 const api_prefix = process.env.API_URL
@@ -111,9 +125,12 @@ const user = reactive({
   password: '',
   images: [],
   group: null,
+  role: null,
 })
 const groupsOptions = ref([])
+const rolesOptions = ref([])
 const group = ref(null)
+const role = ref(null)
 
 const loading = ref(false)
 
@@ -123,6 +140,12 @@ async function getGroupsData() {
   groupsOptions.value = await getGroups()
   group.value = groupsOptions.value[0]
   user.group = group.value.id
+}
+
+async function getGroupRolesData() {
+  rolesOptions.value = await getGroupRoles()
+  role.value = rolesOptions.value[0]
+  user.role = role.value.id
 }
 
 async function onSubmit() {
@@ -135,35 +158,15 @@ async function onSubmit() {
     password: user.password,
     images: user.images,
   }
-  const userId = await createNewUser(userData)
+  const userId = await postUser(userData)
+  if (!userId) {
+    loading.value = false
+    return
+  }
   await uploadUserImage(userId)
+  await addUserGroupRole(userId, user.group, user.role)
   loading.value = false
   router.push({ path: userId.toString() })
-}
-
-async function createNewUser(data) {
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/users`,
-      data,
-    })
-    $q.notify({
-      color: 'green-3',
-      textColor: 'white',
-      icon: 'check',
-      message: 'Usuario creado con exito ',
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear el usuario: ${error.response.data.detail}`,
-    })
-  }
 }
 
 async function uploadUserImage(userId) {
@@ -203,6 +206,7 @@ function handleRemoveImages(files) {
 
 onMounted(() => {
   getGroupsData()
+  getGroupRolesData()
 })
 </script>
 
