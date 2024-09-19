@@ -31,6 +31,20 @@ export async function getGroupRoles() {
   }
 }
 
+export async function getUsersFromGroup(group_id) {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/user_rol_group/by_group/${group_id}`,
+    })
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los usuarios del grupo')
+    return []
+  }
+}
+
 export async function addUserGroupRole(user_id, group_id, role_id) {
   const data = {
     'user_id': user_id,
@@ -46,5 +60,18 @@ export async function addUserGroupRole(user_id, group_id, role_id) {
   }
   catch (error) {
     CatchNotifications(error.response.status, 'No se pudo asignar el rol y grupo al usuario')
+  }
+}
+
+export async function deleteUserGroupRole(user_id, group_id) {
+  try {
+    const response = await sendRequest({
+      method: 'DELETE',
+      url: `${api_prefix}/user_rol_group/${user_id}/${group_id}`,
+    })
+    CatchNotifications(response.status, 'Usuario eliminado del grupo')
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'No se pudo eliminar al usuario del grupo')
   }
 }

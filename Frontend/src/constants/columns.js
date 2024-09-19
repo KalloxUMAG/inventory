@@ -551,3 +551,55 @@ export const loansColumns = [
     sortable: false,
   },
 ]
+
+export const groupUsersColumns = [
+  {
+    name: 'img',
+    align: 'left',
+    label: 'Imagen',
+    field: 'img',
+    sortable: false,
+  },
+  {
+    name: 'fullname',
+    align: 'left',
+    label: 'Nombre',
+    field: 'fullname',
+    sortable: false,
+  },
+  {
+    name: 'email',
+    align: 'left',
+    label: 'Correo',
+    field: 'email',
+    sortable: false,
+  },
+  {
+    name: 'username',
+    align: 'left',
+    label: 'Nombre de usuario',
+    field: 'username',
+    sortable: false,
+  },
+  {
+    name: 'status',
+    align: 'left',
+    label: 'Estado',
+    field: 'disable',
+    sortable: true,
+  },
+  {
+    name: 'role',
+    align: 'left',
+    label: 'Rol',
+    field: 'role_name',
+    sortable: true,
+  },
+  {
+    name: 'actions',
+    align: 'left',
+    label: '',
+    field: 'actions',
+    sortable: false,
+  }
+]
