@@ -34,6 +34,16 @@ class UserFullSchema(BaseModel):
     class Config:
         from_attributes = True
 
+class BasicUserSchema(BaseModel):
+    user_id: int
+    fullname: str
+    email: str
+    username: str
+    disable: bool
+
+    class Config:
+        from_attributes = True
+
 class BasicNoUserGroupRoleSchema(BaseModel):
     group_id: int
     group_name: str

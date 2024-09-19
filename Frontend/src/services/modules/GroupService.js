@@ -45,6 +45,20 @@ export async function getUsersFromGroup(group_id) {
   }
 }
 
+export async function getUsersNotInGroup(group_id) {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/user_rol_group/not_in_group/${group_id}`,
+    })
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los usuarios no asignados al grupo')
+    return []
+  }
+}
+
 export async function addUserGroupRole(user_id, group_id, role_id) {
   const data = {
     'user_id': user_id,

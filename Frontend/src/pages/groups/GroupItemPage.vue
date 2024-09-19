@@ -73,10 +73,10 @@
             </q-input>
             <q-btn
               class="add-btn q-mr-sm"
-              to="/users/new_user"
               icon="person_add"
               label="Agregar"
               flat
+              @click="addUser"
             />
           </div>
         </div>
@@ -164,6 +164,7 @@ import { useQuasar } from 'quasar'
 import DeleteDialog from 'src/components/item-page/DeleteDialog.vue'
 import InfoSection from 'src/components/item-page/InfoSection.vue'
 import PageTitle from 'src/components/commons/PageTitle.vue'
+import GroupAddUserForm from './GroupAddUserForm.vue'
 
 import { groupUsersColumns } from 'src/constants/columns'
 import { deleteUserGroupRole, getUsersFromGroup } from 'src/services'
@@ -187,6 +188,18 @@ const filter = ref('')
 // Functions
 function editGroup() {
   router.push(`/groups/edit/${id.value}`)
+}
+
+function addUser() {
+  $q.dialog({
+    component: GroupAddUserForm,
+    componentProps: {
+      group_id: id.value,
+    },
+  })
+    .onOk(async () => {
+      await getGroupUsers()
+    })
 }
 
 function removeUser(user) {
