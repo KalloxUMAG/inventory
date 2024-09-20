@@ -5,7 +5,7 @@ export const reqInstance = axios.create()
 
 // Interceptor para agregar el token en cada solicitud
 reqInstance.interceptors.request.use((config) => {
-  const token = Cookies.get('CATGInventoryToken') // Obtén el token más reciente
+  const token = Cookies.get('CATGInventoryToken')
   if (token) {
     config.headers.Authorization = `Bearer ${token}` // Actualiza el header Authorization con el token
   }
@@ -15,7 +15,6 @@ reqInstance.interceptors.request.use((config) => {
 })
 
 export async function sendRequest(config) {
-  console.log(Cookies.get('CATGInventoryToken')) // Verifica que el token sea el correcto
   try {
     const response = await reqInstance(config)
     return response
