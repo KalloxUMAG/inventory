@@ -8,13 +8,21 @@ from config.database import get_db
 from services.user_group_role import UserGroupRoleService
 from schemas.user_group_role import UserGroupRoleSchema, UserGroupRoleFullSchema, UserFullSchema, BasicUserSchema
 
-user_group_role = APIRouter(dependencies=[], tags=["roles"], prefix="/api/user_rol_group")
+from auth.auth_bearer import JWTBearer, get_user_id_from_token
+
+user_group_role = APIRouter(dependencies=[Depends(JWTBearer())], tags=["roles"], prefix="/api/user_rol_group")
 service = UserGroupRoleService()
 
 
 @user_group_role.get("")
 async def get_users_groups_roles(db: Session = Depends(get_db)):
     roles = await service.get_users_groups_roles(db=db)
+    return roles
+@user_group_role.get("/my_groups", response_model=List[UserGroupRoleFullSchema])
+async def get_user_groups_and_roles(dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
+    token = dependencies
+    user_id = get_user_id_from_token(token)
+    roles = await service.get_user_groups_and_roles(user_id=user_id, db=db)
     return roles
 @user_group_role.get("/{user_id}", response_model=List[UserGroupRoleFullSchema])
 async def get_user_groups_and_roles(user_id: int, db: Session = Depends(get_db)):

@@ -323,8 +323,8 @@
               :clearable="false"
               :options="groupsOptions"
               :default_value="defaultGroup"
-              option_value="id"
-              option_label="name"
+              option_value="group_id"
+              option_label="group_name"
               label="Grupo"
               not_found_label="No hay grupos disponibles"
               :rules="[(val) => !!val || 'Campo obligatorio']"
@@ -356,7 +356,7 @@
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
 import { sendRequest } from 'src/services/axios/instance.js'
-import { getGroups, postLot } from 'src/services/index.js'
+import { getMyGroups, postLot } from 'src/services/index.js'
 
 import SelectForm from 'src/components/SelectForm.vue'
 
@@ -417,13 +417,13 @@ async function getSuppliers() {
 }
 
 async function getGroupsData() {
-  groupsOptions.value = await getGroups()
+  groupsOptions.value = await getMyGroups()
   if (groupsOptions.value.length > 0) {
-    defaultGroup.value = { id: groupsOptions.value[0].id, name: groupsOptions.value[0].name }
-    group.value = defaultGroup.value.id
+    defaultGroup.value = { group_id: groupsOptions.value[0].group_id, group_name: groupsOptions.value[0].group_name }
+    group.value = defaultGroup.value.group_id
   }
   else {
-    defaultGroup.value = { id: null, name: null }
+    defaultGroup.value = { group_id: null, group_name: null }
   }
 }
 
