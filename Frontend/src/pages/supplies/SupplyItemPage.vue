@@ -226,14 +226,14 @@
       </q-card>
     </div>
     <div v-if="groupStocks.length > 0" class="q-mt-md">
-      <StockChart title="Stocks por grupo" :data="groupStocks" :critical="supply.critical_stock" />
+      <StockChart :key="chartKey" title="Stocks por grupo" :data="groupStocks" :critical="supply.critical_stock" />
     </div>
   </div>
 </template>
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { sendRequest } from 'src/services/axios/instance.js'
 import PageTitle from 'src/components/commons/PageTitle.vue'
@@ -261,6 +261,12 @@ const $q = useQuasar()
 const router = useRouter()
 
 const api_prefix = process.env.API_URL
+
+const chartKey = ref(0)
+
+watch(groupStocks, () => {
+  chartKey.value += 1
+})
 
 async function getSupply() {
   try {
@@ -317,9 +323,10 @@ function addLot() {
       supply_id: supply.value.id,
       stock: supply.value.lot_stock,
     },
-  }).onOk((data) => {
-    getLots()
-    getSupply()
+  }).onOk(async(data) => {
+    await getLots()
+    await getSupply()
+    await loadGroupStock()
   })
 }
 
@@ -341,6 +348,7 @@ function removeLot(lot) {
       await deleteLot(lot_id)
       await getLots()
       await getSupply()
+      await loadGroupStock()
     })
     .onCancel(() => {
       // console.log('Cancel')
@@ -369,9 +377,10 @@ function editLot(lot) {
       group_default: { id: lot.group_id, name: lot.group_name },
     },
   })
-    .onOk((data) => {
-      getLots()
-      getSupply()
+    .onOk(async(data) => {
+      await getLots()
+      await getSupply()
+      await loadGroupStock()
     })
     .onCancel(() => {
       // console.log('Cancel')
