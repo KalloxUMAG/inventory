@@ -6,10 +6,13 @@
         <BreadCrumb />
         <q-space />
         <div class="q-gutter-sm row items-center no-wrap q-mr-md">
-          <q-btn v-if="user" round>
+          <q-btn v-if="user" class="text-black" flat icon-right="arrow_drop_down">
             <q-avatar size="42px">
               <img v-if="user.img" :src="api_prefix.slice(0, -4) + user.img" :alt="fullname" />
             </q-avatar>
+            <span class="q-ml-sm">
+              {{ user.fullname }}
+            </span>
             <q-menu>
               <q-list>
                 <q-item v-if="user.profile" clickable v-ripple :to="user.profile">
