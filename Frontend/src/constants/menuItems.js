@@ -62,21 +62,5 @@ export const menuItems = [
     exact: true,
     separator: false,
     type: 'nav',
-  },
-  {
-    label: 'Cambiar contraseña',
-    icon: 'key',
-    to: '/changepassword',
-    exact: true,
-    separator: false,
-    type: 'nav',
-  },
-  {
-    label: 'Cerrar sesión',
-    icon: 'logout',
-    to: '/login',
-    exact: true,
-    separator: false,
-    type: 'nav',
-  },
+  }
 ]

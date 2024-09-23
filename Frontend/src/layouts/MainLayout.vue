@@ -4,6 +4,43 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" color="secondary" @click="toggleLeftDrawer" />
         <BreadCrumb />
+        <q-space />
+        <div class="q-gutter-sm row items-center no-wrap q-mr-md">
+          <q-btn v-if="user" round>
+            <q-avatar size="42px">
+              <img v-if="user.img" :src="api_prefix.slice(0, -4) + user.img" :alt="fullname" />
+            </q-avatar>
+            <q-menu>
+              <q-list>
+                <q-item v-if="user.profile" clickable v-ripple :to="user.profile">
+                  <q-item-section avatar>
+                    <q-icon name="person" class="item-icon" />
+                  </q-item-section>
+                  <q-item-section>
+                    Perfil
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-ripple to="/changepassword">
+                  <q-item-section avatar>
+                    <q-icon name="key" class="item-icon" />
+                  </q-item-section>
+                  <q-item-section>
+                    Cambiar contraseña
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-ripple to="/login">
+                  <q-item-section avatar>
+                    <q-icon name="logout" class="item-icon" />
+                  </q-item-section>
+                  <q-item-section>
+                    Cerrar sesión
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
+
       </q-toolbar>
     </q-header>
 
@@ -54,18 +91,33 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { menuItems } from '../constants/menuItems.js'
 import BreadCrumb from '../components/commons/BreadCrumb.vue'
+import { getMe, getUserImage } from 'src/services/index.js'
 
 const $q = useQuasar()
 const fullname = $q.cookies.get('CATGInventoryFullname')
+const api_prefix = process.env.API_URL
+const img_url = `${api_prefix}/users/images/`
 const leftDrawerOpen = ref(true)
+
+const user = ref(null)
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
+
+async function getUser() {
+  user.value = await getMe()
+  user.value.img = await getUserImage(user.value.id)
+  user.value.profile = `/users/${user.value.id}`
+}
+
+onMounted(() => {
+  getUser()
+})
 </script>
 
 <style lang="scss">

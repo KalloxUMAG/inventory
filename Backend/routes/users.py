@@ -15,6 +15,7 @@ from schemas.user_schema import (
     changepassword,
     UserCreate,
     UserEdit,
+    User
 )
 from schemas.role_schema import GrantRoleSchema
 
@@ -166,6 +167,12 @@ def loginuser(
 async def getusers(db: Session = Depends(get_db)):
     users = await service.get_users(db)
     return users
+
+@users.get("/me", tags=["users"], response_model=User)
+async def get_me(dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
+    user_id = get_user_id_from_token(dependencies)
+    user = await service.get_user(user_id, db)
+    return user
 
 @users.get("/search_users", tags=["users"])
 async def search_users(fullname: str = None, email: str = None, db: Session = Depends(get_db)):
