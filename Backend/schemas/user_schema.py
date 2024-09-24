@@ -94,7 +94,7 @@ class FilterUser(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
     fullname: Optional[str] = None
-    group_roles: List[BasicNoUserGroupRoleSchema]
+    group_roles: Optional[List[BasicNoUserGroupRoleSchema]] = None
 
     class Config:
         from_attributes = True
