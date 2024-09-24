@@ -46,3 +46,16 @@ export async function postUser(data) {
   }
 }
 
+export async function reactivateUser(user_id) {
+  try {
+    const response = await sendRequest({
+      method: 'PUT',
+      url: `${api_prefix}/users/reactivate/${user_id}`,
+    })
+    CatchNotifications(response.status, 'Usuario reactivado con éxito')
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'No se pudo reactivar el usuario')
+  }
+}

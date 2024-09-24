@@ -286,3 +286,19 @@ async def get_images(user_id: int):
 async def delete_image(user_id: int, file: UploadFile):
     await service.delete_user_images(user_id, file)
     return Response(status_code=HTTP_200_OK)
+
+# Activate user
+@users.put("/reactivate/{user_id}", status_code=HTTP_200_OK)
+async def reactivate_user(user_id: int, db: Session = Depends(get_db)):
+    user = await service.reactivate_user(user_id, db)
+    if not user:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    return Response(status_code=HTTP_200_OK)
+
+# Deactivate user
+@users.delete("/{user_id}", status_code=HTTP_204_NO_CONTENT)
+async def deactivate_user(user_id: int, db: Session = Depends(get_db)):
+    user = await service.deactivate_user(user_id, db)
+    if not user:
+        return Response(status_code=HTTP_404_NOT_FOUND)
+    return Response(status_code=HTTP_204_NO_CONTENT)

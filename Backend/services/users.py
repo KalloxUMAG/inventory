@@ -95,3 +95,17 @@ class UserService:
         format_filename = file.filename[: -len(extension)].lower()
         format_filename = re.sub("[^A-Za-z0-9_]", "", format_filename, 0, re.IGNORECASE)
         os.remove(str(image_path) + "/" + str(format_filename) + "." + str(extension))
+    async def reactivate_user(self, user_id: int, db: Session):
+        user = db.query(Users).filter(Users.id == user_id).first()
+        user.disable = False
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        return user
+    async def deactivate_user(self, user_id: int, db: Session):
+        user = db.query(Users).filter(Users.id == user_id).first()
+        user.disable = True
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        return user

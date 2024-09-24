@@ -94,6 +94,7 @@ class FilterUser(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
     fullname: Optional[str] = None
+    disable: Optional[bool] = None
     group_roles: Optional[List[BasicNoUserGroupRoleSchema]] = None
 
     class Config:

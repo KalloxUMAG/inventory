@@ -3,11 +3,16 @@
     <PageTitle :title="user.fullname" icon="person">
       <div>
         <q-btn outline color="secondary" label="Editar" disable @click="editUser" />
-        <q-btn
+        <q-btn v-if="user.disable"
+          class="q-ml-sm"
+          color="positive"
+          label="Reactivar"
+          @click="activateUser"
+        />
+        <q-btn v-else
           class="q-ml-sm"
           color="negative"
-          label="Eliminar"
-          disable
+          label="Desactivar"
           @click="deleteUser"
         />
       </div>
@@ -75,6 +80,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { sendRequest } from 'src/services/axios/instance.js'
 import { useQuasar } from 'quasar'
+import { reactivateUser } from 'src/services'
 
 // Components
 import DeleteDialog from 'src/components/item-page/DeleteDialog.vue'
@@ -133,10 +139,15 @@ function deleteUser() {
       type: 'users',
     },
   })
-    .onOk((data) => {
-      router.push('/users')
+    .onOk(async(data) => {
+      await getUser()
     })
     .onCancel(() => {})
+}
+
+async function activateUser() {
+  await reactivateUser(id.value)
+  await getUser()
 }
 
 onMounted(() => {
