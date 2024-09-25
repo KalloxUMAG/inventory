@@ -72,7 +72,7 @@ async def update_stock(
 async def update_supply(
     data_update: SupplySchema, supply_id: int, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)
 ):
-    db_supply = await service.get_supply(supply_id, db)
+    db_supply = await service.get_supply_simple(supply_id, db)
     if not db_supply:
         return Response(status_code=HTTP_404_NOT_FOUND)
     update_supply = await service.update_supply(user_id=get_user_id_from_token(dependencies), data_update=data_update, supply=db_supply, db=db)

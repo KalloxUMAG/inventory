@@ -12,6 +12,9 @@ from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 lot_service = LotService()
 
 class SupplyService:
+    async def get_supply_simple(self, supply_id: int, db: Session):
+        result = db.query(Supply).filter(Supply.id == supply_id).first()
+        return result
     async def get_supplies(self, db: Session):
         results_db = (
             db.query(
@@ -152,7 +155,7 @@ class SupplyService:
         db.refresh(supply)
         return supply
     @log_func_calls("supplies", UPDATE_LOG)
-    async def update_supply(self, user_id: int, supply: SupplySchema, data_update: SupplySchema, db: Session):
+    async def update_supply(self, user_id: int, supply, data_update: SupplySchema, db: Session):
         for key, value in data_update.model_dump(exclude_unset=True).items():
             setattr(supply, key, value)
         db.add(supply)
