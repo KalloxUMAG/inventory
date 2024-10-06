@@ -11,9 +11,16 @@
     input-debounce="0"
     :clearable="clearable"
     @update:model-value="updateModel(model)"
-    @filter="filterFn"
   >
+    <template #before-options>
+      <div class="q-pa-sm">
+        <q-input v-model="filter" dense outlined placeholder="Search" @update:model-value="applyFilter"/>
+      </div>
+    </template>
     <template #no-option>
+      <div class="q-pa-sm">
+        <q-input v-model="filter" dense outlined placeholder="Search" @update:model-value="applyFilter"/>
+      </div>
       <q-item>
         <q-item-section class="text-italic text-grey">
           {{ not_found_label }}
@@ -67,6 +74,7 @@ const stringOptions = ref(props.options)
 const model_default = ref(props.default_value)
 const clearable = ref(props.clearable)
 const model = ref(null)
+const filter = ref('')
 if (model_default.value !== null && model_default.value.id !== null)
   model.value = model_default.value
 
@@ -83,5 +91,13 @@ function filterFn(val, update) {
       v => v.name.toLowerCase().includes(needle),
     )
   })
+}
+
+function applyFilter(value) {
+  const val = filter.value
+  const needle = val.toLowerCase()
+  stringOptions.value = props.options.filter(
+    v => v.name.toLowerCase().includes(needle),
+  )
 }
 </script>
