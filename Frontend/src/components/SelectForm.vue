@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps({
   options: {
@@ -75,8 +75,13 @@ const model_default = ref(props.default_value)
 const clearable = ref(props.clearable)
 const model = ref(null)
 const filter = ref('')
+
 if (model_default.value !== null && model_default.value.id !== null)
   model.value = model_default.value
+
+watch(() => props.options, (newOptions) => {
+  stringOptions.value = newOptions
+})
 
 function filterFn(val, update) {
   if (val === '') {
