@@ -6,7 +6,7 @@
     thumbnails
     infinite
     control-color="amber"
-    class="rounded-borders bg-primary"
+    class="rounded-borders bg-gray"
   >
     <q-carousel-slide
       v-if="images.length === 0"
@@ -58,5 +58,9 @@ onMounted(() => {
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.bg-gray {
+  background-color: #eef3f7;
 }
 </style>
