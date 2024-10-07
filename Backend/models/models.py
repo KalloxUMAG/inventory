@@ -170,6 +170,7 @@ class Equipment(Base):
     serial_number: Mapped[Optional[str]] = mapped_column(String)
     umag_inventory_code: Mapped[Optional[str]] = mapped_column(String)
     reception_date = mapped_column(Date, nullable=True)
+    relevant = mapped_column(Boolean, default=False, nullable=False)
     maintenance_period: Mapped[Optional[int]] = mapped_column(Integer)
     observation: Mapped[Optional[str]] = mapped_column(String)
     next_maintenance: Mapped[Optional[Date]] = mapped_column(Date)

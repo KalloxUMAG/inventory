@@ -235,6 +235,14 @@
         />
       </div>
 
+      <div class="row">
+        <q-checkbox
+          v-model="isRelevant"
+          val="lg"
+          label="¿El equipo es relevante?"
+        />
+      </div>
+
       <!-- Mantenimiento -->
       <q-checkbox
         v-model="maintenance.apply"
@@ -951,6 +959,8 @@ const unit = reactive({
   newUnit: null,
 })
 const unitOptions = ref([])
+const isRelevant = ref(false)
+
 const router = useRouter()
 
 function handleAddImages(files) {
@@ -1066,6 +1076,7 @@ async function loadEquipmentFromStore() {
   invoice.newInvoiceNumber = storeEquipment.value.invoice.newInvoiceNumber
   invoicesOptions.value = storeEquipment.value.invoicesOptions
   uploaderComponent.value.addFiles(storeEquipment.value.equipmentimages)
+  isRelevant.value = storeEquipment.value.isRelevant
   equipmentFormStore.clearEquipmentForm()
 }
 
@@ -1116,6 +1127,7 @@ function newSupplier() {
     uploaderComponent: uploaderComponent.value,
     types,
     typesOptions: typesOptions.value,
+    isRelevant: isRelevant.value,
   })
   router.push('/suppliers/new_supplier')
 }
@@ -1397,6 +1409,7 @@ async function onSubmit() {
     serial_number: serial.value,
     umag_inventory_code: inventory.value,
     reception_date: reception_date.value,
+    relevant: isRelevant.value,
     observation: observation.value,
     model_number_id: modelNumber.model,
     supplier_id: supplier.value,

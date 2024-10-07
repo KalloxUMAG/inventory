@@ -68,6 +68,10 @@
                   label: 'Observación',
                   value: equipment.observation,
                 },
+                {
+                  label: '¿Es relevante?',
+                  value: equipment.relevant ? 'Si' : 'No',
+                }
               ]"
             />
             <InfoSection

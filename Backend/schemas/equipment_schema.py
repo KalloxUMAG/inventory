@@ -10,6 +10,7 @@ class EquipmentSchema(BaseModel):
     serial_number: Optional[str] = None
     umag_inventory_code: Optional[str] = None
     reception_date: Optional[date] = None
+    relevant: Optional[bool] = None
     maintenance_period: Optional[int] = None
     last_preventive_mainteinance: Optional[date] = None
     observation: Optional[str] = None
@@ -31,6 +32,7 @@ class EquipmentListSchema(BaseModel):
     serial_number: Optional[str] = None
     umag_inventory_code: Optional[str] = None
     reception_date: Optional[date] = None
+    relevant: Optional[bool] = None
     maintenance_period: Optional[int] = None
     last_preventive_mainteinance: Optional[date] = None
     observation: Optional[str] = None
@@ -62,6 +64,7 @@ class EquipmentFullSchema(BaseModel):
     serial_number: Optional[str] = None
     umag_inventory_code: Optional[str] = None
     reception_date: Optional[date] = None
+    relevant: Optional[bool] = None
     maintenance_period: Optional[int] = None
     observation: Optional[str] = None
     last_preventive_mainteinance: Optional[date] = None
@@ -101,6 +104,7 @@ class UpdateEquipmentSchema(BaseModel):
     serial_number: Optional[str] = None
     umag_inventory_code: Optional[str] = None
     reception_date: Optional[date] = None
+    relevant: Optional[bool] = None
     maintenance_period: Optional[int] = None
     last_preventive_mainteinance: Optional[date] = None
     next_maintenance: Optional[date] = None
@@ -131,6 +135,7 @@ class EquipmentAvailableSchema(BaseModel):
     serial_number: Optional[str] = None
     umag_inventory_code: Optional[str] = None
     reception_date: Optional[date] = None
+    relevant: Optional[bool] = None
     maintenance_period: Optional[int] = None
     last_preventive_mainteinance: Optional[date] = None
     observation: Optional[str] = None
@@ -153,6 +158,7 @@ class CriticEquipmentSchema(BaseModel):
     serial_number: Optional[str] = None
     umag_inventory_code: Optional[str] = None
     reception_date: Optional[date] = None
+    relevant: Optional[bool] = None
     maintenance_period: Optional[int] = None
     last_preventive_mainteinance: Optional[date] = None
     observation: Optional[str] = None

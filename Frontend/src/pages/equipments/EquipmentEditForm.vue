@@ -218,6 +218,14 @@
         />
       </div>
 
+      <div class="row">
+        <q-checkbox
+          v-model="isRelevant"
+          val="lg"
+          label="¿El equipo es relevante?"
+        />
+      </div>
+
       <!-- Mantenimiento -->
       <q-checkbox
         v-model="maintenance.apply"
@@ -943,6 +951,8 @@ const unit = reactive({
 })
 const unitOptions = ref([])
 const originalImages = ref([])
+const isRelevant = ref(false)
+
 const router = useRouter()
 
 async function getEquipmentData() {
@@ -953,6 +963,7 @@ async function getEquipmentData() {
   maintenance.apply = !!defaultEquipment.maintenance_period
   observation.value = defaultEquipment.observation
   reception_date.value = defaultEquipment.reception_date
+  isRelevant.value = defaultEquipment.relevant
   brand.default = { id: defaultEquipment.brand_id, name: defaultEquipment.brand_name }
   brand.model = defaultEquipment.brand_id
   brand.name = defaultEquipment.brand_name
@@ -1319,6 +1330,7 @@ async function onSubmit() {
     serial_number: serial.value,
     umag_inventory_code: inventory.value,
     reception_date: reception_date.value,
+    relevant: isRelevant.value,
     observation: observation.value,
     model_number_id: modelNumber.model,
     supplier_id: supplier.model,
