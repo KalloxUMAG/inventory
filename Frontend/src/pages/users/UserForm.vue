@@ -49,7 +49,7 @@
         />
       </div>
       <div v-if="group" class="row">
-        <SelectForm
+        <InputSelect
           outlined
           bg-color="white"
           :clearable="false"
@@ -64,7 +64,7 @@
         />
       </div>
       <div v-if="role" class="row">
-        <SelectForm
+        <InputSelect
           :clearable="false"
           class="col q-mr-md"
           :default_value="role"
@@ -107,7 +107,7 @@ import { sendRequest } from 'src/services/axios/instance.js'
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import FormSection from 'src/components/form/FormSection.vue'
 import UploadImages from 'src/components/UploadImages.vue'
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 
 import { getGroups, getGroupRoles, postUser, addUserGroupRole } from 'src/services'
 

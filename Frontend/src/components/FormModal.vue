@@ -7,7 +7,7 @@
         </div>
         <div v-for="(field, index) in fields" :key="index">
           <q-input v-if="field.type == 'text' || field.type == 'date' || field.type == 'number'" v-model="models[index]" :type="field.type" stack-label :label="field.label" :autogrow="field.autogrow" :rules="field.rules" lazy-rules />
-          <SelectForm v-if="field.type == 'select'" stack-label :options="field.options" :option_value="field.option_value" :option_label="field.option_label" :label="field.label" :not_found_label="field.not_found_label" :rules="field.rules" lazy-rules @update-model="(value) => (models[index] = value)" />
+          <InputSelect v-if="field.type == 'select'" stack-label :options="field.options" :option_value="field.option_value" :option_label="field.option_label" :label="field.label" :not_found_label="field.not_found_label" :rules="field.rules" lazy-rules @update-model="(value) => (models[index] = value)" />
         </div>
         <div class="q-mt-sm row justify-end">
           <q-btn color="primary" label="Agregar" type="submit" class="q-mr-sm" />
@@ -21,7 +21,7 @@
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
 import { onMounted, ref, toRefs } from 'vue'
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 
 const props = defineProps({
   title: String,

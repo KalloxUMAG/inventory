@@ -7,7 +7,7 @@
         </div>
         <!-- Fields -->
         <div v-if="!newsupplierstate">
-          <SelectForm
+          <InputSelect
             outlined
             :options="suppliersOptions"
             option_value="id"
@@ -80,7 +80,7 @@
             />
           </div>
           <div class="row">
-            <SelectForm
+            <InputSelect
               outlined
               :disable="disableSupplier"
               :options="rolOptions"
@@ -174,7 +174,7 @@
 import { sendRequest } from 'src/services/axios/instance.js'
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref, toRefs } from 'vue'
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 import { rolOptions } from 'src/constants/columns.js'
 
 const props = defineProps({

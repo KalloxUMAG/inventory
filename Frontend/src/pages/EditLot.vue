@@ -11,7 +11,7 @@
         <!-- Fields -->
         <div class="col">
           <div class="row q-my-sm">
-            <SelectForm
+            <InputSelect
               outlined
               class="col"
               :options="suppliersOptions"
@@ -93,7 +93,7 @@
           </div>
           <div class="row">
             <div v-if="!newLocationState" class="col q-mt-md">
-              <SelectForm
+              <InputSelect
                 outlined
                 class="row q-mr-md"
                 :disable="disableLocation"
@@ -138,7 +138,7 @@
               v-if="!newLocationState && !newSublocationState"
               class="col q-mt-md"
             >
-              <SelectForm
+              <InputSelect
                 outlined
                 class="row"
                 :disable="disableSublocation"
@@ -222,7 +222,7 @@
           </div>
         </div>
         <div v-if="!newProjectState" class="col">
-          <SelectForm
+          <InputSelect
             outlined
             class="row"
             :options="projectOptions"
@@ -276,7 +276,7 @@
         </div>
         <div v-if="newProjectState" class="row">
           <div v-if="!newProjectOwnerState" class="col">
-            <SelectForm
+            <InputSelect
               outlined
               class="row"
               :disable="disableProjectOwner"
@@ -336,7 +336,7 @@
 
         <div class="row">
           <div class="col">
-            <SelectForm
+            <InputSelect
               outlined
               class="row"
               :default_value="group_default"
@@ -374,7 +374,7 @@
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
 import { sendRequest } from 'src/services/axios/instance'
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 
 const props = defineProps({
   supply_id: Number,

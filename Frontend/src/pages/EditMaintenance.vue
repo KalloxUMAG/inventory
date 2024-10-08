@@ -14,7 +14,7 @@
           :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
-        <SelectForm
+        <InputSelect
           :options="typeOptions"
           option_value="id"
           option_label="name"
@@ -27,7 +27,7 @@
             }
           "
         />
-        <SelectForm
+        <InputSelect
           :options="stateOptions"
           option_value="id"
           option_label="name"
@@ -60,7 +60,7 @@
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref, toRefs } from 'vue'
 import { sendRequest } from 'src/services/axios/instance'
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 
 const props = defineProps({
   id: Number,

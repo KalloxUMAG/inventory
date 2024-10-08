@@ -51,7 +51,7 @@
       <div class="row justify-center">
         <div v-if="!brand.newBrandState" class="col q-mr-md">
           <div v-if="brand.default">
-            <SelectForm
+            <InputSelect
               outlined
               class="row q-mr-md"
               :disable="brand.disable"
@@ -97,7 +97,7 @@
         </div>
         <div v-if="!brand.newBrandState && !model.newModelState" class="col q-mr-md">
           <div v-if="model.default">
-            <SelectForm
+            <InputSelect
               outlined
               class="row q-mr-md"
               :default_value="model.default"
@@ -145,7 +145,7 @@
           class="col"
         >
           <div v-if="modelNumber.default">
-            <SelectForm
+            <InputSelect
               outlined
               class="row"
               :default_value="modelNumber.default"
@@ -233,7 +233,7 @@
         label="Aplica para mantención"
       />
       <div v-if="maintenance.default !== null">
-        <SelectForm
+        <InputSelect
           v-if="maintenance.apply"
           outlined
           :default_value="maintenance.default"
@@ -273,7 +273,7 @@
     <FormSection title="Datos compra">
       <!-- Datos de proveedor -->
       <div v-if="supplier.default">
-        <SelectForm
+        <InputSelect
           outlined
           :options="suppliersOptions"
           :default_value="supplier.default"
@@ -331,7 +331,7 @@
       <!-- Invoices -->
       <div v-if="!invoice.newInvoiceState">
         <div v-if="invoice.default">
-          <SelectForm
+          <InputSelect
             outlined
             :default_value="invoice.default"
             :options="invoicesOptions"
@@ -429,7 +429,7 @@
       <div class="row justify-center">
         <div v-if="!project.newProjectState" class="col q-mr-md">
           <div v-if="project.default">
-            <SelectForm
+            <InputSelect
               outlined
               class="row q-mr-md"
               :default_value="project.default"
@@ -478,7 +478,7 @@
 
         <div v-if="!stage.newStageState && !project.newProjectState" class="col q-ml-md">
           <div v-if="stage.default">
-            <SelectForm
+            <InputSelect
               outlined
               class="row"
               :default_value="stage.default"
@@ -550,7 +550,7 @@
       <div v-if="project.newProjectState" class="row">
         <div v-if="!projectOwner.newProjectOwnerState" class="col">
           <div v-if="projectOwner.default">
-            <SelectForm
+            <InputSelect
               outlined
               class="row"
               :default_value="projectOwner.default"
@@ -620,7 +620,7 @@
       <div class="row justify-center">
         <div v-if="!building.newBuildingState" class="col q-mr-md">
           <div v-if="building.default">
-            <SelectForm
+            <InputSelect
               outlined
               class="row q-mr-md"
               :default_value="building.default"
@@ -665,7 +665,7 @@
         </div>
         <div v-if="!building.newBuildingState && !unit.newUnitState" class="col q-mr-md">
           <div v-if="unit.default">
-            <SelectForm
+            <InputSelect
               outlined
               class="row q-mr-md"
               :default_value="unit.default"
@@ -715,7 +715,7 @@
           class="col"
         >
           <div v-if="room.default">
-            <SelectForm
+            <InputSelect
               outlined
               class="row"
               :default_value="room.default"
@@ -808,7 +808,7 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { deleteImage, getBrands, getBuildings, getEquipment, getEquipmentImages, getImage, getInvoices, getInvoicesSupplier, getModelNumbers, getModels, getProjectOwners, getProjects, getRooms, getStages, getSuppliers, getUnits, postBrand, postBuilding, postEquipmentImage, postInvoice, postInvoiceImage, postModel, postModelNumber, postProject, postProjectOwner, postRoom, postStage, postUnit, updateEquipment } from '/src/services'
 
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 import UploadImages from 'src/components/UploadImages.vue'
 import FormSection from 'src/components/form/FormSection.vue'
 import PageTitle from 'src/components/commons/PageTitle.vue'

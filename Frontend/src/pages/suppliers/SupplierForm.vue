@@ -49,7 +49,7 @@
           :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
-        <SelectForm
+        <InputSelect
           outlined
           :options="rolOptions"
           option_value="value"
@@ -115,7 +115,7 @@ import { useEquipmentFormStore } from 'src/stores'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import FormSection from 'src/components/form/FormSection.vue'
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 
 const createSupplierForm = ref(null)
 const equimentFormStore = useEquipmentFormStore()

@@ -13,7 +13,7 @@
       <q-card-section>
         <q-form ref="AddLoanForm" @submit="onOKClick">
           <div class="row q-col-gutter-md">
-            <SelectForm
+            <InputSelect
               v-model="group"
               label="Grupo que presta"
               outlined
@@ -28,7 +28,7 @@
             />
           </div>
           <div class="row q-col-gutter-md q-mt-md">
-            <SelectForm
+            <InputSelect
               v-model="supply"
               label="Insumo a prestar"
               outlined
@@ -41,7 +41,7 @@
               hint="El insumo que se presta"
               @update-model="(value) => { supply = value; lot = null; loadLots(value) }"
             />
-            <SelectForm
+            <InputSelect
               v-model="lot"
               label="Lote a prestar"
               outlined
@@ -75,7 +75,7 @@
             />
           </div>
           <div class="row q-col-gutter-md q-mt-md">
-            <SelectForm
+            <InputSelect
               v-model="status"
               label="Estado"
               outlined
@@ -122,7 +122,7 @@
 import { useDialogPluginComponent } from 'quasar'
 import { onMounted, ref } from 'vue'
 import { getGroups, getLotsBySupplyAndGroupId, getSuppliesByGroupId, postLoan } from 'src/services'
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 
 defineEmits([...useDialogPluginComponent.emits])
 

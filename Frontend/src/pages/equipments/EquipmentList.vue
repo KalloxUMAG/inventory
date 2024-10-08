@@ -8,7 +8,7 @@
         </div>
         <div class="col-12 col-lg-8">
           <div class="actions-buttons float-right">
-            <SelectForm
+            <InputSelect
               outlined
               dense
               bg-color="white"
@@ -24,7 +24,7 @@
                 }
               "
             />
-            <SelectForm
+            <InputSelect
               outlined
               dense
               bg-color="white"
@@ -122,7 +122,7 @@ import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 import { getEquipmentTypes, getEquipments, getProjects } from 'src/services/index.js'
 import { equipmentsColumns } from '../../constants/columns.js'
 

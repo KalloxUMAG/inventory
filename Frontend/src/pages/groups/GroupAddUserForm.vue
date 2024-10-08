@@ -11,7 +11,7 @@
         <!-- Fields -->
         <div class="col">
           <div class="row q-my-sm">
-            <SelectForm
+            <InputSelect
               outlined
               class="col"
               :options="usersOptions"
@@ -29,7 +29,7 @@
             />
           </div>
           <div class="row q-my-sm">
-            <SelectForm
+            <InputSelect
               outlined
               class="col"
               :options="rolesOptions"
@@ -66,7 +66,7 @@
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
 
-import SelectForm from 'src/components/form/inputs/SelectForm.vue';
+import InputSelect from 'src/components/form/inputs/InputSelect.vue';
 
 import { addUserGroupRole, getGroupRoles, getUsersNotInGroup } from 'src/services';
 

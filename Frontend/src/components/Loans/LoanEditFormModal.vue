@@ -60,7 +60,7 @@
             />
           </div>
           <div class="row q-col-gutter-md q-mt-md">
-            <SelectForm
+            <InputSelect
               v-model="status"
               label="Estado"
               outlined
@@ -107,7 +107,7 @@
 import { useDialogPluginComponent } from 'quasar'
 import { onMounted, ref } from 'vue'
 import { putLoan } from 'src/services'
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 
 const props = defineProps({
   id: Number,

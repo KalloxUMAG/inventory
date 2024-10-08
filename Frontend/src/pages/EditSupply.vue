@@ -82,7 +82,7 @@
           </div>
         </div>
         <div v-if="!flags.newBrandState" class="col">
-          <SelectForm
+          <InputSelect
             outlined
             class="row"
             :options="brandOptions"
@@ -137,7 +137,7 @@
         </div>
 
         <div v-if="!flags.newTypeState" class="col">
-          <SelectForm
+          <InputSelect
             outlined
             class="row"
             :options="typeOptions"
@@ -192,7 +192,7 @@
         </div>
 
         <div v-if="!flags.newFormatState" class="col">
-          <SelectForm
+          <InputSelect
             outlined
             class="row"
             :options="formatOptions"
@@ -280,7 +280,7 @@
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, reactive, ref } from 'vue'
 import { sendRequest } from 'src/services/axios/instance'
-import SelectForm from 'src/components/form/inputs/SelectForm.vue'
+import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 
 const props = defineProps({
   supply_id: Number,
