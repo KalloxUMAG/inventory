@@ -63,7 +63,7 @@
 import { useRouter } from 'vue-router'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
-import FormSection from 'src/components/Form/FormSection.vue'
+import FormSection from 'src/components/form/FormSection.vue'
 import UploadImages from 'src/components/UploadImages.vue'
 import { sendRequest } from 'src/services/axios/instance.js'
 

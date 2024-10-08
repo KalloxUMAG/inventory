@@ -107,7 +107,7 @@
 import { useDialogPluginComponent } from 'quasar'
 import { onMounted, ref } from 'vue'
 import { putLoan } from 'src/services'
-import SelectForm from '../SelectForm.vue'
+import SelectForm from 'src/components/form/inputs/SelectForm.vue'
 
 const props = defineProps({
   id: Number,

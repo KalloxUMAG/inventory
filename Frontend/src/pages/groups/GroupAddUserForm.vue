@@ -66,7 +66,7 @@
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
 
-import SelectForm from 'src/components/SelectForm.vue';
+import SelectForm from 'src/components/form/inputs/SelectForm.vue';
 
 import { addUserGroupRole, getGroupRoles, getUsersNotInGroup } from 'src/services';
 

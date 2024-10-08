@@ -1,5 +1,7 @@
 <template>
   <q-select
+    outlined
+    bg-color="white"
     v-model="model"
     :options="stringOptions"
     :option-value="option_value"
@@ -10,6 +12,7 @@
     use-input
     input-debounce="0"
     :clearable="clearable"
+    :rules="required ? [val => !!val || 'Campo obligatorio'] : []"
     @update:model-value="updateModel(model)"
   >
     <template #before-options>
@@ -63,6 +66,11 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: true,
+  },
+  required: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
 })
 const emit = defineEmits(['updateModel'])

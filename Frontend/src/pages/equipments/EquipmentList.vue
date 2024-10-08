@@ -122,7 +122,7 @@ import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
-import SelectForm from 'src/components/SelectForm.vue'
+import SelectForm from 'src/components/form/inputs/SelectForm.vue'
 import { getEquipmentTypes, getEquipments, getProjects } from 'src/services/index.js'
 import { equipmentsColumns } from '../../constants/columns.js'
 

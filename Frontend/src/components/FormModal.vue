@@ -21,7 +21,7 @@
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
 import { onMounted, ref, toRefs } from 'vue'
-import SelectForm from './SelectForm.vue'
+import SelectForm from 'src/components/form/inputs/SelectForm.vue'
 
 const props = defineProps({
   title: String,

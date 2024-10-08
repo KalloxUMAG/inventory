@@ -65,8 +65,6 @@
       </div>
       <div v-if="role" class="row">
         <SelectForm
-          outlined
-          bg-color="white"
           :clearable="false"
           class="col q-mr-md"
           :default_value="role"
@@ -107,9 +105,9 @@ import { useRouter } from 'vue-router'
 import { sendRequest } from 'src/services/axios/instance.js'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
-import FormSection from 'src/components/Form/FormSection.vue'
+import FormSection from 'src/components/form/FormSection.vue'
 import UploadImages from 'src/components/UploadImages.vue'
-import SelectForm from 'src/components/SelectForm.vue'
+import SelectForm from 'src/components/form/inputs/SelectForm.vue'
 
 import { getGroups, getGroupRoles, postUser, addUserGroupRole } from 'src/services'
 

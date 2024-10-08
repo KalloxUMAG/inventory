@@ -808,9 +808,9 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { deleteImage, getBrands, getBuildings, getEquipment, getEquipmentImages, getImage, getInvoices, getInvoicesSupplier, getModelNumbers, getModels, getProjectOwners, getProjects, getRooms, getStages, getSuppliers, getUnits, postBrand, postBuilding, postEquipmentImage, postInvoice, postInvoiceImage, postModel, postModelNumber, postProject, postProjectOwner, postRoom, postStage, postUnit, updateEquipment } from '/src/services'
 
-import SelectForm from 'src/components/SelectForm.vue'
+import SelectForm from 'src/components/form/inputs/SelectForm.vue'
 import UploadImages from 'src/components/UploadImages.vue'
-import FormSection from 'src/components/Form/FormSection.vue'
+import FormSection from 'src/components/form/FormSection.vue'
 import PageTitle from 'src/components/commons/PageTitle.vue'
 
 const route = useRoute()

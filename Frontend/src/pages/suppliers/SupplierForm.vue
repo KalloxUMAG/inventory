@@ -114,8 +114,8 @@ import { postSupplier } from 'src/services'
 import { useEquipmentFormStore } from 'src/stores'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
-import FormSection from 'src/components/Form/FormSection.vue'
-import SelectForm from 'src/components/SelectForm.vue'
+import FormSection from 'src/components/form/FormSection.vue'
+import SelectForm from 'src/components/form/inputs/SelectForm.vue'
 
 const createSupplierForm = ref(null)
 const equimentFormStore = useEquipmentFormStore()

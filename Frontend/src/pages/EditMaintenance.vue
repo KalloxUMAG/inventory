@@ -60,7 +60,7 @@
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref, toRefs } from 'vue'
 import { sendRequest } from 'src/services/axios/instance'
-import SelectForm from 'src/components/SelectForm.vue'
+import SelectForm from 'src/components/form/inputs/SelectForm.vue'
 
 const props = defineProps({
   id: Number,

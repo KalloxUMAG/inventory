@@ -174,7 +174,7 @@
 import { sendRequest } from 'src/services/axios/instance.js'
 import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { onMounted, ref, toRefs } from 'vue'
-import SelectForm from 'src/components/SelectForm.vue'
+import SelectForm from 'src/components/form/inputs/SelectForm.vue'
 import { rolOptions } from 'src/constants/columns.js'
 
 const props = defineProps({
