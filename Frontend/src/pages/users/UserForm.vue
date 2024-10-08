@@ -38,10 +38,10 @@
         />
       </div>
       <div class="row">
-        <q-input
+        <InputPassword
+          autocomplete="new-user-password"
           v-model="user.password"
-          outlined
-          type="password"
+          :icon="false"
           label="Contraseña*"
           class="col q-mr-md"
           :rules="[(val) => !!val || 'Campo obligatorio']"
@@ -108,6 +108,7 @@ import PageTitle from 'src/components/commons/PageTitle.vue'
 import FormSection from 'src/components/form/FormSection.vue'
 import UploadImages from 'src/components/UploadImages.vue'
 import InputSelect from 'src/components/form/inputs/InputSelect.vue'
+import InputPassword from 'src/components/form/inputs/InputPassword.vue'
 
 import { getGroups, getGroupRoles, postUser, addUserGroupRole } from 'src/services'
 

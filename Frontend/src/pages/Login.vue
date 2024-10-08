@@ -8,24 +8,19 @@
     <q-card-section class="q-mx-none">
       <q-form ref="loginForm" @submit.prevent="onSubmit">
         <div class="text-grey-8">Correo electrónico</div>
-        <q-input v-model="email" dense outlined label="Correo electrónico">
+          <q-input v-model="email" dense outlined label="Correo electrónico">
             <template #prepend>
               <q-icon name="mail" />
             </template>
           </q-input>
           <div class="text-grey-8 q-mt-md">Contraseña</div>
-          <q-input
+          <InputPassword
+            autocomplete="current-password"
             v-model="password"
             dense
-            outlined
-            icon
-            type="password"
             label="Contraseña"
-          >
-            <template #prepend>
-              <q-icon name="key" />
-            </template>
-          </q-input>
+            :rules="[(val) => !!val || 'Campo obligatorio']"
+          />
           <q-btn
             style="border-radius: 8px"
             color="dark"
@@ -52,6 +47,7 @@ import { onMounted, ref } from 'vue'
 import axios from 'axios'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
+import InputPassword from 'src/components/form/inputs/InputPassword.vue';
 
 const $q = useQuasar()
 

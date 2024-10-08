@@ -7,22 +7,22 @@
     >
       <h5>Cambiar Contraseña</h5>
       <div class="row">
-        <q-input
+        <InputPassword
+          autocomplete="current-password"
           v-model="password"
-          outlined
-          type="password"
           label="Contraseña actual*"
+          :icon="false"
           class="col q-mr-md"
           :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
       </div>
       <div class="row">
-        <q-input
+        <InputPassword
+          autocomplete="new-password"
           v-model="newPassword"
-          outlined
-          type="password"
           label="Nueva contraseña*"
+          :icon="false"
           class="col q-mr-md"
           :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
@@ -46,6 +46,7 @@
 import { useQuasar } from 'quasar'
 import { ref } from 'vue'
 import { sendRequest } from 'src/services/axios/instance.js'
+import InputPassword from 'src/components/form/inputs/InputPassword.vue';
 
 const password = ref('')
 const newPassword = ref('')
