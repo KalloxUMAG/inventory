@@ -1,7 +1,7 @@
 import { Notify } from 'quasar'
 
 export function CatchNotifications(status, message) {
-  if (status === 403) {
+  if (status === 401) {
     ErrorNotification('Sesion expirada, favor inciar sesion de nuevo')
     return
   }
@@ -9,7 +9,7 @@ export function CatchNotifications(status, message) {
     SuccessNotification(message)
     return
   }
-  if (status === 401) {
+  if (status === 403) {
     ErrorNotification(`Error de permisos: ${message}`)
     return
   }

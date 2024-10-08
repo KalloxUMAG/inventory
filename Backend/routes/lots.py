@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from starlette.status import (
     HTTP_201_CREATED,
     HTTP_205_RESET_CONTENT,
-    HTTP_401_UNAUTHORIZED,
+    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
 )
 
@@ -34,9 +34,9 @@ async def get_lots(db: Session = Depends(get_db)):
 async def add_lots(lot: CreateLotSchema, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     permissions = await permissionsService.get_user_group_roles(user_context.get(), lot.group_id, db)
     if not permissions:
-        return Response(status_code=HTTP_401_UNAUTHORIZED, content="User is not in the group")
+        return Response(status_code=HTTP_403_FORBIDDEN, content="User is not in the group")
     if not permissions[3]:
-        return Response(status_code=HTTP_401_UNAUTHORIZED, content="User does not have permission to create lots")
+        return Response(status_code=HTTP_403_FORBIDDEN, content="User does not have permission to create lots")
     new_lot = await service.add_lot(user_id=get_user_id_from_token(dependencies), lot=lot, db=db)
     content = str(new_lot.id)
     return Response(status_code=HTTP_201_CREATED, content=content)
@@ -66,9 +66,9 @@ async def update_lot(
 ):
     permissions = await permissionsService.get_user_group_roles(user_context.get(), data_update.group_id, db)
     if not permissions:
-        return Response(status_code=HTTP_401_UNAUTHORIZED, content="User is not in the group")
+        return Response(status_code=HTTP_403_FORBIDDEN, content="User is not in the group")
     if not permissions[5]:
-        return Response(status_code=HTTP_401_UNAUTHORIZED, content="User does not have permission to edit lots")
+        return Response(status_code=HTTP_403_FORBIDDEN, content="User does not have permission to edit lots")
     db_lot = await service.get_lot_simple(lot_id, db)
     if not db_lot:
         return Response(status_code=HTTP_404_NOT_FOUND)
@@ -81,9 +81,9 @@ async def deactive_lot(lot_id: int, dependencies=Depends(JWTBearer()), db: Sessi
     db_lot = await service.get_lot_simple(lot_id, db)
     permissions = await permissionsService.get_user_group_roles(user_context.get(), db_lot.group_id, db)
     if not permissions:
-        return Response(status_code=HTTP_401_UNAUTHORIZED, content="User is not in the group")
+        return Response(status_code=HTTP_403_FORBIDDEN, content="User is not in the group")
     if not permissions[6]:
-        return Response(status_code=HTTP_401_UNAUTHORIZED, content="User does not have permission to delete lots")
+        return Response(status_code=HTTP_403_FORBIDDEN, content="User does not have permission to delete lots")
     if not db_lot:
         return Response(status_code=HTTP_404_NOT_FOUND)
     deactivated_lot = await service.delete_lot(user_id=get_user_id_from_token(dependencies), lot=db_lot, db=db)

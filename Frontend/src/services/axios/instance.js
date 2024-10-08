@@ -19,7 +19,7 @@ export async function sendRequest(config) {
     const response = await reqInstance(config)
     return response
   } catch (error) {
-    if (error.response && error.response.status === 403) {
+    if (error.response && error.response.status === 401) {
       Cookies.remove('CATGInventoryToken')
       Cookies.remove('CATGInventoryFullname')
     }
