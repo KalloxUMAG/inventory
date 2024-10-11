@@ -16,8 +16,10 @@ from schemas.supply_schema import (
 
 from auth.auth_bearer import JWTBearer, get_user_id_from_token
 
+from dependencies.permissions import check_permissions_factory
+
 supplies = APIRouter(
-    dependencies=[Depends(JWTBearer())], tags=["supplies"], prefix="/api/supplies"
+    dependencies=[Depends(JWTBearer()), Depends(check_permissions_factory("insumos"))], tags=["supplies"], prefix="/api/supplies"
 )
 service = SupplyService()
 
