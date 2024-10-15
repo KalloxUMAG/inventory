@@ -234,7 +234,6 @@
         outlined
         type="textarea"
         label="Observación"
-        :rules="[(val) => !!val || 'Campo obligatorio']"
         lazy-rules
       />
     </FormSection>
@@ -274,7 +273,7 @@ const supply = reactive({
   format: null,
   samples: 0,
   lot_stock: 0,
-  observation: null,
+  observation: "",
   critical_stock: 0,
 })
 const newBrand = ref('')

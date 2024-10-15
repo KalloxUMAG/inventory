@@ -254,7 +254,6 @@
         outlined
         type="textarea"
         label="Observación"
-        :rules="[(val) => !!val || 'Campo obligatorio']"
         lazy-rules
       />
 
