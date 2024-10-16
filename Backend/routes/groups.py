@@ -14,9 +14,10 @@ from services.groups import GroupService
 from schemas.group_schema import CreateGroupSchema, GroupSchema
 
 from auth.auth_bearer import JWTBearer, get_user_id_from_token
+from dependencies.permissions import check_permissions_factory
 
 groups = APIRouter(
-    dependencies=[Depends(JWTBearer())], tags=["groups"], prefix="/api/groups"
+    dependencies=[Depends(JWTBearer()), Depends(check_permissions_factory('grupos'))], tags=["groups"], prefix="/api/groups"
 )
 service = GroupService()
 

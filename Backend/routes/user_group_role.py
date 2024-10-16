@@ -9,8 +9,9 @@ from services.user_group_role import UserGroupRoleService
 from schemas.user_group_role import UserGroupRoleSchema, UserGroupRoleFullSchema, UserFullSchema, BasicUserSchema
 
 from auth.auth_bearer import JWTBearer, get_user_id_from_token
+from dependencies.permissions import check_permissions_factory
 
-user_group_role = APIRouter(dependencies=[Depends(JWTBearer())], tags=["roles"], prefix="/api/user_rol_group")
+user_group_role = APIRouter(dependencies=[Depends(JWTBearer()), Depends(check_permissions_factory('miembros_grupo'))], tags=["roles"], prefix="/api/user_rol_group")
 service = UserGroupRoleService()
 
 

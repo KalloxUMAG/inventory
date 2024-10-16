@@ -6,5 +6,5 @@ from services.logs import log_func_calls, CREATE_LOG, UPDATE_LOG, DELETE_LOG
 
 class SystemRolesService:
     async def get_system_roles(self, db: Session, user_id: int):
-        user_role = db.query(Users.id, SystemRoles.name).filter(Users.id == user_id, SystemRoles.id == Users.role_id).first()
-        return user_role
+        user_role = db.query(Users.id, SystemRoles.id.label("role_id")).filter(Users.id == user_id, SystemRoles.id == Users.role_id).first()
+        return user_role[1]
