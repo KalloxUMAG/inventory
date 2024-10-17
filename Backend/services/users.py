@@ -24,6 +24,7 @@ class UserService:
             fullname=user.fullname,
             hashed_password=hashed_password,
             email=user.email,
+            role_id=1, # Cambiar por el id del rol que se le asignará
         )
         db.add(new_user)
         db.commit()
