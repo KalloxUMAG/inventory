@@ -119,7 +119,9 @@ async function getImages() {
       method: 'GET',
       url: img_url + id.value,
     })
-    images.value = response.data
+    if (response.data.length > 0){
+      images.value = response.data
+    }
   }
   catch (error) {
     console.log(error)
