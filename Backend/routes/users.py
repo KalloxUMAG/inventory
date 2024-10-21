@@ -33,6 +33,8 @@ from routes.groups import get_group
 from auth.auth_bearer import JWTBearer, get_user_id_from_token
 from functools import wraps
 
+from dependencies.permissions import check_permissions_factory
+
 users = APIRouter(
     tags=["users"], prefix="/api/users", dependencies=[Depends(JWTBearer())]
 )
@@ -107,7 +109,7 @@ def create_refresh_token(subject: Union[str, Any], expires_delta: int = None) ->
 
 
 @users.post("", status_code=HTTP_201_CREATED, tags=["users"])
-async def create_user(user: UserCreate, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
+async def create_user(user: UserCreate, dependencies=Depends(JWTBearer()), db: Session = Depends(get_db), permissions=Depends(check_permissions_factory('usuarios'))):
     username = user.username.lower()
     email = user.email.lower()
     if await service.get_user_by_username(username, db):
@@ -247,7 +249,7 @@ def logout(dependencies=Depends(JWTBearer()), db: Session = Depends(get_db)):
     return {"message": "Logout Successfully"}
 
 @users.post("/roles", status_code=HTTP_201_CREATED)
-def grant_role_user(grant_role: GrantRoleSchema, db: Session = Depends(get_db)):
+def grant_role_user(grant_role: GrantRoleSchema, db: Session = Depends(get_db), permissions=Depends(check_permissions_factory('usuarios'))):
     db_user = db.query(Users).filter(Users.id == grant_role.user_id).first()
     if not db_user:
         return Response(
@@ -289,7 +291,7 @@ async def delete_image(user_id: int, file: UploadFile):
 
 # Activate user
 @users.put("/reactivate/{user_id}", status_code=HTTP_200_OK)
-async def reactivate_user(user_id: int, db: Session = Depends(get_db)):
+async def reactivate_user(user_id: int, db: Session = Depends(get_db), permissions=Depends(check_permissions_factory('usuarios'))):
     user = await service.reactivate_user(user_id, db)
     if not user:
         return Response(status_code=HTTP_404_NOT_FOUND)
@@ -297,7 +299,7 @@ async def reactivate_user(user_id: int, db: Session = Depends(get_db)):
 
 # Deactivate user
 @users.delete("/{user_id}", status_code=HTTP_204_NO_CONTENT)
-async def deactivate_user(user_id: int, db: Session = Depends(get_db)):
+async def deactivate_user(user_id: int, db: Session = Depends(get_db), permissions=Depends(check_permissions_factory('usuarios'))):
     user = await service.deactivate_user(user_id, db)
     if not user:
         return Response(status_code=HTTP_404_NOT_FOUND)
