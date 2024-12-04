@@ -120,7 +120,7 @@
         </div>
       </div>
 
-      <div v-if="!flags.newTypeState" class="col">
+      <div class="col">
         <InputSelect
           outlined
           class="row"
@@ -137,41 +137,6 @@
             }
           "
         />
-        <div class="row justify-end q-pt-md">
-          <q-btn
-            label="Añadir tipo de insumo"
-            class="add-btn"
-            @click="flags.newTypeState = true"
-          />
-        </div>
-      </div>
-      <div v-else>
-        <div class="row">
-          <q-input
-            v-model="newType"
-            outlined
-            class="col"
-            label="Tipo de insumo*"
-            :disable="flags.disableType"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
-          />
-        </div>
-        <div class="row justify-end q-pt-md">
-          <q-btn
-            :label="flags.disableType ? 'Editar' : 'Guardar'"
-            color="amber"
-            class="q-mr-sm"
-            @click="
-              newType != '' ? (flags.disableType = !flags.disableType) : ''
-            "
-          />
-          <q-btn
-            label="Ver lista"
-            color="amber"
-            @click="flags.newTypeState = false"
-          />
-        </div>
       </div>
 
       <div v-if="!flags.newFormatState" class="col">
@@ -286,7 +251,6 @@ const flags = reactive({
   disableFormat: false,
   newBrandState: false,
   disableType: false,
-  newTypeState: false,
   newFormatState: false,
 })
 
@@ -394,32 +358,6 @@ async function createNewFormat() {
   }
 }
 
-async function createNewType() {
-  if (!flags.newTypeState)
-    return supply.type
-
-  const typeData = {
-    name: newType.value,
-  }
-
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/supplies_types`,
-      data: typeData,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear el tipo de insumo: ${error}`,
-    })
-  }
-}
-
 async function createNewSupply(supplyData) {
   try {
     const response = await sendRequest({
@@ -463,11 +401,7 @@ async function onSubmit() {
   }
   supplyData.supplies_brand_id = supplies_brand_id
 
-  const supplies_type_id = await createNewType()
-  if (supplies_type_id == -1) {
-    loading.value = false
-    return
-  }
+  const supplies_type_id = supply.type
   supplyData.supplies_type_id = supplies_type_id
 
   const supplies_format_id = await createNewFormat()
