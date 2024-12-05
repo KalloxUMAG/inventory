@@ -65,6 +65,10 @@
                   value: supply.samples * supply.stock,
                 },
                 {
+                  label: 'Temperatura de consevación',
+                  value: supply.temperature,
+                },
+                {
                   label: 'Observación',
                   value: supply.observation,
                 },
@@ -412,6 +416,7 @@ function editSupply() {
       samples: supply.value.samples,
       stock: supply.value.stock,
       lot_stock: supply.value.lot_stock,
+      temperature: { id: supply.value.temperature, name: supply.value.temperature },
       observation: supply.value.observation,
       critical_stock: supply.value.critical_stock,
     },

@@ -212,12 +212,27 @@
             />
           </div>
         </div>
+        <div class="row">
+          <InputSelect
+            outlined
+            class="col q-mb-lg"
+            :default_value="props.temperature"
+            :options="temperatureOptions"
+            option_value="id"
+            option_label="name"
+            label="Temperatura de almacenamiento"
+            not_found_label="No hay temperaturas disponibles"
+            @update-model="
+              (value) => {
+                supply.temperature = value;
+              }
+            "/>
+      </div>
         <q-input
           v-model="supply.observation"
           outlined
           type="textarea"
           label="Observación"
-          :rules="[(val) => !!val || 'Campo obligatorio']"
           lazy-rules
         />
         <!-- Buttons -->
@@ -258,6 +273,7 @@ const props = defineProps({
   stock: Number,
   lot_stock: Number,
   observation: String,
+  temperature: String,
   critical_stock: Number,
 })
 
@@ -268,6 +284,13 @@ const api_prefix = process.env.API_URL
 const EditSupplyForm = ref(null)
 
 const $q = useQuasar()
+
+const temperatureOptions = [
+  { id: 'Ambiente', name: 'Ambiente' },
+  { id: '4 grados Celsius', name: '4 grados Celsius' },
+  { id: '-20 Grados Celsius', name: '-20 Grados Celsius' },
+  { id: '-80 Grados Celsius', name: '-80 Grados Celsius' }
+]
 
 // Options Selects
 const brandOptions = ref([])
@@ -285,6 +308,7 @@ const supply = reactive({
   stock: props.stock,
   lot_stock: props.lot_stock,
   observation: props.observation,
+  temperature: props.temperature,
   critical_stock: props.critical_stock,
 })
 const newBrand = ref('')
@@ -438,6 +462,7 @@ async function onOKClick() {
     samples: supply.samples,
     lot_stock: supply.lot_stock,
     stock: supply.stock,
+    temperature: supply.temperature,
     observation: supply.observation,
     supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,

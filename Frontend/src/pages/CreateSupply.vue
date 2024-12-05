@@ -194,6 +194,21 @@
           />
         </div>
       </div>
+      <div class="row">
+        <InputSelect
+          outlined
+          class="col q-mb-lg"
+          :options="temperatureOptions"
+          option_value="id"
+          option_label="name"
+          label="Temperatura de almacenamiento"
+          not_found_label="No hay temperaturas disponibles"
+          @update-model="
+            (value) => {
+              supply.temperature = value;
+            }
+          "/>
+      </div>
       <q-input
         v-model="supply.observation"
         outlined
@@ -239,6 +254,7 @@ const supply = reactive({
   samples: 0,
   lot_stock: 0,
   observation: "",
+  temperature: null,
   critical_stock: 0,
 })
 const newBrand = ref('')
@@ -255,6 +271,13 @@ const flags = reactive({
 })
 
 const loading = ref(false)
+
+const temperatureOptions = [
+  { id: 'Ambiente', name: 'Ambiente' },
+  { id: '4 grados Celsius', name: '4 grados Celsius' },
+  { id: '-20 Grados Celsius', name: '-20 Grados Celsius' },
+  { id: '-80 Grados Celsius', name: '-80 Grados Celsius' }
+]
 
 // Form
 const createSupplyForm = ref(null)
@@ -387,6 +410,7 @@ async function onSubmit() {
     samples: supply.samples,
     lot_stock: supply.lot_stock,
     observation: supply.observation,
+    temperature: supply.temperature,
     supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,
     supplies_format_id: supply.format,
