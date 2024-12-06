@@ -58,7 +58,7 @@
                 },
                 {
                   label: 'Tipo de equipo',
-                  value: equipment.equipment_type_name ?? 'Sin información',
+                  value: equipment.equipment_type_name ?? 'No aplica',
                 },
                 {
                   label: 'Periodo de mantención',
@@ -106,11 +106,11 @@
                 },
                 {
                   label: 'Proyecto',
-                  value: equipment.project_name ? equipment.project_name : 'Sin información',
+                  value: equipment.project_name ? equipment.project_name : 'No aplica',
                 },
                 {
                   label: 'Etapa',
-                  value: equipment.stage_name ? equipment.stage_name : 'Sin información',
+                  value: equipment.stage_name ? equipment.stage_name : 'No aplica',
                 },
               ]"
             />
