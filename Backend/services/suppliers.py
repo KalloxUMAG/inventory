@@ -20,6 +20,7 @@ class SupplierService:
             "name": supplier.name,
             "rut": supplier.rut,
             "city_address": supplier.city_address,
+            "email": supplier.email,
             "contacts": await contact_service.get_supplier_contact_by_supplier(supplier.id, db)
         } for supplier in suppliers]
     @log_func_calls("suppliers", CREATE_LOG)
@@ -30,13 +31,14 @@ class SupplierService:
                 func.lower(Supplier.name) == supplier.name.lower(),
                 func.lower(Supplier.rut) == supplier.rut.lower(),
                 func.lower(Supplier.city_address) == supplier.city_address.lower(),
+                func.lower(Supplier.email) == supplier.email.lower()
             )
             .first()
         )
         if db_supplier:
             return db_supplier
         new_supplier = Supplier(
-            name=supplier.name, rut=supplier.rut, city_address=supplier.city_address
+            name=supplier.name, rut=supplier.rut, city_address=supplier.city_address, email=supplier.email
         )
         db.add(new_supplier)
         db.commit()

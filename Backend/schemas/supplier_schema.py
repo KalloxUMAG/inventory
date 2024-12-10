@@ -7,6 +7,7 @@ class SupplierSchema(BaseModel):
     name: str
     rut: Optional[str] = None
     city_address: Optional[str] = None
+    email: Optional[str] = None
 
     class Config:
         from_attributes = True

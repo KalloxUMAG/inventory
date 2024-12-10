@@ -37,6 +37,15 @@
           lazy-rules
         />
       </div>
+      <div class="row">
+        <q-input
+          v-model="supplier.email"
+          outlined
+          label="Correo general*"
+          class="col q-mr-md"
+          type="email"
+        />
+      </div>
     </FormSection>
 
     <FormSection title="Contactos">
@@ -136,6 +145,7 @@ const supplier = reactive({
   name: '',
   rut: '',
   city_address: '',
+  email: '',
 })
 
 const contacts = ref([])
@@ -165,6 +175,7 @@ async function onSubmit() {
     rut: supplier.rut,
     city_address: supplier.city_address,
     contacts: contacts.value,
+    email: supplier.email,
   }
   const supplier_id = await postSupplier(supplierData)
   loading.value = false

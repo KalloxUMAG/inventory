@@ -222,6 +222,13 @@ export const suppliersColumns = [
     field: 'city_address',
     sortable: false,
   },
+  {
+    name: 'email',
+    align: 'left',
+    label: 'Correo',
+    field: 'email',
+    sortable: false,
+  }
 ]
 
 export const suppliersContactsColumns = [

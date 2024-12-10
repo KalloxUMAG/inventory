@@ -98,6 +98,7 @@ class Supplier(Base):
     name: Mapped[str] = mapped_column(String)
     rut: Mapped[str] = mapped_column(String)
     city_address = mapped_column(String)
+    email: Mapped[str] = mapped_column(String, nullable=True)
 
     supplier_contacts: Mapped[List["SupplierContact"]] = relationship(
         backref="Suppliers", cascade="delete,merge"
