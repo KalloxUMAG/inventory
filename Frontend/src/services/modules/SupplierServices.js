@@ -16,6 +16,32 @@ export async function getSuppliersFull() {
   }
 }
 
+export async function getSupplier(id) {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/suppliers/${id}`,
+    })
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar el proveedor')
+  }
+}
+
+export async function getSupplierContacts(id) {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/suppliers_contacts/contacts/${id}`,
+    })
+    return response.data
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los contactos del proveedor')
+  }
+}
+
 export async function postSupplier(data) {
   try {
     const response = await sendRequest({

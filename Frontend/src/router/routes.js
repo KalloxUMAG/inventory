@@ -71,6 +71,11 @@ const routes = [
         meta: { breadCrumb: [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Proveedores', icon: 'store', to: '/suppliers' }, { text: 'Nuevo Proveedor', icon: 'add_business' }] },
       },
       {
+        path: '/suppliers/:id',
+        component: () => import('src/pages/suppliers/SupplierItemPage.vue'),
+        meta: { breadCrumb(route) { const param = route.currentRoute.value.params.id; return [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Proveedores', icon: 'store', to: '/suppliers' }, { text: param }] } },
+      },
+      {
         path: '/suppliers',
         component: () => import('src/pages/suppliers/SupplierList.vue'),
         meta: { breadCrumb: [{ text: 'Inicio', icon: 'home', to: '/' }, { text: 'Proveedores', icon: 'store' }] },
