@@ -6,8 +6,7 @@
             outline
             color="secondary"
             label="Editar"
-            @click=""
-            disable
+            @click="editSupplier"
           />
         </div>
       </PageTitle>
@@ -64,8 +63,7 @@
                   icon="add"
                   label="Agregar"
                   flat
-                  @click=""
-                  disable
+                  @click="editSupplier"
                 />
               </div>
             </div>
@@ -138,7 +136,7 @@
   }
   
   function editSupplier() {
-    router.push(`/equipments/edit/${id.value}`)
+    router.push(`/suppliers/edit/${id.value}`)
   }
   
   onMounted(() => {

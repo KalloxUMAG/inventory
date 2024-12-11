@@ -68,3 +68,30 @@ export async function postSupplierContact(data) {
     CatchNotifications(error.response.status, 'Se ha producido un error al guardar el contacto del proveedor')
   }
 }
+
+export async function updateSupplier(supplierId, data) {
+  try {
+    await sendRequest({
+      method: 'PUT',
+      url: `${api_prefix}/suppliers/${supplierId}`,
+      data,
+    })
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al actualizar el proveedor')
+  }
+
+}
+
+export async function updateSupplierContact(contactId, data) {
+  try {
+    await sendRequest({
+      method: 'PUT',
+      url: `${api_prefix}/suppliers_contacts/${contactId}`,
+      data,
+    })
+  }
+  catch (error) {
+    CatchNotifications(error.response.status, 'Se ha producido un error al actualizar el contacto del proveedor')
+  }
+}

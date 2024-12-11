@@ -120,14 +120,12 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { postSupplier } from 'src/services'
-import { useEquipmentFormStore } from 'src/stores'
 
 import PageTitle from 'src/components/commons/PageTitle.vue'
 import FormSection from 'src/components/form/FormSection.vue'
 import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 
 const createSupplierForm = ref(null)
-const equimentFormStore = useEquipmentFormStore()
 const router = useRouter()
 
 const rolOptions = [
