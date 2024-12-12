@@ -428,7 +428,7 @@ class SuppliersHasSupplies(Base):
     supply_id = mapped_column(
         Integer, ForeignKey("Supplies.id", ondelete="CASCADE"), primary_key=True
     )
-    cost: Mapped[int] = mapped_column(Integer)
+    cost: Mapped[int] = mapped_column(Integer, nullable=True)
 
 
 class Loan(Base):

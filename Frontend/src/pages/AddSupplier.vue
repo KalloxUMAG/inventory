@@ -151,8 +151,6 @@
             type="number"
             label="Costo"
             class="col q-my-sm"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
           />
         </div>
         <!-- Buttons -->
@@ -183,7 +181,7 @@ const props = defineProps({
 
 defineEmits([...useDialogPluginComponent.emits])
 
-const cost = ref(0)
+const cost = ref(null)
 
 const disableSupplier = ref(false)
 
