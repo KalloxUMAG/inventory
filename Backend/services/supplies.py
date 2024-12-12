@@ -54,7 +54,7 @@ class SupplyService:
                 samples = result.samples,
                 critical_stock = result.critical_stock,
                 observation = result.observation,
-                temperature = Supply.temperature,
+                temperature = str(Supply.temperature),
                 supplies_brand_id = result.supplies_brand_id,
                 supplies_brand_name = result.supplies_brand_name,
                 supplies_type_id = result.supplies_type_id,
