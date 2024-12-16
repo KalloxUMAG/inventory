@@ -56,10 +56,6 @@
               type="date"
               label="Fecha de recepcion*"
               stack-label
-              lazy-rules
-              :rules="[
-                (val) => (val && val != null) || 'Este campo es obligatorio',
-              ]"
             />
           </div>
           <div class="row q-my-sm">
@@ -70,10 +66,6 @@
               type="date"
               label="Fecha de vencimiento*"
               stack-label
-              lazy-rules
-              :rules="[
-                (val) => (val && val != null) || 'Este campo es obligatorio',
-              ]"
             />
           </div>
           <div class="row">
