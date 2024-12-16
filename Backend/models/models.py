@@ -304,7 +304,6 @@ class Supply(Base):
     code: Mapped[str] = mapped_column(String)
     state: Mapped[bool] = mapped_column(Boolean)
     stock: Mapped[int] = mapped_column(Integer)
-    lot_stock: Mapped[int] = mapped_column(Integer)
     critical_stock: Mapped[int] = mapped_column(Integer)
     samples: Mapped[float] = mapped_column(Float)
     observation: Mapped[str] = mapped_column(String)
@@ -391,10 +390,11 @@ class Lot(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     number: Mapped[str] = mapped_column(String)  # Numero unico por cada lote (puede tener letras)
-    reception_date = mapped_column(Date)
-    due_date = mapped_column(Date)
+    reception_date = mapped_column(Date, nullable=True)
+    due_date = mapped_column(Date, nullable=True)
     observations: Mapped[str] = mapped_column(String)
     state: Mapped[bool] = mapped_column(Boolean)
+    lot_stock: Mapped[int] = mapped_column(Integer, nullable=True) # Stock inicial del lote
     stock: Mapped[int] = mapped_column(Integer)
 
     supplies_id: Mapped[int] = mapped_column(Integer, ForeignKey("Supplies.id", ondelete="CASCADE"))

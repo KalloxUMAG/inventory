@@ -32,6 +32,7 @@ class LotService:
                 Lot.due_date,
                 Lot.observations,
                 Lot.group_id,
+                Lot.lot_stock,
                 Lot.stock,
                 Supply.name.label("supply_name"),
                 Supply.code.label("supply_code"),
@@ -94,6 +95,7 @@ class LotService:
                 Location.id.label("location_id"),
                 Location.name.label("location"),
                 Lot.sub_location_id,
+                Lot.lot_stock,
                 Lot.stock,
                 SubLocation.name.label("sub_location"),
                 Lot.project_id,
@@ -128,6 +130,7 @@ class LotService:
                 Location.id.label("location_id"),
                 Location.name.label("location"),
                 Lot.sub_location_id,
+                Lot.lot_stock,
                 Lot.stock,
                 SubLocation.name.label("sub_location"),
                 Lot.project_id,
@@ -152,7 +155,6 @@ class LotService:
     @log_func_calls("lots", CREATE_LOG)
     async def add_lot(self, user_id: int, lot: CreateLotSchema, db: Session):
         db_supply = db.query(Supply).filter(Supply.id == lot.supply_id).first()
-        stock_to_add = db_supply.lot_stock
         new_lot = Lot(
             number=lot.number,
             reception_date=lot.reception_date,
@@ -163,7 +165,8 @@ class LotService:
             project_id=lot.project_id,
             supplier_id=lot.supplier_id,
             state=True,
-            stock=stock_to_add,
+            lot_stock=lot.lot_stock,
+            stock=lot.lot_stock,
             group_id=lot.group_id,
         )
         db.add(new_lot)
@@ -174,13 +177,13 @@ class LotService:
             group_supply = GroupSupplySchema(
                 group_id=lot.group_id,
                 supply_id=lot.supply_id,
-                quantity=stock_to_add,
+                quantity=lot.lot_stock,
             )
             await groupSuppliesService.add_group_supply(user_id, group_supply, db)
         else:
-            group_supply = GroupSupplySchema(group_id=lot.group_id, supply_id=lot.supply_id, quantity=group_supply_db.quantity + stock_to_add)
+            group_supply = GroupSupplySchema(group_id=lot.group_id, supply_id=lot.supply_id, quantity=group_supply_db.quantity + lot.lot_stock)
             await groupSuppliesService.update_quantity(user_id=user_id, relation=group_supply_db, data_update=group_supply, db=db)
-        new_supply_stock = db_supply.stock + stock_to_add
+        new_supply_stock = db_supply.stock + lot.lot_stock
         setattr(db_supply, "stock", new_supply_stock)
         db.add(db_supply)
         db.commit()

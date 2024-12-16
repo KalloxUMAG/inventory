@@ -49,10 +49,6 @@
                   value: `${supply.stock} unidades`,
                 },
                 {
-                  label: 'Stock por lote',
-                  value: `${supply.lot_stock} unidades por lote`,
-                },
-                {
                   label: 'Stock crítico',
                   value: supply.critical_stock,
                 },
@@ -373,6 +369,7 @@ function editLot(lot) {
       observation: lot.observations,
       reception_date: lot.reception_date,
       due_date: lot.due_date,
+      lot_stock: lot.lot_stock,
       stock: lot.stock,
       location: { id: lot.location_id, name: lot.location },
       sublocation: { id: lot.sub_location_id, name: lot.sub_location },

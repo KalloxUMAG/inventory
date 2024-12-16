@@ -37,18 +37,6 @@
               label="Muestras por unidad*"
               type="number"
               step="any"
-              class="col q-mr-md"
-              :rules="[
-                (val) =>
-                  (val.length != 0 && val != null) || 'Campo obligatorio',
-              ]"
-            />
-            <q-input
-              v-model="supply.lot_stock"
-              outlined
-              label="Stock por lote*"
-              type="number"
-              step="any"
               class="col"
               :rules="[
                 (val) =>
@@ -59,17 +47,6 @@
         </div>
         <div class="col">
           <div class="row">
-            <q-input
-              v-model="supply.stock"
-              outlined
-              label="Stock actual"
-              type="number"
-              class="col q-mr-md"
-              :rules="[
-                (val) =>
-                  (val.length != 0 && val != null) || 'Campo obligatorio',
-              ]"
-            />
             <q-input
               v-model="supply.critical_stock"
               outlined
@@ -271,9 +248,8 @@ const props = defineProps({
   format: Object,
   samples: Number,
   stock: Number,
-  lot_stock: Number,
   observation: String,
-  temperature: String,
+  temperature: Object,
   critical_stock: Number,
 })
 
@@ -286,6 +262,7 @@ const EditSupplyForm = ref(null)
 const $q = useQuasar()
 
 const temperatureOptions = [
+  { id: null, name: null},
   { id: 'Ambiente', name: 'Ambiente' },
   { id: '4 grados Celsius', name: '4 grados Celsius' },
   { id: '-20 Grados Celsius', name: '-20 Grados Celsius' },
@@ -306,9 +283,8 @@ const supply = reactive({
   format: props.format.id,
   samples: props.samples,
   stock: props.stock,
-  lot_stock: props.lot_stock,
   observation: props.observation,
-  temperature: props.temperature,
+  temperature: props.temperature.id,
   critical_stock: props.critical_stock,
 })
 const newBrand = ref('')
@@ -460,7 +436,6 @@ async function onOKClick() {
     critical_stock: supply.critical_stock,
     state: true,
     samples: supply.samples,
-    lot_stock: supply.lot_stock,
     stock: supply.stock,
     temperature: supply.temperature,
     observation: supply.observation,

@@ -23,7 +23,6 @@ class SupplyService:
                 Supply.code,
                 Supply.state,
                 Supply.stock,
-                Supply.lot_stock,
                 Supply.samples,
                 Supply.critical_stock,
                 Supply.observation,
@@ -50,7 +49,6 @@ class SupplyService:
                 code = result.code,
                 state = result.state,
                 stock = result.stock,
-                lot_stock = result.lot_stock,
                 samples = result.samples,
                 critical_stock = result.critical_stock,
                 observation = result.observation,
@@ -64,7 +62,7 @@ class SupplyService:
                 lots = await lot_service.get_lots_by_supply(result.id, db)
                 ) for result in results_db]
         return results
-    
+
     async def get_supply(self, supply_id: int, db: Session):
         result = (
             db.query(
@@ -74,7 +72,6 @@ class SupplyService:
                 Supply.state,
                 Supply.stock,
                 Supply.critical_stock,
-                Supply.lot_stock,
                 Supply.samples,
                 Supply.observation,
                 Supply.temperature,
@@ -111,7 +108,6 @@ class SupplyService:
                 Supply.name,
                 Supply.code,
                 Supply.stock,
-                Supply.lot_stock,
                 Supply.samples,
                 Supply.critical_stock,
                 Supply.observation,
@@ -143,7 +139,6 @@ class SupplyService:
             observation=supply.observation,
             temperature=supply.temperature,
             critical_stock=supply.critical_stock,
-            lot_stock=supply.lot_stock,
             supplies_brand_id=supply.supplies_brand_id,
             supplies_format_id=supply.supplies_format_id,
             supplies_type_id=supply.supplies_type_id,

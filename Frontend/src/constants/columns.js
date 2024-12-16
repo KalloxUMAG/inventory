@@ -178,6 +178,13 @@ export const lotsColumns = [
     field: 'project',
     sortable: false,
   },
+
+  {
+    name: 'lot_stock',
+    align: 'left',
+    label: 'Stock inicial',
+    field: 'lot_stock',
+  },
   {
     name: 'stock',
     align: 'left',

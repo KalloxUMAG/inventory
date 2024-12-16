@@ -11,7 +11,6 @@ class SupplyListSchema(BaseModel):
     code: Optional[str] = None
     state: Optional[bool] = None
     stock: Optional[int] = None
-    lot_stock: Optional[int] = None
     critical_stock: Optional[int] = None
     samples: Optional[float] = None
     observation: Optional[str] = None
@@ -34,7 +33,6 @@ class SupplySchemaFull(BaseModel):
     code: Optional[str] = None
     state: Optional[bool] = None
     stock: Optional[int] = None
-    lot_stock: Optional[int] = None
     critical_stock: Optional[int] = None
     samples: Optional[float] = None
     observation: Optional[str] = None
@@ -56,7 +54,6 @@ class SupplySchema(BaseModel):
     code: Optional[str] = None
     state: Optional[bool] = None
     stock: Optional[int] = None
-    lot_stock: Optional[int] = None
     critical_stock: Optional[int] = None
     samples: Optional[float] = None
     observation: Optional[str] = None

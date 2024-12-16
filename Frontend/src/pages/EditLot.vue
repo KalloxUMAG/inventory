@@ -41,6 +41,16 @@
           </div>
           <div class="row q-my-sm">
             <q-input
+              v-model="lot_stock"
+              outlined
+              label="Stock inicial"
+              class="col q-mr-sm"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
+            />
+          </div>
+          <div class="row q-my-sm">
+            <q-input
               v-model="reception_date"
               outlined
               class="col"
@@ -384,6 +394,7 @@ const props = defineProps({
   observation: String,
   reception_date: String,
   due_date: String,
+  lot_stock: Number,
   stock: Number,
   location: Object,
   sublocation: Object,
@@ -397,6 +408,7 @@ defineEmits([...useDialogPluginComponent.emits])
 const api_prefix = process.env.API_URL
 
 const number = ref(props.number)
+const lot_stock = ref(props.lot_stock)
 const supplier = ref(props.supplier.id)
 const observation = ref(props.observation)
 const reception_date = ref(props.reception_date)
@@ -657,6 +669,7 @@ async function onOKClick() {
     number: number.value,
     reception_date: reception_date.value,
     due_date: due_date.value,
+    lot_stock: lot_stock.value,
     stock: stock.value,
     observations: observation.value,
     sub_location_id: sublocation.value,
