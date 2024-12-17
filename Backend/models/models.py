@@ -402,7 +402,7 @@ class Lot(Base):
         Integer, ForeignKey("Suppliers.id", ondelete="CASCADE")
     )
     sub_location_id: Mapped[int] = mapped_column(Integer, ForeignKey("Sub_locations.id"))
-    project_id: Mapped[int] = mapped_column(Integer, ForeignKey("Projects.id"))
+    project_id: Mapped[int] = mapped_column(Integer, ForeignKey("Projects.id"), nullable=True)
     group_id: Mapped[int] = mapped_column(Integer, ForeignKey("Groups.id"))
 
     loans: Mapped[List["Loan"]] = relationship("Loan", back_populates="lot")

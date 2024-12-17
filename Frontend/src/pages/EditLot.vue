@@ -233,8 +233,6 @@
             :default_value="props.project"
             label="Proyectos"
             not_found_label="No hay proyectos disponibles"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
             @update-model="
               (value) => {
                 project = value;
