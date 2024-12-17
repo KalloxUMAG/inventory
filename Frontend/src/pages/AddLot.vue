@@ -17,7 +17,7 @@
               :options="suppliersOptions"
               option_value="id"
               option_label="name"
-              label="Proveedor"
+              label="Proveedor*"
               not_found_label="No hay proveedores disponibles"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
@@ -32,7 +32,7 @@
             <q-input
               v-model="number"
               outlined
-              label="Número de lote"
+              label="Número de lote*"
               class="col q-mr-sm"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
@@ -42,7 +42,7 @@
             <q-input
               v-model="lot_stock"
               outlined
-              label="Stock inicial"
+              label="Stock inicial*"
               class="col q-mr-sm"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
@@ -54,7 +54,7 @@
               outlined
               class="col"
               type="date"
-              label="Fecha de recepcion*"
+              label="Fecha de recepcion"
               stack-label
             />
           </div>
@@ -64,7 +64,7 @@
               outlined
               class="col"
               type="date"
-              label="Fecha de vencimiento*"
+              label="Fecha de vencimiento"
               stack-label
             />
           </div>
@@ -87,7 +87,7 @@
                 :options="locationOptions"
                 option_value="id"
                 option_label="name"
-                label="Localización"
+                label="Localización*"
                 not_found_label="No hay localizaciones disponibles"
                 :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
@@ -112,7 +112,7 @@
                 <q-input
                   v-model="newLocation"
                   outlined
-                  label="Nombre localización"
+                  label="Nombre localización*"
                   class="col"
                   :disable="disableLocation"
                   :rules="[(val) => !!val || 'Campo obligatorio']"
@@ -131,7 +131,7 @@
                 :options="sublocationOptions"
                 option_value="id"
                 option_label="name"
-                label="Sub-localización"
+                label="Sub-localización*"
                 not_found_label="No hay sublocalizaciones disponibles"
                 :rules="[(val) => !!val || 'Campo obligatorio']"
                 lazy-rules
@@ -156,7 +156,7 @@
                 <q-input
                   v-model="newSublocation"
                   outlined
-                  label="Nombre sub-localización"
+                  label="Nombre sub-localización*"
                   class="col"
                   :disable="disableLocation"
                   :rules="[(val) => !!val || 'Campo obligatorio']"
@@ -235,7 +235,7 @@
             <q-input
               v-model="newProject"
               outlined
-              label="Nombre proyeto"
+              label="Nombre proyeto*"
               class="col"
               :disable="disableProject"
               :rules="[(val) => !!val || 'Campo obligatorio']"
@@ -265,7 +265,7 @@
               :options="projectOwnersOptions"
               option_value="id"
               option_label="name"
-              label="Dueño proyecto"
+              label="Dueño proyecto*"
               not_found_label="No hay dueños disponibles"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
@@ -289,7 +289,7 @@
               v-model="newProjectOwner"
               outlined
               class="row"
-              label="Nombre dueño"
+              label="Nombre dueño*"
               :disable="disableProjectOwner"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
@@ -325,7 +325,7 @@
               :default_value="defaultGroup"
               option_value="group_id"
               option_label="group_name"
-              label="Grupo"
+              label="Grupo*"
               not_found_label="No hay grupos disponibles"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
