@@ -6,6 +6,7 @@
   "author": "Kallox",
   "private": true,
   "scripts": {
+    "dev": "quasar dev",
     "build": "quasar build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
