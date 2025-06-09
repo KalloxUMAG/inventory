@@ -6,7 +6,7 @@
     >
       <q-form ref="EditLotForm" @submit="onOKClick">
         <div class="text-bold text-subtitle1 q-my-sm">
-          Datos lote
+          Datos insumo recepcionado
         </div>
         <!-- Fields -->
         <div class="col">
@@ -33,7 +33,7 @@
             <q-input
               v-model="number"
               outlined
-              label="Número de lote*"
+              label="Número identificador*"
               class="col q-mr-sm"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules
@@ -569,7 +569,7 @@ async function editLot(data) {
       color: 'red-3',
       textColor: 'white',
       icon: 'error',
-      message: `No se pudo editar el lote: ${error}`,
+      message: `No se pudo editar el insumo recepcionado: ${error}`,
     })
     return -1
   }

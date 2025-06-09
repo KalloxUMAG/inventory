@@ -18,7 +18,7 @@
             Codigo: {{ lot.supply_code }}
           </div>
           <div class="row">
-            Lote: {{ lot.number }}
+            Numero identificador: {{ lot.number }}
           </div>
           <div class="row">
             Fecha vencimiento: {{ lot.due_date }}

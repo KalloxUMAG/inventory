@@ -6,7 +6,7 @@
           Datos del prestamo
         </h3>
         <p class="text-grey-7">
-          Preste el lote de un grupo (El lote será consumido)
+          Preste insumo recepcionado de un grupo (Las existencias serán consumidas)
         </p>
         <q-separator />
       </q-card-section>
@@ -18,7 +18,7 @@
               label="Grupo que presta"
               outlined
               class="col-12"
-              hint="El grupo que presta el lote"
+              hint="El grupo que presta"
               readonly
             />
           </div>
@@ -33,10 +33,10 @@
             />
             <q-input
               v-model="lot"
-              label="Lote a prestar"
+              label="Existencia a prestar"
               outlined
               class="col-12 col-md-6"
-              hint="El lote que se presta (Se consumirá)"
+              hint="La existencia que se presta (Se consumirá)"
               readonly
             />
           </div>
@@ -56,7 +56,7 @@
               label="Fecha de devolución"
               outlined
               class="col-12 col-md-6"
-              hint="Fecha en que se devolverá/devolvio el lote"
+              hint="Fecha en que se devolverá/devolvio la existencia"
             />
           </div>
           <div class="row q-col-gutter-md q-mt-md">
@@ -81,7 +81,7 @@
               label="Descripción"
               outlined
               class="col-12"
-              hint="Describa a quien se presta el lote y como contactarlo"
+              hint="Describa a quien se presta el la existencia y como contactarlo"
               :rules="[val => !!val || 'Ingrese una descripción']"
             />
           </div>

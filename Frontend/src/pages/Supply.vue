@@ -73,10 +73,10 @@
             <q-separator />
             <div class="row q-my-sm">
               <div class="col-5 text-h6 text-weight-bold q-pl-md">
-                Stock por lote
+                Stock por insumo recepcionado
               </div>
               <div class="col text-h6 text-grey-8">
-                {{ supply.lot_stock }} unidades por lote.
+                {{ supply.lot_stock }} unidades por insumo recepcionado.
               </div>
             </div>
             <q-separator />
@@ -139,7 +139,7 @@
   <div class="row q-mt-md">
     <div class="col">
       <NoRedirectTable
-        title="Lotes"
+        title="Insumos recepcionados"
         :columns="lotsColumns"
         :rows="lots"
         :add-function="addLot"
@@ -240,8 +240,8 @@ function addLot() {
 
 function removeLot(lot) {
   $q.dialog({
-    title: 'Eliminar lote',
-    message: 'Se eliminara el lote y se descontara del stock actual del insumo',
+    title: 'Eliminar insumo recepcionado',
+    message: 'Se eliminara el insumo recepcionado y se descontara del stock actual del insumo',
     ok: {
       color: 'negative',
       label: 'Aceptar y eliminar',

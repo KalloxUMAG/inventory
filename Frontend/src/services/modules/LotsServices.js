@@ -13,7 +13,7 @@ export async function getLotsBySupplyId(supply_id) {
     return response.data
   }
   catch (error) {
-    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los lotes')
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los insumos recepcionados')
     return []
   }
 }
@@ -27,7 +27,7 @@ export async function getLotsBySupplyAndGroupId(supply_id, group_id) {
     return response.data
   }
   catch (error) {
-    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los lotes')
+    CatchNotifications(error.response.status, 'Se ha producido un error al cargar los insumos recepcionados')
     return []
   }
 }
@@ -40,7 +40,7 @@ export async function postLot(lot) {
       data: lot,
     })
     if (response.status === 201)
-      CatchNotifications(response.status, 'Lote creado correctamente')
+      CatchNotifications(response.status, 'Insumo recepcionado creado correctamente')
     return response.data
   }
   catch (error) {
@@ -56,7 +56,7 @@ export async function deleteLot(lot_id) {
       url: `${api_prefix}/lots/deactive/${lot_id}`,
     })
     if (response.status === 205)
-      CatchNotifications(response.status, 'Lote eliminado correctamente')
+      CatchNotifications(response.status, 'Insumo recepcionado eliminado correctamente')
     return response.data
   }
   catch (error) {

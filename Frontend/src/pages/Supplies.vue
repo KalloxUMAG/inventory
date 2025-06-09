@@ -58,7 +58,7 @@
               {{ col.label }}
             </q-th>
             <q-th auto-width>
-              Lotes
+              Insumos recepcionados
             </q-th>
           </q-tr>
         </template>

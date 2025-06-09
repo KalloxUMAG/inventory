@@ -6,7 +6,7 @@
     >
       <q-form ref="AddLotForm" @submit="onOKClick">
         <div class="text-bold text-subtitle1 q-my-sm">
-          Datos lote
+          Datos insumo recepcionado
         </div>
         <!-- Fields -->
         <div class="col">
@@ -32,7 +32,7 @@
             <q-input
               v-model="number"
               outlined
-              label="Número de lote*"
+              label="Número identificador*"
               class="col q-mr-sm"
               :rules="[(val) => !!val || 'Campo obligatorio']"
               lazy-rules

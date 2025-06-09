@@ -145,7 +145,7 @@
       <q-card class="no-shadow q-pa-xs card_style" flat bordered>
         <q-card-section class="q-pl-none">
           <div class="text-h5 text-weight-bold q-pl-md space-between">
-            Lotes
+            Insumo recepcionados
             <div class="actions-buttons">
               <q-input
                 v-model="lotsFilter"
@@ -332,8 +332,8 @@ function addLot() {
 
 function removeLot(lot) {
   $q.dialog({
-    title: 'Eliminar lote',
-    message: 'Se eliminara el lote y se descontara del stock actual del insumo',
+    title: 'Eliminar insumo recepcionado',
+    message: 'Se eliminara el insumo recepcionado y se descontara del stock actual del insumo',
     ok: {
       color: 'negative',
       label: 'Aceptar y eliminar',

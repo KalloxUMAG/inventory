@@ -125,7 +125,7 @@ export const lotsColumns = [
   {
     name: 'number',
     align: 'left',
-    label: 'Lote',
+    label: 'ID',
     field: 'number',
     sortable: false,
   },
@@ -517,7 +517,7 @@ export const loansColumns = [
   {
     name: 'lot_number',
     align: 'left',
-    label: 'Lote',
+    label: 'ID',
     field: 'lot_number',
     sortable: true,
   },

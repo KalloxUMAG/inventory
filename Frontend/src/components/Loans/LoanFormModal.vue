@@ -6,7 +6,7 @@
           Datos del prestamo
         </h3>
         <p class="text-grey-7">
-          Preste el lote de un grupo (El lote será consumido)
+          Preste insumo recepcionado de un grupo (Las existencias serán consumidas)
         </p>
         <q-separator />
       </q-card-section>
@@ -23,7 +23,7 @@
               option_label="name"
               not_found_label="No hay grupos"
               :rules="[val => !!val || 'Seleccione un grupo']"
-              hint="El grupo que presta el lote"
+              hint="El grupo que presta"
               @update-model="(value) => { group = value; supply = null; loadSupplies(value) }"
             />
           </div>
@@ -43,15 +43,15 @@
             />
             <InputSelect
               v-model="lot"
-              label="Lote a prestar"
+              label="Insumo a prestar"
               outlined
               class="col-12 col-md-6"
               :options="lots"
               option_value="id"
               option_label="name"
-              not_found_label="No hay lotes"
-              :rules="[val => !!val || 'Seleccione un lote']"
-              hint="El lote que se presta (Se consumirá)"
+              not_found_label="No hay existencias"
+              :rules="[val => !!val || 'Seleccione una existencia valida']"
+              hint="La existencia que se presta (Se consumirá)"
               @update-model="(value) => { lot = value }"
             />
           </div>
@@ -71,7 +71,7 @@
               label="Fecha de devolución"
               outlined
               class="col-12 col-md-6"
-              hint="Fecha en que se devolverá/devolvio el lote"
+              hint="Fecha en que se devolverá/devolvio el prestamo"
             />
           </div>
           <div class="row q-col-gutter-md q-mt-md">
@@ -96,7 +96,7 @@
               label="Descripción"
               outlined
               class="col-12"
-              hint="Describa a quien se presta el lote y como contactarlo"
+              hint="Describa a quien se presta y como contactarlo"
               :rules="[val => !!val || 'Ingrese una descripción']"
             />
           </div>
