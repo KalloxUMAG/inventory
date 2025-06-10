@@ -8,7 +8,8 @@ from models.models import (
     ProjectOwner,
     SubLocation,
     Supplier,
-    Supply
+    Supply,
+    SupplyBrand,
 )
 from schemas.lot_schema import CreateLotSchema, LotListSchema
 from schemas.groups_supplies_schema import GroupSupplySchema
@@ -39,11 +40,14 @@ class LotService:
                 Location.name.label("location"),
                 SubLocation.name.label("sub_location"),
                 Project.name.label("project"),
+                SupplyBrand.id.label("supplies_brand_id"),
+                SupplyBrand.name.label("supplies_brand_name"),
             )
             .outerjoin(Supply, Supply.id == Lot.supplies_id)
             .outerjoin(SubLocation, SubLocation.id == Lot.sub_location_id)
             .outerjoin(Location, Location.id == SubLocation.id)
             .outerjoin(Project, Project.id == Lot.project_id)
+            .outerjoin(SupplyBrand, SupplyBrand.id == Lot.supplies_brand_id)
             .filter(Lot.group_id.in_(groups))
             .all()
         )
@@ -71,6 +75,8 @@ class LotService:
                 SubLocation.name.label("sub_location"),
                 Project.name.label("project"),
                 Supplier.name.label("supplier_name"),
+                SupplyBrand.id.label("supplies_brand_id"),
+                SupplyBrand.name.label("supplies_brand_name"),
             )
             .filter(Lot.id == lot_id and Lot.state is True)
             .outerjoin(Supply, Supply.id == Lot.supplies_id)
@@ -78,6 +84,7 @@ class LotService:
             .outerjoin(Location, Location.id == SubLocation.id)
             .outerjoin(Project, Project.id == Lot.project_id)
             .outerjoin(Supplier, Supplier.id == Lot.supplier_id)
+            .outerjoin(SupplyBrand, SupplyBrand.id == Lot.supplies_brand_id)
             .filter(Lot.group_id.in_(groups))
             .first()
         )
@@ -104,6 +111,8 @@ class LotService:
                 ProjectOwner.name.label("project_owner_name"),
                 Lot.supplier_id,
                 Supplier.name.label("supplier_name"),
+                SupplyBrand.id.label("supplies_brand_id"),
+                SupplyBrand.name.label("supplies_brand_name"),
                 Lot.group_id,
                 Groups.name.label("group_name"),
             )
@@ -113,6 +122,7 @@ class LotService:
             .outerjoin(Project, Project.id == Lot.project_id)
             .outerjoin(ProjectOwner, ProjectOwner.id == Project.owner_id)
             .outerjoin(Supplier, Supplier.id == Lot.supplier_id)
+            .outerjoin(SupplyBrand, SupplyBrand.id == Lot.supplies_brand_id)
             .outerjoin(Groups, Groups.id == Lot.group_id)
             .all()
         )
@@ -168,6 +178,7 @@ class LotService:
             lot_stock=lot.lot_stock,
             stock=lot.lot_stock,
             group_id=lot.group_id,
+            supplies_brand_id=lot.supplies_brand_id
         )
         db.add(new_lot)
         db.commit()

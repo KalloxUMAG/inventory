@@ -1,7 +1,7 @@
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import func
-from models.models import Supply, SupplyBrand, SupplyFormat, SupplyType, GroupsHasSupplies, Groups
+from models.models import Supply, SupplyFormat, SupplyType, GroupsHasSupplies, Groups
 from schemas.supply_schema import (
     SupplyListSchema,
     SupplySchema,
@@ -27,14 +27,11 @@ class SupplyService:
                 Supply.critical_stock,
                 Supply.observation,
                 Supply.temperature,
-                SupplyBrand.id.label("supplies_brand_id"),
-                SupplyBrand.name.label("supplies_brand_name"),
                 SupplyType.id.label("supplies_type_id"),
                 SupplyType.name.label("supplies_type_name"),
                 SupplyFormat.id.label("supplies_format_id"),
                 SupplyFormat.name.label("supplies_format_name"),
             )
-            .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
             .outerjoin(SupplyType, SupplyType.id == Supply.supplies_type_id)
             .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)
             .filter(Supply.state == True)
@@ -53,8 +50,6 @@ class SupplyService:
                 critical_stock = result.critical_stock,
                 observation = result.observation,
                 temperature = str(Supply.temperature),
-                supplies_brand_id = result.supplies_brand_id,
-                supplies_brand_name = result.supplies_brand_name,
                 supplies_type_id = result.supplies_type_id,
                 supplies_type_name = result.supplies_type_name,
                 supplies_format_id = result.supplies_format_id,
@@ -75,15 +70,12 @@ class SupplyService:
                 Supply.samples,
                 Supply.observation,
                 Supply.temperature,
-                Supply.supplies_brand_id,
                 Supply.supplies_format_id,
                 Supply.supplies_type_id,
-                SupplyBrand.name.label("supplies_brand_name"),
                 SupplyType.name.label("supplies_type_name"),
                 SupplyFormat.name.label("supplies_format_name"),
             )
             .filter(and_(Supply.id == supply_id, Supply.state == True))
-            .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
             .outerjoin(SupplyType, SupplyType.id == Supply.supplies_type_id)
             .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)
             .first()
@@ -112,14 +104,12 @@ class SupplyService:
                 Supply.critical_stock,
                 Supply.observation,
                 Supply.temperature,
-                SupplyBrand.name.label("supplies_brand_name"),
                 SupplyType.name.label("supplies_type_name"),
                 SupplyFormat.name.label("supplies_format_name"),
                 GroupsHasSupplies.group_id,
                 Groups.name.label("group_name"),
                 GroupsHasSupplies.quantity.label("group_stock"),
             )
-            .outerjoin(SupplyBrand, SupplyBrand.id == Supply.supplies_brand_id)
             .outerjoin(SupplyType, SupplyType.id == Supply.supplies_type_id)
             .outerjoin(SupplyFormat, SupplyFormat.id == Supply.supplies_format_id)
             .outerjoin(GroupsHasSupplies, GroupsHasSupplies.supply_id == Supply.id)
@@ -139,7 +129,6 @@ class SupplyService:
             observation=supply.observation,
             temperature=supply.temperature,
             critical_stock=supply.critical_stock,
-            supplies_brand_id=supply.supplies_brand_id,
             supplies_format_id=supply.supplies_format_id,
             supplies_type_id=supply.supplies_type_id,
         )

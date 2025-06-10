@@ -49,6 +49,60 @@
               lazy-rules
             />
           </div>
+          <div v-if="!flags.newBrandState" class="col">
+            <InputSelect
+              outlined
+              class="row"
+              :options="brandOptions"
+              option_value="id"
+              option_label="name"
+              :default_value="props.brand"
+              label="Marca*"
+              not_found_label="No hay marcas disponibles"
+              :rules="[(val) => !!val || 'Campo obligatorio']"
+              lazy-rules
+              @update-model="
+                (value) => {
+                  brand = value;
+                }
+              "
+            />
+            <div class="row justify-end q-pt-md">
+              <q-btn
+                label="Añadir marca"
+                class="add-btn"
+                @click="flags.newBrandState = true"
+              />
+            </div>
+          </div>
+          <div v-else>
+            <div class="row">
+              <q-input
+                v-model="newBrand"
+                outlined
+                class="col"
+                label="Marca*"
+                :disable="flags.disableBrand"
+                :rules="[(val) => !!val || 'Campo obligatorio']"
+                lazy-rules
+              />
+            </div>
+            <div class="row justify-end q-pt-md">
+              <q-btn
+                :label="flags.disableBrand ? 'Editar' : 'Guardar'"
+                color="amber"
+                class="q-mr-sm"
+                @click="
+                  newBrand != '' ? (flags.disableBrand = !flags.disableBrand) : ''
+                "
+              />
+              <q-btn
+                label="Ver lista"
+                color="amber"
+                @click="flags.newBrandState = false"
+              />
+            </div>
+          </div>
           <div class="row q-my-sm">
             <q-input
               v-model="reception_date"
@@ -372,7 +426,7 @@
 
 <script setup>
 import { useDialogPluginComponent, useQuasar } from 'quasar'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
 import { sendRequest } from 'src/services/axios/instance'
 import InputSelect from 'src/components/form/inputs/InputSelect.vue'
 
@@ -391,6 +445,7 @@ const props = defineProps({
   project: Object,
   group: Number,
   group_default: Object,
+  brand: Object,
 })
 
 defineEmits([...useDialogPluginComponent.emits])
@@ -410,6 +465,7 @@ const project = ref(props.project.id)
 const projectOwner = ref(null)
 const group = ref(props.group)
 const group_default = ref(props.group_default)
+const brand = ref(props.brand.id)
 
 const newLocationState = ref(false)
 const disableLocation = ref(false)
@@ -423,7 +479,9 @@ const newLocation = ref('')
 const newSublocation = ref('')
 const newProject = ref('')
 const newProjectOwner = ref('')
+const newBrand = ref('')
 
+const brandOptions = ref([])
 const groupsOptions = ref([])
 const suppliersOptions = ref([])
 const locationOptions = ref([])
@@ -433,7 +491,29 @@ const projectOwnersOptions = ref([])
 
 const EditLotForm = ref(null)
 
+const flags = reactive({
+  disableBrand: false,
+  disableFormat: false,
+  newBrandState: false,
+  disableType: false,
+  newFormatState: false,
+})
+
 const $q = useQuasar()
+
+async function getSuppliesBrands() {
+  try {
+    const response = await sendRequest({
+      method: 'GET',
+      url: `${api_prefix}/supplies_brands`,
+    })
+    const result = response.data
+    brandOptions.value = result.map((x) => {
+      return { id: x.id, name: x.name }
+    })
+  }
+  catch (error) {}
+}
 
 async function getSuppliers() {
   try {
@@ -502,6 +582,32 @@ async function getSublocations() {
     sublocationOptions.value = response.data
   }
   catch (error) {}
+}
+
+async function createNewBrand() {
+  if (!flags.newBrandState)
+    return brand.value
+
+  const brandData = {
+    name: newBrand.value,
+  }
+
+  try {
+    const response = await sendRequest({
+      method: 'POST',
+      url: `${api_prefix}/supplies_brands`,
+      data: brandData,
+    })
+    return response.data
+  }
+  catch (error) {
+    $q.notify({
+      color: 'red-3',
+      textColor: 'white',
+      icon: 'error',
+      message: `No se pudo crear la marca: ${error}`,
+    })
+  }
 }
 
 async function createNewLocation() {
@@ -642,6 +748,7 @@ async function createNewProjectOwner() {
 }
 
 onMounted(() => {
+  getSuppliesBrands()
   getGroups()
   getSuppliers()
   getProjects()
@@ -675,6 +782,13 @@ async function onOKClick() {
   data.project_id = project_id
   const location_id = await createNewLocation()
   const sub_location_id = await createNewSublocation(location_id)
+
+  const supplies_brand_id = await createNewBrand()
+  if (supplies_brand_id == -1) {
+    loading.value = false
+    return
+  }
+  data.supplies_brand_id = supplies_brand_id
 
   data.sub_location_id = sub_location_id
 

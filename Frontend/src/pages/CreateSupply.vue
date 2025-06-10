@@ -55,59 +55,6 @@
           />
         </div>
       </div>
-      <div v-if="!flags.newBrandState" class="col">
-        <InputSelect
-          outlined
-          class="row"
-          :options="brandOptions"
-          option_value="id"
-          option_label="name"
-          label="Marca*"
-          not_found_label="No hay marcas disponibles"
-          :rules="[(val) => !!val || 'Campo obligatorio']"
-          lazy-rules
-          @update-model="
-            (value) => {
-              supply.brand = value;
-            }
-          "
-        />
-        <div class="row justify-end q-pt-md">
-          <q-btn
-            label="Añadir marca"
-            class="add-btn"
-            @click="flags.newBrandState = true"
-          />
-        </div>
-      </div>
-      <div v-else>
-        <div class="row">
-          <q-input
-            v-model="newBrand"
-            outlined
-            class="col"
-            label="Marca*"
-            :disable="flags.disableBrand"
-            :rules="[(val) => !!val || 'Campo obligatorio']"
-            lazy-rules
-          />
-        </div>
-        <div class="row justify-end q-pt-md">
-          <q-btn
-            :label="flags.disableBrand ? 'Editar' : 'Guardar'"
-            color="amber"
-            class="q-mr-sm"
-            @click="
-              newBrand != '' ? (flags.disableBrand = !flags.disableBrand) : ''
-            "
-          />
-          <q-btn
-            label="Ver lista"
-            color="amber"
-            @click="flags.newBrandState = false"
-          />
-        </div>
-      </div>
 
       <div class="col">
         <InputSelect
@@ -229,13 +176,11 @@ import FormSection from 'src/components/form/FormSection.vue'
 import PageTitle from 'src/components/commons/PageTitle.vue'
 
 // Options Selects
-const brandOptions = ref([])
 const formatOptions = ref([])
 const typeOptions = ref([])
 
 // Models
 const supply = reactive({
-  brand: null,
   type: null,
   name: null,
   code: null,
@@ -245,15 +190,12 @@ const supply = reactive({
   temperature: null,
   critical_stock: 0,
 })
-const newBrand = ref('')
 const newFormat = ref('')
 const newType = ref('')
 
 // Flags
 const flags = reactive({
-  disableBrand: false,
   disableFormat: false,
-  newBrandState: false,
   disableType: false,
   newFormatState: false,
 })
@@ -272,20 +214,6 @@ const createSupplyForm = ref(null)
 const router = useRouter()
 const $q = useQuasar()
 const api_prefix = process.env.API_URL
-
-async function getSuppliesBrands() {
-  try {
-    const response = await sendRequest({
-      method: 'GET',
-      url: `${api_prefix}/supplies_brands`,
-    })
-    const result = response.data
-    brandOptions.value = result.map((x) => {
-      return { id: x.id, name: x.name }
-    })
-  }
-  catch (error) {}
-}
 
 async function getSuppliesFormats() {
   try {
@@ -316,32 +244,6 @@ async function getSuppliesTypes() {
 }
 
 // Create functions
-
-async function createNewBrand() {
-  if (!flags.newBrandState)
-    return supply.brand
-
-  const brandData = {
-    name: newBrand.value,
-  }
-
-  try {
-    const response = await sendRequest({
-      method: 'POST',
-      url: `${api_prefix}/supplies_brands`,
-      data: brandData,
-    })
-    return response.data
-  }
-  catch (error) {
-    $q.notify({
-      color: 'red-3',
-      textColor: 'white',
-      icon: 'error',
-      message: `No se pudo crear la marca: ${error}`,
-    })
-  }
-}
 
 async function createNewFormat() {
   if (!flags.newFormatState)
@@ -398,19 +300,11 @@ async function onSubmit() {
     samples: supply.samples,
     observation: supply.observation,
     temperature: supply.temperature,
-    supplies_brand_id: supply.brand,
     supplies_type_id: supply.type,
     supplies_format_id: supply.format,
   }
 
   loading.value = true
-
-  const supplies_brand_id = await createNewBrand()
-  if (supplies_brand_id == -1) {
-    loading.value = false
-    return
-  }
-  supplyData.supplies_brand_id = supplies_brand_id
 
   const supplies_type_id = supply.type
   supplyData.supplies_type_id = supplies_type_id
@@ -437,7 +331,6 @@ function redirectToSupply(supply_id) {
 }
 
 onMounted(() => {
-  getSuppliesBrands()
   getSuppliesTypes()
   getSuppliesFormats()
 })

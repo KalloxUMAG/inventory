@@ -15,8 +15,6 @@ class SupplyListSchema(BaseModel):
     samples: Optional[float] = None
     observation: Optional[str] = None
     temperature: Optional[str] = None
-    supplies_brand_id: Optional[int] = None
-    supplies_brand_name: Optional[str] = None
     supplies_type_id: Optional[int] = None
     supplies_type_name: Optional[str] = None
     supplies_format_id: Optional[int] = None
@@ -37,10 +35,8 @@ class SupplySchemaFull(BaseModel):
     samples: Optional[float] = None
     observation: Optional[str] = None
     temperature: Optional[str] = None
-    supplies_brand_id: Optional[int] = None
     supplies_type_id: Optional[int] = None
     supplies_format_id: Optional[int] = None
-    supplies_brand_name: Optional[str] = None
     supplies_type_name: Optional[str] = None
     supplies_format_name: Optional[str] = None
 
@@ -58,7 +54,6 @@ class SupplySchema(BaseModel):
     samples: Optional[float] = None
     observation: Optional[str] = None
     temperature: Optional[str] = None
-    supplies_brand_id: Optional[int] = None
     supplies_type_id: Optional[int] = None
     supplies_format_id: Optional[int] = None
 

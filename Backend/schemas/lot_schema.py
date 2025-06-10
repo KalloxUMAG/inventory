@@ -17,6 +17,8 @@ class LotSchema(BaseModel):
     location: Optional[str] = None
     sub_location_id: Optional[int] = None
     sub_location: Optional[str] = None
+    supplies_brand_id: Optional[int] = None
+    supplies_brand_name: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -43,6 +45,8 @@ class LotListSchema(BaseModel):
     project_owner_name: Optional[str] = None
     supplier_id: Optional[int] = None
     supplier_name: Optional[str] = None
+    supplies_brand_id: Optional[int] = None
+    supplies_brand_name: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -60,6 +64,7 @@ class CreateLotSchema(BaseModel):
     group_id: int
     sub_location_id: Optional[int] = None
     project_id: Optional[int] = None
+    supplies_brand_id: Optional[int] = None
     supplier_id: int
 
     class Config:

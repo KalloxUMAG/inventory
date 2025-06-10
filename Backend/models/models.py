@@ -309,9 +309,6 @@ class Supply(Base):
     observation: Mapped[str] = mapped_column(String)
     temperature: Mapped[str] = mapped_column(String, nullable=True)
 
-    supplies_brand_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("Supplies_brands.id", ondelete="CASCADE")
-    )
     supplies_type_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("Supplies_types.id", ondelete="CASCADE")
     )
@@ -334,7 +331,7 @@ class SupplyBrand(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
 
-    supplies: Mapped[List["Supply"]] = relationship(
+    supplies: Mapped[List["Lot"]] = relationship(
         backref="Supplies_brands", cascade="delete,merge"
     )
 
@@ -402,6 +399,9 @@ class Lot(Base):
         Integer, ForeignKey("Suppliers.id", ondelete="CASCADE")
     )
     sub_location_id: Mapped[int] = mapped_column(Integer, ForeignKey("Sub_locations.id"))
+    supplies_brand_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("Supplies_brands.id", ondelete="CASCADE"), nullable=True
+    )
     project_id: Mapped[int] = mapped_column(Integer, ForeignKey("Projects.id"), nullable=True)
     group_id: Mapped[int] = mapped_column(Integer, ForeignKey("Groups.id"))
 

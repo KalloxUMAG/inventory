@@ -33,10 +33,6 @@
                   value: supply.code,
                 },
                 {
-                  label: 'Marca',
-                  value: supply.supplies_brand_name,
-                },
-                {
                   label: 'Tipo',
                   value: supply.supplies_type_name,
                 },
@@ -376,6 +372,10 @@ function editLot(lot) {
       project: { id: lot.project_id, name: lot.project },
       group: lot.group_id,
       group_default: { id: lot.group_id, name: lot.group_name },
+      brand: {
+        id: lot.supplies_brand_id,
+        name: lot.supplies_brand_name,
+      },
     },
   })
     .onOk(async(data) => {
@@ -396,10 +396,6 @@ function editSupply() {
     component: EditSupply,
     componentProps: {
       supply_id: supply.value.id,
-      brand: {
-        id: supply.value.supplies_brand_id,
-        name: supply.value.supplies_brand_name,
-      },
       type: {
         id: supply.value.supplies_type_id,
         name: supply.value.supplies_type_name,

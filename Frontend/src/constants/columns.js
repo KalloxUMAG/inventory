@@ -92,13 +92,6 @@ export const suppliesColumns = [
     sortable: false,
   },
   {
-    name: 'supplies_brand_name',
-    align: 'left',
-    label: 'Marca',
-    field: 'supplies_brand_name',
-    sortable: true,
-  },
-  {
     name: 'supplies_type_name',
     align: 'left',
     label: 'Tipo de insumo',
@@ -162,6 +155,13 @@ export const lotsColumns = [
     align: 'left',
     label: 'Sub-localización',
     field: 'sub_location',
+    sortable: true,
+  },
+  {
+    name: 'supplies_brand_name',
+    align: 'left',
+    label: 'Marca',
+    field: 'supplies_brand_name',
     sortable: true,
   },
   {
@@ -406,13 +406,6 @@ export const criticSuppliesColumns = [
     label: 'Código',
     field: 'code',
     sortable: false,
-  },
-  {
-    name: 'supplies_brand_name',
-    align: 'left',
-    label: 'Marca',
-    field: 'supplies_brand_name',
-    sortable: true,
   },
   {
     name: 'supplies_type_name',
